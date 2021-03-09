@@ -3,4 +3,33 @@
 
 Write intro \dots
 
-Cite CHESS~\cite{ishaq2019clustered}
+Growth in size and types of datasets:
+\begin{itemize}
+    \item SDSS APOGEE2 data. Near-infrared spectra of approximately 430,000 stars in approximately 9,000 dimensions. $R=22,500 = \frac{\lambda}{\Delta \lambda}$ for $\lambda \in [1.51, 1.70) \mu m$
+    \item SDSS MaNGA hexagon shaped images. 10,000 galaxies with 2,700 deg$^2$, resolution $R=2,000$ for $\lambda \in [360, 1000) nm$
+    \item Silva 18S ribosomal DNA sequences of approximately 2.25 million genomes with aligned length of 50,000 letters. TODO: Look into other variants in the dataset particularly NR99.
+    \item Datasets from ANN-Benchmarks suite
+\end{itemize}
+
+Recent approaches in dealing with exponential growth of data:
+\begin{itemize}
+    \item LSH
+    \item clever indexing e.g. FM Index.
+    \item Entropy-scaling search~\cite{yu2015entropy} and CHESS~\cite{ishaq2019clustered}.
+\end{itemize}
+
+This paper focuses on:
+\begin{itemize}
+    \item Improvements and extensions of CHESS.
+    \item Accelerated $\rho$-nearest and k-nearest neighbors search.
+    \item Entropy-scaling (?? is it though?) compression using the hierarchical clustering.
+    \item Proof for how cluster-radii, and thus compression deltas, fall as we descend along the tree.
+    \item Information theoretic bounds on compression performance. We compress along the dimensionality of data rather than the cardinality of data.
+    \item A variety of distance functions including euclidean, manhattan, cosine, jaccard, wasserstein, hamming, levenshtein, needleman-wunch, and any user-defined function.
+\end{itemize}
+
+Comparisons for:
+\begin{itemize}
+    \item Search time vs FALCONN and other in ann-benchmarks suite.
+    \item Compression performance of CAKES+gzip vs just gzip.
+\end{itemize}

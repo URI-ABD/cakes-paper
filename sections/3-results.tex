@@ -2,3 +2,33 @@
 \label{sec:results}
 
 Write about results \dots
+
+\subsection{Asymptotic Complexity}
+\label{subsec:results:asymptotic-complexity}
+
+Analyze:
+\begin{itemize}
+    \item Building the tree.
+    \item $\rho$-nearest neighbors search.
+    \item k-nearest neighbors search.
+    \item compression:
+    \begin{itemize}
+        \item encode (novel contribution)
+        \item serialize
+        \item compress
+        \item decompress
+        \item desrialize
+        \item decode (novel contribution)
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{Benchmarks}
+\label{subsec:results:benchmarks}
+
+Datasets and Distance function pairs, measure:
+
+Linear search vs accelerated search runtime performance, speedup factor, number of distance comparisons.
+Only at max-depth. leave out benchmarks at iteratively increasing depths.
+
+Compression CAKES + gzip vs just gzip. Only at max-depth.
