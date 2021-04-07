@@ -1,0 +1,164 @@
+\section{Information Theoretic Properties}
+\label{sec:information-theoretic-properties}
+
+We extend the work from~\cite{berger2020levenshtein} for search and compression using a flat clustering to our case of a hierarchical clustering.
+We further generalize this for any dataset and distance function described below.
+
+We take a \textbf{dataset} $X$ with $n$ instances embedded in a $\mathcal{D}$-dimensional Banach Space defined by a distance function $f: X \times X \mapsto \mathbb{R}$.
+We assume that the dataset follows the Manifold Hypothesis~\cite{fefferman2016testing}, i.e. instances in the dataset lie on a $d$-dimensional manifold where $d \ll \mathcal{D}$.
+
+The \textbf{distance function} must have certain properties.
+Specifically, $\forall x, y, z \in X$:
+
+\begin{enumerate}[i.]
+    \item $f(x, y) \mapsto \mathbb{R}$ is deterministic.
+    \item $f(x, y) = 0 \Leftrightarrow x = y$ and $f(x, y) > 0 \Leftrightarrow x \neq y$, i.e. distance values are non-negative.
+    \item $f(x, y) = f(y, x)$, i.e. symmetry.
+    \item $f(x - z, y - z) = f(x, y)$, i.e. invariance under translation or encoding.
+    \item $f(x, z) \leq f(x, y) + f(y, z)$, i.e. the triangle inequality holds.
+\end{enumerate}
+
+% TODO: Add note about the triangle inequality.
+%  Not always needed, without it, search might miss some hits.
+
+We define a \textbf{Metric Ball} as $B(q, r) = \{ x \in X \ | \ f(q, x) \leq r \}$, i.e. a ball containing all instances in the dataset within distance $r$ from an instance $q$.
+We also define a \textbf{Cluster} as $C(c, r)$ analogous to a Metric Ball with the caveat that if some clusters have overlapping volumes then any instances in that overlapping volume are assigned to only one of the clusters.
+Thus $C_i \cap C_j = \phi \Leftrightarrow i \neq j$ and $\bigcup C = X$.
+
+The \textbf{Metric Entropy} (Kolmogorov Entropy) of the dataset, denoted by $N_{\epsilon}^{ent}(X)$, is the maximum $n$ such that $\{x_1, \dots, x_n\} \subset X$ and $f(x_i, x_j) \geq \epsilon \ \forall \ i \neq j$, i.e. the maximum number of $\epsilon$-separated instances in the dataset.
+
+The \textbf{Internal Covering Number} of the dataset, denoted by $N_{\epsilon}^{int}(X)$, is the minimum $n$ such that $\{x_1, \dots, x_n\} \subset X$ and $\bigcup_{i = 1}^{n} C(c_i, \epsilon) = X$, i.e. the clusters $C_i$ collectively cover $X$.
+
+Clearly, $N_{2\epsilon}^{ent}(X) \leq N_{\epsilon}^{int}(X) \leq N_{\epsilon}^{ent}(X)$.
+Therefore, the Metric Entropy and the Internal Covering Number of a dataset are equivalent measures.
+
+The \textbf{Fractal Dimension} (Minkowski Dimension) of a dataset is
+\begin{align*}
+    d(X) &= \lim_{\epsilon \rightarrow 0} \frac{\log(N_{\epsilon}^{int}(X))}{\log(\frac{1}{\epsilon})}
+\end{align*}
+
+However, if $|X|$ is finite then $d(X) = 0$.
+To remedy this, we define the \textbf{Local Fractal Dimension}, as in~\cite{berger2020levenshtein}, for range $r$ and scale $s$ as
+\begin{align*}
+    d(X, r, s) &= \max_{x \in X} \ \log \frac{|B(x, r + s)| \ / \ |B(x, s)|}{(r + s) \ / \ s}
+\end{align*}
+
+For a cluster, $C_i(c_i, r_i)$, its local fractal dimension is equivalently defined as
+\begin{align}
+    \label{eq:local-fractal-dimension}
+    d(C_i) &= \log_2 \ \frac{|B(c_i, r_i)|}{|B(c_i, \frac{r_i}{2})|}
+\end{align}
+
+Given an \textbf{Internal Covering} of $X$, we can specify any $\bar{x} \in X$to within error $\epsilon$ by specifying $x_i$ such that $\bar{x} \in B(x_i, \epsilon)$.
+This it takes $\mathcal{O} \big( \log N_{\epsilon}^{ent}(X) \big)$ bits of information to specify $\bar{x}$ to within error $\epsilon$.
+
+Given two instances $x_1, x_2 \in X$, we can construct $x_2 - x_1$, a \textbf{minimal encoding} of $x_2$ in terms of $x_1$, such that the number of bits needed to specify the encoding scales linearly with $f(x_1, x_2)$.
+We would need to construct a method for construction such \textit{minimal encodings} for each pairing of $(X, f)$.
+See Sections~\ref{subsec:methods:compression} and~\ref{sec:datasets-and-distance-functions}.
+
+The \textbf{Shannon Entropy} of an instance $x$, denoted by $H(x)$, is the number of bits needed to exactly specify $x$.
+Given an encoding, $x_2 - x_1$, of an instance $x_2$ in terms of another instance $x_1$, let $H(x_2 - x_1)$ be the Shannon Entropy of the encoding, i.e. the number of bits needed to store the encoding.
+Therefore, \[ H \big( \{ x_1, x_2 \} \big) \leq H(x_1) + H(x_2 - x_1) \] where $\{ x_1, x_2 \}$ is the concatenation of $x_1$ and $x_2$.
+
+For example, given a dataset of genomic strings with the Levenshtein edit distance as the metric, let $x_1$ and $x_2$ be two strings in the dataset.
+Let $x_2 - x_1$ be the list of edits to convert $x_1$ into $x_2$ as used for the Levenshtein distance between $x_1$ and $x_2$.
+The length of this edit list is equal to the Levenshtein edit distance i.e. $|x_2 - x_1| = f(x_1, x_2)$.
+Each such edit can be stored using $\mathcal{O}(\log m)$ bits where $m$ is the maximum length of any string in the dataset.
+Thus, the total number of bits needed for the encoding is $\mathcal{O} \big( f(x_1, x_2) \big)$.
+
+Hence, for $|X| < \inf$,
+\begin{align*}
+    H \big( C(c, r) \big) &\leq H(c) + \sum_{x \in C} H(x - c) \\
+    &\leq H(c) + |C(c, r)| \cdot H(y - c) \\ \\
+    \text{where} \ y = \argmax_{x \in C}& \ f(x, c) \text{, or equivalently} \ f(y, c) = r.
+\end{align*}
+
+For a \textbf{Hierarchical Clustering}, let the cluster $C$ have parent $C_{parent}$, children $C_{left}$ and $C_{right}$, center $c \in C$, radius $r$, and an instance $y \in C$ such that $f(y, c) = r$.
+
+We have two choices for encoding the instances in a cluster:
+either each instance is directly encoded in terms of the cluster center, 
+or each child-cluster is encoded in terms of the child-center and the child-centers are encoded in terms of the cluster-center.
+
+Thus the Shannon Entropy of a cluster encoding is given by
+\begin{align}
+    \label{eq:hierarchical-shannon-entropy}
+    H(C) &\leq H(c - c_{parent}) + \min \begin{cases}
+        |C| \cdot H(y - c) \\
+        H(C_{left}) + H(C_{right})
+    \end{cases}
+\end{align}
+
+where the center of the root cluster is encoded directly rather than in terms of another instance.
+
+
+\subsection{Guaranteed Decreases in Radii}
+\label{subsec:methods:radii-decrease}
+
+We show that the radii of clusters are guaranteed to decrease after, at most, every $d$ recursive partitions.
+
+The Manifold Hypothesis assumption indicates that the instances in the dataset follow a $d$-dimensional distribution where $d \ll D$, the dimensionality of the embedding space.
+We measure the dimensionality of this low-dimensional distribution using the local fractal dimension of the dataset.
+Thus, we can describe this distribution by choosing some set of $d$ mutually orthogonal axes.
+
+Let $2r$ be the maximum pairwise distance among the instances in the dataset.
+In the worst case, e.g. with the distribution filling a $d$-sphere, our chosen $d$ axes will be such that $2r$ is the maximum pairwise distance \textit{along} each axis.
+
+The Partition algorithm will select a maximally distant pair of points to use as poles, i.e. it will choose one of the $d$ axes along which to partition the cluster into two children.
+After one application of this Partition, the maximum pairwise distance along that axis will be bounded above by $r$.
+The next recursive application of Partition will select another of the $d$ axes.
+Thus, after at most $d$ Partitions, the maximum pairwise distance along each of the $d$ axes will be bounded above by $r$.
+The overall maximum pairwise distance, \textit{i.e. not restricted to be along any one axis}, will be bounded above by $r \sqrt{2}$, for example, between two instances that are at the extrema of two different axes.
+
+Thus, starting with a Cluster $C$ of radius $r$, after at most $d$ Partitions, the descendants of $C$ will each have radius bounded above by $\frac{r}{\sqrt{2}}$.
+In other words, cluster radii are guaranteed to decrease by a multiplicative factor of $\frac{1}{\sqrt{2}}$ after at most $d$ Partitions where $d$ is the local fractal dimension of the manifold occupied by the data.
+
+
+\subsection{Back to Shannon Entropy}
+\label{subsec:methods:back-to-shannon-entropy}
+
+Starting with the Hierarchical Shannon Entropy defined in Equation~\ref{eq:hierarchical-shannon-entropy}, we can now further analyze the case of encoding a cluster using its children.
+
+In the worst case, we would have a perfectly balanced clustering.
+Starting with cluster $C$ and applying $d$ recursive partitions would give us $2^d$ descendants each with $|C| \cdot 2^{-d}$ instances.
+If cluster $C$ has radius $r$ then each of the $2^d$ descendants will have radius $\frac{r}{\sqrt{2}}$.
+In the general case, we can assume that the descendants have $\mathcal{O}(|C| \cdot 2^{-d})$ instances each.
+
+Note that, in practice, we never see a perfectly balanced clustering.
+Instead, Partition produces unbalanced trees due the varying density of sampling of the instances in different regions of the manifold.
+Further, the cluster radii decrease by a factor much larger than $\frac{1}{\sqrt{2}}$ and they do so every one or two partitions rather than after $d$ partitions.
+
+Let $T(C, d)$ be the subtree rooted at $C$ with depth $d$ and $J$ leaves.
+Since we cannot partition a cluster containing only one instance, we know that $J \leq 2^d \leq |C|$.
+Let the leaves be indexed with integers $j \in [1, J]$.
+Let the center of each child cluster be encoded in terms of the center of its parent cluster.
+Therefore, $H \big( T(C, d) \big)$, the Shannon Entropy of $T(C, d)$, is the sum of all encodings of child-centers in terms of their parent-centers..
+
+Thus, the second case in Equation~\ref{eq:hierarchical-shannon-entropy} becomes:
+\begin{align*}
+    & H \big( T(C, d) \big) + \sum H(C_j) \\
+    = \ & H \big( T(C, d) \big) + \sum |C_j| \cdot H(y_j - c_j)
+\end{align*}
+
+By the scaling behavior of cluster radii, as discussed in Section~\ref{subsec:methods:radii-decrease}, we know $H(y_j - c_j) \leq \frac{1}{\sqrt{2}} H(y - c)$.
+Thus, we continue:
+\begin{align*}
+    \leq \ & H \big( T(C, d) \big) + \frac{1}{\sqrt{2}} \cdot \sum |C_j| \cdot H(y - c) \\
+    = \ & H \big( T(C, d) \big) + \frac{1}{\sqrt{2}} \cdot |C| \cdot H(y - c)
+\end{align*}
+
+So we rewrite Equation~\ref{eq:hierarchical-shannon-entropy} as
+\begin{align}
+    \label{eq:hierarchical-shannon-entropy-2}
+    H(C) &\leq H(c - c_{parent}) + \min \begin{cases}
+        |C| \cdot H(y - c) \\
+        |C| \cdot H(y - c) \cdot \frac{1}{\sqrt{2}} + H \big( T(C, d) \big) 
+    \end{cases}
+\end{align}
+
+Thus, we have a measurable trade-off when encoding the instances in a cluster as to whether to encode in terms of the cluster-center or to encode using the subtree rooted at that cluster up to a low depth guided by the local fractal fractal dimension of that cluster.
+
+In practice, for low depths in the tree, using subtrees to encode the instances produces great gains in the number of bits used.
+As we continue deeper into the full tree, we start seeing diminishing returns for using subtrees.
+Eventually, either the two cases equalize or the first cases becomes the better choice.
+At such a depth in the tree, we encode the instances in a cluster using the cluster center rather than the subtree.
+Notably, such a depth need not be uniform across the tree and can adapt to the sampling density in different regions of the manifold.
