@@ -1,0 +1,48 @@
+\section{Methods}
+\label{sec:methods}
+
+Write about methods and provide asymptotic complexity analysis of each method.
+
+\subsection{Partition}
+\label{subsec:methods:partition}
+
+Partition algorithm for building the tree.
+Lift this from the CHAODA paper.
+
+Exact partition with $\mathcal{O}(n^2)$ cost vs approximate partition using $\sqrt{n}$ seeds to achieve $\mathcal{O}(n)$ cost.
+Building the exact tree costs $\mathcal{O}(n^2 \log n)$ vs approximate tree for $\mathcal{O}(n \log n)$.
+
+\subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
+\label{subsec:methods:rnn-search}
+
+Modified binary search.
+Lift this from CHESS paper.
+
+Complexity is the same as in CHESS.
+
+\subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
+\label{subsec:methods:knn-search}
+
+Repeated $\rho$-NN search with where radius is modified with each iteration as guided by lfd of query ball.
+
+Lift from CHESS paper as a starting point.
+
+Complexity is some factor times CHESS-search.
+
+\subsection{Compression}
+\label{subsec:methods:compression}
+
+Encode and Decode algorithms.
+These could be, and probably will be, different for each $(X, f)$ pairing.
+
+Asymptotic complexity analysis for:
+\begin{enumerate}[i.]
+    \item encode (novel contribution)
+    \item serialize
+    \item compress
+    \item decompress
+    \item deserialize
+    \item decode (novel contribution)
+\end{enumerate}
+
+% discrete vs continuous, and small alphabet vs large alphabet in discrete

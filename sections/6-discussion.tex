@@ -12,6 +12,8 @@ Exactness of search and metric vs non-metric.
 
 Is it the case that the optimal clusters for compression are also the optimal clusters for accelerated search?
 
+What kind of trade-offs can we offer for space-savings of compression vs time-savings of accelerated-search in the compressed space?
+
 \subsection{Future Works}
 \label{subsec:results:future-works}
 
@@ -20,6 +22,6 @@ GPU-acceleration for the more computationally intensive distance functions like 
 Live-updates as new points are added to the dataset.
 For example, build tree with a subsample of the full data and then add the rest of the instances to simulate live-updates.
 
-More distance functions. For example, maximal-common-subgraph for molecular structures.
+More distance functions. For example, Tanimoto Distance using maximal-common-subgraph for molecular structures.
 
-Better methods for constructing minimal encodings, using domain expertise.
+Better methods for constructing minimal encodings, perhaps using domain expertise.

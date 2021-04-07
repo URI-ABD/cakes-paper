@@ -3,29 +3,6 @@
 
 Write about results \dots
 
-\subsection{Asymptotic Complexity}
-\label{subsec:results:asymptotic-complexity}
-
-Analyze:
-\begin{itemize}
-    \item Building the tree.
-    \item $\rho$-nearest neighbors search.
-    \item k-nearest neighbors search.
-    \item compression:
-    \begin{itemize}
-        \item encode (novel contribution)
-        \item serialize
-        \item compress
-        \item decompress
-        \item deserialize
-        \item decode (novel contribution)
-    \end{itemize}
-\end{itemize}
-
-
-\subsection{Benchmarks}
-\label{subsec:results:benchmarks}
-
 Specs of Ark, and maybe M1 MacBook Air and Dell XPS.
 
 Provide link to source code on GitHub.
@@ -44,6 +21,7 @@ For each pair $(X, f)$ and a small selection of depths, measure:
         \item encoding + serialization, and
         \item encoding + serialization + zlib.
     \end{enumerate}
+    \item Measure time taken for accelerated-search in the compressed space and decompression of the hits with different combinations of serde and codec libraries.
 \end{enumerate}
 
 Find the optimal clusters for compression.
