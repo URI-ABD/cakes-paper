@@ -7,12 +7,13 @@ We also provide relevant algorithms for some parings of datasets and distance fu
 
 We take a \textbf{dataset} $X$ with $n$ instances embedded in a $\mathcal{D}$-dimensional Banach Space defined by a distance function $f: X \times X \mapsto \mathbb{R}$.
 We assume that the dataset follows the Manifold Hypothesis~\cite{fefferman2016testing}, i.e. instances in the dataset lie on a $d$-dimensional manifold where $d \ll \mathcal{D}$.
+We also make some uniformity assumptions for the dataset;
+specifically that $|X|$ is finite and the minimum and maximum sampling densities in the dataset differ by some constant multiplicative factor.
 
-The \textbf{distance function} must have certain properties.
-Specifically, $\forall x, y, z \in X$:
-
+The \textbf{distance function} must have certain properties;
+specifically, $\forall x, y, z \in X$:
 \begin{enumerate}[i.]
-    \item $f: X \times X \mapsto \mathbb{R}$ is deterministic.
+    \item $f$ is deterministic.
     \item $f(x, y) = 0 \Leftrightarrow x = y$ and $f(x, y) > 0 \Leftrightarrow x \neq y$.
     \item $f(x, y) = f(y, x)$, i.e. symmetry.
     \item $f(x, z) \leq f(x, y) + f(y, z)$, i.e. the triangle inequality.
@@ -29,8 +30,8 @@ The \textbf{Fractal Dimension} (Minkowski Dimension) of a dataset is
 \begin{align*}
     d(X) &= \lim_{\epsilon \rightarrow 0} \frac{\log \big( N_{\epsilon}^{int}(X) \big) }{\log \big( \frac{1}{\epsilon} \big)}
 \end{align*}
-
 However, if $|X|$ is finite then $d(X) = 0$.
+
 To remedy this, we define the \textbf{Local Fractal Dimension}, as in~\cite{berger2020levenshtein}, for range $r$ and scale $s$ as
 \begin{align*}
     d(X, r, s) &= \max_{x \in X} \ \log \frac{|B(x, r + s)| \ / \ |B(x, s)|}{(r + s) \ / \ s}
@@ -129,26 +130,32 @@ In the worst case, we would have a balanced clustering.
 Starting with cluster $C$ and applying $d$ recursive partitions would give us $2^d$ descendants with $|C| \cdot 2^{-d}$ instances each.
 If cluster $C$ has radius $r$ then each of the $2^d$ descendants will have radius $\frac{r}{\sqrt{2}}$.
 
-In the general case, let $T(C, d)$ be the subtree rooted at $C$ with depth $d$ and $J$ leaves.
-Since we cannot partition a cluster containing only one instance, we can bound $J$ and $d$, i.e. $J \leq 2^d \leq |C|$.
-Let the leaves be indexed with integers $j \in [1, J]$.
+In the general case, let $T(C, d)$ be the subtree rooted at $C$ with depth $d$ and up-to $2^d$ leaves.
+Since we cannot partition a cluster containing only one instance, we can bound the number of leaves, i.e. $2^d \leq |C|$.
+Let the leaves be indexed with integers $j \in [1, 2^{d + 1} - 1]$ as obtained by a breadth-first traversal of the tree, i.e. the root has index $1$ and a cluster with index $i$ has children with indices $2i$ and $2i + 1$.
 Let the center of each child-cluster be encoded in terms of the center of its parent-cluster.
-Therefore, $H(T)$, the Shannon Entropy of $T(C, d)$, is the sum of all encodings of child-centers in terms of their parent-centers.
+Therefore, $H(T)$, the Shannon Entropy of $T(C, d)$, is given by
+\begin{align*}
+    H(T) &= H(c_2 - c_1) + H(c_3 - c_1) + H(c_4 - c_2) + H(c_5 - c_2) \\
+    & \ \ \ \ + H(c_6 - c_3) + H(c_7 - c_3) + \dots + H(c_{2^{d + 1} - 1} - c_{2^d})
+\end{align*}
+i.e. the sum of all encodings of child-centers in terms of their parent-centers, where $c_1$ is the center of the root cluster.
 
-Thus, the second case in Equation~\ref{eq:hierarchical-shannon-entropy} becomes:
+Let us re-index the \textit{leaves} in $T(C, d)$ with integers $j \in [1, 2^d]$.
+The second case in Equation~\ref{eq:hierarchical-shannon-entropy} becomes:
 \begin{align*}
     & H(T) + \sum H(C_j) \\
     = \ & H(T) + \sum |C_j| \cdot H(y_j - c_j)
 \end{align*}
 
-From the analysis of the scaling behavior of cluster-radii in Section~\ref{subsec:methods:radii-scaling-behavior}, we have $H(y_j - c_j) \leq \frac{1}{\sqrt{2}} H(y - c)$.
+From the analysis in Section~\ref{subsec:methods:radii-scaling-behavior}, we have that $H(y_j - c_j) \leq \frac{1}{\sqrt{2}} H(y - c) \ \forall \ j \in [1, 2^d]$.
 Thus, we continue:
 \begin{align*}
-    \leq \ & H(T) + \frac{1}{\sqrt{2}} \cdot \sum |C_j| \cdot H(y - c) \\
-    = \ & H(T) + \frac{1}{\sqrt{2}} \cdot |C| \cdot H(y - c)
+    \leq \ & H(T) + \frac{1}{\sqrt{2}} \cdot H(y - c) \cdot \sum |C_j| \\
+    = \ & H(T) + \frac{1}{\sqrt{2}} \cdot H(y - c) \cdot |C|
 \end{align*}
 
-So we rewrite Equation~\ref{eq:hierarchical-shannon-entropy} as
+We can finally rewrite Equation~\ref{eq:hierarchical-shannon-entropy} as
 \begin{align}
     \label{eq:hierarchical-shannon-entropy-2}
     H(C) &\leq H(c - c_{parent}) + \min \begin{cases}
@@ -157,13 +164,18 @@ So we rewrite Equation~\ref{eq:hierarchical-shannon-entropy} as
     \end{cases}
 \end{align}
 
-Thus, we have a measurable trade-off when encoding the instances in a cluster as to whether to encode in terms of the cluster-center or to encode using the subtree rooted at that cluster up to a low depth guided by the local fractal fractal dimension of that cluster.
+To encode an entire dataset, we start with the dataset contained in a single root cluster.
+We then check between the two cases for Equation~\ref{eq:hierarchical-shannon-entropy-2}.
+If the second case provides the smaller Shannon Entropy, then we recursively apply Equation~\ref{eq:hierarchical-shannon-entropy-2} to the leaves of $T(C,d)$.
 
-For low depths in the tree, we expect that using subtrees to encode the instances will lead to great savings in the number of bits used.
+Thus, we have a measurable trade-off when encoding the instances in a cluster.
+This trade-off is calculated using the subtree rooted at that cluster up to a low depth equal to the local fractal fractal dimension of that cluster.
+
+When starting out encoding the dataset in this fashion, for low depths in the tree, we expect that using subtrees to encode the instances will lead to great savings in the number of bits used.
 As we continue deeper into the tree, we would start seeing diminishing returns for using subtrees.
-Eventually, either the two cases will equalize or the first case will become the better choice.
-At such a depth in the tree, we can encode the instances in a cluster using the cluster center rather than the subtree.
-The center of that cluster can be encoded in terms of the center of its parent, and so on back up the tree to the root.
+Eventually, either the difference will be so small that it is not worth the computational cost of Partition, or the two cases will equalize, or the first case will become the better choice.
+At such a depth in the tree, we can encode the instances in a cluster using the cluster-center rather than the subtree.
+That cluster-center can be encoded in terms of the center of its parent and so on back up the tree to the root.
 
 Notably, such a depth need not be uniform across the tree.
-Indeed, the depth can adapt to the variations in sampling density and local fractal dimension in different regions of the manifold.
+Indeed, the depth can adapt to any variations in sampling density and local fractal dimension in different regions of the manifold.
