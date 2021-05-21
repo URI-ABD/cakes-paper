@@ -3,14 +3,14 @@
 
 We extend the work from~\cite{berger2020levenshtein} for search and compression using a flat clustering to our case of a hierarchical clustering.
 We further generalize this for any dataset and distance function described below.
-We also provide relevant algorithms for some parings of datasets and distance functions in Section~\ref{subsec:methods:compression}.
+We also provide relevant algorithms for some pairings of datasets and distance functions in Section~\ref{subsec:methods:compression}.
 
-We take a \textbf{dataset} $X$ with $n$ instances embedded in a $\mathcal{D}$-dimensional Banach Space defined by a distance function $f: X \times X \mapsto \mathbb{R}$.
-We assume that the dataset follows the Manifold Hypothesis~\cite{fefferman2016testing}, i.e. instances in the dataset lie on a $d$-dimensional manifold where $d \ll \mathcal{D}$.
+We take a \textbf{dataset} $X$ with $n$ instances embedded in a $\mathcal{D}$-dimensional Banach space defined by a distance function $f: X \times X \mapsto \mathbb{R}$.
+We assume that the dataset follows the Manifold Hypothesis~\cite{fefferman2016testing}, i.e. instances in the dataset mostly lie on a $d$-dimensional manifold where $d \ll \mathcal{D}$.
 We also make some uniformity assumptions for the dataset;
 specifically that $|X|$ is finite and the minimum and maximum sampling densities in the dataset differ by some constant multiplicative factor.
 
-The \textbf{distance function} must have must be such that $\forall x, y, z \in X$:
+The \textbf{distance function} must be a metric; that is it must have the properties that $\forall x, y, z \in X$:
 \begin{enumerate}[i.]
     \item $f$ is deterministic.
     \item $f(x, y) = 0 \Leftrightarrow x = y$ and $f(x, y) > 0 \Leftrightarrow x \neq y$.
@@ -101,6 +101,8 @@ Thus the Shannon Entropy of a cluster encoding is given by
 
 where the center of the root cluster is encoded directly rather than in terms of another instance.
 
+% Wait, can't we encode any cluster at depth d with at most d bits? For a binary tree, arbitrarily choose 0 for left and 1 for right, and a length-d traversal uniquely identifies a cluster at depth d. Not sure if this is a weaker upper bound, but we should mention it. For n flat clusters, lg n bits identifies a unique one; for n leaves, lg n bits identifies a leaf, but an internal cluster at depth d only needs lg d bits.
+% Actually I see that you sort of get at this in the "back to shannon entropy" subsection, but maybe it could be explained intuitively as I did above?
 
 \subsection{Scaling Behavior of Cluster Radii}
 \label{subsec:methods:radii-scaling-behavior}
