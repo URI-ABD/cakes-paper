@@ -101,8 +101,13 @@ Thus the Shannon Entropy of a cluster encoding is given by
 
 where the center of the root cluster is encoded directly rather than in terms of another instance.
 
+% Noah
 % Wait, can't we encode any cluster at depth d with at most d bits? For a binary tree, arbitrarily choose 0 for left and 1 for right, and a length-d traversal uniquely identifies a cluster at depth d. Not sure if this is a weaker upper bound, but we should mention it. For n flat clusters, lg n bits identifies a unique one; for n leaves, lg n bits identifies a leaf, but an internal cluster at depth d only needs lg d bits.
 % Actually I see that you sort of get at this in the "back to shannon entropy" subsection, but maybe it could be explained intuitively as I did above?
+
+% Najib
+% Such a traversal identifies only which cluster it would be. That traversal does not encode (or compress) the cluster-center. For discussing compression and Shannon entropy, we want to encode/compress cluster-centers using the hierarchical relations from the tree in such a way that the child-center is recoverable from a parent-center and the encoding.
+% I see that the term `encode' is overloaded here.
 
 \subsection{Scaling Behavior of Cluster Radii}
 \label{subsec:methods:radii-scaling-behavior}
