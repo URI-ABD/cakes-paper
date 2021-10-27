@@ -25,9 +25,9 @@ We define a \textbf{Metric Ball} as $B(q, r) = \{ x \in X \ | \ f(q, x) \leq r \
 We also define a \textbf{Cluster} as $C(c, r)$ analogous to a Metric Ball with the caveat that if some clusters have overlapping volumes then any instances in that overlapping volume are assigned to only one of the clusters.
 Thus $\bigcup C_i = X$ and $i \neq j \Rightarrow C_i \cap C_j = \phi$.
 
-The \textbf{Metric Entropy} (Kolmogorov Entropy) of the dataset, denoted by $N_{\epsilon}^{ent}(X)$, is the maximum $n$ such that $\{x_1, \dots, x_n\} \subseteq X$ and $f(x_i, x_j) \geq \epsilon \ \forall \ i \neq j$, i.e. the maximum number of $\epsilon$-separated instances in the dataset.
+The \textbf{Metric Entropy} (Kolmogorov Entropy) of the dataset, denoted by $N_{\epsilon}^{ent}(X)$, is the maximum $k$ such that $\{x_1, \dots, x_k\} \subseteq X$ and $f(x_i, x_j) \geq \epsilon \ \forall \ i \neq j$, i.e. the maximum number of $\epsilon$-separated instances in the dataset.
 
-The \textbf{Internal Covering Number} of the dataset, denoted by $N_{\epsilon}^{int}(X)$, is the minimum $n$ such that $\{x_1, \dots, x_n\} \subset X$ and $\bigcup_{i = 1}^{n} C(c_i, \epsilon) = X$, i.e. the minimum number of $\epsilon$-radius clusters that collectively cover $X$.
+The \textbf{Internal Covering Number} of the dataset, denoted by $N_{\epsilon}^{int}(X)$, is the minimum $k$ such that $\{x_1, \dots, x_k\} \subset X$ and $\bigcup_{i = 1}^{k} B(c_i, \epsilon) = X$, i.e. the minimum number of $\epsilon$-radius clusters that collectively cover $X$.
 
 As in~\cite{berger2020levenshtein}, $N_{2\epsilon}^{ent}(X) \leq N_{\epsilon}^{int}(X) \leq N_{\epsilon}^{ent}(X)$, i.e. the Metric Entropy bounds the Internal Covering Number.
 Thus, they are equivalent measures.
