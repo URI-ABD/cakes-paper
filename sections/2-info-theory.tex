@@ -10,13 +10,16 @@ We assume that the dataset follows the Manifold Hypothesis~\cite{fefferman2016te
 We also make some uniformity assumptions for the dataset;
 specifically that $|X|$ is finite and the minimum and maximum sampling densities in the dataset differ by some constant multiplicative factor.
 
-The \textbf{distance function} must be a metric; that is it must have the properties that $\forall x, y, z \in X$:
+The following analysis assumes that the \textbf{distance function} is a metric;
+i.e. $\forall x, y, z \in X$:
 \begin{enumerate}[i.]
     \item $f$ is deterministic.
-    \item $f(x, y) = 0 \Leftrightarrow x = y$ and $f(x, y) > 0 \Leftrightarrow x \neq y$.
+    \item $f(x, y) = 0 \Leftrightarrow x = y$ and $f(x, y) > 0 \Leftrightarrow x \neq y$, i.e. identity.
     \item $f(x, y) = f(y, x)$, i.e. symmetry.
     \item $f(x, z) \leq f(x, y) + f(y, z)$, i.e. the triangle inequality.
 \end{enumerate}
+
+See Section~\ref{sec:discussion} for a discussion on what happens with distance functions for which these properties do not hold.
 
 % TODO: Add note about the triangle inequality.
 %  Not always needed, without it, search might miss some hits.
