@@ -37,12 +37,15 @@ Let $\delta^2 = max(0, \delta^0 - r)$ be the distance from the query to the pote
 \subsubsection{Tree Search}
 \label{subsubsec:methods:knn-search:tree-search}
 
+Add each cluster to a priority queue $m$ times, where $m$ is the cardinality of the cluster, and the priority is the $\delta^1$ distance of that cluster. 
+Then, any cluster whose $\delta^2$ is greater than the $k^{th}$ highest $\delta^1$.
+
 Let $candidates$ be a priority queue sorted by non-decreasing $\delta^1$.
 Initialize $candidates$ with the root cluster.
 Replace clusters in $candidates$ by their children until $candidates$ has at least $k$ clusters.
 
 Take the $k^{th}$ candidate.
-Any cluster with $\delta^2 \leq \delta^2_k$ could contain one of the $k$-nearest neighbors of $q$.
+Any cluster with $\delta^2 \leq \delta^1_k$ could contain one of the $k$-nearest neighbors of $q$.
 Keep all such clusters in $candidates$ and exclude all other clusters.
 Expand search to the children of all $candidates$ so far and repeat until all $candidates$ are leaf clusters.
 
