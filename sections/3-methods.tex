@@ -30,27 +30,65 @@ Complexity is the same as in CHESS.
 Given a query $q$ and a positive integer $k$, find the $k$ closest instances in $X$.
 
 Given a Cluster $C$, let $c$ be its center and $r$ be its radius.
-Let $\delta^0 = f(q, c)$ be the distance from the query to the cluster center.
-Let $\delta^1 = \delta^0 + r$ be the distance from the query to the potentially farthest instance in the Cluster.
-Let $\delta^2 = max(0, \delta^0 - r)$ be the distance from the query to the potentially closest instance in the Cluster.
+Let $\delta = f(q, c)$ be the distance from the query to the cluster center.
+Let $\delta_{max} = \delta + r$ be the distance from the query to the potentially farthest instance in the Cluster.
+Let $\delta_{min} = max(0, \delta - r)$ be the distance from the query to the potentially closest instance in the Cluster.
 
-\subsubsection{Tree Search}
-\label{subsubsec:methods:knn-search:tree-search}
+\subsubsection{Expanding Threshold}
+\label{subsubsec:methods:knn-search:expanding-threshold}
 
-Add each cluster to a priority queue $m$ times, where $m$ is the cardinality of the cluster, and the priority is the $\delta^1$ distance of that cluster. 
-Then, any cluster whose $\delta^2$ is greater than the $k^{th}$ highest $\delta^1$.
-
-Let $candidates$ be a priority queue sorted by non-decreasing $\delta^1$.
+Create a priority queue, $candidates$, wherein the top priority candidate is the one with the smallest $\delta_{min}$.
 Initialize $candidates$ with the root cluster.
-Replace clusters in $candidates$ by their children until $candidates$ has at least $k$ clusters.
+Create a second priority queue, $hits$, wherein the top priority hit is the 
+one with the largest $\delta$. This queue starts empty. 
 
-Take the $k^{th}$ candidate.
-Any cluster with $\delta^2 \leq \delta^1_k$ could contain one of the $k$-nearest neighbors of $q$.
-Keep all such clusters in $candidates$ and exclude all other clusters.
-Expand search to the children of all $candidates$ so far and repeat until all $candidates$ are leaf clusters.
+While $hits$ has fewer than $k$ clusters or the $\delta$ of the top priority hit is greater 
+than the $\delta_{min}$ of the top priority candidate, do the following:
+\begin{enumerate}
+\item While the top priority candidate isn't a leaf, replace the top priority 
+candidate with its children.
+\item Remove the top priority candidate from $candidates$ and add all of its 
+points to $hits$. 
+\item Remove points from $hits$ until $hits$ has $k$ points. 
+\end{enumerate}
 
-Sort, as a priority queue, $candidates$ by $\delta^2$ and break ties by $\delta^0$.
-Proceed to Leaf Search with these candidates.
+Extract hits. 
+
+
+\begin{algorithm} % enter the algorithm environment
+\caption{Expanding Threshold} % give the algorithm a caption
+\label{alg:expanding_threshold} % and a label for \ref{} commands later in the document
+\begin{algorithmic}[1] % enter the algorithmic environment
+    \REQUIRE $tree$, $query$, $k$
+    \STATE $candidates \leftarrow$ priority queue
+    \STATE $hits \leftarrow$ priority queue
+    \WHILE{$|hits| < k \lor hits.peek().\delta > candidates.peek().\delta_{min}$}
+        \WHILE{$!candidates.peek().isLeaf$}
+            \STATE $[l, r] \leftarrow candidates.pop().children()$
+            \STATE $candidates.push([l, r])$
+        \ENDWHILE
+        \STATE $leaf \leftarrow candidates.pop()$
+        \STATE $hits.push(leaf)$
+        \WHILE{$|hits| > k$}
+            \STATE $hits.pop()$
+        \ENDWHILE
+    \ENDWHILE
+    \STATE Return $hits$
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsubsection{Sieve V1}
+\label{subsubsec:methods:knn-search:sieve-v1}
+Add explanation of the sieve v1 algorithm.
+
+\subsubsection{Sieve V2}
+\label{subsubsec:methods:knn-search:sieve-v2}
+Add explanation of the sieve v2 algorithm.
+
+\subsubsection{Repeated Rnn}
+\label{subsubsec:methods:knn-search:repeated-rnn}
+Add explanation of the repeated rnn algorithm.
 
 \subsubsection{Leaf Search}
 \label{subsubsec:methods:knn-search:leaf-search}
