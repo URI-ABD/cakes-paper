@@ -27,20 +27,20 @@ Complexity is the same as in CHESS.
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
 \label{subsec:methods:knn-search}
 
-Given a query $q$ and a positive integer $k$, find the $k$ closest instances in $X$.
+The k-nearest neighbors search problem is posed as follows: given a query $q$ and a positive integer $k$, find the $k$ closest instances in $X$.
 
-Given a Cluster $C$, let $c$ be its center and $r$ be its radius.
-Let $\delta = f(q, c)$ be the distance from the query to the cluster center.
-Let $\delta_{max} = \delta + r$ be the distance from the query to the potentially farthest instance in the Cluster.
-Let $\delta_{min} = max(0, \delta - r)$ be the distance from the query to the potentially closest instance in the Cluster.
+Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $k$-nn variants make use of the following definitions:
+\begin{itemize}
+    \item $\delta = f(q, c)$ is the distance from the query to the cluster center.
+    \item $\delta_{max} = \delta + r$ is the distance from the query to the potentially farthest instance in the Cluster.
+    \item $\delta_{min} = \text{max}(0, \delta - r)$ is the distance from the query to the potentially closest instance in the Cluster.
+\end{itemize}
 
 \subsubsection{Expanding Threshold}
 \label{subsubsec:methods:knn-search:expanding-threshold}
 
-Create a priority queue, $candidates$, wherein the top priority candidate is the one with the smallest $\delta_{min}$.
-Initialize $candidates$ with the root cluster.
-Create a second priority queue, $hits$, wherein the top priority hit is the 
-one with the largest $\delta$. This queue starts empty. 
+Let $candidates$ be a priority queue of clusters sorted by non-increasing $\delta_{min}$. Initialize $candidates$ with the root cluster.
+Let $hits$ be a second priority queue of points sorted by non-decreasing distance from the query. This queue starts empty.
 
 While $hits$ has fewer than $k$ clusters or the $\delta$ of the top priority hit is greater 
 than the $\delta_{min}$ of the top priority candidate, do the following:
@@ -52,7 +52,7 @@ points to $hits$.
 \item Remove points from $hits$ until $hits$ has $k$ points. 
 \end{enumerate}
 
-Extract hits. 
+Extract $hits$. 
 
 
 \begin{algorithm} % enter the algorithm environment
@@ -61,6 +61,7 @@ Extract hits.
 \begin{algorithmic}[1] % enter the algorithmic environment
     \REQUIRE $tree$, $query$, $k$
     \STATE $candidates \leftarrow$ priority queue
+    \STATE $candidates.push(tree.root)$
     \STATE $hits \leftarrow$ priority queue
     \WHILE{$|hits| < k \lor hits.peek().\delta > candidates.peek().\delta_{min}$}
         \WHILE{$!candidates.peek().isLeaf$}
@@ -80,7 +81,49 @@ Extract hits.
 
 \subsubsection{Sieve V1}
 \label{subsubsec:methods:knn-search:sieve-v1}
-Add explanation of the sieve v1 algorithm.
+Let $candidates$ be a vector of $clusters$s sorted by non-decreasing $\delta_{max}$. Initialize $candidates$ with  
+the root cluster. 
+Let $hits$ be a priority queue of size $k$ containing points sorted by non-decreasing distance from the query. This queue starts empty.
+
+In this variant of KNN, we repeatedly calculate a threshold distance $\tau$ such that no cluster with a $\delta_{minmax}$ less than $\tau$ 
+can contain one of the $k$ nearest neighbors. 
+
+Repeat the following: 
+\begin{enumerate}
+\item Find the cluster $C_{\tau}$ in $candidates$ with the smallest $\delta_{max}$ such that no cluster whose $\delta_{min}$ is greater than $C_{\tau}$'s $\delta_{max}$ can contain one of the $k$ nearest neighbors.
+\item Let the threshold $\tau$ be the $\delta_{max}$ of $C_{\tau}$.
+\item Remove from $hits$ any points which are a distance greater than $\tau$ from the query. 
+\item If no cluster in $candidates$ has a $\delta_{max}$ less than or equal to $\tau$, break.
+\item Remove from $candidates$ any cluster whose $\delta_{min}$ is greater than $\tau$.
+\item Transfer from $candidates$ to $hits$ all the points in any cluster whose cardinality is less than $k$ or who is a leaf. 
+\item Replace all non-leaf clusters in $candidates$ with their children. 
+\end{enumerate}
+
+At this stage, if any clusters remain in $candidates$, we add all their points to $hits$. 
+Extract $hits$. 
+
+\begin{algorithm} % enter the algorithm environment
+    \caption{Sieve V1} % give the algorithm a caption
+    \label{alg:sieve_v1} % and a label for \ref{} commands later in the document
+    \begin{algorithmic}[2] % enter the algorithmic environment
+        \REQUIRE $tree$, $query$, $k$
+        \STATE $candidates \leftarrow$ priority queue
+        \STATE $candidates.push(tree.root)$
+        \STATE $hits \leftarrow$ priority queue
+        \WHILE{$|hits| < k \lor hits.peek().\delta > candidates.peek().\delta_{min}$}
+            \WHILE{$!candidates.peek().isLeaf$}
+                \STATE $[l, r] \leftarrow candidates.pop().children()$
+                \STATE $candidates.push([l, r])$
+            \ENDWHILE
+            \STATE $leaf \leftarrow candidates.pop()$
+            \STATE $hits.push(leaf)$
+            \WHILE{$|hits| > k$}
+                \STATE $hits.pop()$
+            \ENDWHILE
+        \ENDWHILE
+        \STATE Return $hits$
+    \end{algorithmic}
+    \end{algorithm}
 
 \subsubsection{Sieve V2}
 \label{subsubsec:methods:knn-search:sieve-v2}
@@ -93,7 +136,7 @@ Add explanation of the repeated rnn algorithm.
 \subsubsection{Leaf Search}
 \label{subsubsec:methods:knn-search:leaf-search}
 
-Let $hits$ be a a fixed size priority queue with $k$ isntances sorted by non-decreasing $f(q, x)$, i.e. distance to the query.
+Let $hits$ be a a fixed size priority queue with $k$ instances sorted by non-decreasing $f(q, x)$, i.e. distance to the query.
 Initialize $hits$ with the centers of $candidates$.
 
 Let $f_k$ be the distance to the $k^{th}$ farthest instance so far.
