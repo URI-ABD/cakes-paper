@@ -3,13 +3,114 @@
 
 Write about methods and provide asymptotic complexity analysis of each method.
 
-\subsection{Partition}
-\label{subsec:methods:partition}
+\subsection{Dataset and Distance Function}
+\label{subsec:methods:dataset-and-distance-function}
 
-Partition algorithm for building the tree.
-Lift this from the CHAODA paper.
+We start with a dataset $\textbf{X} = \{x_1 \dots x_n\}$ with $n$ points and a distance function $f : (\textbf{X}, \textbf{X}) \mapsto \mathbb{R}^+$.
+Given two points from the dataset, the distance function deterministically returns a non-negative real number. We require that the distance function be symmetric ($f(x, y) = f(y, x) \forall x, y \in \textbf{X}$) and 
+that the distance between two points $x$ and $y$ be zero if and only if $x = y$. When, in addition to these constraints, we also require that the distance function obey 
+the triangle inequality (i.e., when the distance function is a metric), we can guarantee that our search algorithms have perfect recall. 
 
-Exact partition with $\mathcal{O}(n^2)$ cost vs approximate partition using $\sqrt{n}$ seeds to achieve $\mathcal{O}(n)$ cost.
+CLAM assumes the ``manifold hypothesis''~\cite{fefferman2016testing}, which states that datasets collected from constrained generating phenomena that are embedded in a high-dimensional space typically only occupy a low-dimensional manifold in that space.
+In other words, we assume that the dataset is embedded in a $D$-dimensional space, but that the data only occupy a $d$-dimensional manifold, where $d \ll D$. While we often Euclidean notions, such as voids and volumes, to talk about geometric and topological 
+properties of clusters and of the manifold, CLAM does not rely on such notions; they serve merely as a convenient, more intuitive way to talk about the underlying mathematics.
+
+\subsection{Clustering}
+\label{subsec:methods:clustering}
+
+We start by building a divisive hierarchical clustering of the dataset with CLAM, using a 
+similar recursive procedure as outlined in CHESS~\cite{ishaq2019clustered}, but with better selection of 
+poles. For a cluster with $m$ points, we begin by computing a 
+random sample of $\sqrt m$ points. We then compute the geometric median of this sample, which we call the 
+cluster's center. We then compute the distance from the center to each point in the sample of $\sqrt m$ points. 
+The point $l$ which is furthest from the center is designated the left pole, and the point $r$ which is furthest
+from $l$ is designated the right pole. We then partition the cluster into a left child and a right child, where the 
+left child contains all points in the cluster which are closer to $l$ than to $r$, and the right child contains all 
+points in the cluster which are closer to $r$ than to $l$. Without loss of generality, we assign to the left child 
+those points which are equidistant from $l$ and $r$. Starting from a root-cluster containing the entire dataset, we 
+repeat this procedure until each leaf contains only one datum or until some other user-specified stopping criterion 
+is met.
+
+
+\begin{algorithm} % enter the algorithm environment
+\caption{Partition} % give the algorithm a caption
+\label{alg:partition} % and a label for \ref{} commands later in the document
+\begin{algorithmic}[1] % enter the algorithmic environment
+    \REQUIRE $cluster$
+    \STATE $m \leftarrow \lfloor \sqrt{|cluster.points|} \rfloor$
+    \STATE $seeds \leftarrow m$ random points from $cluster.points$
+    \STATE $c \leftarrow$ geometric median of $seeds$
+    \STATE $l \leftarrow \argmax d(c,x) \ \forall \ x \in cluster.points$
+    \STATE $r \leftarrow \argmax d(l,x) \ \forall \ x \in cluster.points$
+    \STATE $left \leftarrow \{x | x \in cluster.points \land d(l,x) \le d(r,x)\}$
+    \STATE $right \leftarrow \{x | x \in cluster.points \land d(r,x) < d(l,x)\}$
+    \IF{$|left| > 1$}
+        \STATE Partition($left$)
+    \ENDIF
+    \IF{$|right| > 1$}
+        \STATE Partition($right$)
+    \ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\subsubsection {Proof of Eventually Decreasing Cluster Radii}
+\subsection{Dataset and Distance Function}
+\label{subsec:methods:dataset-and-distance-function}
+
+We start with a dataset $\textbf{X} = \{x_1 \dots x_n\}$ with $n$ points and a distance function $f : (\textbf{X}, \textbf{X}) \mapsto \mathbb{R}^+$.
+Given two points from the dataset, the distance function deterministically returns a non-negative real number. We require that the distance function be symmetric ($f(x, y) = f(y, x) \forall x, y \in \textbf{X}$) and 
+that the distance between two points $x$ and $y$ be zero if and only if $x = y$. When, in addition to these constraints, we also require that the distance function obey 
+the triangle inequality (i.e., when the distance function is a metric), we can guarantee that our search algorithms have perfect recall. 
+
+CLAM assumes the ``manifold hypothesis''~\cite{fefferman2016testing}, which states that datasets collected from constrained generating phenomena that are embedded in a high-dimensional space typically only occupy a low-dimensional manifold in that space.
+In other words, we assume that the dataset is embedded in a $D$-dimensional space, but that the data only occupy a $d$-dimensional manifold, where $d \ll D$. While we often Euclidean notions, such as voids and volumes, to talk about geometric and topological 
+properties of clusters and of the manifold, CLAM does not rely on such notions; they serve merely as a convenient, more intuitive way to talk about the underlying mathematics.
+
+\subsection{Clustering}
+\label{subsec:methods:clustering}
+
+We start by building a divisive hierarchical clustering of the dataset with CLAM, using a 
+similar recursive procedure as outlined in CHESS~\cite{ishaq2019clustered}, but with better selection of 
+poles. For a cluster with $m$ points, we begin by computing a 
+random sample of $\sqrt m$ points. We then compute the geometric median of this sample, which we call the 
+cluster's center. We then compute the distance from the center to each point in the sample of $\sqrt m$ points. 
+The point $l$ which is furthest from the center is designated the left pole, and the point $r$ which is furthest
+from $l$ is designated the right pole. We then partition the cluster into a left child and a right child, where the 
+left child contains all points in the cluster which are closer to $l$ than to $r$, and the right child contains all 
+points in the cluster which are closer to $r$ than to $l$. Without loss of generality, we assign to the left child 
+those points which are equidistant from $l$ and $r$. Starting from a root-cluster containing the entire dataset, we 
+repeat this procedure until each leaf contains only one datum or until some other user-specified stopping criterion 
+is met.
+
+
+\begin{algorithm} % enter the algorithm environment
+\caption{Partition} % give the algorithm a caption
+\label{alg:partition} % and a label for \ref{} commands later in the document
+\begin{algorithmic}[1] % enter the algorithmic environment
+    \REQUIRE $cluster$
+    \STATE $m \leftarrow \lfloor \sqrt{|cluster.points|} \rfloor$
+    \STATE $seeds \leftarrow m$ random points from $cluster.points$
+    \STATE $c \leftarrow$ geometric median of $seeds$
+    \STATE $l \leftarrow \argmax d(c,x) \ \forall \ x \in cluster.points$
+    \STATE $r \leftarrow \argmax d(l,x) \ \forall \ x \in cluster.points$
+    \STATE $left \leftarrow \{x | x \in cluster.points \land d(l,x) \le d(r,x)\}$
+    \STATE $right \leftarrow \{x | x \in cluster.points \land d(r,x) < d(l,x)\}$
+    \IF{$|left| > 1$}
+        \STATE Partition($left$)
+    \ENDIF
+    \IF{$|right| > 1$}
+        \STATE Partition($right$)
+    \ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\subsubsection {Proof of Eventually Decreasing Cluster Radii}
+\label{subsubsec:methods:clustering:proof-of-eventually-decreasing-cluster-radii}
+
+\subsubsection {Complexity}
+\label{subsubsec:methods:clustering:complexity}
+
+Clustering: Exact partition with $\mathcal{O}(n^2)$ cost vs approximate partition using $\sqrt{n}$ seeds to achieve $\mathcal{O}(n)$ cost.
 Building the exact tree costs $\mathcal{O}(n^2 \log n)$ vs approximate tree for $\mathcal{O}(n \log n)$.
 
 \subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
@@ -38,21 +139,20 @@ Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $k$-nn var
 
 \subsubsection{Expanding Threshold}
 \label{subsubsec:methods:knn-search:expanding-threshold}
+In this variant of KNN, we repeatedly  
 
-Let $candidates$ be a priority queue of clusters sorted by non-increasing $\delta_{min}$. Initialize $candidates$ with the root cluster.
-Let $hits$ be a second priority queue of points sorted by non-decreasing distance from the query. This queue starts empty.
+Let $Q$ be a priority queue of clusters sorted by non-increasing $\delta_{min}$. Initialize $Q$ with the root cluster.
+Let $P$ be a second priority queue of points sorted by non-decreasing distance from the query. This queue starts empty.
 
-While $hits$ has fewer than $k$ clusters or the $\delta$ of the top priority hit is greater 
-than the $\delta_{min}$ of the top priority candidate, do the following:
+While $P$ has fewer than $k$ clusters or $\delta$ of the top priority element in $P$ is greater 
+than $\delta_{min}$ of the top priority element in $Q$, do the following:
 \begin{enumerate}
-\item While the top priority candidate isn't a leaf, replace the top priority 
-candidate with its children.
-\item Remove the top priority candidate from $candidates$ and add all of its 
-points to $hits$. 
-\item Remove points from $hits$ until $hits$ has $k$ points. 
+\item While the top priority element $q$ in $Q$ isn't a leaf, replace $q$ with its children.
+\item Remove $q$ from $Q$ and add all of its points to $P$. 
+\item Remove points from $P$ until $P$ has $k$ points. 
 \end{enumerate}
 
-Extract $hits$. 
+Return $P$. 
 
 
 \begin{algorithm} % enter the algorithm environment
@@ -60,68 +160,70 @@ Extract $hits$.
 \label{alg:expanding_threshold} % and a label for \ref{} commands later in the document
 \begin{algorithmic}[1] % enter the algorithmic environment
     \REQUIRE $tree$, $query$, $k$
-    \STATE $candidates \leftarrow$ priority queue
-    \STATE $candidates.push(tree.root)$
-    \STATE $hits \leftarrow$ priority queue
-    \WHILE{$|hits| < k \lor hits.peek().\delta > candidates.peek().\delta_{min}$}
-        \WHILE{$!candidates.peek().isLeaf$}
-            \STATE $[l, r] \leftarrow candidates.pop().children()$
-            \STATE $candidates.push([l, r])$
+    \STATE $Q \leftarrow$ priority queue
+    \STATE $Q.push(tree.root)$
+    \STATE $P \leftarrow$ priority queue
+    \WHILE{$|P| < k \lor P.max.\delta > Q.min.\delta_{min}$}
+        \WHILE{$!Q.min.isLeaf$}
+            \STATE $[l, r] \leftarrow Q.extractMin().children()$
+            \STATE $Q.push([l, r])$
         \ENDWHILE
-        \STATE $leaf \leftarrow candidates.pop()$
-        \STATE $hits.push(leaf)$
-        \WHILE{$|hits| > k$}
-            \STATE $hits.pop()$
+        \STATE $leaf \leftarrow Q.extractMin()$
+        \STATE $P.push(leaf)$
+        \WHILE{$|P| > k$}
+            \STATE $P.extractMax()$
         \ENDWHILE
     \ENDWHILE
-    \STATE Return $hits$
+    \STATE Return $P$
 \end{algorithmic}
 \end{algorithm}
 
 
 \subsubsection{Sieve V1}
 \label{subsubsec:methods:knn-search:sieve-v1}
-Let $candidates$ be a vector of $clusters$s sorted by non-decreasing $\delta_{max}$. Initialize $candidates$ with  
-the root cluster. 
-Let $hits$ be a priority queue of size $k$ containing points sorted by non-decreasing distance from the query. This queue starts empty.
 
-In this variant of KNN, we repeatedly calculate a threshold distance $\tau$ such that no cluster with a $\delta_{minmax}$ less than $\tau$ 
-can contain one of the $k$ nearest neighbors. 
+In this variant of KNN, we repeatedly calculate a threshold distance $\tau$ such that no cluster with a $\delta_{min}$ greater than $\tau$ 
+can contain one of the $k$ nearest neighbors. Search terminates when we have a threshold containing exactly $k$ points.
+
+Let $Q$ be a vector of clusters sorted by non-decreasing $\delta_{max}$. Initialize $Q$ with  
+the root cluster. 
+Let $P$ be a priority queue of size $k$ containing points sorted by non-decreasing distance from the query. This queue starts empty.
+
 
 Repeat the following: 
 \begin{enumerate}
-\item Find the cluster $C_{\tau}$ in $candidates$ with the smallest $\delta_{max}$ such that no cluster whose $\delta_{min}$ is greater than $C_{\tau}$'s $\delta_{max}$ can contain one of the $k$ nearest neighbors.
+\item Find the cluster $C_{\tau}$ in $Q$ with the smallest $\delta_{max}$ such that no cluster whose $\delta_{min}$ is greater than $C_{\tau}$'s $\delta_{max}$ can contain one of the $k$ nearest neighbors.
 \item Let the threshold $\tau$ be the $\delta_{max}$ of $C_{\tau}$.
-\item Remove from $hits$ any points which are a distance greater than $\tau$ from the query. 
-\item If no cluster in $candidates$ has a $\delta_{max}$ less than or equal to $\tau$, break.
-\item Remove from $candidates$ any cluster whose $\delta_{min}$ is greater than $\tau$.
-\item Transfer from $candidates$ to $hits$ all the points in any cluster whose cardinality is less than $k$ or who is a leaf. 
-\item Replace all non-leaf clusters in $candidates$ with their children. 
+\item Remove from $P$ any points which are a distance greater than $\tau$ from the query. 
+\item If no cluster in $Q$ has a $\delta_{max}$ less than or equal to $\tau$, break.
+\item Remove from $Q$ any cluster whose $\delta_{min}$ is greater than $\tau$.
+\item Transfer from $Q$ to $P$ all the points in any cluster whose cardinality is less than $k$ or who is a leaf. 
+\item Replace all non-leaf clusters in $Q$ with their children. 
 \end{enumerate}
 
-At this stage, if any clusters remain in $candidates$, we add all their points to $hits$. 
-Extract $hits$. 
+At this stage, if any clusters remain in $Q$, we add all their points to $P$. 
+Extract $P$. 
 
 \begin{algorithm} % enter the algorithm environment
     \caption{Sieve V1} % give the algorithm a caption
     \label{alg:sieve_v1} % and a label for \ref{} commands later in the document
     \begin{algorithmic}[2] % enter the algorithmic environment
         \REQUIRE $tree$, $query$, $k$
-        \STATE $candidates \leftarrow$ priority queue
-        \STATE $candidates.push(tree.root)$
-        \STATE $hits \leftarrow$ priority queue
-        \WHILE{$|hits| < k \lor hits.peek().\delta > candidates.peek().\delta_{min}$}
-            \WHILE{$!candidates.peek().isLeaf$}
-                \STATE $[l, r] \leftarrow candidates.pop().children()$
-                \STATE $candidates.push([l, r])$
+        \STATE $Q \leftarrow$ priority queue
+        \STATE $Q.push(tree.root)$
+        \STATE $P \leftarrow$ priority queue
+        \WHILE{$|P| < k \lor P.max.\delta > Q.max.\delta_{min}$}
+            \WHILE{$!Q.extractMax().isLeaf$}
+                \STATE $[l, r] \leftarrow Q.extractMax().children()$
+                \STATE $Q.push([l, r])$
             \ENDWHILE
-            \STATE $leaf \leftarrow candidates.pop()$
-            \STATE $hits.push(leaf)$
-            \WHILE{$|hits| > k$}
-                \STATE $hits.pop()$
+            \STATE $leaf \leftarrow Q.extractMax()$
+            \STATE $P.push(leaf)$
+            \WHILE{$|P| > k$}
+                \STATE $P.extractMax()$
             \ENDWHILE
         \ENDWHILE
-        \STATE Return $hits$
+        \STATE Return $P$
     \end{algorithmic}
     \end{algorithm}
 
@@ -150,20 +252,148 @@ Repeat until $candidates$ is empty.
 This is at-least on-par with the complexity for $\rho$-nearest neighbors search from CHESS.
 It is potentially better because we effectively shrink the search radius to adapt to the $k$ closest instances found during the algorithm.
 
-\subsection{Compression}
-\label{subsec:methods:compression}
+\label{subsubsec:methods:clustering:proof-of-eventually-decreasing-cluster-radii}
 
-Encode and Decode algorithms.
-These could be, and probably will be, different for each $(X, f)$ pairing.
+\subsubsection {Complexity}
 
-Asymptotic complexity analysis for:
-\begin{enumerate}[i.]
-    \item encode (novel contribution)
-    \item serialize
-    \item compress
-    \item decompress
-    \item deserialize
-    \item decode (novel contribution)
+\subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
+\label{subsec:methods:rnn-search}
+
+Given a query $q$ and a search radius $\rho$, find all $x \in X$ s.t. $f(q, x) \leq \rho$.
+
+Modified binary search to identify candidate leaf clusters.
+Exhaustive leaf search over those leaves.
+
+Lift this from CHESS paper. Be sure to cite CHESS here.
+
+Complexity is the same as in CHESS.
+
+\subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
+\label{subsec:methods:knn-search}
+
+The k-nearest neighbors search problem is posed as follows: given a query $q$ and a positive integer $k$, find the $k$ closest instances in $X$.
+
+Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $k$-nn variants make use of the following definitions:
+\begin{itemize}
+    \item $\delta = f(q, c)$ is the distance from the query to the cluster center.
+    \item $\delta_{max} = \delta + r$ is the distance from the query to the potentially farthest instance in the Cluster.
+    \item $\delta_{min} = \text{max}(0, \delta - r)$ is the distance from the query to the potentially closest instance in the Cluster.
+\end{itemize}
+
+\subsubsection{Expanding Threshold}
+\label{subsubsec:methods:knn-search:expanding-threshold}
+In this variant of KNN, we repeatedly  
+
+Let $Q$ be a priority queue of clusters sorted by non-increasing $\delta_{min}$. Initialize $Q$ with the root cluster.
+Let $P$ be a second priority queue of points sorted by non-decreasing distance from the query. This queue starts empty.
+
+While $P$ has fewer than $k$ clusters or $\delta$ of the top priority element in $P$ is greater 
+than $\delta_{min}$ of the top priority element in $Q$, do the following:
+\begin{enumerate}
+\item While the top priority element $q$ in $Q$ isn't a leaf, replace $q$ with its children.
+\item Remove $q$ from $Q$ and add all of its points to $P$. 
+\item Remove points from $P$ until $P$ has $k$ points. 
 \end{enumerate}
 
-% discrete vs continuous, and small alphabet vs large alphabet in discrete
+Return $P$. 
+
+
+\begin{algorithm} % enter the algorithm environment
+\caption{Expanding Threshold} % give the algorithm a caption
+\label{alg:expanding_threshold} % and a label for \ref{} commands later in the document
+\begin{algorithmic}[1] % enter the algorithmic environment
+    \REQUIRE $tree$, $query$, $k$
+    \STATE $Q \leftarrow$ priority queue
+    \STATE $Q.push(tree.root)$
+    \STATE $P \leftarrow$ priority queue
+    \WHILE{$|P| < k \lor P.max.\delta > Q.min.\delta_{min}$}
+        \WHILE{$!Q.min.isLeaf$}
+            \STATE $[l, r] \leftarrow Q.extractMin().children()$
+            \STATE $Q.push([l, r])$
+        \ENDWHILE
+        \STATE $leaf \leftarrow Q.extractMin()$
+        \STATE $P.push(leaf)$
+        \WHILE{$|P| > k$}
+            \STATE $P.extractMax()$
+        \ENDWHILE
+    \ENDWHILE
+    \STATE Return $P$
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsubsection{Sieve V1}
+\label{subsubsec:methods:knn-search:sieve-v1}
+
+In this variant of KNN, we repeatedly calculate a threshold distance $\tau$ such that no cluster with a $\delta_{min}$ greater than $\tau$ 
+can contain one of the $k$ nearest neighbors. Search terminates when we have a threshold containing exactly $k$ points.
+
+Let $Q$ be a vector of clusters sorted by non-decreasing $\delta_{max}$. Initialize $Q$ with  
+the root cluster. 
+Let $P$ be a priority queue of size $k$ containing points sorted by non-decreasing distance from the query. This queue starts empty.
+
+
+Repeat the following: 
+\begin{enumerate}
+\item Find the cluster $C_{\tau}$ in $Q$ with the smallest $\delta_{max}$ such that no cluster whose $\delta_{min}$ is greater than $C_{\tau}$'s $\delta_{max}$ can contain one of the $k$ nearest neighbors.
+\item Let the threshold $\tau$ be the $\delta_{max}$ of $C_{\tau}$.
+\item Remove from $P$ any points which are a distance greater than $\tau$ from the query. 
+\item If no cluster in $Q$ has a $\delta_{max}$ less than or equal to $\tau$, break.
+\item Remove from $Q$ any cluster whose $\delta_{min}$ is greater than $\tau$.
+\item Transfer from $Q$ to $P$ all the points in any cluster whose cardinality is less than $k$ or who is a leaf. 
+\item Replace all non-leaf clusters in $Q$ with their children. 
+\end{enumerate}
+
+At this stage, if any clusters remain in $Q$, we add all their points to $P$. 
+Extract $P$. 
+
+\begin{algorithm} % enter the algorithm environment
+    \caption{Sieve V1} % give the algorithm a caption
+    \label{alg:sieve_v1} % and a label for \ref{} commands later in the document
+    \begin{algorithmic}[2] % enter the algorithmic environment
+        \REQUIRE $tree$, $query$, $k$
+        \STATE $Q \leftarrow$ priority queue
+        \STATE $Q.push(tree.root)$
+        \STATE $P \leftarrow$ priority queue
+        \WHILE{$|P| < k \lor P.max.\delta > Q.max.\delta_{min}$}
+            \WHILE{$!Q.extractMax().isLeaf$}
+                \STATE $[l, r] \leftarrow Q.extractMax().children()$
+                \STATE $Q.push([l, r])$
+            \ENDWHILE
+            \STATE $leaf \leftarrow Q.extractMax()$
+            \STATE $P.push(leaf)$
+            \WHILE{$|P| > k$}
+                \STATE $P.extractMax()$
+            \ENDWHILE
+        \ENDWHILE
+        \STATE Return $P$
+    \end{algorithmic}
+    \end{algorithm}
+
+\subsubsection{Sieve V2}
+\label{subsubsec:methods:knn-search:sieve-v2}
+Add explanation of the sieve v2 algorithm.
+
+\subsubsection{Repeated Rnn}
+\label{subsubsec:methods:knn-search:repeated-rnn}
+Add explanation of the repeated rnn algorithm.
+
+\subsubsection{Leaf Search}
+\label{subsubsec:methods:knn-search:leaf-search}
+
+Let $hits$ be a a fixed size priority queue with $k$ instances sorted by non-decreasing $f(q, x)$, i.e. distance to the query.
+Initialize $hits$ with the centers of $candidates$.
+
+Let $f_k$ be the distance to the $k^{th}$ farthest instance so far.
+Exclude all $candidates$ for which $\delta^2 > f_k$, i.e. their closest possible instance is farthest that the $k^{th}$ farthest instance found so far.
+Remove the closest cluster from $candidates$ and add all its contained instances to $hits$.
+Repeat until $candidates$ is empty.
+
+\subsubsection{Complexity}
+\label{subsubsec:methods:knn-search:complexity}
+
+Clustering: Exact partition with $\mathcal{O}(n^2)$ cost vs approximate partition using $\sqrt{n}$ seeds to achieve $\mathcal{O}(n)$ cost.
+Building the exact tree costs $\mathcal{O}(n^2 \log n)$ vs approximate tree for $\mathcal{O}(n \log n)$.
+
+This is at-least on-par with the complexity for $\rho$-nearest neighbors search from CHESS.
+It is potentially better because we effectively shrink the search radius to adapt to the $k$ closest instances found during the algorithm.

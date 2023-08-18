@@ -1,12 +1,40 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Write intro \dots
+Often dubbed "the Big Data explosion", rapidly advancing technologies have enabled researchers to collect complex data on an unprecedented scale. 
+For example, the Sloan Digital Sky Survey (SDSS) has collected data on over 500 million celestial objects~\cite{alam2015eleventh}. Or, as another 
+example, the National Center for Biotechnology Information (NCBI) has collected over 2.25 million ribosomal DNA sequences~\cite{silva2014silva}. Finally, 
+as a third example, the Large Hadron Collider (LHC) has collected over 100 petabytes of data~\cite{evans2008lhc}. Or, as a fourth example, the 
+National Oceanic and Atmospheric Administration (NOAA) has collected over 20 petabytes of data~\cite{noaa2019noaa}. 
+In many cases, the influx of data outpaces the rate of improvement in computing capacity predicted by Moore's Law~\cite{moore1965cramming}, indicating 
+that computer hardware will not "catch up" to our computational needs in the near future. As a result, analyzing and learning from these large datasets 
+requires better algorithms. 
 
-- introduce kNN~\cite{fix1952discriminatory, cover1967nearest} as one of the most pervasive supervised classification methods in use
-- performance difficulties of naive kNN, and introduce existing improvements such as locality-sensitive hashing~\cite{bingham2001random}
-- Introduce Compressed Accelerated K-nearest-neighbor Entropy-scaling Search (CAKES)
-% note new backronym (NMD)
+The ability to perform similarity search on these datasets enables a variety of applications, including recommendation and classification systems. 
+Additionally, with the rise of large language models such as GPT-3~\cite{brown2020language}, similarity search can become a useful tool for 
+understanding and verifying the validity of model outputs. 
+As the sizes and dimensionalities of datasets have grown, efficient and accurate similarity search has become excessively challenging; 
+state-of-the-art algorithms exhibit a steep recall versus speed tradeoff~\cite{ishaq2019clustered}.
+In particular, k-nearest neighbors (kNN) search is one of the most pervasive supervised classification methods in use~\cite{fix1952discriminatory, cover1967nearest}.
+
+Naive implementations of kNN, whose asymptotic complexity is a function of the dataset's cardinality, 
+prove prohibitively slow for large datasets. While algorithms for kNN on large datasets exist, most of them are approximate and fail to 
+exploit the inherent structure and redundancy often present in big datasets. While approximate search is sufficient for many applications, the 
+need for efficient, exact search remains.
+
+Recent approaches to tackle the exponential growth of data include locality-sensitive hashing~\cite{bingham2001random}, 
+clever indexing techniques such as the FM Index~\cite{ferragina2005indexing}, and entropy-scaling search~\cite{yu2015entropy}. 
+Entropy-scaling search is a paradigm for similarity search that exploits the inherent structure and redundancy often present in big datasets.
+Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with geometric properties of the dataset,
+rather than its cardinality. In 2019, we introduced CHESS (CLustered Hierarchical Entropy-Scaling Search), which extended entropy-scaling $\rho$-nearest 
+neighbors search to a hierarchical clustering approach. In this paper, we introduce CLAM (Clustered Learning of Approximate Manifolds), and CAKES (CLAM-Accelerated K-nearest-neighbor 
+Entropy-scaling Search). CLAM, like CHESS, is a hierarchical clustering algorithm (figure out and explain improvements upon CHESS present in CLAM if there are any algorithmic ones)
+that can facilitate a variety of algorithms for big data. Using the tree constructed by CLAM, CAKES builds upon the capabilities of CHESS to perform 
+k-nearest neighbors search in addition to $\rho$-nearest neighbors search.
+
+
+At some point, need to address the fact that exact search is important for small k and approxiate 
+is maybe more ideal for large k. Try to find citation for this. 
 
 Growth in size and types of datasets:
 \begin{itemize}
@@ -27,14 +55,11 @@ This paper focuses on:
 \begin{itemize}
     \item Improvements and extensions of CHESS.
     \item Accelerated $\rho$-nearest and k-nearest neighbors search.
-    \item Entropy-scaling (?? is it though?) compression using the hierarchical clustering.
-    \item Proof for how cluster-radii, and thus compression deltas, fall as we descend along the tree.
-    \item Information theoretic bounds on compression performance. We compress along the dimensionality of data rather than the cardinality of data.
-    \item A variety of distance functions including euclidean, manhattan, cosine, jaccard, wasserstein, hamming, levenshtein, needleman-wunch, and any user-defined function.
+    \item Proof for how cluster-radii fall as we descend along the tree.
+    \item A variety of distance functions including euclidean, manhattan, cosine, jaccard, hamming, levenshtein, needleman-wunch, and any user-defined function.
 \end{itemize}
 
 Comparisons for:
 \begin{itemize}
-    \item Search time vs FALCONN and other in ann-benchmarks suite.
-    \item Compression performance of CAKES+gzip vs just gzip.
+    \item Search time vs FAISS and FALCONN and other in ann-benchmarks suite.
 \end{itemize}

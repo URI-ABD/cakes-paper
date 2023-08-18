@@ -19,14 +19,5 @@ For each pair $(X, f)$ and a small selection of depths, measure:
         \item speedup factor, and
         \item number of distance comparisons.
     \end{enumerate}
-    \item Compression CAKES + zlib vs just zlib, also substitute other libraries for zlib:
-    \begin{enumerate}[i.]
-        \item just the encoding vs the full dataset,
-        \item encoding + serialization, and
-        \item encoding + serialization + zlib.
-    \end{enumerate}
-    \item Measure time taken for accelerated-search in the compressed space and decompression of the hits with different combinations of serde and codec libraries.
 \end{enumerate}
 
-Find the optimal clusters for compression.
-Compare linear search vs accelerated search terminated at these optimal clusters.
