@@ -3,7 +3,7 @@
 
 In this manuscript, we are primarily concerned with $k$-nearest neighbors search in a finite-dimensional 
 vector space. Some of the algorithms we present use a modified version of the $\rho$-nearest neighbors search 
-algorithm described in CHESS~\cite{ishaq2019clustered} to conduct $k$-NN search. (TODO: make second section less 
+algorithm described in CHESS~\cite{ishaq2019clustered} to conduct $k$-NN search. (TODO: make second sentence less 
 vague once we determine exactly what we're doing with sharding and indexing.)
 
 Given a dataset $\textbf{X} = \{x_1 \dots x_n\}$, we define a \emph{point} or \emph{datum} $x_i \in \textbf{X}$ as a singular observation (e.g., the genome of 
@@ -23,9 +23,9 @@ for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$; that is, f
 We also have the $\rho$-nearest neighbors search problem: for a given radius $\rho$, find all points in $\textbf{X}$ that are a distance of $\rho$ 
 or less from $q$; that is, all points $x \in \textbf{X}$ such that $f(q, x) \leq \rho$.
 
-Some of our algorithms for $\rho$- and $k$-nearest neighbors search rely on the \emph{local fractal dimension} at some region of the dataset, 
+Some of our algorithms for $\rho$- and $k$-nearest neighbors search rely on the \emph{local fractal dimension} of some region of the dataset, 
 which we define as: 
-$$\text{log}_2 (\frac{|B_D(q, r_1)|}{|B_D(q, r_2)|})$$
+$$\text{log}_2 \left( \frac{|B_D(q, r_1)|}{|B_D(q, r_2)|} \right)$$
 where $B_D(q, r)$ is the set of points contained in a ball of radius $r$ 
 centered on a point $q$ in the dataset $D$; in this example, we compute fractal dimension for some radius $r_1$ and a smaller radius $r_2 = \frac{r_1}{2}$.
 We stress that this concept of local fractal dimension differs from the \emph{embedding dimension} of a dataset. To illustrate the difference,
@@ -44,6 +44,17 @@ metric entropy for a given cluster radius $r_c$ was the number of clusters of ra
 approach, but with early stopping criteria; clusters with fewer than a threshold number of points are not further split. 
 Since we frame the asymptotic complexity of $\rho$-NN search in terms of the number of leaf clusters, the \emph{metric entropy} is best thought of in terms of the number of
 leaf clusters. 
+
+Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $\rho$- and $k$-NN algorithms make use of the following cluster 
+properties:
+\begin{itemize}
+    \item $\delta = f(q, c)$ is the distance from the query to the cluster center $c$.
+    \item $\delta_{max} = \delta + r$ is the distance from the query to the theoretically farthest possible instance in $C$.
+    \item $\delta_{min} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest possible instance in $C$.
+\end{itemize}
+
+We sometimes also use the above notation with points instead of clusters. For example, we sometimes use $\delta = f(x, q)$ to refer to the distance 
+from a point $x$ to the query $q$. Since we can think of a point as having radius 0, for points we have that $\delta_{max} = \delta = \delta_{min}$.
 
 
 \subsection{Clustering}
@@ -99,6 +110,8 @@ is met.
 \subsubsection {Guaranteed Decrease in Cluster Radii}
 \label{subsubsec:methods:guaranteed-decrease-in-cluster-radii}
 
+TODO: This needs some doctoring. 
+
 We show that cluster radius is guaranteed to decrease after at most $d$ partitions.
 
 Assume that we have a dataset which follows a $d$-dimensional distribution embedded in $\mathcal{D}$-dimensional space.
@@ -153,25 +166,42 @@ We conduct ranged-nearest neighbors search similarly as described in CHESS~\cite
 with some implementation improvements including identification of candidate clusters which are leaves and 
 conducting exhaustive search over those leaves.
 
+\begin{algorithm} 
+    \caption{$\rho$-NN(\emph{clusters, query, r})} 
+    \label{alg:rnn} 
+    \begin{algorithmic}[2]
+        \REQUIRE $r \geq 0$
+        \REQUIRE $clusters \neq \emptyset$
+        \STATE $results \leftarrow \emptyset$
+        \IF{$clusters.left$}
+            \IF{$clusters.left.\delta$ $\leq$ $r$ + $clusters.left.radius$}
+                \STATE $\rho$-NN($clusters.left, query, r$)
+            \ENDIF
+        \ENDIF
+        \IF{$clusters.right$}
+            \IF{$clusters.right.\delta$ $\leq$ $r$ + $clusters.right.radius$} 
+                \STATE $\rho$-NN($clusters.right, query, r$)
+            \ENDIF
+        \ENDIF
+        \IF{$\neg$$clusters.left$ $\land \neg$$clusters.right$}
+            \FOR{$p \in clusters.points$}
+                \IF{$p.\delta \leq r$}
+                    \STATE $results \leftarrow r$
+                \ENDIF
+            \ENDFOR
+        \ENDIF
+        \STATE Return $results$
+    \end{algorithmic}
+    \end{algorithm}
+
 The asymptotic complexity of $\rho$-nearest neighbors is the same as in CHESS~\cite{ishaq2019clustered}.
 
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
 \label{subsec:methods:knn-search}
 
-The $k$-nearest neighbors search problem is posed as follows: given a query $q$ and a positive integer $k$, find the $k$ closest instances in $X$.
-We present five variants of $k$-nearest neighbors search: Greedy Search, K-NN by Repeated $\rho$-NN, Sieve Search I, Sieve Search II, and 
-Linear Search. We use a preliminary auto-tuning function to predict the variant which will perform 
+In this section, we present four novel variants of $k$-nearest neighbors search: Greedy Search, K-NN by Repeated $\rho$-NN, Sieve Search I, and Sieve Search II. 
+We use a preliminary auto-tuning function (TODO: do we though?) to predict the variant which will perform 
 best for a given query, dataset, and value of $k$. We then proceed with search using that variant.  
-
-Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $k$-NN variants make use of the following cluster 
-properties:
-\begin{itemize}
-    \item $\delta = f(q, c)$ is the distance from the query to the cluster center $c$.
-    \item $\delta_{max} = \delta + r$ is the distance from the query to the potentially farthest instance in $C$.
-    \item $\delta_{min} = \text{max}(0, \delta - r)$ is the distance from the query to the potentially closest instance in $C$.
-\end{itemize}
-
-We sometimes also use the notation $\delta = f(x, q)$ with points instead of clusters to refer to the distance from a point $x$ to the query $q$.
 
 \subsubsection{Greedy Search}
 \label{subsubsec:methods:knn-search:greedy-search}
@@ -194,10 +224,9 @@ than $\delta_{min}$ of the top priority element in $Q$, do the following:
 Return $P$. 
 
 \begin{algorithm} 
-\caption{Greedy Search} 
+\caption{GreedySearch(\emph{tree, query, k})} 
 \label{alg:greedy_search} 
-\begin{algorithmic}[1]
-    \REQUIRE $tree$, $query$, $k$
+\begin{algorithmic}[3]
     \STATE $Q \leftarrow$ priority queue
     \STATE $Q.push(tree.root)$
     \STATE $P \leftarrow$ priority queue
@@ -219,48 +248,65 @@ Return $P$.
 
 \subsubsection{$k$-NN by Repeated $\rho$-NN}
 \label{subsubsec:methods:knn-search:repeated-rnn}
-
-Hence its name, $k$-NN by Repeated $\rho$-NN repeatedly performs 
-$\rho$-nearest neighbors search, increasing the radius until $k$ neighbors
+Hence the name, with $k$-NN by Repeated $\rho$-NN we repeatedly perform
+$\rho$-nearest neighbors search, increasing the search radius until $k$ neighbors
 have been found.
 
+Let $P$ be the set of nearest neighbors found thus far.
 Search starts with a radius $m$ equal to the radius of the cluster tree divided by
 the cardinality of the dataset. We perform $\rho$-NN search with radius $m$. 
 If no points are within a distance $m$ of the query, we increase the radius by a factor of 
-2 and perform $rho$-NN search again, repeating until at least one point is found.
+2 and perform $\rho$-NN search again, repeating until at least one point is found, i.e., 
+until $|P| > 0$.
 
-Once we have found at least one point, we continue to perform $\rho$-NN search, but instead of 
+Once $|P| > 0$, we continue to perform $\rho$-NN search, but instead of 
 increasing the radius by a factor of 2 on each iteration, we increase it by a factor determined 
 by the local fractal dimension of the clusters containing the points found so far. In particular, 
-we increase the radius by a factor of $\text{max}(2, \frac{k}{|P|^{\frac{1}{\mu}}}$), where $|P|$ is the number of 
-points found so far and $\mu$ is the mean local fractal dimension of the clusters containing the points found so far.
-Since the local fractal dimension is memoized at clustering time, this poses no additional cost at search time.
+we increase the radius by a factor of 
+$$\text{min}\left(2, \frac{k}{|P|^{\frac{1}{\mu}}}\right)$$
+where $\mu$ is the mean local fractal dimension (abbreviated lfd in algorithm below) of the clusters containing the points found so far.
+Intuitively, the factor by which we increase the radius should be \emph{inversely} proportional to the number of points found so far. 
+Additionally, when the local fractal dimension near the query and found neighbors is low, this suggests that the data 
+are relatively concentrated in that region; thus, the factor of radius increase should be \emph{directly} proportional to the 
+local fractal dimension. Since the local fractal dimension is memoized at clustering time, this poses no additional cost at search time.
 Once $|P| >= k$, we sort the points in $P$ by $\delta$ and return the $k$ closest points.
 
-
-TODO: 
-- add intutiion for factor 
-- introduce P variable sooner 
+\begin{algorithm} % enter the algorithm environment
+    \caption{Repeated$\rho$-NN(\emph{tree, query, k})} % give the algorithm a caption
+    \label{alg:knn-by-rnn} % and a label for \ref{} commands later in the document
+    \begin{algorithmic}[4] % enter the algorithmic environment
+        \STATE $P \leftarrow$ $\emptyset$
+        \STATE $m \leftarrow$ $\frac{tree.radius}{tree.cardinality}$
+        \WHILE {$|P| = 0$}
+            \STATE $P.push(\rho$-NN$(tree, query, m)$)
+            \STATE $m \leftarrow 2m$
+        \ENDWHILE
+        \WHILE {$|P| < k$}
+            \STATE $clusters \leftarrow \{ C: \exists p \in P \land p \in C \}$
+            \STATE $\mu \leftarrow \frac{1}{|clusters|} \sum_{C \in clusters} C.lfd$
+            \STATE $m \leftarrow \text{min}\left(2, \frac{k}{|P|^{\frac{1}{\mu}}}\right)$
+            \STATE $P.push(\rho$-NN$(tree, query, m)$)
+        \ENDWHILE
+        \STATE $P.sort()$
+        \STATE Return $P[0..k]$
+    \end{algorithmic}
+    \end{algorithm}
 
 \subsubsection{Sieve Search I}
 \label{subsubsec:methods:knn-search:sieve}
-
-\subsubsection{Sieve Search II}
-
-In this variant of KNN, we repeatedly calculate a threshold distance $\tau$ such that no cluster with a $\delta_{min}$ greater than $\tau$ 
+With Sieve Search I, we repeatedly calculate a threshold distance $\tau$ such that no cluster with a $\delta_{min}$ greater than $\tau$ 
 can contain one of the $k$ nearest neighbors. Search terminates when we have a threshold containing exactly $k$ points.
 
-Let $Q$ be a vector of clusters sorted by non-decreasing $\delta_{max}$. Initialize $Q$ with  
-the root cluster. 
-Let $P$ be a priority queue of size $k$ containing points sorted by non-decreasing distance from the query. This queue starts empty.
+We start by letting $Q$ be a vector of clusters and points sorted by non-decreasing $\delta_{max}$ and initializing $Q$ with the root cluster. 
+While we haven't found a threshold which guarantees exactly $k$ points, we do the following: 
 
 
-Repeat the following: 
+
+TODO: Fix this to reflect new algorithm.
+
 \begin{enumerate}
 \item Find the cluster $C_{\tau}$ in $Q$ with the smallest $\delta_{max}$ such that no cluster whose $\delta_{min}$ is greater than $C_{\tau}$'s $\delta_{max}$ can contain one of the $k$ nearest neighbors.
 \item Let the threshold $\tau$ be the $\delta_{max}$ of $C_{\tau}$.
-\item Remove from $P$ any points which are a distance greater than $\tau$ from the query. 
-\item If no cluster in $Q$ has a $\delta_{max}$ less than or equal to $\tau$, break.
 \item Remove from $Q$ any cluster whose $\delta_{min}$ is greater than $\tau$.
 \item Transfer from $Q$ to $P$ all the points in any cluster whose cardinality is less than $k$ or who is a leaf. 
 \item Replace all non-leaf clusters in $Q$ with their children. 
@@ -270,7 +316,7 @@ At this stage, if any clusters remain in $Q$, we add all their points to $P$.
 Extract $P$. 
 
 \begin{algorithm} % enter the algorithm environment
-    \caption{Sieve V1} % give the algorithm a caption
+    \caption{Sieve } % give the algorithm a caption
     \label{alg:sieve_v1} % and a label for \ref{} commands later in the document
     \begin{algorithmic}[2] % enter the algorithmic environment
         \REQUIRE $tree$, $query$, $k$
@@ -291,6 +337,10 @@ Extract $P$.
         \STATE Return $P$
     \end{algorithmic}
     \end{algorithm}
+
+
+\subsubsection{Sieve Search II}
+\label{subsubsec:methods:knn-search:sieve2}
 
 \subsubsection{Linear Search}
 \label{subsubsec:methods:knn-search:leaf-search}
@@ -309,131 +359,6 @@ Repeat until $candidates$ is empty.
 This is at-least on-par with the complexity for $\rho$-nearest neighbors search from CHESS.
 It is potentially better because we effectively shrink the search radius to adapt to the $k$ closest instances found during the algorithm.
 
-\label{subsubsec:methods:clustering:proof-of-eventually-decreasing-cluster-radii}
-
-\subsubsection {Complexity}
-
-\subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
-\label{subsec:methods:rnn-search}
-
-Given a query $q$ and a search radius $\rho$, find all $x \in X$ s.t. $f(q, x) \leq \rho$.
-
-Modified binary search to identify candidate leaf clusters.
-Exhaustive leaf search over those leaves.
-
-Lift this from CHESS paper. Be sure to cite CHESS here.
-
-Complexity is the same as in CHESS.
-
-\subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
-\label{subsec:methods:knn-search}
-
-The k-nearest neighbors search problem is posed as follows: given a query $q$ and a positive integer $k$, find the $k$ closest instances in $X$.
-
-Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $k$-nn variants make use of the following definitions:
-\begin{itemize}
-    \item $\delta = f(q, c)$ is the distance from the query to the cluster center.
-    \item $\delta_{max} = \delta + r$ is the distance from the query to the potentially farthest instance in the Cluster.
-    \item $\delta_{min} = \text{max}(0, \delta - r)$ is the distance from the query to the potentially closest instance in the Cluster.
-\end{itemize}
-
-\subsubsection{Expanding Threshold}
-\label{subsubsec:methods:knn-search:expanding-threshold}
-In this variant of KNN, we repeatedly  
-
-Let $Q$ be a priority queue of clusters sorted by non-increasing $\delta_{min}$. Initialize $Q$ with the root cluster.
-Let $P$ be a second priority queue of points sorted by non-decreasing distance from the query. This queue starts empty.
-
-While $P$ has fewer than $k$ clusters or $\delta$ of the top priority element in $P$ is greater 
-than $\delta_{min}$ of the top priority element in $Q$, do the following:
-\begin{enumerate}
-\item While the top priority element $q$ in $Q$ isn't a leaf, replace $q$ with its children.
-\item Remove $q$ from $Q$ and add all of its points to $P$. 
-\item Remove points from $P$ until $P$ has $k$ points. 
-\end{enumerate}
-
-Return $P$. 
-
-
-\begin{algorithm} % enter the algorithm environment
-\caption{Expanding Threshold} % give the algorithm a caption
-\label{alg:expanding_threshold} % and a label for \ref{} commands later in the document
-\begin{algorithmic}[1] % enter the algorithmic environment
-    \REQUIRE $tree$, $query$, $k$
-    \STATE $Q \leftarrow$ priority queue
-    \STATE $Q.push(tree.root)$
-    \STATE $P \leftarrow$ priority queue
-    \WHILE{$|P| < k \lor P.max.\delta > Q.min.\delta_{min}$}
-        \WHILE{$!Q.min.isLeaf$}
-            \STATE $[l, r] \leftarrow Q.extractMin().children()$
-            \STATE $Q.push([l, r])$
-        \ENDWHILE
-        \STATE $leaf \leftarrow Q.extractMin()$
-        \STATE $P.push(leaf)$
-        \WHILE{$|P| > k$}
-            \STATE $P.extractMax()$
-        \ENDWHILE
-    \ENDWHILE
-    \STATE Return $P$
-\end{algorithmic}
-\end{algorithm}
-
-
-\subsubsection{Sieve V1}
-\label{subsubsec:methods:knn-search:sieve-v1}
-
-In this variant of KNN, we repeatedly calculate a threshold distance $\tau$ such that no cluster with a $\delta_{min}$ greater than $\tau$ 
-can contain one of the $k$ nearest neighbors. Search terminates when we have a threshold containing exactly $k$ points.
-
-Let $Q$ be a vector of clusters sorted by non-decreasing $\delta_{max}$. Initialize $Q$ with  
-the root cluster. 
-Let $P$ be a priority queue of size $k$ containing points sorted by non-decreasing distance from the query. This queue starts empty.
-
-
-Repeat the following: 
-\begin{enumerate}
-\item Find the cluster $C_{\tau}$ in $Q$ with the smallest $\delta_{max}$ such that no cluster whose $\delta_{min}$ is greater than $C_{\tau}$'s $\delta_{max}$ can contain one of the $k$ nearest neighbors.
-\item Let the threshold $\tau$ be the $\delta_{max}$ of $C_{\tau}$.
-\item Remove from $P$ any points which are a distance greater than $\tau$ from the query. 
-\item If no cluster in $Q$ has a $\delta_{max}$ less than or equal to $\tau$, break.
-\item Remove from $Q$ any cluster whose $\delta_{min}$ is greater than $\tau$.
-\item Transfer from $Q$ to $P$ all the points in any cluster whose cardinality is less than $k$ or who is a leaf. 
-\item Replace all non-leaf clusters in $Q$ with their children. 
-\end{enumerate}
-
-At this stage, if any clusters remain in $Q$, we add all their points to $P$. 
-Extract $P$. 
-
-\begin{algorithm} % enter the algorithm environment
-    \caption{Sieve V1} % give the algorithm a caption
-    \label{alg:sieve_v1} % and a label for \ref{} commands later in the document
-    \begin{algorithmic}[2] % enter the algorithmic environment
-        \REQUIRE $tree$, $query$, $k$
-        \STATE $Q \leftarrow$ priority queue
-        \STATE $Q.push(tree.root)$
-        \STATE $P \leftarrow$ priority queue
-        \WHILE{$|P| < k \lor P.max.\delta > Q.max.\delta_{min}$}
-            \WHILE{$!Q.extractMax().isLeaf$}
-                \STATE $[l, r] \leftarrow Q.extractMax().children()$
-                \STATE $Q.push([l, r])$
-            \ENDWHILE
-            \STATE $leaf \leftarrow Q.extractMax()$
-            \STATE $P.push(leaf)$
-            \WHILE{$|P| > k$}
-                \STATE $P.extractMax()$
-            \ENDWHILE
-        \ENDWHILE
-        \STATE Return $P$
-    \end{algorithmic}
-    \end{algorithm}
-
-\subsubsection{Sieve V2}
-\label{subsubsec:methods:knn-search:sieve-v2}
-Add explanation of the sieve v2 algorithm.
-
-\subsubsection{Repeated Rnn}
-\label{subsubsec:methods:knn-search:repeated-rnn}
-Add explanation of the repeated rnn algorithm.
 
 \subsubsection{Leaf Search}
 \label{subsubsec:methods:knn-search:leaf-search}
