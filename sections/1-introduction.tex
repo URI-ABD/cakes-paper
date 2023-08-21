@@ -1,12 +1,13 @@
 \section{Introduction}
 \label{sec:introduction}
-
 Often dubbed "the Big Data explosion", rapidly advancing technologies have enabled researchers to collect complex data on an unprecedented scale. 
-For example, the Sloan Digital Sky Survey (SDSS) has collected data on over 500 million celestial objects~\cite{alam2015eleventh}. Or, as another 
-example, the National Center for Biotechnology Information (NCBI) has collected over 2.25 million ribosomal DNA sequences~\cite{silva2014silva}. Finally, 
-as a third example, the Large Hadron Collider (LHC) has collected over 100 petabytes of data~\cite{evans2008lhc}. Or, as a fourth example, the 
-National Oceanic and Atmospheric Administration (NOAA) has collected over 20 petabytes of data~\cite{noaa2019noaa}. 
-In many cases, the influx of data outpaces the rate of improvement in computing capacity predicted by Moore's Law~\cite{moore1965cramming}, indicating 
+The Sloan Digital Sky Survey (SDSS), for example, has collected near-infrared spectra of approximately 430,000 stars in approximately 9,000 dimensions~\cite{alam2015eleventh}. 
+Add sentence about MaNGA here: 10,000 galaxies with 2,700 deg$^2$, resolution $R=2,000$ for $\lambda \in [360, 1000) nm$.
+
+Biology has also seen an influx of large, high-dimensional datasets. Silva 18S contains ribosomal DNA sequences of approximately 2.25 
+million genomes with aligned length of 50,000 letters. (Do we need to look at NR99??) 
+
+In many cases, the increase in data outpaces the rate of improvement in computing capacity predicted by Moore's Law~\cite{moore1965cramming}, indicating 
 that computer hardware will not "catch up" to our computational needs in the near future. As a result, analyzing and learning from these large datasets 
 requires better algorithms. 
 
@@ -19,11 +20,11 @@ In particular, k-nearest neighbors (kNN) search is one of the most pervasive sup
 
 Naive implementations of kNN, whose asymptotic complexity is a function of the dataset's cardinality, 
 prove prohibitively slow for large datasets. While algorithms for kNN on large datasets exist, most of them are approximate and fail to 
-exploit the inherent structure and redundancy often present in big datasets. While approximate search is sufficient for many applications, the 
+exploit the inherent structure and redundancy often present in big datasets. Approximate search is sufficient for many applications, but the 
 need for efficient, exact search remains.
 
-Recent approaches to tackle the exponential growth of data include locality-sensitive hashing~\cite{bingham2001random}, 
-clever indexing techniques such as the FM Index~\cite{ferragina2005indexing}, and entropy-scaling search~\cite{yu2015entropy}. 
+Recent approaches to tackling the exponential growth of data include locality-sensitive hashing~\cite{bingham2001random}, 
+clever indexing techniques such as the FM Index~\cite{ferragina2005indexing}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. 
 Entropy-scaling search is a paradigm for similarity search that exploits the inherent structure and redundancy often present in big datasets.
 Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with geometric properties of the dataset,
 rather than its cardinality. In 2019, we introduced CHESS (CLustered Hierarchical Entropy-Scaling Search), which extended entropy-scaling $\rho$-nearest 
@@ -33,23 +34,8 @@ that can facilitate a variety of algorithms for big data. Using the tree constru
 k-nearest neighbors search in addition to $\rho$-nearest neighbors search.
 
 
-At some point, need to address the fact that exact search is important for small k and approxiate 
+At some point, need to address the fact that exact search is important for small k and approximate 
 is maybe more ideal for large k. Try to find citation for this. 
-
-Growth in size and types of datasets:
-\begin{itemize}
-    \item SDSS APOGEE2 data. Near-infrared spectra of approximately 430,000 stars in approximately 9,000 dimensions. $R=22,500 = \frac{\lambda}{\Delta \lambda}$ for $\lambda \in [1.51, 1.70) \mu m$
-    \item SDSS MaNGA hexagon shaped images. 10,000 galaxies with 2,700 deg$^2$, resolution $R=2,000$ for $\lambda \in [360, 1000) nm$
-    \item Silva 18S ribosomal DNA sequences of approximately 2.25 million genomes with aligned length of 50,000 letters. TODO: Look into other variants in the dataset particularly NR99.
-    \item Datasets from ANN-Benchmarks suite
-\end{itemize}
-
-Recent approaches in dealing with exponential growth of data:
-\begin{itemize}
-    \item LSH
-    \item clever indexing e.g. FM Index.
-    \item Entropy-scaling search~\cite{yu2015entropy} and CHESS~\cite{ishaq2019clustered}.
-\end{itemize}
 
 This paper focuses on:
 \begin{itemize}

@@ -1,10 +1,19 @@
-\documentclass{article}
+\documentclass[conference,compsoc]{IEEEtran}
 
-\usepackage{arxiv}
+\ifCLASSOPTIONcompsoc
+  % IEEE Computer Society needs nocompress option
+  % requires cite.sty v4.0 or later (November 2003)
+  \usepackage[nocompress]{cite}
+\else
+  % normal IEEE
+  \usepackage{cite}
+\fi
+
+% \usepackage{arxiv} # uncomment for preprint
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage{hyperref}       % hyperlinks
+% \usepackage{hyperref}       % hyperlinks
 \usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
@@ -13,61 +22,96 @@
 \usepackage{lipsum}
 \usepackage{graphicx}
 \usepackage{subfigure}
-\usepackage{placeins}
-\usepackage{enumerate}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{algorithm}
 \usepackage{algorithmic}
-\DeclareMathOperator*{\argmin}{arg\,min}
+\usepackage{hyperref}
+
 \DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\score}{score}
 
+% Note that the amsmath package sets \interdisplaylinepenalty to 10000
+% thus preventing page breaks from occurring within multiline equations. Use:
+\interdisplaylinepenalty=2500
+% after loading amsmath to restore such page breaks as IEEEtran.cls normally
+% does. amsmath.sty is already installed on most LaTeX systems. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/pkg/amsmath
 
-\title{Entropy-Scaling Hierarchical Compression and Search of Large High-Dimensional Datasets via an Actualization of the Manifold Hypothesis}
+\usepackage{placeins}
+% \usepackage{algpseudocode}
 
+% \algnewcommand\algorithmicforeach{\textbf{foreach}}
+% \algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
 
-\author{
-    Najib Ishaq \\
-    Department of Computer Science and Statistics\\
-    University of Rhode Island \\
-    Kingston, RI \\
-    \texttt{najib\_ishaq@uri.edu} \\
-    \And
-    Thomas J. Howard III \\
-    Department of Computer Science and Statistics\\
-    University of Rhode Island\\
-    Kingston, RI\\
-    \texttt{thoward27@uri.edu} \\
-    \AND
-    Noah M. Daniels \\
-    Department of Computer Science and Statistics\\
-    University of Rhode Island\\
-    Kingston, RI\\
-    \texttt{noah\_daniels@uri.edu} \\
-}
+\usepackage{hyperref}
 
-\date{}
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
 
 \begin{document}
+\title{Entropy-Scaling Hierarchical Compression and Search of Large High-Dimensional Datasets via an Actualization of the Manifold Hypothesis}
 
-    \maketitle
-    \begin{abstract}
-        Abstract is written last \dots
-    \end{abstract}
+% author names and affiliations
+% use a multiple column layout for up to three different
+% affiliations
+\author{
+\IEEEauthorblockN{Morgan E. Prior}
+\IEEEauthorblockA{Mathematics\\
+University of Rhode Island\\
+Kingston, RI 02881\\
+morgan\_prior@uri.edu}
+\and
+\IEEEauthorblockN{Thomas J. Howard III}
+\IEEEauthorblockA{Computer Science and Statistics\\
+University of Rhode Island\\
+Kingston, RI 02881\\
+thoward27@uri.edu}
+\and
+\IEEEauthorblockN{Oliver McLaughlin}
+\IEEEauthorblockA{Computer Science and Statistics\\
+University of Rhode Island\\
+Kingston, RI 02881\\
+olwmcjp@gmail.com}
+\and
+\IEEEauthorblockN{Najib Ishaq}
+\IEEEauthorblockA{Computer Science and Statistics\\
+University of Rhode Island\\
+Kingston, RI 02881\\
+najib\_ishaq@zoho.com}
+\and
+\IEEEauthorblockN{Noah M. Daniels}
+\IEEEauthorblockA{Computer Science and Statistics\\
+University of Rhode Island\\
+Kingston, RI 02881\\
+noah\_daniels@uri.edu}}
 
+\IEEEoverridecommandlockouts
+\IEEEpubid{\makebox[\columnwidth]{978-1-6654-3902-2/21/\$31.00~\copyright2021 IEEE \hfill} \hspace{\columnsep}\makebox[\columnwidth]{ }}
+% make the title area
+\maketitle
+\IEEEpubidadjcol
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+\begin{abstract}
+   The abstract.
+  \end{abstract}
+
+\IEEEpeerreviewmaketitle
     \input{sections/1-introduction.tex}
-    \input{sections/2-info-theory.tex}
-    \input{sections/3-methods.tex}
-    \input{sections/4-datasets.tex}
-    \input{sections/5-results.tex}
-    \input{sections/6-discussion.tex}
+    \input{sections/2-methods.tex}
+    \input{sections/3-datasets.tex}
+    \input{sections/4-results.tex}
+    \input{sections/5-discussion.tex}
 
     \section*{Acknowledgments}
     We thank Bonnie Berger and Y. William Yu for their inspiring work on the information-theoretic limits of flat compression, and Mikel and Idoia Ochoa for helpful discussions about information theory.
 
-    \dots
-
+    % \afterpage{\clearpage}
     \FloatBarrier
-    \bibliographystyle{unsrt}  
+    \bibliographystyle{IEEEtran}
     \bibliography{references}
-
 \end{document}
