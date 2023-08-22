@@ -11,27 +11,22 @@ an organism, the vector representation of a single image, or any entity on which
 
 We define a \emph{distance function} $f : (\textbf{X}, \textbf{X}) \mapsto \mathbb{R}^+ \cup \{0\}$ as a function which, 
 given two points $x, y \in \textbf{X}$, deterministically returns a non-negative real number. We require that the distance function 
-be symmetric ($f(x, y) = f(y, x) \forall x, y \in \textbf{X}$) and that the distance between two points $x$ and $y$ be zero if and only if $x = y$. 
-When, in addition to these constraints, that the distance function obeys
+be symmetric ($f(x, y) = f(y, x)$ for all $x, y \in \textbf{X}$) and that the distance between two points $x$ and $y$ be zero if and only if $x = y$. 
+When, in addition to these constraints, the distance function obeys
 the triangle inequality, it is a \emph{distance metric}, and in such cases we can guarantee that our search algorithms have perfect recall. 
 Choice of distance function varies by type of data. For example, with electromagnetic spectra, we use both 
 Euclidean (L2) and Cosine distances. With biological or string data on the other hand, Hamming and Levenshtein distances are more appropriate.
 
-With these concepts defined, we can now pose the $k$- and $\rho$ nearest neighbors search problems.
-Given a query $q$, along with a distance function $f$ defined on a dataset $ \textbf{X}$, $k$-nearest neighbors search aims to: 
-for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$; that is, find the $k$ points $x \in \textbf{X}$ with the smallest $f(q, x)$.
-We also have the $\rho$-nearest neighbors search problem: for a given radius $\rho$, find all points in $\textbf{X}$ that are a distance of $\rho$ 
-or less from $q$; that is, all points $x \in \textbf{X}$ such that $f(q, x) \leq \rho$.
 
-Some of our algorithms for $\rho$- and $k$-nearest neighbors search rely on the \emph{local fractal dimension} of some region of the dataset, 
+Some of our algorithms for $\rho$- and $k$-nearest neighbors search rely on the \emph{local fractal dimension} at some point in the dataset, 
 which we define as: 
-$$\text{log}_2 \left( \frac{|B_D(q, r_1)|}{|B_D(q, r_2)|} \right)$$
-where $B_D(q, r)$ is the set of points contained in a ball of radius $r$ 
-centered on a point $q$ in the dataset $D$; in this example, we compute fractal dimension for some radius $r_1$ and a smaller radius $r_2 = \frac{r_1}{2}$.
-We stress that this concept of local fractal dimension differs from the \emph{embedding dimension} of a dataset. To illustrate the difference,
+$$\text{log}_2 \left( \frac{|B_X(q, r_1)|}{|B_X(q, r_2)|} \right)$$
+where $B_X(q, r)$ is the set of points contained in a ball of radius $r$ 
+centered at a point $q$ in the dataset $\textbf{X}$; in this example, we compute fractal dimension for some radius $r_1$ and a smaller radius $r_2 = \frac{r_1}{2}$.
+We stress that this concept differs from the \emph{embedding dimension} of a dataset. To illustrate the difference,
 consider SDSS's APOGEE dataset, wherein each datum is a nonnegative real-valued vector of length 8,575. Hence, the \emph{embedding dimension} of this dataset is 8,575. 
 However, due to physical constraints (namely, the laws that govern stellar fusion and spectral emission lines), the data are constrained to a lower-dimensional 
-manifold. The \emph{local fractal dimension} is an approximation of the dimensionality of that lower-dimensional manifold at a given point, for some length scale.
+manifold within the 8,575-dimensional embedding space. The \emph{local fractal dimension} is an approximation of the dimensionality of that lower-dimensional manifold at a given point, for some length scale.
 The notion that high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold is known as the \emph{manifold hypothesis}.
 
 
@@ -45,6 +40,12 @@ approach, but with early stopping criteria; clusters with fewer than a threshold
 Since we frame the asymptotic complexity of $\rho$-NN search in terms of the number of leaf clusters, the \emph{metric entropy} is best thought of in terms of the number of
 leaf clusters. 
 
+With these concepts defined, we can now pose the $k$- and $\rho$ nearest neighbors search problems.
+Given a query $q$, along with a distance function $f$ defined on a dataset $ \textbf{X}$, $k$-nearest neighbors search aims to: 
+for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$; that is, find the $k$ points $x \in \textbf{X}$ with the smallest $f(q, x)$.
+We also have the $\rho$-nearest neighbors search problem: for a given radius $\rho$, find all points in $\textbf{X}$ that are a distance of $\rho$ 
+or less from $q$; that is, all points $x \in \textbf{X}$ such that $f(q, x) \leq \rho$.
+
 Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $\rho$- and $k$-NN algorithms make use of the following cluster 
 properties:
 \begin{itemize}
@@ -53,8 +54,8 @@ properties:
     \item $\delta_{min} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest possible instance in $C$.
 \end{itemize}
 
-We sometimes also use the above notation with points instead of clusters. For example, we sometimes use $\delta = f(x, q)$ to refer to the distance 
-from a point $x$ to the query $q$. Since we can think of a point as having radius 0, for points we have that $\delta_{max} = \delta = \delta_{min}$.
+We sometimes also use this notation with points instead of clusters. For example, we sometimes use $\delta = f(x, q)$ to refer to the distance 
+from a point $x$ to the query $q$. Since we can think of a point as having radius $r=0$, for points we have that $\delta_{max} = \delta = \delta_{min}$.
 
 
 \subsection{Clustering}
@@ -63,7 +64,7 @@ from a point $x$ to the query $q$. Since we can think of a point as having radiu
 We start by building a divisive hierarchical clustering of the dataset with CLAM, using a 
 similar recursive procedure as outlined in CHESS~\cite{ishaq2019clustered}, but with the following 
 improvements: better selection of poles for partitioning and memoization of useful cluster properties, 
-such as local fractal dimension (see Section ADD SECTION: $k$-NN by Repeated $\rho$-NN). 
+such as local fractal dimension (see Section 2.4.2: $k$-NN by Repeated $\rho$-NN). 
 
 
 CLAM assumes the manifold hypothesis. 
@@ -78,7 +79,7 @@ For a cluster with $m$ points, we begin by computing a
 random sample of $\sqrt m$ points. We then compute the geometric median of this sample, which we call the 
 cluster's center. We then compute the distance from the center to each point in the sample of $\sqrt m$ points. 
 The point $l$ which is furthest from the center is designated the left pole, and the point $r$ which is furthest
-from $l$ is designated the right pole. We then partition the cluster into a left child and a right child, where the 
+from $l$ is designated the right pole. We then partition the cluster into a left child and right child, where the 
 left child contains all points in the cluster which are closer to $l$ than to $r$, and the right child contains all 
 points in the cluster which are closer to $r$ than to $l$. Without loss of generality, we assign to the left child 
 those points which are equidistant from $l$ and $r$. Starting from a root-cluster containing the entire dataset, we 
@@ -114,21 +115,21 @@ TODO: This needs some doctoring.
 
 We show that cluster radius is guaranteed to decrease after at most $d$ partitions.
 
-Assume that we have a dataset which follows a $d$-dimensional distribution embedded in $\mathcal{D}$-dimensional space.
+Assume that we have a dataset which follows a $d$-dimensional distribution embedded in $D$-dimensional space.
 We can describe this distribution choosing some set of $d$ mutually orthogonal axes.
 Let $m$ denote the maximum distance between any pair of points along any axis from any choice of mutually orthogonal axes for our $d$-dimensional distribution.
 In the worst case scenario, the distribution of our data is a $d$-sphere and $m$ is the maximum distance between two points along every axis for every choice of axes.
 In this scenario, the cluster radius is $r = \frac{m}{2}$.
 
-Given a cluster $\mathcal{C}$, our partition algorithm will choose the left and right poles, 
-and the axis defined by those poles will be the axis for partitioning $\mathcal{C}$'s points into two child clusters.
+Given a cluster $C$, we choose the left and right poles, 
+and the axis defined by those poles will be the axis for partitioning  $C$'s points into two child clusters.
 For points in each child cluster, the maximum distance between any pair of points along the \emph{axis of partitioning} will have been reduced to at most $\frac{m}{2}$.
-Though this bound holds for points on the axis of partitioning, it does not serve as a bound for the maximum distance between \emph{any} pair of points in $\mathcal{C}$.
-To see this, consider the two dimensional scenario where the points in $\mathcal{C}$ are distributed in a circle of radius $r$. Clearly, the maximum possible distance between 
-any two points in $\mathcal{C}$ is $2r$, and occurs when the points fall on opposite ends of one of its diameters. Now consider a horizontal diameter of the circle, 
+Though this bound holds for points on the axis of partitioning, it does not serve as a bound for the maximum distance between \emph{any} pair of points in  $C$.
+To see this, consider the two dimensional scenario where the points in  $C$ are distributed in a circle of radius $r$. Clearly, the maximum possible distance between 
+any two points in  $C$ is $2r$, and occurs when the points fall on opposite ends of one of its diameters. Now consider a horizontal diameter of the circle, 
 and let $l$ denote the leftmost point on this diameter. Next, consider the orthogonal vertical diameter, and let $x$ denote the uppermost point on this diameter. When we 
-partition along the horizontal diameter, $l$ and $x$ will be assigned to the left child (as mentioned in ADD SECTION, we assign equidistant points to the left child). 
-This reduces the maximum possible distance between any two points on the axis of partition -- the horizontal diameter -- to $r$. However, by considering the 
+partition along the horizontal diameter, $l$ and $x$ will be assigned to the left child (as mentioned in Section 2, we assign equidistant points to the left child). 
+This reduces the maximum possible distance between any two points on the axis of partition --the horizontal diameter-- to $r$. However, by considering the 
 right triangle formed by $l$, $x$, and the center of the circle, we can see that the distance between 
 $l$ and $x$ is $\sqrt{2}{r}$.
 
@@ -160,9 +161,7 @@ Building the exact tree costs $\mathcal{O}(n^2 \log n)$ vs approximate tree for 
 \subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
 \label{subsec:methods:rnn-search}
 
-Given a query $q$ and a search radius $\rho$, find all $x \in X$ s.t. $f(q, x) \leq \rho$.
-
-We conduct ranged-nearest neighbors search similarly as described in CHESS~\cite{ishaq2019clustered}, but 
+We conduct $\rho$-nearest neighbors search similarly as described in CHESS~\cite{ishaq2019clustered}, but 
 with some implementation improvements including identification of candidate clusters which are leaves and 
 conducting exhaustive search over those leaves.
 
@@ -199,16 +198,15 @@ The asymptotic complexity of $\rho$-nearest neighbors is the same as in CHESS~\c
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
 \label{subsec:methods:knn-search}
 
-In this section, we present four novel variants of $k$-nearest neighbors search: Greedy Search, K-NN by Repeated $\rho$-NN, Sieve Search I, and Sieve Search II. 
+In this section, we present four novel variants of $k$-nearest neighbors search: Greedy Search, $k$-NN by Repeated $\rho$-NN, Sieve Search I, and Sieve Search II. 
 We use a preliminary auto-tuning function (TODO: do we though?) to predict the variant which will perform 
 best for a given query, dataset, and value of $k$. We then proceed with search using that variant.  
 
 \subsubsection{Greedy Search}
 \label{subsubsec:methods:knn-search:greedy-search}
-Greedy Search repeatedly partitions the cluster with the lowest $\delta_{min}$ into its children 
-until it is a leaf, removing it and adding its points to a fixed size priority queue of points. Search terminates 
-when the furthest hit in the queue of points has $\delta$ greater than the $\delta_{min}$ of the closest remaining
-cluster.
+Greedy Search repeatedly partitions the cluster with the smallest $\delta_{min}$ into its children 
+until the cluster with the smallest $\delta_{min}$ is a leaf. We then remove it and add its points to a fixed size priority queue of points. 
+Search terminates when the furthest hit in the queue of points has $\delta$ greater than the $\delta_{min}$ of the closest remaining cluster.
 
 Formally, let $Q$ be a priority queue of clusters sorted by non-increasing $\delta_{min}$. Initialize $Q$ with the root cluster.
 Let $P$ be a second priority queue of points sorted by non-decreasing distance from the query. This queue starts empty.
@@ -216,12 +214,11 @@ Let $P$ be a second priority queue of points sorted by non-decreasing distance f
 While $P$ has fewer than $k$ clusters or $\delta$ of the top priority element in $P$ is greater 
 than $\delta_{min}$ of the top priority element in $Q$, do the following:
 \begin{enumerate}
-\item While the top priority element $q$ in $Q$ isn't a leaf, replace $q$ with its children.
+\item While the top priority element $q$ in $Q$ is not a leaf, replace $q$ with its children.
 \item Remove $q$ from $Q$ and add all of its points to $P$. 
 \item Remove points from $P$ until $P$ has $k$ points. 
 \end{enumerate}
-
-Return $P$. 
+After this process, the points left in $P$ are the $k$ nearest neighbors of $q$.
 
 \begin{algorithm} 
 \caption{GreedySearch(\emph{tree, query, k})} 
@@ -231,8 +228,8 @@ Return $P$.
     \STATE $Q.push(tree.root)$
     \STATE $P \leftarrow$ priority queue
     \WHILE{$|P| < k \lor P.max.\delta > Q.min.\delta_{min}$}
-        \WHILE{$!Q.min.isLeaf$}
-            \STATE $[l, r] \leftarrow Q.extractMin().children()$
+        \WHILE{$\neg Q.min.isLeaf$}
+            \STATE $[l, r] \leftarrow Q.extractMin().children$
             \STATE $Q.push([l, r])$
         \ENDWHILE
         \STATE $leaf \leftarrow Q.extractMin()$
@@ -248,7 +245,7 @@ Return $P$.
 
 \subsubsection{$k$-NN by Repeated $\rho$-NN}
 \label{subsubsec:methods:knn-search:repeated-rnn}
-Hence the name, with $k$-NN by Repeated $\rho$-NN we repeatedly perform
+In this $k$-NN variant, we repeatedly perform
 $\rho$-nearest neighbors search, increasing the search radius until $k$ neighbors
 have been found.
 
@@ -298,46 +295,47 @@ With Sieve Search I, we repeatedly calculate a threshold distance $\tau$ such th
 can contain one of the $k$ nearest neighbors. Search terminates when we have a threshold containing exactly $k$ points.
 
 We start by letting $Q$ be a vector of clusters and points sorted by non-decreasing $\delta_{max}$ and initializing $Q$ with the root cluster. 
-While we haven't found a threshold which guarantees exactly $k$ points, we do the following: 
-
-
-
-TODO: Fix this to reflect new algorithm.
+While we haven't found a threshold which guarantees exactly $k$ points, we repeat the following: 
 
 \begin{enumerate}
 \item Find the cluster $C_{\tau}$ in $Q$ with the smallest $\delta_{max}$ such that no cluster whose $\delta_{min}$ is greater than $C_{\tau}$'s $\delta_{max}$ can contain one of the $k$ nearest neighbors.
 \item Let the threshold $\tau$ be the $\delta_{max}$ of $C_{\tau}$.
 \item Remove from $Q$ any cluster whose $\delta_{min}$ is greater than $\tau$.
-\item Transfer from $Q$ to $P$ all the points in any cluster whose cardinality is less than $k$ or who is a leaf. 
-\item Replace all non-leaf clusters in $Q$ with their children. 
+\item For each cluster left in $Q$, if it is a leaf or has $k$ or fewer points, remove it and all of its points to $Q$.
+\item Replace all remaining non-leaf clusters in $Q$ with their children. 
 \end{enumerate}
 
-At this stage, if any clusters remain in $Q$, we add all their points to $P$. 
-Extract $P$. 
+The points remaining in $Q$ are the $k$ nearest neighbors.
+
+TODO: Add find kth algorithm. 
 
 \begin{algorithm} % enter the algorithm environment
-    \caption{Sieve } % give the algorithm a caption
-    \label{alg:sieve_v1} % and a label for \ref{} commands later in the document
-    \begin{algorithmic}[2] % enter the algorithmic environment
+    \caption{Sieve(\emph{tree, query, k})} % give the algorithm a caption
+    \label{alg:sieve1} % and a label for \ref{} commands later in the document
+    \begin{algorithmic}[5] % enter the algorithmic environment
         \REQUIRE $tree$, $query$, $k$
         \STATE $Q \leftarrow$ priority queue
         \STATE $Q.push(tree.root)$
-        \STATE $P \leftarrow$ priority queue
-        \WHILE{$|P| < k \lor P.max.\delta > Q.max.\delta_{min}$}
-            \WHILE{$!Q.extractMax().isLeaf$}
-                \STATE $[l, r] \leftarrow Q.extractMax().children()$
-                \STATE $Q.push([l, r])$
-            \ENDWHILE
-            \STATE $leaf \leftarrow Q.extractMax()$
-            \STATE $P.push(leaf)$
-            \WHILE{$|P| > k$}
-                \STATE $P.extractMax()$
-            \ENDWHILE
+        \WHILE{$|Q| > k$}
+            \STATE $C_{\tau} \leftarrow Q.findKth.\delta_{max}$
+            \FOR {$q \in Q$}
+                \IF {$q.\delta_{min} > \tau$}
+                    \STATE $Q.remove(q)$
+                \ENDIF
+            \ENDFOR
+            \FOR {$q \in Q$}
+                \IF {$q.isLeaf \lor |q.cardinality| \leq k$}
+                    \STATE $Q.push(q.points)$
+                \ELSE
+                    \STATE $[l, r] \leftarrow q.children$
+                    \STATE $Q.push([l, r])$   
+                \ENDIF
+                \STATE $Q.remove(q)$
+            \ENDFOR 
         \ENDWHILE
-        \STATE Return $P$
+        \STATE Return $Q$
     \end{algorithmic}
     \end{algorithm}
-
 
 \subsubsection{Sieve Search II}
 \label{subsubsec:methods:knn-search:sieve2}
@@ -355,27 +353,6 @@ Repeat until $candidates$ is empty.
 
 \subsubsection{Complexity}
 \label{subsubsec:methods:knn-search:complexity}
-
-This is at-least on-par with the complexity for $\rho$-nearest neighbors search from CHESS.
-It is potentially better because we effectively shrink the search radius to adapt to the $k$ closest instances found during the algorithm.
-
-
-\subsubsection{Leaf Search}
-\label{subsubsec:methods:knn-search:leaf-search}
-
-Let $hits$ be a a fixed size priority queue with $k$ instances sorted by non-decreasing $f(q, x)$, i.e. distance to the query.
-Initialize $hits$ with the centers of $candidates$.
-
-Let $f_k$ be the distance to the $k^{th}$ farthest instance so far.
-Exclude all $candidates$ for which $\delta^2 > f_k$, i.e. their closest possible instance is farthest that the $k^{th}$ farthest instance found so far.
-Remove the closest cluster from $candidates$ and add all its contained instances to $hits$.
-Repeat until $candidates$ is empty.
-
-\subsubsection{Complexity}
-\label{subsubsec:methods:knn-search:complexity}
-
-Clustering: Exact partition with $\mathcal{O}(n^2)$ cost vs approximate partition using $\sqrt{n}$ seeds to achieve $\mathcal{O}(n)$ cost.
-Building the exact tree costs $\mathcal{O}(n^2 \log n)$ vs approximate tree for $\mathcal{O}(n \log n)$.
 
 This is at-least on-par with the complexity for $\rho$-nearest neighbors search from CHESS.
 It is potentially better because we effectively shrink the search radius to adapt to the $k$ closest instances found during the algorithm.
