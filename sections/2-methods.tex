@@ -153,7 +153,8 @@ Building the exact tree costs $\mathcal{O}(n^2 \log n)$ vs approximate tree for 
 
 \subsection {Index-Building}
 \begin{itemize}
-    \item sharded search 
+    \item sharded search
+    \item dataset depth-first reordering 
     \item index building 
     \item optimization of number of shards 
 \end{itemize}
@@ -294,30 +295,81 @@ Once $|P| >= k$, we sort the points in $P$ by $\delta$ and return the $k$ closes
 With Sieve Search I, we repeatedly calculate a threshold distance $\tau$ such that no cluster with a $\delta_{min}$ greater than $\tau$ 
 can contain one of the $k$ nearest neighbors. Search terminates when we have a threshold containing exactly $k$ points.
 
-We start by letting $Q$ be a vector of clusters and points sorted by non-decreasing $\delta_{max}$ and initializing $Q$ with the root cluster. 
-While we haven't found a threshold which guarantees exactly $k$ points, we repeat the following: 
+We start by letting $Q$ be a vector initialized with the root cluster. This vector will maintain the 
+clusters and points which are still in contention for being one of the nearest neighbors.
+While $Q$ contains at least one cluster (i.e., $Q$ is not a vector of only points), we repeat the process described in 
+the following paragraphs. 
 
-\begin{enumerate}
-\item Find the cluster $C_{\tau}$ in $Q$ with the smallest $\delta_{max}$ such that no cluster whose $\delta_{min}$ is greater than $C_{\tau}$'s $\delta_{max}$ can contain one of the $k$ nearest neighbors.
-\item Let the threshold $\tau$ be the $\delta_{max}$ of $C_{\tau}$.
-\item Remove from $Q$ any cluster whose $\delta_{min}$ is greater than $\tau$.
-\item For each cluster left in $Q$, if it is a leaf or has $k$ or fewer points, remove it and all of its points to $Q$.
-\item Replace all remaining non-leaf clusters in $Q$ with their children. 
-\end{enumerate}
+First, 
+we aim to find the element $q_{\tau} \in Q$ with the smallest $\delta_{max}$ such that 
+$q_{\tau}$ and all elements in $Q$ with smaller $\delta_{max}$ collectively contain at least $k$ points. 
 
-The points remaining in $Q$ are the $k$ nearest neighbors.
+To find this element, 
+we use a process similar to the Partition algorithm used in Quicksort (CITE: original Quicksort paper and reference wherever it is 
+in our paper), adjusted to account for the varying cardinalities of elements in $Q$. Our modified algorithm finds the smallest index $i$ such 
+that all elements in $Q$ with $\delta_{max}$ closer to or equal to $Q[i]$'s $\delta_{max}$ collectively have cardinality greater
+than or equal to $k$. In the process of finding this index, we alter the order of $Q$ so that all elements to left
+of index $i$ have $\delta_{max}$ less than or equal to $Q[i]$'s $\delta_{max}$ and all elements to right of index $i$
+have $\delta_{max}$ greater than $Q[i]$'s $\delta_{max}$. We consider $Q[i]$ to be our $q_{\tau}$, and our threshold 
+$\tau$ to be $Q[i]$'s $\delta_{max}$.
 
-TODO: Add find kth algorithm. 
+We then remove from $Q$ any element whose $\delta_{min}$ is greater than $\tau$. Then, for each element left 
+in $Q$, if it is a leaf or contains $k$ or fewer points, we remove it and all of its points to $Q$. Finally, we
+replace all remaining non-leaf clusters in $Q$ with their children. 
+
+We complete this process until $Q$ contains only points. At this point, we 
+just use [INSERT ref to quicksort partition in paper] to find the $k$th 
+nearest neighbor. Since this algorithm will also elements on the correct side of 
+the index of the $k$th nearest neighbor, the first $k$ elements in $Q$ a are the $k$-nearest neighbors.
+
+
+\begin{algorithm} % enter the algorithm environment
+    \caption{QuicksortPartition(\emph{Q, k, l, r})} % give the algorithm a caption
+    \label{alg:quicksort-partition} % and a label for \ref{} commands later in the document
+    \begin{algorithmic}[5] % enter the algorithmic environment
+        \IF{$l \geq r$}
+            \STATE Return $min(l, r)$
+        \ELSE 
+            \STATE $pivot = l + (r - l) / 2$
+            \STATE $Q.swap(pivot, r)$
+            \STATE $a \leftarrow l$
+            \STATE $b \leftarrow l$
+            \WHILE {$b < r$}
+                \IF {$Q[b].\delta_{max} < Q[r].\delta_{max}$}
+                    \STATE $Q.swap(a, b)$
+                    \STATE $a \leftarrow a + 1$
+                \ENDIF
+                \STATE $b \leftarrow b + 1$
+            \ENDWHILE
+            \STATE $Q.swap(a, r)$
+            \STATE $p \leftarrow r$
+            \STATE $g \leftarrow \sum_{i=0}^{p} Q[i].cardinality$
+            \IF {$g = k$}
+                \STATE Return $p$
+            \ELSIF {$g < k$}
+                \STATE $QuicksortPartition(Q, k, p + 1, r)$
+            \ELSE 
+                \IF {$p > 0 \land g > k + Q[p - 1].cardinality$}
+                    \STATE $QuicksortPartition(Q, k, l, p - 1)$
+                \ELSIF {$p > 0 \land g = k + Q[p - 1].cardinality$}
+                    \STATE Return $p - 1$
+                \ELSE
+                    \STATE Return $p$
+                \ENDIF
+            \ENDIF
+        \ENDIF
+    \end{algorithmic}
+    \end{algorithm}
 
 \begin{algorithm} % enter the algorithm environment
     \caption{Sieve(\emph{tree, query, k})} % give the algorithm a caption
-    \label{alg:sieve1} % and a label for \ref{} commands later in the document
-    \begin{algorithmic}[5] % enter the algorithmic environment
+    \label{alg:sieve} % and a label for \ref{} commands later in the document
+    \begin{algorithmic}[6] % enter the algorithmic environment
         \REQUIRE $tree$, $query$, $k$
-        \STATE $Q \leftarrow$ priority queue
-        \STATE $Q.push(tree.root)$
+        \STATE $Q \leftarrow$ [$tree.root$]
         \WHILE{$|Q| > k$}
-            \STATE $C_{\tau} \leftarrow Q.findKth.\delta_{max}$
+            \STATE $i \leftarrow QuicksortPartition(Q, k, 0, |Q| - 1)$
+            \STATE $\tau \leftarrow Q[i].\delta_{max}$
             \FOR {$q \in Q$}
                 \IF {$q.\delta_{min} > \tau$}
                     \STATE $Q.remove(q)$
