@@ -1,10 +1,8 @@
 \section{Methods}
 \label{sec:methods}
 
-In this manuscript, we are primarily concerned with $k$-nearest neighbors search in a finite-dimensional 
-vector space. Some of the algorithms we present use a modified version of the $\rho$-nearest neighbors search 
-algorithm described in CHESS~\cite{ishaq2019clustered} to conduct $k$-NN search. (TODO: make second sentence less 
-vague once we determine exactly what we're doing with sharding and indexing.)
+In this manuscript, we are primarily concerned with $k$-nearest neighbors in a finite-dimensional 
+vector space. 
 
 Given a dataset $\textbf{X} = \{x_1 \dots x_n\}$, we define a \emph{point} or \emph{datum} $x_i \in \textbf{X}$ as a singular observation (e.g., the genome of 
 an organism, the vector representation of a single image, or any entity on which we can define a \emph{distance function}).
@@ -15,7 +13,7 @@ be symmetric ($f(x, y) = f(y, x)$ for all $x, y \in \textbf{X}$) and that the di
 When, in addition to these constraints, the distance function obeys
 the triangle inequality, it is a \emph{distance metric}, and in such cases we can guarantee that our search algorithms have perfect recall. 
 Choice of distance function varies by type of data. For example, with electromagnetic spectra, we use both 
-Euclidean (L2) and Cosine distances. With biological or string data on the other hand, Hamming and Levenshtein distances are more appropriate.
+Euclidean (L2) and Cosine distances. With biological or string data, Hamming and Levenshtein distances are more appropriate.
 
 
 Some of our algorithms for $\rho$- and $k$-nearest neighbors search rely on the \emph{local fractal dimension} at some point in the dataset, 
@@ -28,18 +26,20 @@ consider SDSS's APOGEE dataset, wherein each datum is a nonnegative real-valued 
 However, due to physical constraints (namely, the laws that govern stellar fusion and spectral emission lines), the data are constrained to a lower-dimensional 
 manifold within the 8,575-dimensional embedding space. The \emph{local fractal dimension} is an approximation of the dimensionality of that lower-dimensional manifold at a given point, for some length scale.
 The notion that high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold is known as the \emph{manifold hypothesis}.
-
+[TODO: add example for GreenGenes and add lfd plots from CHESS]
 
 We define a \emph{cluster} as a set of points with a \emph{center}, a \emph{radius}, and an approximation of the \emph{local fractal dimension}.
-The \emph{center} is the geometric median of the set of points in the \emph{cluster}, and so it is a real data point. The \emph{radius} is the
+The \emph{center} is the geometric median of a sample of points in the \emph{cluster}, and so it is a real data point. The \emph{radius} is the
 maximum distance from a point in the cluster to its \emph{center}. We estimate \emph{local fractal dimension} at the cluster radius and half
 the cluster radius. Each cluster (unless it is a leaf cluster) has two child clusters in much the same way that a node in
 a binary tree has two child nodes. We define the \emph{metric entropy} of a data set under a hierarchical clustering scheme as a refinement of [7], where
-metric entropy for a given cluster radius $r_c$ was the number of clusters of radius $r_c$ needed to cover all data. Here, we use a binary, divisive clustering 
-approach, but with early stopping criteria; clusters with fewer than a threshold number of points are not further split. 
+metric entropy for a given cluster radius $r_c$ was the number of clusters of radius $r_c$ needed to cover all data. Here, we use a hierarchical, divisive clustering 
+approach, but with early stopping criteria; clusters which satisfy a user-specified stopping criterion (e.g. a specified cardinality or radius) are not further split. 
 Since we frame the asymptotic complexity of $\rho$-NN search in terms of the number of leaf clusters, the \emph{metric entropy} is best thought of in terms of the number of
 leaf clusters. 
 
+
+[TODO: Do set comprehension definitions for these and then prose refinement]
 With these concepts defined, we can now pose the $k$- and $\rho$ nearest neighbors search problems.
 Given a query $q$, along with a distance function $f$ defined on a dataset $ \textbf{X}$, $k$-nearest neighbors search aims to: 
 for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$; that is, find the $k$ points $x \in \textbf{X}$ with the smallest $f(q, x)$.
@@ -54,6 +54,8 @@ properties:
     \item $\delta_{min} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest possible instance in $C$.
 \end{itemize}
 
+
+[TODO: talk about singleltons or whatever and overloading of notation]
 We sometimes also use this notation with points instead of clusters. For example, we sometimes use $\delta = f(x, q)$ to refer to the distance 
 from a point $x$ to the query $q$. Since we can think of a point as having radius $r=0$, for points we have that $\delta_{max} = \delta = \delta_{min}$.
 
@@ -61,6 +63,7 @@ from a point $x$ to the query $q$. Since we can think of a point as having radiu
 \subsection{Clustering}
 \label{subsec:methods:clustering}
 
+[TODO: take out memoization and talk about reordering instead]
 We start by building a divisive hierarchical clustering of the dataset with CLAM, using a 
 similar recursive procedure as outlined in CHESS~\cite{ishaq2019clustered}, but with the following 
 improvements: better selection of poles for partitioning and memoization of useful cluster properties, 
@@ -74,7 +77,8 @@ While we sometimes use Euclidean notions, such as voids and volumes, to talk abo
 properties of clusters and of the manifold, CLAM does not rely on such notions; 
 they serve merely as a convenient, more intuitive way to talk about the underlying mathematics.
 
-
+[TODO: use cluster C and |C| instead here; make sure you mention how radius is calculated; sampling, center, radius, poles; 
+define geometric median]
 For a cluster with $m$ points, we begin by computing a 
 random sample of $\sqrt m$ points. We then compute the geometric median of this sample, which we call the 
 cluster's center. We then compute the distance from the center to each point in the sample of $\sqrt m$ points. 
@@ -107,6 +111,16 @@ is met.
     \ENDIF
 \end{algorithmic}
 \end{algorithm}
+
+\subsubsection {Dataset Reordering}
+
+[2 tiers of improvement]
+
+CLAM-CAKES also reorders the dataset to improve the tree-building process 
+used in CHESS. In CHESS, each cluster stored a vector of indices into the dataset, which 
+were used to retrieve its points during search. Thus, for a dataset with cardinality $n$, 
+at each depth in the tree, we would store a total of $n$ indices. Since we have approximately 
+
 
 \subsubsection {Guaranteed Decrease in Cluster Radii}
 \label{subsubsec:methods:guaranteed-decrease-in-cluster-radii}
@@ -154,7 +168,6 @@ Building the exact tree costs $\mathcal{O}(n^2 \log n)$ vs approximate tree for 
 \subsection {Index-Building}
 \begin{itemize}
     \item sharded search
-    \item dataset depth-first reordering 
     \item index building 
     \item optimization of number of shards 
 \end{itemize}
@@ -162,6 +175,8 @@ Building the exact tree costs $\mathcal{O}(n^2 \log n)$ vs approximate tree for 
 \subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
 \label{subsec:methods:rnn-search}
 
+
+[TODO: delete this and talk about overlapping children improvement instead]
 We conduct $\rho$-nearest neighbors search similarly as described in CHESS~\cite{ishaq2019clustered}, but 
 with some implementation improvements including identification of candidate clusters which are leaves and 
 conducting exhaustive search over those leaves.
@@ -199,10 +214,16 @@ The asymptotic complexity of $\rho$-nearest neighbors is the same as in CHESS~\c
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
 \label{subsec:methods:knn-search}
 
-In this section, we present four novel variants of $k$-nearest neighbors search: Greedy Search, $k$-NN by Repeated $\rho$-NN, Sieve Search I, and Sieve Search II. 
-We use a preliminary auto-tuning function (TODO: do we though?) to predict the variant which will perform 
+[TODO: reorder so rho nn is first, then sieves, then Greedy Sieve]
+In this section, we present four novel algorithms for $k$-nearest neighbors search: Greedy Search, $k$-NN by Repeated $\rho$-NN, Sieve Search I, and Sieve Search II. 
+We also have an implementation of linear search. We use a preliminary auto-tuning function to predict the variant which will perform 
 best for a given query, dataset, and value of $k$. We then proceed with search using that variant.  
 
+
+[TODO: tighten up or omit those opening paragraphs which roughly explain the algorithm]
+
+
+[TODO: call queues of points H]
 \subsubsection{Greedy Search}
 \label{subsubsec:methods:knn-search:greedy-search}
 Greedy Search repeatedly partitions the cluster with the smallest $\delta_{min}$ into its children 
@@ -212,6 +233,7 @@ Search terminates when the furthest hit in the queue of points has $\delta$ grea
 Formally, let $Q$ be a priority queue of clusters sorted by non-increasing $\delta_{min}$. Initialize $Q$ with the root cluster.
 Let $P$ be a second priority queue of points sorted by non-decreasing distance from the query. This queue starts empty.
 
+[TODO: replace with pop and push language and start with initial pop]
 While $P$ has fewer than $k$ clusters or $\delta$ of the top priority element in $P$ is greater 
 than $\delta_{min}$ of the top priority element in $Q$, do the following:
 \begin{enumerate}
@@ -220,6 +242,8 @@ than $\delta_{min}$ of the top priority element in $Q$, do the following:
 \item Remove points from $P$ until $P$ has $k$ points. 
 \end{enumerate}
 After this process, the points left in $P$ are the $k$ nearest neighbors of $q$.
+
+[TODO: fix to use priority queue language]
 
 \begin{algorithm} 
 \caption{GreedySearch(\emph{tree, query, k})} 
@@ -246,10 +270,11 @@ After this process, the points left in $P$ are the $k$ nearest neighbors of $q$.
 
 \subsubsection{$k$-NN by Repeated $\rho$-NN}
 \label{subsubsec:methods:knn-search:repeated-rnn}
-In this $k$-NN variant, we repeatedly perform
-$\rho$-nearest neighbors search, increasing the search radius until $k$ neighbors
+In this algorithm, we perform
+$\rho$-nearest neighbors search at [TODO: add radius], repeatedly increasing the search radius until $k$ neighbors
 have been found.
 
+[TODO: change P to H]
 Let $P$ be the set of nearest neighbors found thus far.
 Search starts with a radius $m$ equal to the radius of the cluster tree divided by
 the cardinality of the dataset. We perform $\rho$-NN search with radius $m$. 
@@ -257,6 +282,8 @@ If no points are within a distance $m$ of the query, we increase the radius by a
 2 and perform $\rho$-NN search again, repeating until at least one point is found, i.e., 
 until $|P| > 0$.
 
+
+[TODO: Add number next to all equations and fix factor so that it is correct (k should be raised too)]
 Once $|P| > 0$, we continue to perform $\rho$-NN search, but instead of 
 increasing the radius by a factor of 2 on each iteration, we increase it by a factor determined 
 by the local fractal dimension of the clusters containing the points found so far. In particular, 
@@ -290,8 +317,12 @@ Once $|P| >= k$, we sort the points in $P$ by $\delta$ and return the $k$ closes
     \end{algorithmic}
     \end{algorithm}
 
+
+[TODO: change sieve II to sieev with separate centers]
 \subsubsection{Sieve Search I}
 \label{subsubsec:methods:knn-search:sieve}
+[TODO: make writeup here tighter and more consistent with what's in the algorithm; talk 
+about enum variants here]
 With Sieve Search I, we repeatedly calculate a threshold distance $\tau$ such that no cluster with a $\delta_{min}$ greater than $\tau$ 
 can contain one of the $k$ nearest neighbors. Search terminates when we have a threshold containing exactly $k$ points.
 
@@ -391,20 +422,12 @@ the index of the $k$th nearest neighbor, the first $k$ elements in $Q$ a are the
 
 \subsubsection{Sieve Search II}
 \label{subsubsec:methods:knn-search:sieve2}
+Sieve Search II is exactly the same as Sieve Search I, but with the following modification: clusters 
+in $Q$ are represented twice-- once as their center and once as the rest of their points. 
+Because we have that for any cluster $C$, $C.\delta \leq C.\delta_{max}$, representing the cluster 
+center separately from the rest of the points causes the threshold $\tau$ to decrease more quickly, 
+thus allowing us to eliminate some clusters from $Q$ earlier in the process.
 
-\subsubsection{Linear Search}
-\label{subsubsec:methods:knn-search:leaf-search}
-
-Let $hits$ be a a fixed size priority queue with $k$ instances sorted by non-decreasing $f(q, x)$, i.e. distance to the query.
-Initialize $hits$ with the centers of $candidates$.
-
-Let $f_k$ be the distance to the $k^{th}$ farthest instance so far.
-Exclude all $candidates$ for which $\delta^2 > f_k$, i.e. their closest possible instance is farthest that the $k^{th}$ farthest instance found so far.
-Remove the closest cluster from $candidates$ and add all its contained instances to $hits$.
-Repeat until $candidates$ is empty.
-
-\subsubsection{Complexity}
-\label{subsubsec:methods:knn-search:complexity}
-
-This is at-least on-par with the complexity for $\rho$-nearest neighbors search from CHESS.
-It is potentially better because we effectively shrink the search radius to adapt to the $k$ closest instances found during the algorithm.
+\subsubsection{Complexity of $k$-NN Search}
+\label{paragraph:methods:knn-complexity}
+Add asymptotic complexity of various $k$-NN algorithms here.
