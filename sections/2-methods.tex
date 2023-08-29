@@ -18,7 +18,7 @@ Euclidean (L2) and Cosine distances. With biological or string data, Hamming and
 
 Some of our algorithms for $\rho$- and $k$-nearest neighbors search rely on the \emph{local fractal dimension} at some point in the dataset, 
 which we define as: 
-$$\text{log}_2 \left( \frac{|B_X(q, r_1)|}{|B_X(q, r_2)|} \right)$$
+\begin{equation} \frac{\text{log}(\frac{|B_X(q, r_1)|}{|B_X(q, r_2)|})}{\text{log}(\frac{r_1}{r_2}) } \label{1} \end{equation}
 where $B_X(q, r)$ is the set of points contained in a ball of radius $r$ 
 centered at a point $q$ in the dataset $\textbf{X}$; in this example, we compute fractal dimension for some radius $r_1$ and a smaller radius $r_2 = \frac{r_1}{2}$.
 We stress that this concept differs from the \emph{embedding dimension} of a dataset. To illustrate the difference,
@@ -39,12 +39,12 @@ Since we frame the asymptotic complexity of $\rho$-NN search in terms of the num
 leaf clusters. 
 
 
-[TODO: Do set comprehension definitions for these and then prose refinement]
 With these concepts defined, we can now pose the $k$- and $\rho$ nearest neighbors search problems.
-Given a query $q$, along with a distance function $f$ defined on a dataset $ \textbf{X}$, $k$-nearest neighbors search aims to: 
-for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$; that is, find the $k$ points $x \in \textbf{X}$ with the smallest $f(q, x)$.
-We also have the $\rho$-nearest neighbors search problem: for a given radius $\rho$, find all points in $\textbf{X}$ that are a distance of $\rho$ 
-or less from $q$; that is, all points $x \in \textbf{X}$ such that $f(q, x) \leq \rho$.
+Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, $k$-nearest neighbors search aims to find 
+the set $\{x \in \textbf{X}: f(q, x) \leq f(q, x_k) \land x_k \text{ is the $k$th nearest neighbor of $q$ in $\textbf{X}$}\}$; that is,
+for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$.
+We also have the $\rho$-nearest neighbors search problem, which aims to find the set $\{x \in \textbf{X}: f(q, x) \leq \rho \}$; that is, 
+find all points in $\textbf{X}$ that at most a distance $\rho$ from $q$.
 
 Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $\rho$- and $k$-NN algorithms make use of the following cluster 
 properties:
@@ -55,19 +55,20 @@ properties:
 \end{itemize}
 
 
-[TODO: talk about singleltons or whatever and overloading of notation]
-We sometimes also use this notation with points instead of clusters. For example, we sometimes use $\delta = f(x, q)$ to refer to the distance 
-from a point $x$ to the query $q$. Since we can think of a point as having radius $r=0$, for points we have that $\delta_{max} = \delta = \delta_{min}$.
+We define \emph{singletons} as clusters which either contain a single point (i.e., have cardinality 1) or which contain 
+many instances of the same point (i.e., have cardinality greater than 1 but contain only one unique point). Singletons clearly 
+have zero radius, and so $\delta_{max} = \delta_{min} = \delta$ for these clusters. Hence, we sometimes overload the above 
+notation to refer to distance from a query to a point. Similarly, we have that $\delta_{max} = \delta = \delta_{min}$ for 
+individual points.
 
 
 \subsection{Clustering}
 \label{subsec:methods:clustering}
 
-[TODO: take out memoization and talk about reordering instead]
 We start by building a divisive hierarchical clustering of the dataset with CLAM, using a 
 similar recursive procedure as outlined in CHESS~\cite{ishaq2019clustered}, but with the following 
-improvements: better selection of poles for partitioning and memoization of useful cluster properties, 
-such as local fractal dimension (see Section 2.4.2: $k$-NN by Repeated $\rho$-NN). 
+improvements: better selection of poles for partitioning and depth-first dataset reordering 
+(see Section ADD SECTION: Dataset Reordering). 
 
 
 CLAM assumes the manifold hypothesis. 
@@ -77,13 +78,14 @@ While we sometimes use Euclidean notions, such as voids and volumes, to talk abo
 properties of clusters and of the manifold, CLAM does not rely on such notions; 
 they serve merely as a convenient, more intuitive way to talk about the underlying mathematics.
 
-[TODO: use cluster C and |C| instead here; make sure you mention how radius is calculated; sampling, center, radius, poles; 
-define geometric median]
-For a cluster with $m$ points, we begin by computing a 
-random sample of $\sqrt m$ points. We then compute the geometric median of this sample, which we call the 
-cluster's center. We then compute the distance from the center to each point in the sample of $\sqrt m$ points. 
-The point $l$ which is furthest from the center is designated the left pole, and the point $r$ which is furthest
-from $l$ is designated the right pole. We then partition the cluster into a left child and right child, where the 
+
+For a cluster $C$ with $|C|$ points, we begin by computing a 
+random sample of $\sqrt{|C|}$ points, and computing pairwise distances 
+between all points in the sample. Based on those pairwise distances, we compute the \emph{geometric median} of this sample; 
+that is, the point which minimizes the sum of distances to all other points in the sample. This geometric median 
+is $C$'s \emph{center}. The \emph{radius} of $C$ is the maximum distance from any point in $C$ to its center.
+The point $l$ which is furthest from the center is designated the \emph{left pole}, and the point $r$ which is furthest
+from $l$ is designated the \emph{right pole}. We then partition the cluster into a \emph{left child} and \emph{right child}, where the 
 left child contains all points in the cluster which are closer to $l$ than to $r$, and the right child contains all 
 points in the cluster which are closer to $r$ than to $l$. Without loss of generality, we assign to the left child 
 those points which are equidistant from $l$ and $r$. Starting from a root-cluster containing the entire dataset, we 
@@ -112,14 +114,29 @@ is met.
 \end{algorithmic}
 \end{algorithm}
 
-\subsubsection {Dataset Reordering}
-
-[2 tiers of improvement]
+\subsubsection {Dataset Depth-First Reordering}
 
 CLAM-CAKES also reorders the dataset to improve the tree-building process 
-used in CHESS. In CHESS, each cluster stored a vector of indices into the dataset, which 
-were used to retrieve its points during search. Thus, for a dataset with cardinality $n$, 
-at each depth in the tree, we would store a total of $n$ indices. Since we have approximately 
+used in CHESS. In CHESS, each cluster stored a vector of indices of its points. 
+We use these indices during search to retrieve a cluster's points from the dataset. 
+Though this approach allowed us to retrieve the points in constant 
+time, its memory cost was prohibitively high; since each cluster stores indices of all of its
+points, for a dataset with cardinality $n$, we store a total of $n$ indices at each depth in the tree.
+With $\log{}n$ levels in the tree, this approach had $\mathcal{O}(n\log{}n)$ memory cost. 
+
+
+A later improvement reduced the memory cost to $\mathcal{O}(n)$ by storing only the indices of the points in the leaves.
+This approach, however, introduced an $\mathcal{O}(n)$ time cost every time we needed to find the indices for 
+a non-leaf cluster, since this required a traversal of the subtree rooted at that cluster.
+
+
+In this work, we introduce a new approach, wherein after building the cluster tree, we reorder the dataset 
+so that points are stored in a depth-first order based on the tree. Then, within each cluster, we need only 
+store the cluster's cardinality, and an \emph{offset} to access the cluster's points from the dataset.
+For left leaf clusters, the offset is the index of the first point in the cluster. Right leaves have an offset 
+equal to their sibling's offset plus the their sibling's cardinality. Parents have the same offset as their left child.
+With $\mathcal{O}(n)$ memory cost and $\mathcal{O}(1)$ time cost for retrieving a points during search, 
+dataset depth-first reordering offers significant improvements over the previous approaches.
 
 
 \subsubsection {Guaranteed Decrease in Cluster Radii}
@@ -177,7 +194,7 @@ Building the exact tree costs $\mathcal{O}(n^2 \log n)$ vs approximate tree for 
 
 
 [TODO: delete this and talk about overlapping children improvement instead]
-We conduct $\rho$-nearest neighbors search similarly as described in CHESS~\cite{ishaq2019clustered}, but 
+We conduct $\rho$-nearest neighbors search as described in CHESS~\cite{ishaq2019clustered}, but 
 with some implementation improvements including identification of candidate clusters which are leaves and 
 conducting exhaustive search over those leaves.
 
