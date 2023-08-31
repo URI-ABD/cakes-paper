@@ -25,7 +25,7 @@ even state-of-the-art algorithms exhibit a steep recall versus speed tradeoff~\c
 
 
 In particular, $k$-nearest neighbors ($k$-NN) search is one of the most pervasive classification and recommendation methods in use~\cite{fix1952discriminatory, cover1967nearest}; 
-Naive implementations of kNN, whose time complexity is linear in the dataset's cardinality, 
+naive implementations of kNN, whose time complexity is linear in the dataset's cardinality, 
 prove prohibitively slow for large datasets. While algorithms for fast $k$-NN on large datasets exist, most of them are approximate and do not 
 exploit the geometric and topological structure inherent in big datasets. Approximate search is sufficient for some applications, but the 
 need for efficient, \emph{exact} search remains.
@@ -43,7 +43,7 @@ Using the cluster tree constructed by CLAM, CAKES builds upon the capabilities o
 $k$-nearest neighbors search in addition to $\rho$-nearest neighbors search (also known as ranged nearest neighbors search).
 
 
-This paper focuses on accelerated $\rho$- and $k$-nearest neighbors search. We explain some 
+This paper focuses on four novel accelerated $k$-nearest neighbors search algorithms. We explain some 
 implementation improvements to CHESS, as well as improved genericity across distance functions. 
 We also include proof of some geometric guarantees for clusters. Finally, we provide a comparison of 
 CAKES to the state-of-the-art in similarity search, FAISS~\cite{johnson2019billion} on several datasets 
