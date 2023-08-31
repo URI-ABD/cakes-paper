@@ -263,10 +263,10 @@ actual $k$-th closest neighbor, are topics for future work.
 \subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
 \label{subsec:methods:rnn-search}
 
-[TODO: delete this and talk about overlapping children improvement instead]
-We conduct $\rho$-nearest neighbors search as described in CHESS~\cite{ishaq2019clustered}, but 
-with some implementation improvements including identification of candidate clusters which are leaves and 
-conducting exhaustive search over those leaves.
+We conduct $\rho$-nearest neighbors search as described in \cite{ishaq2019clustered}, but 
+with the following improvement: when a cluster overlaps with the query ball, instead of  
+always proceeding with both of its children, we only proceed with those children which 
+also overlap with the query ball. 
 
 \begin{algorithm} 
     \caption{$\rho$-NN(\emph{clusters, query, r})} 
@@ -275,12 +275,12 @@ conducting exhaustive search over those leaves.
         \REQUIRE $r \geq 0$
         \REQUIRE $clusters \neq \emptyset$
         \STATE $results \leftarrow \emptyset$
-        \IF{$clusters.left$}
+        \IF{$clusters.left \land clusters.left \cap B_X(query, r) \neq \emptyset$}
             \IF{$clusters.left.\delta$ $\leq$ $r$ + $clusters.left.radius$}
                 \STATE $\rho$-NN($clusters.left, query, r$)
             \ENDIF
         \ENDIF
-        \IF{$clusters.right$}
+        \IF{$clusters.right \land clusters.right \cap B_X(query, r) \neq \emptyset$}
             \IF{$clusters.right.\delta$ $\leq$ $r$ + $clusters.right.radius$} 
                 \STATE $\rho$-NN($clusters.right, query, r$)
             \ENDIF
@@ -288,7 +288,7 @@ conducting exhaustive search over those leaves.
         \IF{$\neg$$clusters.left$ $\land \neg$$clusters.right$}
             \FOR{$p \in clusters.points$}
                 \IF{$p.\delta \leq r$}
-                    \STATE $results \leftarrow r$
+                    \STATE $results.push((p, r))$
                 \ENDIF
             \ENDFOR
         \ENDIF
@@ -296,7 +296,8 @@ conducting exhaustive search over those leaves.
     \end{algorithmic}
     \end{algorithm}
 
-The asymptotic complexity of $\rho$-nearest neighbors is the same as in CHESS~\cite{ishaq2019clustered}.
+
+The asymptotic complexity of $\rho$-nearest neighbors is the same as in ~\cite{ishaq2019clustered}.
 
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
 \label{subsec:methods:knn-search}
@@ -306,7 +307,8 @@ and  Greedy Sieve.
 We also have an implementation of linear search. We use a preliminary auto-tuning function to predict the variant which will perform 
 best for a given query, dataset, and value of $k$. We then proceed with search using that variant.  
 
-In these algorithms, we typically use $H$, for \emph{hits}, to refer to the data structure which stores the closest points to the query found so far. 
+In these algorithms, we typically use $H$, for \emph{hits}, to refer to the data structure which stores the closest points to the query found so far and
+$Q$ to refer to the data structure which stores the clusters and points which are still in contention for being one of the nearest neighbors.
 
 
 \subsubsection{$k$-NN by Repeated $\rho$-NN}
@@ -329,7 +331,7 @@ Once $|H| > 0$, we continue to perform $\rho$-NN search, but instead of
 increasing the radius by a factor of 2 on each iteration, we increase it by a factor determined 
 by the local fractal dimension of the clusters containing the points found so far. In particular, 
 we increase the radius by a factor of 
-\begin{equation} \text{argmin}\left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right) \label{2} \end{equation}
+\begin{equation} \text{arg min}\left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right) \label{2} \end{equation}
 where $\mu$ is the local fractal dimension (abbreviated lfd in algorithm below) in the region around the query point.
 Intuitively, the factor by which we increase the radius should be \emph{inversely} related to the number of points found so far. 
 Additionally, when the local fractal dimension at the radius scale from the previous iteration is low, this suggests that the data 
@@ -340,16 +342,16 @@ local fractal dimension. Once $|H| >= k$, we return the $k$ closest points.
     \caption{Repeated$\rho$-NN(\emph{tree, query, k})} % give the algorithm a caption
     \label{alg:knn-by-rnn} % and a label for \ref{} commands later in the document
     \begin{algorithmic}[4] % enter the algorithmic environment
-        \STATE $H \leftarrow$ $\emptyset$
-        \STATE $m \leftarrow$ $\frac{root.radius}{root.cardinality}$
+        \STATE $H \Leftarrow$ $\emptyset$
+        \STATE $m \Leftarrow$ $\frac{root.radius}{root.cardinality}$
         \WHILE {$|H| = 0$}
             \STATE $H.push(\rho$-NN$(tree, query, m)$)
-            \STATE $m \leftarrow 2m$
+            \STATE $m \Leftarrow 2m$
         \ENDWHILE
         \WHILE {$|H| < k$}
-            \STATE $clusters \leftarrow \{ C: \exists p \in H \land p \in C \}$
-            \STATE $\mu \leftarrow \frac{1}{|clusters|} \sum_{C \in clusters} C.lfd$
-            \STATE $m \leftarrow \text{min}\left(2, \frac{k}{|H|^{\frac{1}{\mu}}}\right)$
+            \STATE $Q \Leftarrow \{ C: \exists p \in H \land p \in C \}$
+            \STATE $\mu \leftarrow \frac{1}{|Q|} \sum_{C \in Q} C.lfd$
+            \STATE $m \leftarrow \text{arg min}\left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right)$
             \STATE $H.push(\rho$-NN$(tree, query, m)$)
         \ENDWHILE
         \STATE $H.sort()$
