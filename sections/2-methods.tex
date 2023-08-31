@@ -23,7 +23,7 @@ We stress that this concept differs from the \emph{embedding dimension} of a dat
 consider SDSS's APOGEE dataset, wherein each datum is a nonnegative real-valued vector of length 8,575. Hence, the \emph{embedding dimension} of this dataset is 8,575. 
 However, due to physical constraints (namely, the laws that govern stellar fusion and spectral emission lines), the data are constrained to a lower-dimensional 
 manifold within the 8,575-dimensional embedding space. The \emph{local fractal dimension} is an approximation of the dimensionality of that lower-dimensional manifold at a given point, for some length scale.
-The notion that high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold is known as the \emph{manifold hypothesis}.
+The notion that high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold is known as the \emph{manifold hypothesis}~\cite{fefferman2016testing}.
 
 \begin{figure}[ht!]
     \centering
@@ -92,9 +92,9 @@ notation to refer to distance from a query to a point; in these cases, we also h
 \label{subsec:methods:clustering}
 
 We start by building a divisive hierarchical clustering of the dataset with CLAM, using a 
-similar recursive procedure as outlined in CHESS~\cite{ishaq2019clustered}, but with the following 
+similar recursive procedure as outlined in CHESS, but with the following 
 improvements: better selection of poles for partitioning and depth-first dataset reordering 
-(see Section ADD SECTION: Dataset Reordering). 
+(see Section ~\ref{subsubsec:methods:dataset-depth-first-reordering}). 
 
 
 CLAM assumes the manifold hypothesis. 
@@ -142,6 +142,7 @@ is met.
 \end{algorithm}
 
 \subsubsection {Dataset Depth-First Reordering}
+\label{subsubsec:methods:dataset-depth-first-reordering}
 
 CAKES also improves upon CHESS by reordering the dataset. In CHESS, each cluster stored a list of indices into the dataset, 
 which we used during search to retrieve a cluster's points from the dataset. 
@@ -167,38 +168,38 @@ dataset depth-first reordering offers significant improvements over the approach
 
 \subsubsection {Scaling Behavior of Cluster Radii}
 \label{subsubsec:methods:guaranteed-decrease-in-cluster-radii}
-While it may be tempting to assume that cluster radii decrease with each application of Cluster Partition (TODO: ADD SECTION), unfortunately, this assumption is incorrect. 
+While it may be tempting to assume that cluster radii decrease with each application of Cluster Partition (refer to Algorithm \ref{alg:partition}), unfortunately, this assumption is incorrect. 
 Fortunately, we \emph{can} make some guarantees about the scaling behavior of cluster radii; in particular, we can guarantee that cluster radii will stop increasing after at most 
-$d$ partitions, where $d$ is the dimensionality of the dataset.  In the remainder of this subsection, we HJFHFJ. 
+$d$ partitions, where $d$ is the dimensionality of the dataset.  In the remainder of this subsection, we prove this guarantee. 
 
 
-We can describe this a $d$-dimensional distribution by choosing some set of $d$ mutually orthogonal axes.
+We can describe a $d$-dimensional distribution by choosing some set of $d$ mutually orthogonal axes.
 Let $2R$ be the maximum pairwise distance among the instances in the dataset. 
 We choose the axes such that the two points that are $2R$ apart lie along one of the axes. 
 Thus, a $d$-dimensional hyper-sphere of radius $R$ would bound the dataset. 
-In the worst case, e.g. with a distribution that fills the $d$-sphere, our axes will be such that $2R$ is the maximum pairwise distance along every axis. 
+In the worst case, (i.e., with a uniform-density distribution that fills the $d$-sphere), our axes will be such that $2R$ is the maximum pairwise distance along every axis. 
 Such a distribution would also produce a balanced clustering.
 
 
 Partition will select a maximally distant pair of points to use as poles, i.e., it will choose one of the $d$ axes along
 which to split the cluster into two children. 
-After one application of Cluster Partition, the maximum pairwise distance along that axis will be
+After one application of Algorithm \ref{alg:partition}, the maximum pairwise distance along that axis will be
 bounded above by $R$. 
 The next recursive Partition will select another of the $d$ axes. 
-Thus, after at most $d$ applications of Cluster Partition, the
+Thus, after at most $d$ applications of Algorithm \ref{alg:partition}, the
 maximum pairwise distance along each axis will be bounded above by $R$. 
-The overall (i.e., not restricted to be along one axis) maximum pairwise distance, 
+The overall (i.e., not restricted to be along one axis) maximum pairwise distance 
 will be bounded above by $R\sqrt{2}$ by, for example, two instances that lie at the extrema of different axes. 
 
 Thus, starting with a cluster $C$ of radius $R$, after at most $d$ Partitions, the descendants of $C$ will each have radius
-bounded above by $\frac{r}{\sqrt{2}}$. In other words, cluster radii are guaranteed to decrease by a multiplicative factor of $\frac{\sqrt{2}}{2}$ after at 
-most $d$ applications of Cluster Partition. 
+bounded above by $\frac{R}{\sqrt{2}}$. In other words, cluster radii are guaranteed to decrease by a multiplicative factor of $\frac{\sqrt{2}}{2}$ after at 
+most $d$ applications of Algorithm \ref{alg:partition}. 
 
 
 Note that, in practice, we never see a balanced clustering. Cluster Partition  produces unbalanced trees due to the varying density of the sampling 
 in different regions of the manifold and the low dimensional "shape" of the manifold. Further, the cluster radii decrease by a factor much larger than 
-$\frac{\sqrt{2}}{2}$ in practice, and often this decrease starts occurring after only one or two applications of Cluster Partition, rather than the 
-upper bound of $d$ applications.
+$\frac{\sqrt{2}}{2}$ in practice, and the upper bound of $d$ applications of Algorithm \ref{alg:partition} is seldom realized. 
+
 
 \begin{figure}[ht!]
     \centering
@@ -245,9 +246,9 @@ much faster than $k$-nearest neighbors search.
 
 We begin by randomly partitioning the dataset into $s$ shards, where $s$ is determined by [TODO: how did 
 we decide we're going to select $s$ for this version of the paper?]. On the first shard, we perform 
-$k$-nearest neighbors search using one of the four algorithms described in Section [ADD SECTION: $k$-Nearest Neighbors Search].
+$k$-nearest neighbors search using one of the four algorithms described in Section ~\ref{subsec:methods:knn-search}.
 The result of this search will give us the $k$ closest neighbors to the query in the first shard. We then take the furthest of 
-those $k$ neighbors and use its distance from the query as the radius for $\rho$-nearest neighbors search (see section [ADD SECTION]) 
+those $k$ neighbors and use its distance from the query as the radius for $\rho$-nearest neighbors search (see Section ~\ref{subsec:methods:rnn-search}) 
 on each remaining shard. We then take the union of the results of these $\rho$-nearest neighbors searches, along with the $k$ neighbors
 from the first shard, and then linear search over those points to find the actual $k$ nearest neighbors.
 
@@ -310,8 +311,9 @@ In these algorithms, we typically use $H$, for \emph{hits}, to refer to the data
 
 \subsubsection{$k$-NN by Repeated $\rho$-NN}
 \label{subsubsec:methods:knn-search:repeated-rnn}
-In this algorithm, we perform
-$\rho$-nearest neighbors search at equal to the radius of the cluster tree divided by
+
+
+In this algorithm, we perform $\rho$-nearest neighbors search at a radius equal to the radius of the root cluster divided by
 the cardinality of the dataset, repeatedly increasing the search radius until $k$ neighbors
 have been found.
 
@@ -368,8 +370,7 @@ we aim to find the element $q_{\tau} \in Q$ with the smallest $\delta_{max}$ suc
 $q_{\tau}$ and all elements in $Q$ with smaller $\delta_{max}$ collectively contain at least $k$ points. 
 
 To find this element, 
-we use a process similar to the Partition algorithm used in Quicksort (CITE: original Quicksort paper and reference wherever it is 
-in our paper), adjusted to account for the varying cardinalities of elements in $Q$. Our modified algorithm finds the smallest index $i$ such 
+we use a process similar to the Partition algorithm used in Quicksort~\cite{10.1093/comjnl/5.1.10}, adjusted to account for the varying cardinalities of elements in $Q$. Our modified algorithm finds the smallest index $i$ such 
 that all elements in $Q$ with $\delta_{max}$ closer to or equal to $Q[i]$'s $\delta_{max}$ collectively have cardinality greater
 than or equal to $k$. In the process of finding this index, we alter the order of $Q$ so that all elements to left
 of index $i$ have $\delta_{max}$ less than or equal to $Q[i]$'s $\delta_{max}$ and all elements to right of index $i$
@@ -500,6 +501,9 @@ After this process, the points left in $H$ are the $k$ nearest neighbors of $q$.
 
 \subsubsection{Complexity of $k$-NN Search}
 \label{paragraph:methods:knn-complexity}
+
+
+
 To establish the asymptotic complexity of $k$-NN search, we adopt 
 the terminology used to describe the asymptotic complexity of $\rho$-NN search 
 in \cite{yu2015entropy}
@@ -554,7 +558,8 @@ We rely on this fact in our estimation of $r'$.
 
 We let $d'$ be the average of the local fractal dimension across all clusters in the dataset and based on the bounded density assumption, we have that
 $d' \approx d_{0}$, where $d_0$ is the local fractal dimension of the root cluster (i.e., $d_0$ is the logarithm of the ratio between the cardinality of the root cluster 
-and the cardinality of the ball centered at the root cluster's center with half its radius). While, ordinarily we compute local fractal dimension 
+and the cardinality of the ball centered at the root clustIn this algorithm, we perform $\rho$-nearest neighbors search at equal to the radius of the cluster tree divided by
+er's center with half its radius). While, ordinarily we compute local fractal dimension 
 by comparing cardinalities of balls centered at some point at two different radii, in order to estimate $r'$, instead compare the cardinality of 
 a ball \emph{around the query} of radius $r'$ to the cardinality \emph{of the root cluster} at its radius.
 
