@@ -195,23 +195,24 @@ exact partitioning and tree-building, which have $\mathcal{O}(n^2)$ and $\mathca
 
 
 \subsection {Index-Building and Sharded Search}
+\label{subsec:methods:index-building}
 In this work, we also introduce the method of \emph{sharding} for $k$-nearest neighbors search.
 With this approach, we aim to leverage the fact that $\rho$-nearest neighbors search is typically 
 much faster than $k$-nearest neighbors search. 
 
 
-We begin by randomly partitioning the dataset into $s$ shards, where $s$ is determined by [TODO: how did 
-we decide we're going to select $s$ for this version of the paper?]. On the first shard, we perform 
-$k$-nearest neighbors search using one of the four algorithms described in Section ~\ref{subsec:methods:knn-search}.
-The result of this search will give us the $k$ closest neighbors to the query in the first shard. We then take the furthest of 
-those $k$ neighbors and use its distance from the query as the radius for $\rho$-nearest neighbors search (see Section ~\ref{subsec:methods:rnn-search}) 
+We begin by randomly partitioning the dataset into $s$ shards, where $s$ is determined based 
+on some naive auto-tuning. On the first shard, we perform 
+$k$-nearest neighbors search using one of the four algorithms described in Section~\ref{subsec:methods:knn-search}.
+The result of this search will give us the $k$ closest neighbors to the query \emph{in the first shard}. We then take the furthest of 
+those $k$ neighbors and use its distance from the query as the radius for use with $\rho$-nearest neighbors search (see Section~\ref{subsec:methods:rnn-search}) 
 on each remaining shard. We then take the union of the results of these $\rho$-nearest neighbors searches, along with the $k$ neighbors
 from the first shard, and then linear search over those points to find the actual $k$ nearest neighbors.
 
 
 Note that the size of the shards is not necessarily consistent; it is often optimal to have the first shard be smaller than the others,
 since the first shard is the only one for which we perform $k$-nearest neighbors search. However, making this first shard too small
-creates the risk of significantly overestimating the radius, resulting in much slower $\rho$-nearest neighbors search on the remaining shards.
+introduces the risk of significantly overestimating the radius, resulting in much slower $\rho$-nearest neighbors search on the subsequent shards.
 Finding the precise optimal ratio between the size of the first shard and the size of the remaining shards, as well 
 as computing the expected level of error between the distance from the $k$-th closest neighbor in the first shard and the 
 actual $k$-th closest neighbor, are topics for future work.
@@ -221,8 +222,8 @@ actual $k$-th closest neighbor, are topics for future work.
 
 We conduct $\rho$-nearest neighbors search as described in \cite{ishaq2019clustered}, but 
 with the following improvement: when a cluster overlaps with the query ball, instead of  
-always proceeding with both of its children, we only proceed with those children which 
-also overlap with the query ball. 
+always proceeding with both of its children, we proceed only with those children which 
+also overlap with the query ball. This improvement is demonstrated in Algorithm \ref{alg:rnn}.
 
 \begin{algorithm} 
     \caption{$\rho$-NN(\emph{clusters, query, r})} 
@@ -258,21 +259,20 @@ The asymptotic complexity of $\rho$-nearest neighbors is the same as in ~\cite{i
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
 \label{subsec:methods:knn-search}
 
-In this section, we present four novel algorithms for $k$-nearest neighbors search: $k$-NN by Repeated $\rho$-NN, Sieve Search, and Sieve Search with Separate Centers, 
-and  Greedy Sieve. 
-We also have an implementation of linear search. We use a preliminary auto-tuning function to predict the variant which will perform 
-best for a given query, dataset, and value of $k$. We then proceed with search using that variant.  
+In this section, we present four novel algorithms for exact $k$-nearest neighbors search: $k$-NN by Repeated $\rho$-NN, Sieve Search, Sieve Search with Separate Centers, 
+and Greedy Sieve. 
+We use a preliminary auto-tuning function to predict the variant and shard size (see Section~\ref{subsec:methods:index-building}) which will perform 
+best for a given query, dataset, and value of $k$. We then proceed with search using that variant on the first shard. 
 
 In these algorithms, we typically use $H$, for \emph{hits}, to refer to the data structure which stores the closest points to the query found so far and
-$Q$ to refer to the data structure which stores the clusters and points which are still in contention for being one of the nearest neighbors.
+$Q$ to refer to the data structure which stores the clusters (and, for Sieve and Sieve with Centers, points) which are still in contention for being one of the nearest neighbors.
 
 
 \subsubsection{$k$-NN by Repeated $\rho$-NN}
 \label{subsubsec:methods:knn-search:repeated-rnn}
 
 
-In this algorithm, we perform $\rho$-nearest neighbors search at a radius equal to the radius of the root cluster divided by
-the cardinality of the dataset, repeatedly increasing the search radius until $k$ neighbors
+In this algorithm, we perform $\rho$-nearest neighbors search small search radius, repeatedly increasing the radius until $k$ neighbors
 have been found.
 
 Let $H$ be the set of nearest neighbors found thus far.
@@ -285,10 +285,13 @@ until $|H| > 0$.
 
 Once $|H| > 0$, we continue to perform $\rho$-NN search, but instead of 
 increasing the radius by a factor of 2 on each iteration, we increase it by a factor determined 
-by the local fractal dimension of the clusters containing the points found so far. In particular, 
+by the local fractal dimension in the region of the dataset around the query ball. 
+In particular, 
 we increase the radius by a factor of 
 \begin{equation} \argmin \left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right) \label{2} \end{equation}
-where $\mu$ is the local fractal dimension (abbreviated lfd in algorithm below) in the region around the query point.
+where $\mu$ is the harmonic mean of the local fractal dimensions (abbreviated lfd in algorithm below) of 
+each cluster which contains one of the nearest neighbors found thus far. We use the harmonic mean to 
+ensure that $\mu$ is not dominated by outlier clusters with very high fractal dimension. 
 Intuitively, the factor by which we increase the radius should be \emph{inversely} related to the number of points found so far. 
 Additionally, when the local fractal dimension at the radius scale from the previous iteration is low, this suggests that the data 
 are relatively concentrated in that region; thus, the factor of radius increase should be \emph{directly} related to the 
@@ -306,7 +309,7 @@ local fractal dimension. Once $|H| >= k$, we return the $k$ closest points.
         \ENDWHILE
         \WHILE {$|H| < k$}
             \STATE $Q \Leftarrow \{ C: \exists p \in H \land p \in C \}$
-            \STATE $\mu \Leftarrow \frac{1}{|Q|} \sum_{C \in Q} C.lfd$
+            \STATE $\mu \Leftarrow |Q| \sum_{C \in Q} \frac{1}{C.lfd} $
             \STATE $m \Leftarrow \argmin \left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right)$
             \STATE $H.push(\rho$-NN$(root, query, m)$)
         \ENDWHILE
@@ -318,8 +321,7 @@ local fractal dimension. Once $|H| >= k$, we return the $k$ closest points.
 
 \subsubsection{Sieve Search}
 \label{subsubsec:methods:knn-search:sieve}
-With Sieve Search, we begin by letting $Q$ be a list initialized with the root cluster. This list will maintain the 
-clusters and points which are still in contention for being one of the nearest neighbors.
+With Sieve Search, we begin by letting $Q$ be a list containing the root cluster. 
 While $Q$ contains at least one cluster (i.e., $Q$ is not a list of only points), we repeat the process described in 
 the following paragraphs. 
 
@@ -328,11 +330,10 @@ we aim to find the element $q_{\tau} \in Q$ with the smallest $\delta_{max}$ suc
 $q_{\tau}$ and all elements in $Q$ with smaller $\delta_{max}$ collectively contain at least $k$ points. 
 
 To find this element, 
-we use a process similar to the Partition algorithm used in Quicksort~\cite{10.1093/comjnl/5.1.10}, adjusted to account for the varying cardinalities of elements in $Q$. Our modified algorithm finds the smallest index $i$ such 
+we use a process similar to the Partition algorithm used in Quicksort~\cite{10.1093/comjnl/5.1.10}, adjusted to account for the varying cardinalities of elements in $Q$. 
+Our modified version of this algorithm (see Algorithm 4) finds the smallest index $i$ such 
 that all elements in $Q$ with $\delta_{max}$ closer to or equal to $Q[i]$'s $\delta_{max}$ collectively have cardinality greater
-than or equal to $k$. In the process of finding this index, we alter the order of $Q$ so that all elements to left
-of index $i$ have $\delta_{max}$ less than or equal to $Q[i]$'s $\delta_{max}$ and all elements to right of index $i$
-have $\delta_{max}$ greater than $Q[i]$'s $\delta_{max}$. We consider $Q[i]$ to be our $q_{\tau}$, and our threshold 
+than or equal to $k$. We consider $Q[i]$ to be our $q_{\tau}$, and our threshold 
 $\tau$ to be $Q[i]$'s $\delta_{max}$.
 
 We then remove from $Q$ any element whose $\delta_{min}$ is greater than $\tau$. Then, for each element left 
@@ -340,10 +341,10 @@ in $Q$, if it is a leaf or contains $k$ or fewer points, we remove it and all of
 replace all remaining non-leaf clusters in $Q$ with their children. 
 
 We complete this process until $Q$ contains only points. At this point, we 
-just use [INSERT ref to quicksort partition in paper] to find the $k$th 
-nearest neighbor. Since this algorithm will also elements on the correct side of 
-the index of the $k$th nearest neighbor, the first $k$ elements in $Q$ are the $k$-nearest neighbors.
+just use Algorithm 4 to find the $k$th 
+nearest neighbor and return all points to the left of it. 
 
+This process is described in Algorithm~\ref{alg:sieve}. 
 
 \begin{algorithm} % enter the algorithm environment
     \caption{QuicksortPartition(\emph{Q, k, l, r})} % give the algorithm a caption
@@ -417,23 +418,26 @@ Sieve Search with Separate Centers is the same as Sieve Search, but with the fol
 in $Q$ are represented twice-- once as their center and once as the rest of their points. 
 Because we have that for any cluster $C$, $C.\delta \leq C.\delta_{max}$, representing the cluster 
 center separately from the rest of the points causes the threshold $\tau$ to decrease more quickly, 
-thus allowing us to eliminate some clusters from $Q$ earlier in the process.
+thus allowing us to eliminate some clusters from $Q$ earlier in the process. More discussion about 
+when this algorithm is preferable to Sieve Search is in Section 4: Results. 
 
 
 \subsubsection{Greedy Sieve}
 \label{subsubsec:methods:knn-search:greedy-search}
 
-With Greedy Sieve, we first let $Q$ be a min queue of clusters by non-increasing $\delta_{min}$. We initialize $Q$ with the root cluster.
-Let $H$ be a fixed-size ($k$) max queue of points by $\delta$. This queue starts empty.
+With Greedy Sieve, we first let $Q$ be a min queue of clusters based on $\delta_{min}$. We initialize $Q$ with the root cluster.
+Let $H$ be a fixed-size ($k$) max queue of points based on $\delta$. This queue starts empty.
 
 While $H$ has fewer than $k$ clusters or $\delta$ of the top priority element in $H$ is greater 
-than $\delta_{min}$ of the top priority element in $Q$, do the following:
+than $\delta_{min}$ of the top priority element in $Q$, we do the following:
 \begin{enumerate}
-\item While the top priority element $q$ in $Q$ is not a leaf, pop $q$ from the queue and push its children.
+\item While the top priority element $q$ in $Q$ is not a leaf, pop $q$ from $Q$ and push its children.
 \item For each point $p \in q$, push $p$ to $H$. 
-\item Pop points from $H$ until $H$ has $k$ points. 
+\item Pop from $H$ until $H$ has $k$ points. 
 \end{enumerate}
-After this process, the points left in $H$ are the $k$ nearest neighbors of $q$.
+After this process, the points left in $H$ are the $k$ nearest neighbors of $q$. 
+
+This process is described in Algorithm \ref{alg:greedy_search}.
 
 \begin{algorithm} 
 \caption{GreedySearch(\emph{root, query, k})} 

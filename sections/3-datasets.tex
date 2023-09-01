@@ -8,12 +8,12 @@ The Sloan Digital Sky Survey (SDSS) [3] Apache Point Observatory Galaxy Evolutio
 Experiment (APOGEE) [4] contains near-infrared
 spectra of approximately 130,000 stellar objects in the Milky
 Way galaxy. Each spectral datum describes a star's flux in
-Janskys ($1 Jy = 10^{-26} W \dot m^{-2} \dot Hz^{-1}$) at each of 8,575 wavelengths ranging from $\lambda$ = 1.51 µm to 1.70 µm. Thus,
+Janskys ($1 Jy = 10^{-26} W \dot m^{-2} \dot Hz^{-1}$) at each of 8,575 wavelengths ranging from $\lambda$ = 1.51 µm to 1.70 µm. 
 Thus, each datum is a real-valued vector in $\mathbb{R}_{+}^{8575}$. 
 
 Astronomers use these near-infrared spectra to achieve a better understanding of our galaxy's history. This dataset 
-is often used with Euclidean (L2) distance, cosine distance, and 1d-Wasserstein distance. As illustrated by Figure 1 in Section 2,
-this dataset is a good candidate for CAKES because it exhibits low fractal dimension. 
+is often used with Euclidean (L2) distance, cosine distance, and 1d-Wasserstein distance. As explained in~\cite{ishaq2019clustered},
+this dataset is a good candidate for entropy-scaling search algorithms like CAKES because it exhibits low fractal dimension. 
 
 \subsection{MaNGA}
 \label{subsec:datasets:manga}
@@ -39,22 +39,21 @@ This dataset is typically used with Hamming and Levenshtein distances.
 
 TODO: Add details about why this dataset is a good candidate for CAKES.
 
-\dots
 
 \subsection{ANN-Benchmarks suite}
 \label{subsec:datasets:ann-benchmarks-suite}
 
 We benchmark on a variety of datasets from the ann-benchmarks suite~\cite{Aumller2018ANNBenchmarksAB}, 
-which we list below, along with the distance functions with which they are typically used.
+listed below, along with the appropriate distance function: 
 
 \begin{itemize} 
-    \item DEEP1B (Cosine): ~1 billion 96-dimensional deep descriptors to 
+    \item DEEP1B (Cosine): $\sim$1 billion 96-dimensional deep descriptors to 
     \item Fashion-MNIST (Euclidean): 60,000 784-dimensional vector representations of images of clothing items
     \item GIST (Euclidean): 1 million 960-dimensional image descriptors 
-    \item GloVe (Cosine): ~1.2 million 25-dimensional vector representations of words
-    \item Kosarak (Jaccard): ~75 thousand ~28 thousand-dimensional binary vectors representing user clickstreams
+    \item GloVe (Cosine): $\sim$1.2 million 25-dimensional vector representations of words
+    \item Kosarak (Jaccard): $\sim$75 thousand ~28 thousand-dimensional binary vectors representing user clickstreams
     \item MNIST (Euclidean): 60,000 784-dimensional vector representations of images of handwritten digits
     \item NYTimes (Cosine): 290,000 256-dimensional vector representations of words
     \item SIFT (Euclidean): 1 million 128-dimensional image descriptors
-    \item Last.fm (Cosine): ~292, 000 65-dimensional vector representations of songs
+    \item Last.fm (Cosine): $\sim$292, 000 65-dimensional vector representations of songs
 \end{itemize}
