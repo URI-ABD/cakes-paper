@@ -5,7 +5,7 @@ In this manuscript, we are primarily concerned with $k$-nearest neighbors in a f
 vector space. Given a dataset $\textbf{X} = \{x_1 \dots x_n\}$, we define a \emph{point} or \emph{datum} $x_i \in \textbf{X}$ as a singular observation (e.g., the genome of 
 an organism, the vector representation of a single image, or any entity on which we can define a \emph{distance function}).
 
-We define a \emph{distance function} $f : (\textbf{X}, \textbf{X}) \mapsto \mathbb{R}^+ \cup \{0\}$ as a function which, 
+We define a \emph{distance function} $f : \textbf{X} \times \textbf{X} \mapsto \mathbb{R}^+ \cup \{0\}$ as a function which, 
 given two points $x, y \in \textbf{X}$, deterministically returns a non-negative real number. We require that the distance function 
 be symmetric (i.e., $f(x, y) = f(y, x)$ for all $x, y \in \textbf{X}$) and that the distance between two points $x$ and $y$ be zero if and only if $x = y$. 
 When, in addition to these constraints, the distance function obeys
@@ -14,7 +14,8 @@ Choice of distance function varies by type of data. For example, with electromag
 Euclidean (L2) and Cosine distances. With biological or string data, Hamming and Levenshtein distances are more appropriate.
 
 
-Some of our algorithms for $\rho$- and $k$-nearest neighbors search rely on the \emph{local fractal dimension} at some point in the dataset, 
+Some of our algorithms for $\rho$- and $k$-nearest neighbors search rely on the \emph{local fractal dimension} at some point 
+and length scale in the dataset, 
 which we define as: 
 \begin{equation} \frac{\text{log}(\frac{|B_X(q, r_1)|}{|B_X(q, r_2)|})}{\text{log}(\frac{r_1}{r_2}) } \label{1} \end{equation}
 where $B_X(q, r)$ is the set of points contained in a ball of radius $r$ 
@@ -23,37 +24,13 @@ We stress that this concept differs from the \emph{embedding dimension} of a dat
 consider SDSS's APOGEE dataset, wherein each datum is a nonnegative real-valued vector of length 8,575. Hence, the \emph{embedding dimension} of this dataset is 8,575. 
 However, due to physical constraints (namely, the laws that govern stellar fusion and spectral emission lines), the data are constrained to a lower-dimensional 
 manifold within the 8,575-dimensional embedding space. The \emph{local fractal dimension} is an approximation of the dimensionality of that lower-dimensional manifold at a given point, for some length scale.
-The notion that high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold is known as the \emph{manifold hypothesis}~\cite{fefferman2016testing}.
-
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=2.5in]{images/lfd_plots/lfd_plot_apogee.png}
-    \caption{Mean fractal dimension of APOGEE clusters as a function of
-    depth when clustered based on L2 norm. Each plot line represents a distinct
-    decile of fractal dimension. Beyond a depth of 56, no clusters are further
-    divided due to the minimum-cluster-cardinality stopping criteria.}
-    \label{fig:methods:lfd_apogee}
-\end{figure}
-
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=2.5in]{images/lfd_plots/lfd_plot_greengenes.png}
-    \caption{Mean fractal dimension of GreenGenes clusters as a function of
-    depth when clustered based on Hamming distance. Each plot line represents
-    a distinct decile of fractal dimension.}
-    \label{fig:methods:lfd_greengenes}
-\end{figure}
-
-Figure~\ref{fig:methods:lfd_apogee} shows the mean local fractal dimension of the APOGEE dataset at each level of hierarchical clustering, 
-under the L2 (Euclidean) distance metric. Each plot line represents a decile of fractal dimension; note that, other than the most extreme 10\% of clusters,
-virtually all clusters have a local fractal dimension of less than $2 \ll 8,575$. This suggests that APOGEE is a good candidate for use with CAKES. 
+The notion that high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold within their embedding space is known as the \emph{manifold hypothesis}~\cite{fefferman2016testing}.
 
 
-Figure~\ref{fig:methods:lfd_greengenes} shows the mean local fractal dimension of the GreenGenes dataset at each level of hierarchical clustering,
-under the Hamming distance metric. Each plot line represents a decile of fractal dimension; once again, other than the most extreme 10\% of clusters,
-virtually all clusters have a local fractal dimension of less than $2 \ll 2,250$. This suggests that GreenGenes is a good candidate for use with CAKES.
-
-
+Figures 2 and 3 in~\cite{ishaq2019clustered} illustrate the low fractal dimensions of two datasets used with $\rho$-NN search in CHESS. 
+We observe that for both APOGEE (Figure 2 in~\cite{ishaq2019clustered}) and GreenGenes (Figure 3 in~\cite{ishaq2019clustered}), other than the most extreme 10\% of clusters, virtually all clusters have a local fractal dimension of less than $2 \ll 8,575$
+and $2 \ll 2,250$ respectively.
+This suggests that APOGEE and GreenGenes are good datasets for use with entropy-scaling search algorithms like CHESS and CAKES.
 
 We define a \emph{cluster} as a set of points with a \emph{center}, a \emph{radius}, and an approximation of the \emph{local fractal dimension}.
 The \emph{center} is the geometric median of a sample of points in the \emph{cluster}, and so it is a real data point. The \emph{radius} is the
@@ -68,7 +45,7 @@ leaf clusters.
 
 With these concepts defined, we can now pose the $k$- and $\rho$- nearest neighbors search problems.
 Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, $k$-nearest neighbors search aims to find 
-the set $S_q$ such that  $|S_q| = k$ and $\forall x \in X \setminus S_q$, $f(q, x) \leq \max\{f(y, q): y \in S_q \}$; that is,
+the set $S_q$ such that  $|S_q| = k$ and $\forall x \in \textbf{X} \setminus S_q$, $f(q, x) \leq \max\{f(y, q): y \in S_q \}$; that is,
 for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$.
 We also have the $\rho$-nearest neighbors search problem, which aims to find the set $\{x \in \textbf{X}: f(q, x) \leq \rho \}$; that is, 
 find all points in $\textbf{X}$ that are at most a distance $\rho$ from $q$.
