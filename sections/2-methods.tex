@@ -68,7 +68,7 @@ leaf clusters.
 
 With these concepts defined, we can now pose the $k$- and $\rho$- nearest neighbors search problems.
 Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, $k$-nearest neighbors search aims to find 
-the set $S_q$ such that  $|S_q| = k$ and $\forall x \in X \setminus S_q$, $f(q, x) < \max\{f(y, q): y \in S_q \}$; that is,
+the set $S_q$ such that  $|S_q| = k$ and $\forall x \in X \setminus S_q$, $f(q, x) \leq \max\{f(y, q): y \in S_q \}$; that is,
 for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$.
 We also have the $\rho$-nearest neighbors search problem, which aims to find the set $\{x \in \textbf{X}: f(q, x) \leq \rho \}$; that is, 
 find all points in $\textbf{X}$ that are at most a distance $\rho$ from $q$.
@@ -125,13 +125,13 @@ is met.
 \label{alg:partition} % and a label for \ref{} commands later in the document
 \begin{algorithmic}[1] % enter the algorithmic environment
     \REQUIRE $cluster$
-    \STATE $m \leftarrow \lfloor \sqrt{|cluster.points|} \rfloor$
-    \STATE $seeds \leftarrow m$ random points from $cluster.points$
-    \STATE $c \leftarrow$ geometric median of $seeds$
-    \STATE $l \leftarrow \argmax d(c,x) \ \forall \ x \in cluster.points$
-    \STATE $r \leftarrow \argmax d(l,x) \ \forall \ x \in cluster.points$
-    \STATE $left \leftarrow \{x | x \in cluster.points \land d(l,x) \le d(r,x)\}$
-    \STATE $right \leftarrow \{x | x \in cluster.points \land d(r,x) < d(l,x)\}$
+    \STATE $m \Leftarrow \lfloor \sqrt{|cluster.points|} \rfloor$
+    \STATE $seeds \Leftarrow m$ random points from $cluster.points$
+    \STATE $c \Leftarrow$ geometric median of $seeds$
+    \STATE $l \Leftarrow \argmax d(c,x) \ \forall \ x \in cluster.points$
+    \STATE $r \Leftarrow \argmax d(l,x) \ \forall \ x \in cluster.points$
+    \STATE $left \Leftarrow \{x | x \in cluster.points \land d(l,x) \le d(r,x)\}$
+    \STATE $right \Leftarrow \{x | x \in cluster.points \land d(r,x) < d(l,x)\}$
     \IF{$|left| > 1$}
         \STATE Partition($left$)
     \ENDIF
@@ -274,7 +274,7 @@ also overlap with the query ball.
     \begin{algorithmic}[2]
         \REQUIRE $r \geq 0$
         \REQUIRE $clusters \neq \emptyset$
-        \STATE $results \leftarrow \emptyset$
+        \STATE $results \Leftarrow \emptyset$
         \IF{$clusters.left \land clusters.left \cap B_X(query, r) \neq \emptyset$}
             \IF{$clusters.left.\delta$ $\leq$ $r$ + $clusters.left.radius$}
                 \STATE $\rho$-NN($clusters.left, query, r$)
@@ -339,20 +339,20 @@ are relatively concentrated in that region; thus, the factor of radius increase 
 local fractal dimension. Once $|H| >= k$, we return the $k$ closest points.
 
 \begin{algorithm} % enter the algorithm environment
-    \caption{Repeated$\rho$-NN(\emph{tree, query, k})} % give the algorithm a caption
+    \caption{Repeated$\rho$-NN(\emph{root, query, k})} % give the algorithm a caption
     \label{alg:knn-by-rnn} % and a label for \ref{} commands later in the document
     \begin{algorithmic}[4] % enter the algorithmic environment
         \STATE $H \Leftarrow$ $\emptyset$
-        \STATE $m \Leftarrow$ $\frac{root.radius}{root.cardinality}$
+        \STATE $m \Leftarrow$ $\frac{root.radius}{|root|}$
         \WHILE {$|H| = 0$}
-            \STATE $H.push(\rho$-NN$(tree, query, m)$)
+            \STATE $H.push(\rho$-NN$(root, query, m)$)
             \STATE $m \Leftarrow 2m$
         \ENDWHILE
         \WHILE {$|H| < k$}
             \STATE $Q \Leftarrow \{ C: \exists p \in H \land p \in C \}$
-            \STATE $\mu \leftarrow \frac{1}{|Q|} \sum_{C \in Q} C.lfd$
-            \STATE $m \leftarrow \text{arg min}\left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right)$
-            \STATE $H.push(\rho$-NN$(tree, query, m)$)
+            \STATE $\mu \Leftarrow \frac{1}{|Q|} \sum_{C \in Q} C.lfd$
+            \STATE $m \Leftarrow \text{arg min}\left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right)$
+            \STATE $H.push(\rho$-NN$(root, query, m)$)
         \ENDWHILE
         \STATE $H.sort()$
         \STATE Return $H[0], H[1], \cdots H[k-1]$
@@ -398,26 +398,26 @@ the index of the $k$th nearest neighbor, the first $k$ elements in $Q$ are the $
         \ELSE 
             \STATE $pivot = l + (r - l) / 2$
             \STATE $Q.swap(pivot, r)$
-            \STATE $a \leftarrow l$
-            \STATE $b \leftarrow l$
+            \STATE $a \Leftarrow l$
+            \STATE $b \Leftarrow l$
             \WHILE {$b < r$}
                 \IF {$Q[b].\delta_{max} < Q[r].\delta_{max}$}
                     \STATE $Q.swap(a, b)$
-                    \STATE $a \leftarrow a + 1$
+                    \STATE $a \Leftarrow a + 1$
                 \ENDIF
-                \STATE $b \leftarrow b + 1$
+                \STATE $b \Leftarrow b + 1$
             \ENDWHILE
             \STATE $Q.swap(a, r)$
-            \STATE $p \leftarrow r$
-            \STATE $g \leftarrow \sum_{i=0}^{p} Q[i].cardinality$
+            \STATE $p \Leftarrow r$
+            \STATE $g \Leftarrow \sum_{i=0}^{p} |Q[i]|$
             \IF {$g = k$}
                 \STATE Return $p$
             \ELSIF {$g < k$}
                 \STATE $QuicksortPartition(Q, k, p + 1, r)$
             \ELSE 
-                \IF {$p > 0 \land g > k + Q[p - 1].cardinality$}
+                \IF {$p > 0 \land g > k + |Q[p - 1]|$}
                     \STATE $QuicksortPartition(Q, k, l, p - 1)$
-                \ELSIF {$p > 0 \land g = k + Q[p - 1].cardinality$}
+                \ELSIF {$p > 0 \land g = k + |Q[p - 1]|$}
                     \STATE Return $p - 1$
                 \ELSE
                     \STATE Return $p$
@@ -432,20 +432,20 @@ the index of the $k$th nearest neighbor, the first $k$ elements in $Q$ are the $
     \label{alg:sieve} % and a label for \ref{} commands later in the document
     \begin{algorithmic}[6] % enter the algorithmic environment
         \REQUIRE $tree$, $query$, $k$
-        \STATE $Q \leftarrow$ [$tree.root$]
+        \STATE $Q \Leftarrow$ [$tree.root$]
         \WHILE{$|Q| > k$}
-            \STATE $i \leftarrow QuicksortPartition(Q, k, 0, |Q| - 1)$
-            \STATE $\tau \leftarrow Q[i].\delta_{max}$
+            \STATE $i \Leftarrow QuicksortPartition(Q, k, 0, |Q| - 1)$
+            \STATE $\tau \Leftarrow Q[i].\delta_{max}$
             \FOR {$q \in Q$}
                 \IF {$q.\delta_{min} > \tau$}
                     \STATE $Q.pop(q)$
                 \ENDIF
             \ENDFOR
             \FOR {$q \in Q$}
-                \IF {$q.isLeaf \lor |q.cardinality| \leq k$}
+                \IF {$q.isLeaf \lor |q| \leq k$}
                     \STATE $Q.push(q.points)$
                 \ELSE
-                    \STATE $[l, r] \leftarrow q.children$
+                    \STATE $[l, r] \Leftarrow q.children$
                     \STATE $Q.push([l, r])$   
                 \ENDIF
                 \STATE $Q.pop(q)$
@@ -480,18 +480,18 @@ than $\delta_{min}$ of the top priority element in $Q$, do the following:
 After this process, the points left in $H$ are the $k$ nearest neighbors of $q$.
 
 \begin{algorithm} 
-\caption{GreedySearch(\emph{tree, query, k})} 
+\caption{GreedySearch(\emph{root, query, k})} 
 \label{alg:greedy_search} 
 \begin{algorithmic}[3]
-    \STATE $Q \leftarrow$ priority queue
-    \STATE $Q.push(tree.root)$
-    \STATE $H \leftarrow$ priority queue
-    \WHILE{$|H| < k \lor H.max.\delta > Q.min.\delta_{min}$}
-        \WHILE{$\neg Q.min.isLeaf$}
-            \STATE $[l, r] \leftarrow Q.pop().children$
+    \STATE $Q \Leftarrow$ priority queue
+    \STATE $Q.push(root)$
+    \STATE $H \Leftarrow$ priority queue
+    \WHILE{$|H| < k \lor H.pop.\delta > Q.pop.\delta_{min}$}
+        \WHILE{$\neg Q.pop.isLeaf$}
+            \STATE $[l, r] \Leftarrow Q.pop().children$
             \STATE $Q.push([l, r])$
         \ENDWHILE
-        \STATE $leaf \leftarrow Q.pop()$
+        \STATE $leaf \Leftarrow Q.pop()$
         \STATE $H.push(leaf)$
         \WHILE{$|H| > k$}
             \STATE $H.pop()$
@@ -504,69 +504,73 @@ After this process, the points left in $H$ are the $k$ nearest neighbors of $q$.
 \subsubsection{Complexity of $k$-NN Search}
 \label{paragraph:methods:knn-complexity}
 
+To bound the complexity of $k$-NN search, we group all of the "Sieve" algorithms (Sieve, 
+Sieve with Separate Centers, and Greedy Sieve) together, and handle $k$-NN by Repeated $\rho$-NN separately.
 
-
-To establish the asymptotic complexity of $k$-NN search, we adopt 
-the terminology used to describe the asymptotic complexity of $\rho$-NN search 
-in \cite{yu2015entropy}
-and address \emph{coarse search} and \emph{fine search} separately. 
+We start by considering the complexity of $k$-NN by Repeated $\rho$-NN, as this  
+is a natural extension of the complexity bounds for $\rho$-NN search described in 
+\cite{ishaq2019clustered}. For this algorithm, we adopt the terminology used in 
+\cite{ishaq2019clustered} and \cite{yu2015entropy} and address \emph{coarse search} and \emph{fine search} separately. 
 Coarse search refers to the process of identifying clusters
-which are likely to contain one of the $k$ nearest neighbors. Fine search refers to the process
+which have overlap with the query ball (i.e., which are likely to contain one of the $k$ nearest neighbors). 
+Fine search refers to the process
 of identifying the $k$ nearest neighbors among the points in those clusters identified by coarse search.
 
 
-Our $k$-NN algorithms do not use two completely distinct phases of coarse and fine search, 
-as is the case in $\rho$-NN search. Still, this distinction is useful in analyzing 
-the asymptotic complexity of $k$-NN search. In particular, we can think of the complexity of 
-coarse search as an estimate of how many clusters we examine during search, and 
-the complexity of fine search as an estimate of how many clusters we must examine all the points 
-from during search, even if we do not actually perform these as two distinct phases. 
 
 
-Our complexity bounds depend on the same technical assumption about the self-similarity of the dataset made in 
-\cite{yu2015entropy}: if call the number of points within a given 
-radius of a point the \emph{density} around that point, we assume that for this radius, the densities around all points
-are bounded within a constant multiplicative factor $\gamma$ of each other. Formally, 
-we assume that for any point $p$, query $q$, and radius 
-$\rho$, \begin{equation} \frac{1}{\gamma}|B(p, \rho)| \leq \mathbb{E}[|B(q, \rho)|] \leq \gamma |B(p, \rho)|. \label{3} \end{equation}
+% Our $k$-NN algorithms do not use two completely distinct phases of coarse and fine search, 
+% as is the case in $\rho$-NN search. Still, this distinction is useful in analyzing 
+% the asymptotic complexity of $k$-NN search. In particular, we can think of the complexity of 
+% coarse search as an estimate of how many clusters we examine during search, and 
+% the complexity of fine search as an estimate of how many clusters we must examine all the points 
+% from during search, even if we do not actually perform these as two distinct phases. 
 
-For tree search, in the worst case, we must consider [lift ideas here from chess for this justification and ask 
-if this still holds for knn]. 
 
-To determine the asymptotic complexity of fine search, we must estimate $|F|$, the 
-number of clusters we must examine all the points from during search. With $\rho$-NN 
-search, $F$ is the union of clusters which are within a distance of $r + r_c$ from the query,
-where $r$ is the search radius and $r_c$ is the radius of leaf clusters,
-as in \cite{yu2015entropy}. With $k$-NN search, however, 
-the value of $r$ is dependent on the distance to the $k$th nearest neighbor, which 
-is query-dependent. Thus, for $k$-NN search, we  adjust the definition of 
-$F$ to be the union of clusters which are within a distance of $r' + r_c$ from the query, 
-where $r'$ is the distance to the $k$th nearest neighbor and $r_c$ is defined as before.
+% Our complexity bounds depend on the same technical assumption about the self-similarity of the dataset made in 
+% \cite{yu2015entropy}: if call the number of points within a given 
+% radius of a point the \emph{density} around that point, we assume that for this radius, the densities around all points
+% are bounded within a constant multiplicative factor $\gamma$ of each other. Formally, 
+% we assume that for any point $p$, query $q$, and radius 
+% $\rho$, \begin{equation} \frac{1}{\gamma}|B(p, \rho)| \leq \mathbb{E}[|B(q, \rho)|] \leq \gamma |B(p, \rho)|. \label{3} \end{equation}
 
-By the triangle inequality, we have that $F \subseteq B(q, r' + 2r_c)$, 
-where $B(q, r' + r_c)$ is the ball of radius $r' + r_c$ centered at $q$.
-Hence, $|F| \leq |B(q, r' + 2r_c)|$.
+% For tree search, in the worst case, we must consider [lift ideas here from chess for this justification and ask 
+% if this still holds for knn]. 
 
-Now we have that \begin{align*} \mathbb{E}_q[|B(q, r' + 2r_c)|] &\leq \gamma|B(p, r' + 2r_c)| \\ %because of the assumption that density at different locations on the manifold differ by only a constant factor%
-    &\leq \gamma|B(p, r')|\left(\frac{r' + 2r_c}{r'}\right)^d \label{5}\\ %because d = lfd tells us how the number of additional hits reached scales with a change in radius, and our ratio between radii is (r' + 2r_c)/r'%
-    &\leq \gamma^2 \mathbb{E}[|B(q, r')|]\left(\frac{r'+2r_c}{r'}\right)^d \\ %using density bound again to go from a statement about an arbitrary point back to a statement about the query%
-    &\leq \gamma^2 k\left(\frac{r'+ 2r_c}{r'}\right)^d  \\   %using the fact that for k-nn, the number points in the query ball is k%
-\end{align*}
+% To determine the asymptotic complexity of fine search, we must estimate $|F|$, the 
+% number of clusters we must examine all the points from during search. With $\rho$-NN 
+% search, $F$ is the union of clusters which are within a distance of $r + r_c$ from the query,
+% where $r$ is the search radius and $r_c$ is the radius of leaf clusters,
+% as in \cite{yu2015entropy}. With $k$-NN search, however, 
+% the value of $r$ is dependent on the distance to the $k$th nearest neighbor, which 
+% is query-dependent. Thus, for $k$-NN search, we  adjust the definition of 
+% $F$ to be the union of clusters which are within a distance of $r' + r_c$ from the query, 
+% where $r'$ is the distance to the $k$th nearest neighbor and $r_c$ is defined as before.
 
-It remains to provide an estimate for $r'$. As described in \cite{yu2015entropy} bounded density assumption suggests that increase in number of
-points reached by doubling the radius has to be roughly uniform across all regions of the manifold. Thus, the global 
-average local fractal dimension over all regions of the dataset is not too different from the local fractal dimension around any particular point.
-We rely on this fact in our estimation of $r'$. 
+% By the triangle inequality, we have that $F \subseteq B(q, r' + 2r_c)$, 
+% where $B(q, r' + r_c)$ is the ball of radius $r' + r_c$ centered at $q$.
+% Hence, $|F| \leq |B(q, r' + 2r_c)|$.
 
-We let $d'$ be the average of the local fractal dimension across all clusters in the dataset and based on the bounded density assumption, we have that
-$d' \approx d_{0}$, where $d_0$ is the local fractal dimension of the root cluster (i.e., $d_0$ is the logarithm of the ratio between the cardinality of the root cluster 
-and the cardinality of the ball centered at the root clustIn this algorithm, we perform $\rho$-nearest neighbors search at equal to the radius of the cluster tree divided by
-er's center with half its radius). While, ordinarily we compute local fractal dimension 
-by comparing cardinalities of balls centered at some point at two different radii, in order to estimate $r'$, instead compare the cardinality of 
-a ball \emph{around the query} of radius $r'$ to the cardinality \emph{of the root cluster} at its radius.
+% Now we have that \begin{align*} \mathbb{E}_q[|B(q, r' + 2r_c)|] &\leq \gamma|B(p, r' + 2r_c)| \\ %because of the assumption that density at different locations on the manifold differ by only a constant factor%
+%     &\leq \gamma|B(p, r')|\left(\frac{r' + 2r_c}{r'}\right)^d \label{5}\\ %because d = lfd tells us how the number of additional hits reached scales with a change in radius, and our ratio between radii is (r' + 2r_c)/r'%
+%     &\leq \gamma^2 \mathbb{E}[|B(q, r')|]\left(\frac{r'+2r_c}{r'}\right)^d \\ %using density bound again to go from a statement about an arbitrary point back to a statement about the query%
+%     &\leq \gamma^2 k\left(\frac{r'+ 2r_c}{r'}\right)^d  \\   %using the fact that for k-nn, the number points in the query ball is k%
+% \end{align*}
 
-If $C_0$ is the root cluster, $r_0$ is its radius, then we have 
-\begin{equation} d_0 = \frac{\log{}\frac{|C_0|}{k}}{\log{}\frac{r_0}{r'}}. \label{4} \end{equation}
+% It remains to provide an estimate for $r'$. As described in \cite{yu2015entropy} bounded density assumption suggests that increase in number of
+% points reached by doubling the radius has to be roughly uniform across all regions of the manifold. Thus, the global 
+% average local fractal dimension over all regions of the dataset is not too different from the local fractal dimension around any particular point.
+% We rely on this fact in our estimation of $r'$. 
 
-Since $d_0$, $|C_0|$, $r_0$, and $k$ are all known values, we can solve equation 4 for $r'$ to get
-\begin{equation} r' = r_0\left(\frac{k}{|C_0|}\right)^{\frac{1}{d_0}}. \label{6} \end{equation}
+% We let $d'$ be the average of the local fractal dimension across all clusters in the dataset and based on the bounded density assumption, we have that
+% $d' \approx d_{0}$, where $d_0$ is the local fractal dimension of the root cluster (i.e., $d_0$ is the logarithm of the ratio between the cardinality of the root cluster 
+% and the cardinality of the ball centered at the root clustIn this algorithm, we perform $\rho$-nearest neighbors search at equal to the radius of the cluster tree divided by
+% er's center with half its radius). While, ordinarily we compute local fractal dimension 
+% by comparing cardinalities of balls centered at some point at two different radii, in order to estimate $r'$, instead compare the cardinality of 
+% a ball \emph{around the query} of radius $r'$ to the cardinality \emph{of the root cluster} at its radius.
+
+% If $C_0$ is the root cluster, $r_0$ is its radius, then we have 
+% \begin{equation} d_0 = \frac{\log{}\frac{|C_0|}{k}}{\log{}\frac{r_0}{r'}}. \label{4} \end{equation}
+
+% Since $d_0$, $|C_0|$, $r_0$, and $k$ are all known values, we can solve equation 4 for $r'$ to get
+% \begin{equation} r' = r_0\left(\frac{k}{|C_0|}\right)^{\frac{1}{d_0}}. \label{6} \end{equation}

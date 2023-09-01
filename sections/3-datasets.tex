@@ -1,18 +1,6 @@
 
-\section{Datasets and Distance Functions}
+\section{Datasets}
 \label{sec:datasets-and-distance-functions}
-
-Provide details on the datasets we use for benchmarks.
-
-Add interesting t-SNE or UMAP embeddings of datasets.
-For example~\ref{fig:discussion:umap-annthyroid-euclidean}
-
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=2.5in]{images/umaps/annthyroid-euclidean-umap2d.png}
-    \caption{UMAP embedding of Annthyroid data with the Euclidean distance function.}
-    \label{fig:discussion:umap-annthyroid-euclidean}
-\end{figure}
 
 \subsection{APOGEE-2}
 \label{subsec:datasets:apogee-2}
@@ -56,22 +44,17 @@ TODO: Add details about why this dataset is a good candidate for CAKES.
 \subsection{ANN-Benchmarks suite}
 \label{subsec:datasets:ann-benchmarks-suite}
 
-deep1b: cosine
+We benchmark on a variety of datasets from the ann-benchmarks suite~\cite{Aumller2018ANNBenchmarksAB}, 
+which we list below, along with the distance functions with which they are typically used.
 
-fashion-mnist: euclidean
-
-gist: euclidean
-
-glove: cosine
-
-kosarak: jaccard
-
-mnist: euclidean
-
-nytimes: cosine
-
-sift: euclidean
-
-last.fm: cosine
-
-\dots
+\begin{itemize} 
+    \item DEEP1B (Cosine): ~1 billion 96-dimensional deep descriptors to 
+    \item Fashion-MNIST (Euclidean): 60,000 784-dimensional vector representations of images of clothing items
+    \item GIST (Euclidean): 1 million 960-dimensional image descriptors 
+    \item GloVe (Cosine): ~1.2 million 25-dimensional vector representations of words
+    \item Kosarak (Jaccard): ~75 thousand ~28 thousand-dimensional binary vectors representing user clickstreams
+    \item MNIST (Euclidean): 60,000 784-dimensional vector representations of images of handwritten digits
+    \item NYTimes (Cosine): 290,000 256-dimensional vector representations of words
+    \item SIFT (Euclidean): 1 million 128-dimensional image descriptors
+    \item Last.fm (Cosine): ~292, 000 65-dimensional vector representations of songs
+\end{itemize}

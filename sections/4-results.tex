@@ -1,7 +1,20 @@
 \section{Results}
 \label{sec:results}
 
-Write about results \dots
+
+Figure [ADD FIGURE NUMBER] is a violin plot which shows the performance of our algorithms
+on [ADD DATASET] under [ADD DISTANCE FUNCTION] distance, using [ADD NUMBER OF SHARDS] shards.
+On the horizontal axis, we have each of the $k$-NN algorithms described in Section 2.4, as well as  
+an additional "algorithm" which we call "Oracle $\rho$-NN" [REPLACE WITH ACTUAL NAME].  With "Oracle $\rho$-NN", we perform $\rho$-NN search using the 
+distance to the $k$-th nearest neighbor as the radius. Of course, as it is impossible to
+to know the distance to the $k$-th nearest neighbor \emph{a priori}, this algorithm 
+is useful only for benchmarking purposes.
+
+The vertical axis for Figure [ADD FIGURE NUMBER] is the time query in seconds on a logarithmic scale. 
+As shown in the key, different colors represent different values of $k$. 
+The plot shows the distribution of query times for each algorithm for each value of $k$. 
+Because of the logarithmic scale of the vertical axis, it is unsurprising that we 
+see longer lower tails than upper tails for many of these algorithms. 
 
 Specs of Ark, and maybe M1 MacBook Air and Dell XPS.
 
@@ -9,7 +22,7 @@ Ark: a 28-core Intel Xeon E5-2690 v4 2.60GHz, 512GB RAM and CentOS 7 Linux with 
 
 Macbook Air: 8-core (4 performance, 4 efficiency) Apple M1 processor with 16GB RAM, macOS 12.1. Rust 1.62, Python 3.9.4
 
-Provide link to source code on GitHub.
+https://github.com/URI-ABD/clam
 
 For each pair $(X, f)$ and a small selection of depths, measure:
 \begin{enumerate}[1.]
