@@ -45,7 +45,7 @@ leaf clusters.
 
 With these concepts defined, we can now pose the $k$- and $\rho$- nearest neighbors search problems.
 Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, $k$-nearest neighbors search aims to find 
-the set $S_q$ such that  $|S_q| = k$ and $\forall x \in \textbf{X} \setminus S_q$, $f(q, x) \leq \max\{f(y, q): y \in S_q \}$; that is,
+the set $S_q$ such that  $|S_q| = k$ and $\forall x \in \textbf{X} \setminus S_q$, $f(x, q) \leq \max\{f(y, q): y \in S_q \}$; that is,
 for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$.
 We also have the $\rho$-nearest neighbors search problem, which aims to find the set $\{x \in \textbf{X}: f(q, x) \leq \rho \}$; that is, 
 find all points in $\textbf{X}$ that are at most a distance $\rho$ from $q$.
@@ -61,7 +61,7 @@ properties:
 
 We define \emph{singletons} as clusters which either contain a single point (i.e., have cardinality 1) or which contain 
 many instances of the same point (i.e., have cardinality greater than 1 but contain only one unique point). Singletons clearly 
-have zero radius, and so $\delta_{max} = \delta_{min} = \delta$ for these clusters. Hence, we sometimes overload the above 
+have zero radius, and so $\delta_{max}  = \delta = \delta_{min}$ for these clusters. Hence, we sometimes overload the above 
 notation to refer to distance from a query to a point; in these cases, we also have that $\delta_{max} = \delta = \delta_{min}$.
 
 
@@ -93,27 +93,28 @@ from $l$ is designated the \emph{right pole}. We then partition the cluster into
 left child contains all points in the cluster which are closer to $l$ than to $r$, and the right child contains all 
 points in the cluster which are closer to $r$ than to $l$. Without loss of generality, we assign to the left child 
 those points which are equidistant from $l$ and $r$. Starting from a root-cluster containing the entire dataset, we 
-repeat this procedure until each leaf contains only one datum or until some other user-specified stopping criterion 
-is met.
+repeat this procedure until each leaf contains only one datum or some other user-specified stopping criterion 
+is met. 
+
+This process is described in Algorithm \ref{alg:partition}.
 
 
 \begin{algorithm} % enter the algorithm environment
-\caption{Cluster Partition} % give the algorithm a caption
+\caption{ClusterPartition(\emph{C})} % give the algorithm a caption
 \label{alg:partition} % and a label for \ref{} commands later in the document
 \begin{algorithmic}[1] % enter the algorithmic environment
-    \REQUIRE $cluster$
-    \STATE $m \Leftarrow \lfloor \sqrt{|cluster.points|} \rfloor$
-    \STATE $seeds \Leftarrow m$ random points from $cluster.points$
+    \STATE $m \Leftarrow \lfloor \sqrt{|C|} \rfloor$
+    \STATE $seeds \Leftarrow m$ random points from $C.points$
     \STATE $c \Leftarrow$ geometric median of $seeds$
-    \STATE $l \Leftarrow \argmax d(c,x) \ \forall \ x \in cluster.points$
-    \STATE $r \Leftarrow \argmax d(l,x) \ \forall \ x \in cluster.points$
-    \STATE $left \Leftarrow \{x | x \in cluster.points \land d(l,x) \le d(r,x)\}$
-    \STATE $right \Leftarrow \{x | x \in cluster.points \land d(r,x) < d(l,x)\}$
+    \STATE $l \Leftarrow \argmax d(c,x) \ \forall \ x \in C.points$
+    \STATE $r \Leftarrow \argmax d(l,x) \ \forall \ x \in C.points$
+    \STATE $left \Leftarrow \{x | x \in C.points \land d(l,x) \le d(r,x)\}$
+    \STATE $right \Leftarrow \{x | x \in C.points \land d(r,x) < d(l,x)\}$
     \IF{$|left| > 1$}
-        \STATE Partition($left$)
+        \STATE ClusterPartition($left$)
     \ENDIF
     \IF{$|right| > 1$}
-        \STATE Partition($right$)
+        \STATE ClusterPartition($right$)
     \ENDIF
 \end{algorithmic}
 \end{algorithm}
@@ -122,7 +123,7 @@ is met.
 \label{subsubsec:methods:dataset-depth-first-reordering}
 
 CAKES also improves upon CHESS by reordering the dataset. In CHESS, each cluster stored a list of indices into the dataset, 
-which we used during search to retrieve a cluster's points from the dataset. 
+which we used during search to retrieve a cluster's points. 
 Though this approach allowed us to retrieve the points in constant 
 time, its memory cost was prohibitively high; since each cluster stores indices for each of its
 points, for a dataset with cardinality $n$, we store a total of $n$ indices at each depth in the tree.
@@ -132,40 +133,39 @@ With $\log{}n$ levels in the tree, this approach had $\mathcal{O}(n\log{}n)$ mem
 One may think to improve this memory cost to $\mathcal{O}(n)$ by storing only the indices of points at 
 the leaf cluster level.
 This approach, however, introduces an $\mathcal{O}(n)$ time cost whenever we need to find the indices for 
-a non-leaf cluster, since it a traversal of the subtree rooted at that cluster.
+a non-leaf cluster, since it requires a traversal of the subtree rooted at that cluster.
 
 
 In this work, we introduce a new approach, wherein after building the cluster tree, we reorder the dataset 
 so that points are stored in a depth-first order. Then, within each cluster, we need only 
-store the cluster's cardinality and an \emph{offset} to access the cluster's points from the dataset. Parent clusters 
-have the same offset as their left child, and right child clusters have an offset equal to their sibling's offset
-plus their siblings's cardinality. With no additional memory cost nor time cost for retrieving a points during search, 
+store the cluster's cardinality and an \emph{offset} to access the cluster's points from the dataset. Each parent cluster 
+have the same offset as its left child, and each right child has an offset equal to their sibling's offset
+plus their siblings's cardinality. With no additional memory cost nor time cost for retrieving points during search, 
 dataset depth-first reordering offers significant improvements over the approach used in CHESS.
 
 
 \subsubsection {Scaling Behavior of Cluster Radii}
 \label{subsubsec:methods:guaranteed-decrease-in-cluster-radii}
 While it may be tempting to assume that cluster radii decrease with each application of Cluster Partition (refer to Algorithm \ref{alg:partition}), unfortunately, this assumption is incorrect. 
-Fortunately, we \emph{can} make some guarantees about the scaling behavior of cluster radii; in particular, we can guarantee that cluster radii will stop increasing after at most 
-$d$ partitions, where $d$ is the dimensionality of the dataset.  In the remainder of this subsection, we prove this guarantee. 
+Fortunately, we \emph{can} make some guarantees about the scaling behavior of cluster radii; in particular, we prove in this section that cluster radii will stop increasing after at most 
+$d$ partitions, where $d$ is the dimensionality of the dataset. 
 
-
-We can describe a $d$-dimensional distribution by choosing some set of $d$ mutually orthogonal axes.
-Let $2R$ be the maximum pairwise distance among the instances in the dataset. 
-We choose the axes such that the two points that are $2R$ apart lie along one of the axes. 
+We can describe a $d$-dimensional distribution of data by choosing some set of $d$ mutually orthogonal axes.
+Let $2R$ be the maximum pairwise distance among the points in the dataset. 
+We choose the axes such that the two points that are $2R$ apart lie \emph{along one of the axes}. 
 Thus, a $d$-dimensional hyper-sphere of radius $R$ would bound the dataset. 
 In the worst case, (i.e., with a uniform-density distribution that fills the $d$-sphere), our axes will be such that $2R$ is the maximum pairwise distance along every axis. 
 Such a distribution would also produce a balanced clustering.
 
 
-Partition will select a maximally distant pair of points to use as poles, i.e., it will choose one of the $d$ axes along
+In this case, Cluster Partition will select a maximally distant pair of points to use as poles, i.e., it will choose one of the $d$ axes along
 which to split the cluster into two children. 
 After one application of Algorithm \ref{alg:partition}, the maximum pairwise distance along that axis will be
 bounded above by $R$. 
-The next recursive Partition will select another of the $d$ axes. 
+The next recursive Cluster Partition will select another of the $d$ axes. 
 Thus, after at most $d$ applications of Algorithm \ref{alg:partition}, the
 maximum pairwise distance along each axis will be bounded above by $R$. 
-The overall (i.e., not restricted to be along one axis) maximum pairwise distance 
+The overall (i.e., not restricted to one axis) maximum pairwise distance 
 will be bounded above by $R\sqrt{2}$ by, for example, two instances that lie at the extrema of different axes. 
 
 Thus, starting with a cluster $C$ of radius $R$, after at most $d$ Partitions, the descendants of $C$ will each have radius
@@ -175,7 +175,7 @@ most $d$ applications of Algorithm \ref{alg:partition}.
 
 Note that, in practice, we never see a balanced clustering. Cluster Partition  produces unbalanced trees due to the varying density of the sampling 
 in different regions of the manifold and the low dimensional "shape" of the manifold. Further, the cluster radii decrease by a factor much larger than 
-$\frac{\sqrt{2}}{2}$ in practice, and the upper bound of $d$ applications of Algorithm \ref{alg:partition} is seldom realized. 
+$\frac{\sqrt{2}}{2}$ in practice, and the upper bound of $d$ partitions is seldom realized. 
 
 
 \begin{figure}[ht!]
@@ -187,29 +187,8 @@ $\frac{\sqrt{2}}{2}$ in practice, and the upper bound of $d$ applications of Alg
 
 \subsubsection {Complexity}
 \label{subsubsec:methods:clustering:complexity}
-%A lot of this is lifted from the CHESS paper and could probably get cut out. % 
 
-To analyze the computational complexity of hierarchical
-clustering, we start by considering the top level of the hierarchy. 
-For a data set with cardinality $n$, we have $n$ data points at this 
-level, from which we randomly choose a sample of $\sqrt{n}$ points. 
-We compute distances between every pair of seeds in this sample, 
-thus making $n$ distance comparisons. Based on these distances 
-we compute the center and left and right poles. Once the poles 
-have been chosen, every data point except for the two poles is 
-compared to both poles, for an additional 2$n$ comparisons. 
-
-
-In general, at depth $d$ of
-the hierarchical tree, we have $\frac{n}{2^d}$ points per cluster (assuming a
-perfectly balanced clustering), $\sqrt{\frac{n}{2^d}}$ seeds, $\frac{n}{2^d}$
-pairwise seed comparisons, and $\frac{2n}{2^{d}}$ additional comparisons when 
-each other data point is compared to the two poles, for a total of $\frac{3n}{2^d}$
-distance comparisons. At each level, there are $2^d$ clusters,
-so the total number of distance comparisons per level is
-3$n$. Thus, the asymptotic complexity in terms of distance
-comparisons for a cluster tree of depth $d$ is $\mathcal{O}(dn)$
-
+The asympotitic complexity of Partition is the same as described in~\cite{ishaq2019clustered}
 By using an approximate partitioning with a $\sqrt{n}$ sample, we achieve $\mathcal{O}(n)$ cost of 
 partitioning and $\mathcal{O}(n \log n)$ cost of building the tree. This is a significant improvement over 
 exact partitioning and tree-building, which have $\mathcal{O}(n^2)$ and $\mathcal{O}(n^2 \log n)$ costs respectively.
@@ -299,7 +278,7 @@ have been found.
 Let $H$ be the set of nearest neighbors found thus far.
 Search starts with a radius $m$ equal to the radius of the root cluster divided by
 the cardinality of the dataset. We perform $\rho$-NN search with radius $m$. 
-If no points are within a distance $m$ of the query, we increase the radius by a factor of 
+If no points are within a distance $m$ of the query, we increase the radius by a factor of arg
 2 and perform $\rho$-NN search again, repeating until at least one point is found, i.e., 
 until $|H| > 0$.
 
@@ -308,7 +287,7 @@ Once $|H| > 0$, we continue to perform $\rho$-NN search, but instead of
 increasing the radius by a factor of 2 on each iteration, we increase it by a factor determined 
 by the local fractal dimension of the clusters containing the points found so far. In particular, 
 we increase the radius by a factor of 
-\begin{equation} \text{arg min}\left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right) \label{2} \end{equation}
+\begin{equation} \argmin \left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right) \label{2} \end{equation}
 where $\mu$ is the local fractal dimension (abbreviated lfd in algorithm below) in the region around the query point.
 Intuitively, the factor by which we increase the radius should be \emph{inversely} related to the number of points found so far. 
 Additionally, when the local fractal dimension at the radius scale from the previous iteration is low, this suggests that the data 
@@ -328,7 +307,7 @@ local fractal dimension. Once $|H| >= k$, we return the $k$ closest points.
         \WHILE {$|H| < k$}
             \STATE $Q \Leftarrow \{ C: \exists p \in H \land p \in C \}$
             \STATE $\mu \Leftarrow \frac{1}{|Q|} \sum_{C \in Q} C.lfd$
-            \STATE $m \Leftarrow \text{arg min}\left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right)$
+            \STATE $m \Leftarrow \argmin \left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right)$
             \STATE $H.push(\rho$-NN$(root, query, m)$)
         \ENDWHILE
         \STATE $H.sort()$
