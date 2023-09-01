@@ -53,11 +53,13 @@
 
 % Attempt to make hyperref and algorithmic work together better:
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
+\makeatletter
 \newcommand{\linebreakand}{%
   \end{@IEEEauthorhalign}
   \hfill\mbox{}\par
   \mbox{}\hfill\begin{@IEEEauthorhalign}
 }
+\makeatother
 
 \begin{document}
 \title{CLAM-Accelerated K-Nearest Neighbors Entropy-Scaling Search of Large High-Dimensional Datasets via an Actualization of the Manifold Hypothesis}
