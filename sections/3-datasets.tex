@@ -2,53 +2,65 @@
 \section{Datasets}
 \label{sec:datasets-and-distance-functions}
 
-\subsection{APOGEE-2}
-\label{subsec:datasets:apogee-2}
-The Sloan Digital Sky Survey (SDSS)~\cite{blanton2017sdss} Apache Point Observatory Galaxy Evolution
-Experiment (APOGEE)~\cite{alam2015eleventh} contains near-infrared
-spectra of approximately 130,000 stellar objects in the Milky
-Way galaxy. Each spectral datum describes a star's flux in
-Janskys ($1 Jy = 10^{-26} W \dot m^{-2} \dot Hz^{-1}$) at each of 8,575 wavelengths ranging from $\lambda$ = 1.51 µm to 1.70 µm. 
-Thus, each datum is a real-valued vector in $\mathbb{R}_{+}^{8575}$. 
-
-Astronomers use these near-infrared spectra to achieve a better understanding of our galaxy's history. This dataset 
-is often used with Euclidean (L2) distance, cosine distance, and 1d-Wasserstein distance. As explained in~\cite{ishaq2019clustered},
-this dataset is a good candidate for entropy-scaling search algorithms like CAKES because it exhibits low fractal dimension. 
-
-\subsection{MaNGA}
-\label{subsec:datasets:manga}
-SDSS's Mapping Nearby Galaxies at APO (MaNGA)~\cite{Talbot2022SDSSIVMA} contains spectral measurements across the face of each of 
-about 10,000 galaxies across 2,700 deg$^2$. 
-
-Like APOGEE, MaNGA helps astronomers understand the history of galaxies throughout their entire lifespan. This 
-dataset is typically used with Euclidean (L2) distance, cosine distance, and 2d-Wasserstein distance. 
-
-
-\subsection{Silva 18S}
-\label{subsec:datasets:silva-18s}
-
-Silva 18S contains ribosomal DNA sequences of approximately 2.25 
-million genomes with aligned length of 50,000 letters. 
-
-
-These sequences help biologists better understand the evolutionary relationships between organisms. 
-This dataset is typically used with Hamming and Levenshtein distances. 
 
 
 \subsection{ANN-Benchmarks suite}
 \label{subsec:datasets:ann-benchmarks-suite}
 
 We benchmark on a variety of datasets from the ann-benchmarks suite~\cite{Aumller2018ANNBenchmarksAB}, 
-listed below, along with the appropriate distance function: 
+listed below, along with the appropriate distance function.
+Table~\ref{table:datasets:summary} summarizes the properties of these datasets.
 
-\begin{itemize} 
-    \item DEEP1B (Cosine): $\sim$1 billion 96-dimensional deep descriptors to 
-    \item Fashion-MNIST (Euclidean): 60,000 784-dimensional vector representations of images of clothing items
-    \item GIST (Euclidean): 1 million 960-dimensional image descriptors 
-    \item GloVe (Cosine): $\sim$1.2 million 25-dimensional vector representations of words
-    \item Kosarak (Jaccard): $\sim$75 thousand ~28 thousand-dimensional binary vectors representing user clickstreams
-    \item MNIST (Euclidean): 60,000 784-dimensional vector representations of images of handwritten digits
-    \item NYTimes (Cosine): 290,000 256-dimensional vector representations of words
-    \item SIFT (Euclidean): 1 million 128-dimensional image descriptors
-    \item Last.fm (Cosine): $\sim$292, 000 65-dimensional vector representations of songs
-\end{itemize}
+% \begin{itemize} 
+%     \item DEEP1B (Cosine): $\sim$1 billion 96-dimensional deep descriptors to 
+%     \item Fashion-MNIST (Euclidean): 60,000 784-dimensional vector representations of images of clothing items
+%     \item GIST (Euclidean): 1 million 960-dimensional image descriptors 
+%     \item GloVe (Cosine): $\sim$1.2 million 25-dimensional vector representations of words
+%     \item Kosarak (Jaccard): $\sim$75 thousand ~28 thousand-dimensional binary vectors representing user clickstreams
+%     \item MNIST (Euclidean): 60,000 784-dimensional vector representations of images of handwritten digits
+%     \item NYTimes (Cosine): 290,000 256-dimensional vector representations of words
+%     \item SIFT (Euclidean): 1 million 128-dimensional image descriptors
+%     \item Last.fm (Cosine): $\sim$292, 000 65-dimensional vector representations of songs
+% \end{itemize}
+
+
+
+\begin{table}[!t]
+    % \renewcommand{\arraystretch}{1.15}
+    \caption{Datasets used in benchmarks.}
+    \label{table:datasets:summary}
+    \vskip 0.15in
+    \begin{center}
+    \begin{small}
+    \begin{sc}
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Dataset} & \textbf{Distance}  &\textbf{Cardinality}  & \textbf{Dim.}  \\
+    &                &                  &                         \\
+    \hline
+    nytimes          & cosine              & 290,000            & 256       \\
+    \hline
+    fashion-mnist    & euclidean              & 60,000             & 784       \\
+    \hline 
+    gist             & euclidean              & 1,000,000          & 960       \\
+    \hline
+    glove-25         & cosine              & 1,183,514          & 25        \\
+    \hline
+    glove-100        & cosine              & 1,183,514          & 100       \\
+    \hline
+    sift             & euclidean              & 1,000,000          & 128       \\
+    \hline
+    deep-image       & cosine              & 9,990,000          & 96        \\
+    \hline
+    mnist            & euclidean              & 60,000             & 784       \\
+    \hline
+    glove-50         & cosine              & 1,183,514          & 50        \\
+    \hline
+    lastfm           & cosine              & 292,385            & 65        \\
+    \hline
+    \end{tabular}
+    \end{sc}
+    \end{small}
+    \end{center}
+    \vskip -0.1in
+    \end{table}

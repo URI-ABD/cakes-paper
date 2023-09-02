@@ -102,7 +102,7 @@ This process is described in Algorithm \ref{alg:partition}.
 \begin{algorithm} % enter the algorithm environment
 \caption{ClusterPartition(\emph{C})} % give the algorithm a caption
 \label{alg:partition} % and a label for \ref{} commands later in the document
-\begin{algorithmic}[1] % enter the algorithmic environment
+\begin{algorithmic} % enter the algorithmic environment
     \STATE $m \Leftarrow \lfloor \sqrt{|C|} \rfloor$
     \STATE $seeds \Leftarrow m$ random points from $C.points$
     \STATE $c \Leftarrow$ geometric median of $seeds$
@@ -180,7 +180,7 @@ $\frac{\sqrt{2}}{2}$ in practice, and the upper bound of $d$ partitions is seldo
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=2.5in]{images/geometry/geometry.pdf}
+    \includegraphics[width=3.4in]{images/geometry/geometry.pdf}
     \caption{Scaling Behavior of Radii in a Two-Dimensional Uniform-Density Disk. $R$ 
     denotes the radius of the root cluster $C$, and $o$ denotes its center. The right 
     triangle formed by $o$, $o'$, and $y+$ in $C'$ shows that $R \leq R'$, where $R'$ is the radius of $C'$.
@@ -233,7 +233,7 @@ also overlap with the query ball. This improvement is demonstrated in Algorithm 
 \begin{algorithm} 
     \caption{$\rho$-NN(\emph{clusters, query, r})} 
     \label{alg:rnn} 
-    \begin{algorithmic}[2]
+    \begin{algorithmic}
         \REQUIRE $r \geq 0$
         \REQUIRE $clusters \neq \emptyset$
         \STATE $results \Leftarrow \emptyset$
@@ -259,7 +259,18 @@ also overlap with the query ball. This improvement is demonstrated in Algorithm 
     \end{algorithm}
 
 
-The asymptotic complexity of $\rho$-nearest neighbors is the same as in ~\cite{ishaq2019clustered}.
+The asymptotic complexity of $\rho$-nearest neighbors is the same as in ~\cite{ishaq2019clustered}, namely:
+
+\begin{gather}
+    \mathcal{O}\Bigg(
+    \underbrace{\log_2 \mathcal{N}_{\hat{r_c}}(D)}_{\textrm{metric entropy}} +
+    \overbrace{\left|B_D(q,r)\right|}^{\textrm{output size}}
+    \underbrace{\left(\frac{r+2\hat{r_c}}{r}\right)^d}_{\textrm{scaling factor}}
+     \Bigg)
+     \label{hierarchical-complexity}
+\end{gather}
+
+where $\hat{r_c}$ is the \textit{mean} cluster radius of leaf clusters, $\mathcal{N}_{\hat{r_c}}(D)$ is the metric entropy at that radius, $B_D(q,r)$ is a ball of data points around the query $q$ at search radius $r$, and $d$ is the factal dimension around the query in a region of radius $r$.
 
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
 \label{subsec:methods:knn-search}
@@ -305,7 +316,7 @@ local fractal dimension. Once $|H| >= k$, we return the $k$ closest points.
 \begin{algorithm} % enter the algorithm environment
     \caption{Repeated$\rho$-NN(\emph{root, query, k})} % give the algorithm a caption
     \label{alg:knn-by-rnn} % and a label for \ref{} commands later in the document
-    \begin{algorithmic}[4] % enter the algorithmic environment
+    \begin{algorithmic} % enter the algorithmic environment
         \STATE $H \Leftarrow$ $\emptyset$
         \STATE $m \Leftarrow$ $\frac{root.radius}{|root|}$
         \WHILE {$|H| = 0$}
@@ -417,7 +428,7 @@ This process is described in Algorithm~\ref{alg:sieve}.
 \begin{algorithm} % enter the algorithm environment
     \caption{Sieve(\emph{tree, query, k})} % give the algorithm a caption
     \label{alg:sieve} % and a label for \ref{} commands later in the document
-    \begin{algorithmic}[6] % enter the algorithmic environment
+    \begin{algorithmic} % enter the algorithmic environment
         \REQUIRE $tree$, $query$, $k$
         \STATE $Q \Leftarrow$ [$tree.root$]
         \WHILE{$|Q| > k$}
@@ -472,7 +483,7 @@ This process is described in Algorithm \ref{alg:greedy_search}.
 \begin{algorithm} 
 \caption{GreedySearch(\emph{root, query, k})} 
 \label{alg:greedy_search} 
-\begin{algorithmic}[3]
+\begin{algorithmic}
     \STATE $Q \Leftarrow$ priority queue
     \STATE $Q.push(root)$
     \STATE $H \Leftarrow$ priority queue
