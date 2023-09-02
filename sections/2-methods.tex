@@ -193,7 +193,7 @@ $\frac{\sqrt{2}}{2}$ in practice, and the upper bound of $d$ partitions is seldo
 \subsubsection {Complexity}
 \label{subsubsec:methods:clustering:complexity}
 
-The asympotitic complexity of Partition is the same as described in~\cite{ishaq2019clustered}
+The asymptotic complexity of Cluster Partition is the same as described in~\cite{ishaq2019clustered}
 By using an approximate partitioning with a $\sqrt{n}$ sample, we achieve $\mathcal{O}(n)$ cost of 
 partitioning and $\mathcal{O}(n \log n)$ cost of building the tree. This is a significant improvement over 
 exact partitioning and tree-building, which have $\mathcal{O}(n^2)$ and $\mathcal{O}(n^2 \log n)$ costs respectively.
@@ -505,6 +505,15 @@ This process is described in Algorithm \ref{alg:greedy_search}.
 \subsubsection{Complexity of Sieve Algorithms}
 \label{paragraph:methods:sieve-complexity}
 
+We group the Sieve-based algorithms together, as their complexity analyses are similar.
+
+
+The complexity of Sieve Search is dominated by the complexity of our modified Quicksort Partition algorithm,
+which, like the original Quicksort partition algorithm described in~\cite{10.1093/comjnl/5.1.10}, has $\mathcal{O}(n)$ complexity, 
+where $n$ is the length of the input list. While the cardinality of clusters is greater than $k$, 2 is bounded 
+above by 2, as $Q$ will contain at most two clusters (assuming the worst case, which is a balanced clustering). 
+Once the cardinality of clusters in $Q$ is less than or equal to $k$, the cardinality of $Q$ is bounded above 
+by $2k$, since, in the worst case, every cluster is a non-leaf and  
 
 % Our $k$-NN algorithms do not use two completely distinct phases of coarse and fine search, 
 % as is the case in $\rho$-NN search. Still, this distinction is useful in analyzing 
