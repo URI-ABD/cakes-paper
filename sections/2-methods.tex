@@ -420,7 +420,7 @@ in $Q$, if it is a leaf or contains $k$ or fewer points, we remove it and all of
 replace all remaining non-leaf clusters in $Q$ with their children. 
 
 We complete this process until $Q$ contains only points. At this point, we 
-just use Algorithm 4 to find the $k$th 
+just use the Partition algorithm to find the $k$th 
 nearest neighbor and return all points to the left of it. 
 
 This process is described in Algorithm~\ref{alg:sieve}. 
