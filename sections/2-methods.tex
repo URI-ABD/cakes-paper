@@ -267,7 +267,7 @@ The asymptotic complexity of $\rho$-nearest neighbors is the same as in ~\cite{i
     \mathcal{O}\Bigg(
     \underbrace{\log_2 \mathcal{N}_{\hat{r_c}}(D)}_{\textrm{metric entropy}} +
     \overbrace{\left|B_D(q,r)\right|}^{\textrm{output size}}
-    \underbrace{\left(\frac{r+2\hat{r_c}}{r}\right)^d}_{\textrm{scaling factor}}
+    \underbrace{\left(1+\frac{2\hat{r_c}}{r}\right)^d}_{\textrm{scaling factor}}
      \Bigg)
      \label{hierarchical-complexity}
 \end{gather}
@@ -365,38 +365,40 @@ the complexity of coarse search for $k$-NN by Repeated $\rho$-NN is $\mathcal{O}
 
 To determine the asymptotic complexity of fine search, we must estimate $|F|$, the 
 number of clusters for which we must look at all of the cluster's points. With $\rho$-NN 
-search, $F$ is the union of clusters which are within a distance of $r + r_c$ from the query,
-where $r$ is the search radius and $r_c$ is the radius of leaf clusters,
+search, $F$ is the union of clusters which are within a distance of $r + \hat{r_c}$ from the query,
+where $r$ is the search radius and $\hat{r_c}$ is the mean radius of leaf clusters,
 as in \cite{yu2015entropy}. With $k$-NN by Repeated $\rho$-NN, however, 
 the value of $r$ is dependent on the distance to the $k$th nearest neighbor, which 
 is query-dependent. Thus, for $k$-NN by Repeated $\rho$-NN, we adjust the definition of 
-$F$ to be the union of clusters which are within a distance of $r' + r_c$ from the query, 
-where $r'$ is the distance to the $k$th nearest neighbor and $r_c$ is defined as before.
+$F$ to be the union of clusters which are within a distance of $r' + \hat{r_c}$ from the query, 
+where $r'$ is the distance to the $k$th nearest neighbor and $\hat{r_c}$ is defined as before.
 
-The work in~\cite{yu2015entropy} showed that \begin{equation} |F| \leq \gamma |B(q, r')|\left(\frac{r'+ 2r_c}{r'}\right)^d \label{3} \end{equation} where $\gamma$ is a constant. 
+The work in~\cite{yu2015entropy} showed that \begin{equation} |F| \leq \gamma |B(q, r')|\left(1+ \frac{2\hat{r_c}}{r'}\right)^d \label{3} \end{equation} where $\gamma$ is a constant. 
 By definition of 
-$r'$, we have that $|B(q, r')| = k$. Thus, we have that \begin{equation} |F| \leq \gamma k\left(\frac{r'+ 2r_c}{r'}\right)^d. \label{4} \end{equation} It remains to provide an estimate for $r'$. 
+$r'$, we have that $|B(q, r')| = k$. Thus, we have that \begin{equation} |F| \leq \gamma k\left(1+ \frac{2\hat{r_c}}{r'}\right)^d. \label{4} \end{equation} It remains to provide an estimate for $r'$. 
 To do this, we once again rely on the assumption that the query is from the same distribution as the rest of the data, 
 and thus the local fractal dimension at the query point is not significantly different than that of nearby clusters.
 
 
-We let $d_i$ be the local fractal dimension of some cluster $C_i$ near the query point (i.e., some cluster identified during coarse search).
+
+We let $\hat{d}$ be the mean of the local fractal dimensions of the clusters near the query point (i.e., the cluster identified during coarse search).
 While ordinarily we compute local fractal dimension 
 by comparing cardinalities of two balls centered at \emph{the same} point at two different radii, in order to estimate $r'$, 
-we instead compare the cardinality of a ball \emph{around the query} of radius $r'$ to the cardinality \emph{of cluster $C_i$} at its radius $r_i$.
-We justify this approach by noting that, since the query is from the same distribution as the rest of the data, we could "drag" the query to 
-the center of $C_i$ without significantly changing the local fractal dimension at the query point. 
+we instead compare the cardinality of a ball \emph{around the query} of radius $r'$ to the mean cardinality $\hat{C}$ of clusters near the query 
+at a radius equal to the mean of their radii $\hat{r}$.
+We justify this approach by noting that, since the query is from the same distribution as the rest of the data, we replace the query with 
+the center of one of the clusters near it without significantly changing the local fractal dimension at the query point. 
 
 
-By ~\ref{2}, we then have that \begin{equation} d_i = \frac{\log{}\frac{|C_i|}{k}}{\log{}\frac{r_i}{r'}}. \label{5} \end{equation}
+By ~\ref{2}, we then have that \begin{equation} \hat{d} = \frac{\log{}\frac{\hat{C}}{k}}{\log{}\frac{\hat{r}}{r'}}. \label{5} \end{equation}
 
-Since $d_i$, $|C_i|$, $r_i$, and $k$ are all known values, we can solve equation ~\ref{4} for $r'$ to get
-\begin{equation} r' = r_i\left(\frac{k}{|C_i|}\right)^{\frac{1}{d_i}}. \label{5} \end{equation}
+Since $\hat{D}$, $\hat{C}$, $\hat{r}$, and $k$ are all known values, we can solve equation ~\ref{4} for $r'$ to get
+\begin{equation} r' = \hat{r}\left(\frac{k}{\hat{C}}\right)^{\frac{1}{\hat{d}}}. \label{6} \end{equation}
     
 Putting our bounds for coarse and fine search together, we have that $k$-NN by Repeated $\rho$-NN has 
-$\mathcal{O}\left(\log_2{\mathcal{N}_{\hat{r_c}}(D)} + k\left(\frac{r_i\left(\frac{k}{|C_i|}\right)^{\frac{1}{d_i}}+ 2r_c}{r_i\left(\frac{k}{|C_i|}\right)^{\frac{1}{d_i}}}\right)^d\right)$ 
-time complexity, where $\mathcal{N}_{\hat{r_c}}(D)$ is the metric entropy of the dataset, $d$ is the dimensionality of the dataset, $r_i$ is the radius of some cluster $C_i$
-near the query ball, $d_i$ is the local fractal dimension of $C_i$, $r_c$ is the radius of leaf clusters, and $k$ is the number of nearest neighbors. 
+$\mathcal{O}\left(\log_2{\mathcal{N}_{\hat{r_c}}(D)} + k\left(1+ \frac{2\hat{r_c}}{\hat{r}}\left(\frac{k}{\hat{C}}\right)^{\frac{-1}{\hat{d}}}\right)^d\right) = 
+\mathcal{O}\left(\log_2{\mathcal{N}_{\hat{r_c}}(D)} + k\left(\frac{2\hat{r_c}}{\hat{r}}\right)^d\left(\frac{k}{\hat{C}}\right)^{\frac{-d}{\hat{d}}}\right)$ 
+time complexity, where $\mathcal{N}_{\hat{r_c}}(D)$ is the metric entropy of the dataset, $d$ is the dimensionality of the dataset, and $k$ is the number of nearest neighbors. 
 
 \subsubsection{Sieve Search}
 \label{subsubsec:methods:knn-search:sieve}
