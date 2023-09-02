@@ -32,6 +32,10 @@ We observe that for both APOGEE (Figure 2 in~\cite{ishaq2019clustered}) and Gree
 and $2 \ll 2,250$ respectively.
 This suggests that APOGEE and GreenGenes are good datasets for use with entropy-scaling search algorithms like CHESS and CAKES.
 
+
+\subsection{Clustering}
+\label{subsec:methods:clustering}
+
 We define a \emph{cluster} as a set of points with a \emph{center}, a \emph{radius}, and an approximation of the \emph{local fractal dimension}.
 The \emph{center} is the geometric median of a sample of points in the \emph{cluster}, and so it is a real data point. The \emph{radius} is the
 maximum distance from a point in the cluster to its \emph{center}. We estimate \emph{local fractal dimension} at the cluster radius and half
@@ -42,31 +46,6 @@ approach, but with early stopping criteria; clusters which satisfy a user-specif
 Since we frame the asymptotic complexity of $\rho$-NN search in terms of the number of leaf clusters, the \emph{metric entropy} is best thought of in terms of the number of
 leaf clusters. 
 
-
-With these concepts defined, we can now pose the $k$- and $\rho$- nearest neighbors search problems.
-Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, $k$-nearest neighbors search aims to find 
-the set $S_q$ such that  $|S_q| = k$ and $\forall x \in \textbf{X} \setminus S_q$, $f(x, q) \leq \max\{f(y, q): y \in S_q \}$; that is,
-for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$.
-We also have the $\rho$-nearest neighbors search problem, which aims to find the set $\{x \in \textbf{X}: f(q, x) \leq \rho \}$; that is, 
-find all points in $\textbf{X}$ that are at most a distance $\rho$ from $q$.
-
-Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $\rho$- and $k$-NN algorithms make use of the following cluster 
-properties:
-\begin{itemize}
-    \item $\delta = f(q, c)$ is the distance from the query to the cluster center $c$.
-    \item $\delta_{max} = \delta + r$ is the distance from the query to the theoretically farthest possible instance in $C$.
-    \item $\delta_{min} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest possible instance in $C$.
-\end{itemize}
-
-
-We define \emph{singletons} as clusters which either contain a single point (i.e., have cardinality 1) or which contain 
-many instances of the same point (i.e., have cardinality greater than 1 but contain only one unique point). Singletons clearly 
-have zero radius, and so $\delta_{max}  = \delta = \delta_{min}$ for these clusters. Hence, we sometimes overload the above 
-notation to refer to distance from a query to a point; in these cases, we also have that $\delta_{max} = \delta = \delta_{min}$.
-
-
-\subsection{Clustering}
-\label{subsec:methods:clustering}
 
 We start by building a divisive hierarchical clustering of the dataset with CLAM, using a 
 similar recursive procedure as outlined in CHESS, but with the following 
@@ -94,9 +73,7 @@ left child contains all points in the cluster which are closer to $l$ than to $r
 points in the cluster which are closer to $r$ than to $l$. Without loss of generality, we assign to the left child 
 those points which are equidistant from $l$ and $r$. Starting from a root-cluster containing the entire dataset, we 
 repeat this procedure until each leaf contains only one datum or some other user-specified stopping criterion 
-is met. 
-
-This process is described in Algorithm \ref{alg:partition}.
+is met. This process is described in Algorithm \ref{alg:partition}.
 
 
 \begin{algorithm} % enter the algorithm environment
@@ -167,6 +144,8 @@ Thus, after at most $d$ applications of Algorithm \ref{alg:partition}, the
 maximum pairwise distance along each axis will be bounded above by $R$. 
 The overall (i.e., not restricted to one axis) maximum pairwise distance 
 will be bounded above by $R\sqrt{2}$ by, for example, two instances that lie at the extrema of different axes. 
+See Figure 1 for a concrete example. 
+
 
 Thus, starting with a cluster $C$ of radius $R$, after at most $d$ Partitions, the descendants of $C$ will each have radius
 bounded above by $\frac{R}{\sqrt{2}}$. In other words, cluster radii are guaranteed to decrease by a multiplicative factor of $\frac{\sqrt{2}}{2}$ after at 
@@ -209,18 +188,41 @@ much faster than $k$-nearest neighbors search.
 We begin by randomly partitioning the dataset into $s$ shards, where $s$ is determined based 
 on some naive auto-tuning. On the first shard, we perform 
 $k$-nearest neighbors search using one of the four algorithms described in Section~\ref{subsec:methods:knn-search}.
-The result of this search will give us the $k$ closest neighbors to the query \emph{in the first shard}. We then take the furthest of 
-those $k$ neighbors and use its distance from the query as the radius for use with $\rho$-nearest neighbors search (see Section~\ref{subsec:methods:rnn-search}) 
+The result of this search will give us the $k$ closest neighbors to the query \emph{in the first shard}. We take the furthest of 
+those $k$ neighbors and use its distance from the query as the radius to be used with $\rho$-nearest neighbors search (see Section~\ref{subsec:methods:rnn-search}) 
 on each remaining shard. We then take the union of the results of these $\rho$-nearest neighbors searches, along with the $k$ neighbors
 from the first shard, and then linear search over those points to find the actual $k$ nearest neighbors.
 
 
 Note that the size of the shards is not necessarily consistent; it is often optimal to have the first shard be smaller than the others,
 since the first shard is the only one for which we perform $k$-nearest neighbors search. However, making this first shard too small
-introduces the risk of significantly overestimating the radius, resulting in much slower $\rho$-nearest neighbors search on the subsequent shards.
+introduces the risk of significantly overestimating the radius (i.e., the distance to the $k$-th ), resulting in much slower $\rho$-nearest neighbors search on the subsequent shards.
 Finding the precise optimal ratio between the size of the first shard and the size of the remaining shards, as well 
 as computing the expected level of error between the distance from the $k$-th closest neighbor in the first shard and the 
 actual $k$-th closest neighbor, are topics for future work.
+
+\subsection{The Search Problem}
+\label{subsec:methods:general-search}
+Having explained the clustering process, we can now pose the $k$- and $\rho$- nearest neighbors search problems.
+Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, $k$-nearest neighbors search aims to find 
+the set $S_q$ such that  $|S_q| = k$ and $\forall x \in \textbf{X} \setminus S_q$, $f(x, q) \leq \max\{f(y, q): y \in S_q \}$; that is,
+for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$.
+We also have the $\rho$-nearest neighbors search problem, which aims to find the set $\{x \in \textbf{X}: f(q, x) \leq \rho \}$; that is, 
+find all points in $\textbf{X}$ that are at most a distance $\rho$ from $q$.
+
+Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $\rho$- and $k$-NN algorithms make use of the following cluster 
+properties:
+\begin{itemize}
+    \item $\delta = f(q, c)$ is the distance from the query to the cluster center $c$.
+    \item $\delta_{max} = \delta + r$ is the distance from the query to the theoretically farthest possible instance in $C$.
+    \item $\delta_{min} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest possible instance in $C$.
+\end{itemize}
+
+
+We define a \emph{singleton} as a cluster which either contains a single point (i.e., has cardinality 1) or which contains 
+multiple instances of the same point (i.e., has cardinality greater than 1 but contains only one unique point). A singleton clearly 
+has zero radius, and so $\delta_{max}  = \delta = \delta_{min}$ for these clusters. Hence, we sometimes overload the above 
+notation to refer to distance from a query to a point; in these cases, we also have that $\delta_{max} = \delta = \delta_{min}$.
 
 \subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
 \label{subsec:methods:rnn-search}
@@ -228,7 +230,7 @@ actual $k$-th closest neighbor, are topics for future work.
 We conduct $\rho$-nearest neighbors search as described in \cite{ishaq2019clustered}, but 
 with the following improvement: when a cluster overlaps with the query ball, instead of  
 always proceeding with both of its children, we proceed only with those children which 
-also overlap with the query ball. This improvement is demonstrated in Algorithm \ref{alg:rnn}.
+also overlap with the query ball. This improvement is described in Algorithm \ref{alg:rnn}.
 
 \begin{algorithm} 
     \caption{$\rho$-NN(\emph{clusters, query, r})} 
@@ -294,7 +296,7 @@ have been found.
 Let $H$ be the set of nearest neighbors found thus far.
 Search starts with a radius $m$ equal to the radius of the root cluster divided by
 the cardinality of the dataset. We perform $\rho$-NN search with radius $m$. 
-If no points are within a distance $m$ of the query, we increase the radius by a factor of arg
+If no points are within a distance $m$ of the query, we increase the radius by a factor of
 2 and perform $\rho$-NN search again, repeating until at least one point is found, i.e., 
 until $|H| > 0$.
 
@@ -304,13 +306,13 @@ increasing the radius by a factor of 2 on each iteration, we increase it by a fa
 by the local fractal dimension in the region of the dataset around the query ball. 
 In particular, 
 we increase the radius by a factor of 
-\begin{equation} \argmin \left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right) \label{2} \end{equation}
+\begin{equation} \min \left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right) \label{2} \end{equation}
 where $\mu$ is the harmonic mean of the local fractal dimensions (abbreviated lfd in algorithm below) of 
 each cluster which contains one of the nearest neighbors found thus far. We use the harmonic mean to 
 ensure that $\mu$ is not dominated by outlier clusters with very high fractal dimension. 
 Intuitively, the factor by which we increase the radius should be \emph{inversely} related to the number of points found so far. 
 Additionally, when the local fractal dimension at the radius scale from the previous iteration is low, this suggests that the data 
-are relatively concentrated in that region; in other words, a small increase in the radius would likely encounter unoccupied space around the manifold, so a larger radius increase is needed. Thus, in this case, the factor of radius increase should be \emph{directly} related to the 
+are relatively concentrated in that region; in other words, a small increase in the radius would likely encounter unoccupied space around the manifold, so a larger radial increase is needed. Thus, the factor of radius increase should be \emph{directly} related to the 
 local fractal dimension. Once $|H| >= k$, we return the $k$ closest points.
 
 \begin{algorithm} % enter the algorithm environment
@@ -326,7 +328,7 @@ local fractal dimension. Once $|H| >= k$, we return the $k$ closest points.
         \WHILE {$|H| < k$}
             \STATE $Q \Leftarrow \{ C: \exists p \in H \land p \in C \}$
             \STATE $\mu \Leftarrow |Q| \sum_{C \in Q} \frac{1}{C.lfd} $
-            \STATE $m \Leftarrow \argmin \left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right)$
+            \STATE $m \Leftarrow \min \left(2, \left({\frac{k}{|H|}}\right)^{\frac{1}{\mu}}\right)$
             \STATE $H.push(\rho$-NN$(root, query, m)$)
         \ENDWHILE
         \STATE $H.sort()$
@@ -338,8 +340,9 @@ local fractal dimension. Once $|H| >= k$, we return the $k$ closest points.
 \label{paragraph:methods:repeated-rnn-complexity}
 
 Our complexity bounds for $k$-NN by Repeated $\rho$-NN rely on the assumption that the query point is sampled from the same distribution
-(i.e. arises from the same generating phenomenon) as the rest of the data. From this assumption, we can infer that the local fractal dimension
-at the query point is not significantly different from the mean local fractal dimension of clusters nearby the query.
+(i.e. arises from the same generating phenomenon) as the rest of the data. Given the uses of $k$-NN search in practice, 
+this assumption is not unreasonable. From this assumption, we can infer that the local fractal dimension
+at the query point does not differ significantly from the mean local fractal dimension of clusters nearby the query.
 
 We find it useful to adopt the terminology used in 
 \cite{ishaq2019clustered} and \cite{yu2015entropy} and address \emph{coarse search} and \emph{fine search} separately. 
@@ -348,8 +351,8 @@ which have overlap with the query ball (i.e., which are likely to contain one of
 Fine search refers to the process
 of identifying the $k$ nearest neighbors among the points in those clusters identified by coarse search.
 
-In ~\cite{ishaq2019clustered}, we claimed that the complexity of coarse search for $\rho$-NN is $\mathcal{O}(\log{2}$\mathcal{N}_{\hat{r_c}}(D)$)$, 
-where $m$\mathcal{N}_{\hat{r_c}}(D)$$ is the metric entropy of the dataset $D$. 
+In ~\cite{ishaq2019clustered}, we claimed that the complexity of coarse search for $\rho$-NN is $\mathcal{O}(\log_2\mathcal{N}_{\hat{r_c}}(D))$, 
+where $\mathcal{N}_{\hat{r_c}}(D)$ is the metric entropy of the dataset $D$. 
 To adjust this bound for $k$-NN by Repeated $\rho$-NN, we must estimate the number of iterations 
 of $\rho$-NN needed to find at least $k$ neighbors. 
     
@@ -358,7 +361,7 @@ Based on the assumption that the local fractal dimension at the query point is n
 nearby clusters, the factor from Equation \ref{2} suggests that in the expected case, we need only two iterations of 
 $\rho$-NN to find $k$ neighbors: one iteration to find at least one neighbor, and the one more to find enough remaining neighbors.
 Since this is a constant factor, it does not affect the asymptotic complexity of coarse search, and thus we have that 
-the complexity of coarse search for $k$-NN by Repeated $\rho$-NN is $\mathcal{O}(\log_2{m})$.
+the complexity of coarse search for $k$-NN by Repeated $\rho$-NN is $\mathcal{O}(\log_2\mathcal{N}_{\hat{r_c}}(D))$.
 
 To determine the asymptotic complexity of fine search, we must estimate $|F|$, the 
 number of clusters for which we must look at all of the cluster's points. With $\rho$-NN 
@@ -370,12 +373,9 @@ is query-dependent. Thus, for $k$-NN by Repeated $\rho$-NN, we adjust the defini
 $F$ to be the union of clusters which are within a distance of $r' + r_c$ from the query, 
 where $r'$ is the distance to the $k$th nearest neighbor and $r_c$ is defined as before.
 
-~\cite{yu2015entropy} showed that $|F| \leq \gamma |B(q, r')|\left(\frac{r'+ 2r_c}{r'}\right)^d$, where $\gamma$ is a constant. 
+The work in~\cite{yu2015entropy} showed that \begin{equation} |F| \leq \gamma |B(q, r')|\left(\frac{r'+ 2r_c}{r'}\right)^d \label{3} \end{equation} where $\gamma$ is a constant. 
 By definition of 
-$r'$, we have that $|B(q, r')| = k$. Thus, we have that $|F| \leq \gamma k\left(\frac{r'+ 2r_c}{r'}\right)^d$. 
-
-    
-It remains to provide an estimate for $r'$. 
+$r'$, we have that $|B(q, r')| = k$. Thus, we have that \begin{equation} |F| \leq \gamma k\left(\frac{r'+ 2r_c}{r'}\right)^d. \label{4} \end{equation} It remains to provide an estimate for $r'$. 
 To do this, we once again rely on the assumption that the query is from the same distribution as the rest of the data, 
 and thus the local fractal dimension at the query point is not significantly different than that of nearby clusters.
 
@@ -388,19 +388,19 @@ We justify this approach by noting that, since the query is from the same distri
 the center of $C_i$ without significantly changing the local fractal dimension at the query point. 
 
 
-By ~\ref{2}, we then have that \begin{equation} d_i = \frac{\log{}\frac{|C_i|}{k}}{\log{}\frac{r_i}{r'}}. \label{4} \end{equation}
+By ~\ref{2}, we then have that \begin{equation} d_i = \frac{\log{}\frac{|C_i|}{k}}{\log{}\frac{r_i}{r'}}. \label{5} \end{equation}
 
 Since $d_i$, $|C_i|$, $r_i$, and $k$ are all known values, we can solve equation ~\ref{4} for $r'$ to get
 \begin{equation} r' = r_i\left(\frac{k}{|C_i|}\right)^{\frac{1}{d_i}}. \label{5} \end{equation}
     
 Putting our bounds for coarse and fine search together, we have that $k$-NN by Repeated $\rho$-NN has 
 $\mathcal{O}\left(\log_2{\mathcal{N}_{\hat{r_c}}(D)} + k\left(\frac{r_i\left(\frac{k}{|C_i|}\right)^{\frac{1}{d_i}}+ 2r_c}{r_i\left(\frac{k}{|C_i|}\right)^{\frac{1}{d_i}}}\right)^d\right)$ 
-time complexity, where $\mathcal{N}_{\hat{r_c}}(D) is the metric entropy of the dataset, $d$ is the dimensionality of the dataset, $r_i$ is the radius of some cluster $C_i$
+time complexity, where $\mathcal{N}_{\hat{r_c}}(D)$ is the metric entropy of the dataset, $d$ is the dimensionality of the dataset, $r_i$ is the radius of some cluster $C_i$
 near the query ball, $d_i$ is the local fractal dimension of $C_i$, $r_c$ is the radius of leaf clusters, and $k$ is the number of nearest neighbors. 
 
 \subsubsection{Sieve Search}
 \label{subsubsec:methods:knn-search:sieve}
-With Sieve Search, we begin by letting $Q$ be a list containing the root cluster. 
+In this algorithm, we begin by letting $Q$ be a list containing only the root cluster. 
 While $Q$ contains at least one cluster (i.e., $Q$ is not a list of only points), we repeat the process described in 
 the following paragraphs. 
 
@@ -416,7 +416,7 @@ than or equal to $k$. We consider $Q[i]$ to be our $q_{\tau}$, and our threshold
 $\tau$ to be $Q[i]$'s $\delta_{max}$.
 
 We then remove from $Q$ any element whose $\delta_{min}$ is greater than $\tau$. Then, for each element left 
-in $Q$, if it is a leaf or contains $k$ or fewer points, we remove it and all of its points to $Q$. Finally, we
+in $Q$, if it is a leaf or contains $k$ or fewer points, we remove it and add all of its points to $Q$. Finally, we
 replace all remaining non-leaf clusters in $Q$ with their children. 
 
 We complete this process until $Q$ contains only points. At this point, we 
@@ -455,7 +455,7 @@ This process is described in Algorithm~\ref{alg:sieve}.
 
 \subsubsection{Sieve Search with Separate Centers}
 \label{subsubsec:methods:knn-search:sieve2}
-Sieve Search with Separate Centers is the same as Sieve Search, but with the following modification: clusters 
+This algorithm is the same as Sieve Search, but with the following modification: clusters 
 in $Q$ are represented twice-- once as their center and once as the rest of their points. 
 Because we have that for any cluster $C$, $C.\delta \leq C.\delta_{max}$, representing the cluster 
 center separately from the rest of the points causes the threshold $\tau$ to decrease more quickly, 
@@ -466,29 +466,27 @@ when this algorithm is preferable to Sieve Search is in Section 4: Results.
 \subsubsection{Greedy Sieve}
 \label{subsubsec:methods:knn-search:greedy-search}
 
-With Greedy Sieve, we first let $Q$ be a min queue of clusters based on $\delta_{min}$. We initialize $Q$ with the root cluster.
-Let $H$ be a fixed-size ($k$) max queue of points based on $\delta$. This queue starts empty.
+With Greedy Sieve, we first let $Q$ be a min queue of clusters prioritized by $\delta_{min}$. We initialize $Q$ with the root cluster.
+Let $H$ be a fixed-size ($k$) max queue of points prioritized by $\delta$. This queue starts empty.
 
 While $H$ has fewer than $k$ clusters or $\delta$ of the top priority element in $H$ is greater 
 than $\delta_{min}$ of the top priority element in $Q$, we do the following:
 \begin{enumerate}
-\item While the top priority element $q$ in $Q$ is not a leaf, pop $q$ from $Q$ and push its children.
+\item While the top priority element $q$ in $Q$ is not a leaf, pop $q$ from $Q$ and push its children to $Q$.
 \item For each point $p \in q$, push $p$ to $H$. 
 \item Pop from $H$ until $H$ has $k$ points. 
 \end{enumerate}
-After this process, the points left in $H$ are the $k$ nearest neighbors of $q$. 
-
-This process is described in Algorithm \ref{alg:greedy_search}.
+After this process, the points left in $H$ are the $k$ nearest neighbors of $q$. This algorithm is described in Algorithm \ref{alg:greedy_search}.
 
 \begin{algorithm} 
-\caption{GreedySearch(\emph{root, query, k})} 
+\caption{GreedySieve(\emph{root, query, k})} 
 \label{alg:greedy_search} 
 \begin{algorithmic}
     \STATE $Q \Leftarrow$ priority queue
     \STATE $Q.push(root)$
     \STATE $H \Leftarrow$ priority queue
-    \WHILE{$|H| < k \lor H.pop.\delta > Q.pop.\delta_{min}$}
-        \WHILE{$\neg Q.pop.isLeaf$}
+    \WHILE{$|H| < k \lor H.peek.\delta > Q.peek.\delta_{min}$}
+        \WHILE{$\neg Q.peek.isLeaf$}
             \STATE $[l, r] \Leftarrow Q.pop().children$
             \STATE $Q.push([l, r])$
         \ENDWHILE
@@ -507,13 +505,6 @@ This process is described in Algorithm \ref{alg:greedy_search}.
 
 We group the Sieve-based algorithms together, as their complexity analyses are similar.
 
-
-The complexity of Sieve Search is dominated by the complexity of our modified Quicksort Partition algorithm,
-which, like the original Quicksort partition algorithm described in~\cite{10.1093/comjnl/5.1.10}, has $\mathcal{O}(n)$ complexity, 
-where $n$ is the length of the input list. While the cardinality of clusters is greater than $k$, 2 is bounded 
-above by 2, as $Q$ will contain at most two clusters (assuming the worst case, which is a balanced clustering). 
-Once the cardinality of clusters in $Q$ is less than or equal to $k$, the cardinality of $Q$ is bounded above 
-by $2k$, since, in the worst case, every cluster is a non-leaf and  
 
 % Our $k$-NN algorithms do not use two completely distinct phases of coarse and fine search, 
 % as is the case in $\rho$-NN search. Still, this distinction is useful in analyzing 

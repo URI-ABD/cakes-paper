@@ -50,8 +50,6 @@ For each pair $(X, f)$ and a small selection of depths, measure:
     \cline{2-9}
     &                    Recall & QPS                           & Recall & QPS                           & Recall & QPS                                           & Recall & QPS \\
     \hline
-    nytimes                & 0.69 &  1413.35                       & 0.99 & 26.66                            & 0.97 & 92.92                                         & 1.00 & 42 \\
-    \hline
     fashion-mnist      & 0.54 & 324.79                           & 1.00 & 52.91                                  & 0.94 & 60.89                                                    & 1.00 & 42 \\
     \hline
     gist                   & 1.00 & 3.55                           & 1.00 & 2.63                                     & 0.95 & 149.58                                                   & 1.00 & 42 \\
@@ -88,8 +86,6 @@ For each pair $(X, f)$ and a small selection of depths, measure:
     \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
     \textbf{Dataset}  & \multicolumn{2}{|c|}\textbf{faiss-ivf} & \multicolumn{2}{|c|}\textbf{bruteforce-blas} & \multicolumn{2}{|c|}\textbf{hnsw(faiss)} & \multicolumn{2}{|c|}\textbf{CAKES} \\
     &                    Recall & QPS                           & Recall & QPS                           & Recall & QPS                                           & Recall & QPS \\
-    \hline
-    nytimes                & 0.61 &  0.71                          & 0.99 & 10.71                              & 0.00 & 0.00                                          & 1.00 & 42 \\
     \hline
     fashion-mnist         & 1.00 & 111.47                           & 0.99 & 16.02                                  & 0.99 & 277.80                                                    & 1.00 & 42 \\ 
     \hline
