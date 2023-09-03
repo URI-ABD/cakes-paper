@@ -404,7 +404,7 @@ Since $\hat{D}$, $\hat{C}$, $\hat{r}$, and $k$ are all known values, we can solv
 Putting our bounds for coarse and fine search together, we have that $k$-NN by Repeated $\rho$-NN has 
 $\mathcal{O}\left(\log_2{\mathcal{N}_{\hat{r_c}}(D)} + k\left(1+ \frac{2\hat{r_c}}{\hat{r}}\left(\frac{k}{\hat{C}}\right)^{\frac{-1}{\hat{d}}}\right)^d\right) = 
 \mathcal{O}\left(\log_2{\mathcal{N}_{\hat{r_c}}(D)} + k\left(\frac{2\hat{r_c}}{\hat{r}}\right)^d\left(\frac{k}{\hat{C}}\right)^{\frac{-d}{\hat{d}}}\right)$ 
-time complexity, where $\mathcal{N}_{\hat{r_c}}(D)$ is the metric entropy of the dataset, $d$ is the dimensionality of the dataset, and $k$ is the number of nearest neighbors. 
+time complexity, where $\mathcal{N}_{\hat{r_c}}(D)$ is the metric entropy of the dataset, $d$ is the dimensionality of the dataset, and $k$ is the number of nearest neighbors. We note that the fraction $\frac{-d}{\hat{d}}$ should, unless fractal dimension is highly variable, be relatively close to 1.
 
 \subsubsection{Sieve Search}
 \label{subsubsec:methods:knn-search:sieve}
