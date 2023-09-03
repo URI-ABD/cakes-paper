@@ -1,6 +1,12 @@
 \section{Results}
 \label{sec:results}
 
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=3.4in]{images/result_plots/deep-image_1.png}
+    \caption{Performance of CAKES algorithms on deep-image dataset.}
+    \label{fig:methods:deep-image}
+\end{figure}
 
 Figure [ADD FIGURE NUMBER] is a violin plot which shows the performance of our algorithms
 on [ADD DATASET] under [ADD DISTANCE FUNCTION] distance, using [ADD NUMBER OF SHARDS] shards.
@@ -50,23 +56,15 @@ For each pair $(X, f)$ and a small selection of depths, measure:
     \cline{2-9}
     &                    Recall & QPS                           & Recall & QPS                           & Recall & QPS                                           & Recall & QPS \\
     \hline
-    fashion-mnist      & 0.54 & 324.79                           & 1.00 & 52.91                                  & 0.94 & 60.89                                                    & 1.00 & 42 \\
+    fashion-mnist      & 0.54 & 324.79                           & 1.00 & 52.91                                  & 0.94 & 60.89                                                    & 1.00 & 1.622e+04 \\
     \hline
-    gist                   & 1.00 & 3.55                           & 1.00 & 2.63                                     & 0.95 & 149.58                                                   & 1.00 & 42 \\
+    gist                   & 1.00 & 3.55                           & 1.00 & 2.63                                     & 0.95 & 149.58                                                   & 1.00 & 1.060e+04 \\
     \hline
-    glove-25              & 1.00 & 78.78                          & 1.00 & 33.52                              & 1.00 & 552.67                                                  & 1.00 & 42 \\
+    glove-25              & 1.00 & 78.78                          & 1.00 & 33.52                              & 1.00 & 552.67                                                  & -- & 1.952e+04 \\
     \hline
-    glove-100             & 1.00 & 21.16                          & 1.00 & 16.52                                & 0.99 & 155.90                                                  & 1.00 & 42 \\
+    glove-100             & 1.00 & 21.16                          & 1.00 & 16.52                                & 0.99 & 155.90                                                  & -- & 6.935e+03 \\
     \hline
-    sift                  & 1.00 &  24.52                          & 1.00 & 16.40                               & 1.00 & 275.07                                                    & 1.00 & 42 \\
-    \hline
-    deep-image             & 0.00 & 0.00                           & 0.00 & 0.00                                 & 0.00 & 0.00                                                     & 1.00 & 42 \\
-    \hline
-    mnist                   & 0.00 & 0.00                          & 0.00 & 0.00                                 & 0.00 & 0.00                                                    & 1.00 & 42 \\
-    \hline
-    glove-50               & 0.00 & 0.00                           & 0.00 & 0.00                              & 0.00 & 0.00                                                    & 1.00 & 42 \\
-    \hline
-    lastfm                 & 0.00 & 0.00                           & 0.00 & 0.00                               & 0.00 & 0.00                                                    & 1.00 & 42 \\
+    sift                  & 1.00 &  24.52                          & 1.00 & 16.40                               & 1.00 & 275.07                                                    & 1.00 & 3.180e+04 \\
     \hline
     \end{tabular}
     \end{sc}
@@ -74,6 +72,7 @@ For each pair $(X, f)$ and a small selection of depths, measure:
     \end{center}
     \vskip -0.1in
     \end{table*}
+
 
 \begin{table*}[!t]
     % \renewcommand{\arraystretch}{1.15}
@@ -87,23 +86,15 @@ For each pair $(X, f)$ and a small selection of depths, measure:
     \textbf{Dataset}  & \multicolumn{2}{|c|}\textbf{faiss-ivf} & \multicolumn{2}{|c|}\textbf{bruteforce-blas} & \multicolumn{2}{|c|}\textbf{hnsw(faiss)} & \multicolumn{2}{|c|}\textbf{CAKES} \\
     &                    Recall & QPS                           & Recall & QPS                           & Recall & QPS                                           & Recall & QPS \\
     \hline
-    fashion-mnist         & 1.00 & 111.47                           & 0.99 & 16.02                                  & 0.99 & 277.80                                                    & 1.00 & 42 \\ 
+    fashion-mnist         & 1.00 & 111.47                           & 0.99 & 16.02                                  & 0.99 & 277.80                                                    & 1.00 & 1.549e+03 \\ 
     \hline
-    gist                   & 1.00 & 2.70                           & 0.99 & 0.80                                 & 0.99 & 59.71                                                    & 1.00 & 42 \\
+    gist                   & 1.00 & 2.70                           & 0.99 & 0.80                                 & 0.99 & 59.71                                                    & 1.00 & 7.539e+02 \\
     \hline
-    glove-25              & -- & --                                & -- & --                                & -- & --                                                    & 1.00 & 42 \\
+    glove-25              & -- & --                                & -- & --                                & -- & --                                                    & -- & 1.471e+03 \\
     \hline
-    glove-100             & 0.99 &  7.52                          & 0.99 & 3.11                                  & 0.99 & 92.58                                                    & 1.00 & 42 \\
+    glove-100             & 0.99 &  7.52                          & 0.99 & 3.11                                  & 0.99 & 92.58                                                    & -- & 3.960e+02 \\
     \hline
-    sift                  & 1.00 &  23.50                          & 1.00 & 6.51                                  & 0.99 & 179.14                                                    & 1.00 & 42 \\
-    \hline
-    deep-image             & 0.00 & 0.00                           & 0.00 & 0.00                                & 0.00 & 0.00                                                    & 1.00 & 42 \\
-    \hline
-    mnist                   & 0.00 & 0.00                          & 0.00 & 0.00                                  & 0.00 & 0.00                                                    & 1.00 & 42 \\
-    \hline
-    glove-50               & 0.00 & 0.00                           & 0.00 & 0.00                              & 0.00 & 0.00                                                    & 1.00 & 42 \\
-    \hline
-    lastfm                 & 0.00 & 0.00                           & 0.00 & 0.00                             & 0.00 & 0.00                                                    & 1.00 & 42 \\
+    sift                  & 1.00 &  23.50                          & 1.00 & 6.51                                  & 0.99 & 179.14                                                    & 1.00 & 2.852e+03 \\                                                 
     \hline
     \end{tabular}
     \end{sc}
@@ -111,4 +102,13 @@ For each pair $(X, f)$ and a small selection of depths, measure:
     \end{center}
     \vskip -0.1in
     \end{table*}
-    
+
+
+    % \hline
+    % deep-image             & 0.00 & 0.00                           & 0.00 & 0.00                                 & 0.00 & 0.00                                                     & 1.00 & 42 \\
+    % \hline
+    % mnist                   & 0.00 & 0.00                          & 0.00 & 0.00                                 & 0.00 & 0.00                                                    & 1.00 & 42 \\
+    % \hline
+    % glove-50               & 0.00 & 0.00                           & 0.00 & 0.00                              & 0.00 & 0.00                                                    & 1.00 & 42 \\
+    % \hline
+    % lastfm                 & 0.00 & 0.00                           & 0.00 & 0.00                               & 0.00 & 0.00   

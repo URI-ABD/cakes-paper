@@ -181,28 +181,31 @@ partitioning and $\mathcal{O}(n \log n)$ cost of building the tree. This is a si
 exact partitioning and tree-building, which have $\mathcal{O}(n^2)$ and $\mathcal{O}(n^2 \log n)$ costs respectively.
 
 
-\subsection {Index-Building and Sharded Search}
+\subsection {Sharding and Auto-Tuning}
 \label{subsec:methods:index-building}
-In this work, we also introduce the method of \emph{sharding} for $k$-nearest neighbors search.
-With this approach, we aim to leverage the fact that $\rho$-nearest neighbors search is typically 
-much faster than $k$-nearest neighbors search. 
+In this work, we also introduce the method of \emph{sharding} for datasets that cannot 
+fit in memory. With this approach, we begin by 
+
+% In this work, we also introduce the method of \emph{sharding} for $k$-nearest neighbors search.
+% With this approach, we aim to leverage the fact that $\rho$-nearest neighbors search is typically 
+% much faster than $k$-nearest neighbors search. 
 
 
-We begin by randomly partitioning the dataset into $s$ shards, where $s$ is determined based 
-on some naive auto-tuning. On the first shard, we perform 
-$k$-nearest neighbors search using one of the four algorithms described in Section~\ref{subsec:methods:knn-search}.
-The result of this search will give us the $k$ closest neighbors to the query \emph{in the first shard}. We take the furthest of 
-those $k$ neighbors and use its distance from the query as the radius to be used with $\rho$-nearest neighbors search (see Section~\ref{subsec:methods:rnn-search}) 
-on each remaining shard. We then take the union of the results of these $\rho$-nearest neighbors searches, along with the $k$ neighbors
-from the first shard, and then linear search over those points to find the actual $k$ nearest neighbors.
+% We begin by randomly partitioning the dataset into $s$ shards, where $s$ is determined based 
+% on some naive auto-tuning. On the first shard, we perform 
+% $k$-nearest neighbors search using one of the four algorithms described in Section~\ref{subsec:methods:knn-search}.
+% The result of this search will give us the $k$ closest neighbors to the query \emph{in the first shard}. We take the furthest of 
+% those $k$ neighbors and use its distance from the query as the radius to be used with $\rho$-nearest neighbors search (see Section~\ref{subsec:methods:rnn-search}) 
+% on each remaining shard. We then take the union of the results of these $\rho$-nearest neighbors searches, along with the $k$ neighbors
+% from the first shard, and then linear search over those points to find the actual $k$ nearest neighbors.
 
 
-Note that the size of the shards is not necessarily consistent; it is often optimal to have the first shard be smaller than the others,
-since the first shard is the only one for which we perform $k$-nearest neighbors search. However, making this first shard too small
-introduces the risk of significantly overestimating the radius (i.e., the distance to the $k$-th ), resulting in much slower $\rho$-nearest neighbors search on the subsequent shards.
-Finding the precise optimal ratio between the size of the first shard and the size of the remaining shards, as well 
-as computing the expected level of error between the distance from the $k$-th closest neighbor in the first shard and the 
-actual $k$-th closest neighbor, are topics for future work.
+% Note that the size of the shards is not necessarily consistent; it is often optimal to have the first shard be smaller than the others,
+% since the first shard is the only one for which we perform $k$-nearest neighbors search. However, making this first shard too small
+% introduces the risk of significantly overestimating the radius (i.e., the distance to the $k$-th ), resulting in much slower $\rho$-nearest neighbors search on the subsequent shards.
+% Finding the precise optimal ratio between the size of the first shard and the size of the remaining shards, as well 
+% as computing the expected level of error between the distance from the $k$-th closest neighbor in the first shard and the 
+% actual $k$-th closest neighbor, are topics for future work.
 
 \subsection{The Search Problem}
 \label{subsec:methods:general-search}
