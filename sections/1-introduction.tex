@@ -40,7 +40,7 @@ In particular, while approximate $k$-NN may agree with exact $k$-NN in a majorit
 [TODO: talk about need for exact search in a medical setting; talk to Noah about this, good strains of bacteria, drug response curves]
 
 Recent approaches to tackling the exponential growth of data include locality-sensitive hashing~\cite{indyk1999sublinear}, 
-clever indexing techniques such as the FM Index~\cite{simpson2010efficient}, hierarchical navigable small world (HNSW) networks [CITE], and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. 
+clever indexing techniques such as the FM Index~\cite{simpson2010efficient}, hierarchical navigable small world (HNSW) networks~\cite{Malkov2016EfficientAR}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. 
 Entropy-scaling search is a paradigm for similarity search that exploits the geometric and topological structure inherent in large datasets.
 Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with geometric properties (such as the 
 \emph{metric entropy} and \emph{local fractal dimension}, defined in Section 2) of a dataset,
