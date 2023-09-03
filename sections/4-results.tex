@@ -84,8 +84,8 @@ https://github.com/URI-ABD/clam
 
 \begin{table*}[!t]
     % \renewcommand{\arraystretch}{1.15}
-    \caption{Runtime performance (queries per second) of CAKES vs. other methods, $k=100$. Other methods did not report results for glove-25. Asterisk on recall value indicates that the algorithm had imperfect recall greater than or equal to 0.9995}
-    \label{table:results:ann-100}
+    \caption{Runtime performance (queries per second) of CAKES vs. linear, $k=10$}
+    \label{table:results:ann-alt-10}
     \vskip 0.15in
     \begin{center}
     \begin{small}
@@ -94,23 +94,15 @@ https://github.com/URI-ABD/clam
     \textbf{Dataset}  & \multicolumn{2}{|c|}{\textbf{linear}} & \multicolumn{2}{|c|}{\textbf{CAKES}}  \\
     &                    Recall & QPS                           & Recall & QPS                           \\
     \hline
-    deep-image             & 0.00 & 0.00                           & 0.00 & 0.00      \\
+    deep-image             & 1.000 & 0.00                           & 0.00 & 0.00      \\
     \hline
-    mnist                   & 0.00 & 0.00                          & 0.00 & 0.00      \\
+    mnist                   & 1.000 & 0.00                          & 1.000 & 0.00      \\
     \hline
-    glove-50               & 0.00 & 0.00                           & 0.00 & 0.00      \\
+    glove-50               & 1.000 & 0.00                           & 0.00 & 0.00      \\
     \hline 
-    glove-200              & 0.00 & 0.00                           & 0.00 & 0.00     \\
+    glove-200              & 1.000 & 0.00                           & 0.00 & 0.00     \\
     \hline
-    mnist                   & 0.00 & 0.00                          & 0.00 & 0.00      \\
-    \hline
-    glove-50               & 0.00 & 0.00                           & 0.00 & 0.00      \\
-    \hline 
-    glove-200              & 0.00 & 0.00                           & 0.00 & 0.00      \\
-    \hline
-    lastfm                 & 0.00 & 0.00                           & 0.00 & 0.00           \\
-    \hline
-    lastfm                 & 0.00 & 0.00                           & 0.00 & 0.00      \\
+    lastfm                 & 1.000 & 0.00                           & 0.00 & 0.00           \\
     \hline
     \end{tabular}
     \end{sc}
@@ -118,3 +110,34 @@ https://github.com/URI-ABD/clam
     \end{center}
     \vskip -0.1in
     \end{table*}
+
+
+\begin{table*}[!t]
+    % \renewcommand{\arraystretch}{1.15}
+    \caption{Runtime performance (queries per second) of CAKES vs. linear, $k=100$}
+    \label{table:results:ann-alt-100}
+    \vskip 0.15in
+    \begin{center}
+    \begin{small}
+    \begin{sc}
+    \begin{tabular}{|l|l|l|l|l|}
+    \textbf{Dataset}  & \multicolumn{2}{|c|}{\textbf{linear}} & \multicolumn{2}{|c|}{\textbf{CAKES}}  \\
+    &                    Recall & QPS                           & Recall & QPS                           \\
+    \hline
+    deep-image             & 1.000 & 0.00                           & 0.00 & 0.00      \\
+    \hline
+    mnist                   & 1.000 & 0.00                          & 1.000 & 0.00      \\
+    \hline
+    glove-50               & 1.000 & 0.00                           & 0.00 & 0.00      \\
+    \hline 
+    glove-200              & 1.000 & 0.00                           & 0.00 & 0.00     \\
+    \hline
+    lastfm                 & 1.000 & 0.00                           & 0.00 & 0.00           \\
+    \hline
+    \end{tabular}
+    \end{sc}
+    \end{small}
+    \end{center}
+    \vskip -0.1in
+    \end{table*}
+    
