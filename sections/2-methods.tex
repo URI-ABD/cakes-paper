@@ -183,29 +183,29 @@ exact partitioning and tree-building, which have $\mathcal{O}(n^2)$ and $\mathca
 
 \subsection {Sharding and Auto-Tuning}
 \label{subsec:methods:index-building}
-In this work, we also introduce the method of \emph{sharding} for datasets that cannot 
-fit in memory. With this approach, we begin by 
-
-% In this work, we also introduce the method of \emph{sharding} for $k$-nearest neighbors search.
-% With this approach, we aim to leverage the fact that $\rho$-nearest neighbors search is typically 
-% much faster than $k$-nearest neighbors search. 
+In this work, we also introduce the method of \emph{sharding} for datasets that cannot fit in memory. 
+This approach also leverages the fact that $\rho$-nearest neighbors search is typically much faster than $k$-nearest neighbors search.
+In addition to sharding, we perform some naive auto-tuning to select the optimal $k$-NN algorithm to be used with a given dataset. 
 
 
-% We begin by randomly partitioning the dataset into $s$ shards, where $s$ is determined based 
-% on some naive auto-tuning. On the first shard, we perform 
-% $k$-nearest neighbors search using one of the four algorithms described in Section~\ref{subsec:methods:knn-search}.
-% The result of this search will give us the $k$ closest neighbors to the query \emph{in the first shard}. We take the furthest of 
-% those $k$ neighbors and use its distance from the query as the radius to be used with $\rho$-nearest neighbors search (see Section~\ref{subsec:methods:rnn-search}) 
-% on each remaining shard. We then take the union of the results of these $\rho$-nearest neighbors searches, along with the $k$ neighbors
-% from the first shard, and then linear search over those points to find the actual $k$ nearest neighbors.
+With this approach, we begin by taking a random sample of up to 10\% of the data. 
+The exact proportion of the dataset in this random sample depends on the dimensionality of the dataset and a user-specified memory limit. 
+FIrst, we build a cluster tree on this sample, and 
+then consider all clusters at some user-specified depth in the tree. Using the cluster centers 
+of these clusters as queries, and a user-specified value of $k$, we perform $k$-NN search using each of the four algorithms described in Section~\ref{subsec:methods:knn-search}. 
+We record the 
+time taken for each algorithm and select the one which had the lowest total search time over all the queries. 
+We then split the rest of the dataset into some user-specified number of shards, and use the algorithm identified in the previous step to perform $k$-NN search on the first shard. 
+This search finds the $k$ closest neighbors to the query \emph{in the first shard}. 
+We take the furthest of those $k$ neighbors and use its distance from the query as the radius to be used with $\rho$-nearest neighbors search (see Section~\ref{subsec:methods:rnn-search}) on each remaining shard. 
+We then take the union of the results of these $\rho$-nearest neighbors searches, along with the $k$ neighbors from the first shard, and then linear search over those points to find the actual $k$ nearest neighbors.
 
+Note that even though we select the optimal algorithm based on use with some user-specified value of $k$, we use the selected algorithm to perform search on the given dataset for any value of $k$.
+Note also that the size of the shards is not necessarily consistent; it is often optimal to have the first shard be smaller than the others, since the first shard is the only one for which we perform $k$-nearest neighbors search. 
+However, making this first shard too small introduces the risk of significantly overestimating the radius (i.e., the distance to the $k$-th ), resulting in much slower $\rho$-nearest neighbors search on the subsequent shards.
+Finding the precise optimal ratio between the size of the first shard and the size of the remaining shards, as well as computing the expected level of error between the distance from the $k$-th closest neighbor in the first shard and the actual $k$-th closest neighbor, are topics for future work.
 
-% Note that the size of the shards is not necessarily consistent; it is often optimal to have the first shard be smaller than the others,
-% since the first shard is the only one for which we perform $k$-nearest neighbors search. However, making this first shard too small
-% introduces the risk of significantly overestimating the radius (i.e., the distance to the $k$-th ), resulting in much slower $\rho$-nearest neighbors search on the subsequent shards.
-% Finding the precise optimal ratio between the size of the first shard and the size of the remaining shards, as well 
-% as computing the expected level of error between the distance from the $k$-th closest neighbor in the first shard and the 
-% actual $k$-th closest neighbor, are topics for future work.
+For datasets which \emph{do} fit in memory, we use the same approach to auto-tuning, but with only one shard.
 
 \subsection{The Search Problem}
 \label{subsec:methods:general-search}
@@ -278,7 +278,7 @@ The asymptotic complexity of $\rho$-nearest neighbors is the same as in ~\cite{i
      \label{hierarchical-complexity}
 \end{gather}
 
-where $\hat{r_c}$ is the \textit{mean} cluster radius of leaf clusters, $\mathcal{N}_{\hat{r_c}}(D)$ is the metric entropy at that radius, $B_D(q,r)$ is a ball of data points around the query $q$ at search radius $r$, and $d$ is the factal dimension around the query in a region of radius $r$.
+where $\hat{r_c}$ is the \textit{mean} cluster radius of leaf clusters, $\mathcal{N}_{\hat{r_c}}(D)$ is the metric entropy at that radius, $B_D(q,r)$ is a ball of data points around the query $q$ at search radius $r$, and $d$ is the fractal dimension around the query in a region of radius $r$.
 
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
 \label{subsec:methods:knn-search}
@@ -292,7 +292,7 @@ In these algorithms, we typically use $H$, for \emph{hits}, to refer to the data
 $Q$ to refer to the data structure which stores the clusters (and, for Sieve and Sieve with Centers, points) which are still in contention for being one of the nearest neighbors.
 
 
-\subsubsection{$k$-NN by Repeated $\rho$-NN}
+\subsubsection{\texorpdfstring{$k$}{k}-NN by Repeated \texorpdfstring{$\rho$}{p}-NN}
 \label{subsubsec:methods:knn-search:repeated-rnn}
 
 
@@ -342,8 +342,8 @@ local fractal dimension. Once $|H| >= k$, we return the $k$ closest points.
     \end{algorithmic}
     \end{algorithm}
 
-\subsubsection{Complexity of $k$-NN by Repeated $\rho$-NN Search}
-\label{paragraph:methods:repeated-rnn-complexity}
+\subsubsection{Complexity of \texorpdfstring{$k$}{k}-NN by Repeated \texorpdfstring{$\rho$}{p}-NN Search}
+\label{subsubsec:methods:repeated-rnn-complexity}
 
 Our complexity bounds for $k$-NN by Repeated $\rho$-NN rely on the assumption that the query point is sampled from the same distribution
 (i.e. arises from the same generating phenomenon) as the rest of the data. Given the uses of $k$-NN search in practice, 
@@ -467,9 +467,7 @@ This algorithm is the same as Sieve Search, but with the following modification:
 in $Q$ are represented twice-- once as their center and once as the rest of their points. 
 Because we have that for any cluster $C$, $C.\delta \leq C.\delta_{max}$, representing the cluster 
 center separately from the rest of the points causes the threshold $\tau$ to decrease more quickly, 
-thus allowing us to eliminate some clusters from $Q$ earlier in the process. More discussion about 
-when this algorithm is preferable to Sieve Search is in Section 4: Results. 
-
+thus allowing us to eliminate some clusters from $Q$ earlier in the process. 
 
 \subsubsection{Greedy Sieve}
 \label{subsubsec:methods:knn-search:greedy-search}
