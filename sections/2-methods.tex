@@ -511,11 +511,18 @@ After this process, the points left in $H$ are the $k$ nearest neighbors of $q$.
 \label{paragraph:methods:sieve-complexity}
 
 We group the Sieve-based algorithms together, as their complexity analyses are similar.
+The complexity of Sieve and Sieve with Separate Centers is dominated by the expected 
+cost of Quicksort-inspired partition algorithm we use to calculate thresholds. This method is linear in the size of the input list $Q$, so we must estimate the size of $Q$ on each iteration. 
 
-The complexity of the Sieve-based algorithms relies on the assumption that when the cardinalities of clusters is sufficiently close to $k$, the distribution of clusters will mimic the distribution of points in the dataset. 
+We rely on the assumption that when the cardinalities of clusters is within a low factor of $k$, say $2k$, the distribution of clusters will mimic the distribution of points in the dataset. 
 From this assumption, we can infer that number of clusters which overlap with the query ball is a function of the local fractal dimension near the query point.
-In particular, we assume that the number of clusters which overlap the query ball is bounded above by 2$d$, where $d$ is the local fractal dimension of the dataset near the query point, as at each end of each of the $d$ axes, we could have a cluster which overlaps the query ball.
+In particular, we assume that the number of clusters which overlap the query ball is bounded above by 2$d$, where $d$ is the local fractal dimension of the dataset near the query point, as we could have a cluster overlapping the query ball at each end of each of the $d$ axes.
 
-In the worst case scenario, where the data are distributed with uniform density in their embedding space, it takes at most $\log_2{\frac{n}{k}}$ iterations of Sieve to reduce the cardinality of clusters to at most $k$. 
+In the worst case scenario, where the data are distributed with uniform density in their embedding space, it takes at most $\log_2{\frac{n}{2k}}$ iterations of Sieve to partition clusters enough that their cardinalities are at most $2k$. However, since 
+high cardinality clusters occur only at low depths in the tree, the length of $Q$ for 
+those iterations is relatively short. 
+
+
+After the first $\log_2{\frac{n}{2k}}$ iterations, we have that the cardinalities of clusters in $Q$ are at most $2k$, at which point, based on our assumption, we have that the length of $Q$ is close to $2d$.
 
 
