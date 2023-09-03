@@ -51,14 +51,14 @@ For each pair $(X, f)$ and a small selection of depths, measure:
     \begin{center}
     \begin{small}
     \begin{sc}
-    \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
-    \textbf{Dataset}  & \multicolumn{2}{|c|}\textbf{faiss-ivf} & \multicolumn{2}{|c|}\textbf{bruteforce-blas} & \multicolumn{2}{|c|}\textbf{hnsw(faiss)} & \multicolumn{2}{|c|}\textbf{CAKES} \\
+    \begin{tabular}{|l|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
+    \textbf{Dataset}  & \multicolumn{2}{|c|}{\textbf{faiss-ivf}} & \multicolumn{2}{|c|}{\textbf{bruteforce-blas}} & \multicolumn{2}{|c|}{\textbf{hnsw(faiss)}} & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
     \cline{2-9}
     &                    Recall & QPS                           & Recall & QPS                           & Recall & QPS                                           & Recall & QPS \\
     \hline
     fashion-mnist      & 0.54 & 324.79                           & 1.00 & 52.91                                  & 0.94 & 60.89                                                    & 1.00 & 16,220 \\
     \hline
-    gist                   & 1.00 & 3.55                           & 1.00 & 2.63                                     & 0.95 & 149.58                                                   & 1.00 & 10,600e \\
+    gist                   & 1.00 & 3.55                           & 1.00 & 2.63                                     & 0.95 & 149.58                                                   & 1.00 & 10,600 \\
     \hline
     glove-25              & 1.00 & 78.78                          & 1.00 & 33.52                              & 1.00 & 552.67                                                  & -- & 19,520 \\
     \hline
@@ -76,14 +76,14 @@ For each pair $(X, f)$ and a small selection of depths, measure:
 
 \begin{table*}[!t]
     % \renewcommand{\arraystretch}{1.15}
-    \caption{Runtime performance (queries per second) of CAKES vs. other methods, $k=100$}
+    \caption{Runtime performance (queries per second) of CAKES vs. other methods, $k=100$. Other methods did not report results for glove-25.}
     \label{table:results:ann-100}
     \vskip 0.15in
     \begin{center}
     \begin{small}
     \begin{sc}
-    \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
-    \textbf{Dataset}  & \multicolumn{2}{|c|}\textbf{faiss-ivf} & \multicolumn{2}{|c|}\textbf{bruteforce-blas} & \multicolumn{2}{|c|}\textbf{hnsw(faiss)} & \multicolumn{2}{|c|}\textbf{CAKES} \\
+    \begin{tabular}{|l|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
+    \textbf{Dataset}  & \multicolumn{2}{|c|}{\textbf{faiss-ivf}} & \multicolumn{2}{|c|}{\textbf{bruteforce-blas}} & \multicolumn{2}{|c|}{\textbf{hnsw(faiss)}} & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
     &                    Recall & QPS                           & Recall & QPS                           & Recall & QPS                                           & Recall & QPS \\
     \hline
     fashion-mnist         & 1.00 & 111.47                           & 0.99 & 16.02                                  & 0.99 & 277.80                                                    & 1.00 & 1,549 \\ 
