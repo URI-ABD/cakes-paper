@@ -9,7 +9,7 @@ Unlike locality-sensitive hashing (LSH) approaches, which require a novel hashin
 Also unlike LSH approaches, CAKES guarantees perfect precision and recall as long as the distance function in use is a \emph{metric}; that is, it obeys the properties of identity, symmetry, and the triangle inequality.
 As mentioned in Section~\ref{sec:introduction}, this should not be conflated with having $k$-NN itself provide perfect \emph{inference} accuracy.
 
-In comparison to other methods, While CAKES has perfect recall for distance metrics, it exhibits worse recall under non-metrics (specifically, cosine distance). This bears further investigation, but likely stems from how heavily the knn and clustering algorithms depend on the triangle inequality.
+In comparison to other methods, While CAKES has perfect recall for distance metrics, it exhibits worse recall under non-metrics (specifically, cosine distance). This bears further investigation, but likely stems from how heavily the $k$-NN and clustering algorithms depend on the triangle inequality.
 Preliminary results suggest that when FAISS and HNSW are tuned for lower recall, they are still slower than CAKES in all cases.
 
 Some of the questions raised by this study suggest that future work is justified; a comparison across more datasets and larger datasets is clearly in order, as is further analysis with distance functions that existing methods such as FAISS do not support, such as Wasserstein distance~\cite{vallender1974calculation} (particularly for arbitrary dimensionality), as Tanimoto distance~\cite{bajusz2015tanimoto}, which is particularly applicable to computing distances based on maximal common subgraphs of molecular structures.
@@ -33,5 +33,8 @@ distance to the $k$-th nearest neighbor as an additional method in our ensemble.
 Finally, we would like to add the ability to view live-updates as new points are added to a dataset. For example, 
 we could build the cluster tree with a subsample of the full data set and then add the rest of the instances to 
 simulate live updates.
+
+The source code for CAKES is available under an MIT
+license at https://github.com/URI-ABD/clam.
 
 % since this online update takes advantage of CAKES' fast search, it allows us to have our cake and eat it, too.
