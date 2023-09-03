@@ -1,21 +1,21 @@
-\section{Discussion}
+\section{Discussion and Future Work}
 \label{sec:discussion}
 
-Discuss results and future work \dots
+We have presented CAKES, a method for fast $k$-nearest-neighbors search that can adapt to a variety of distance functions.
+CAKES provides exact $k$-NN when the distance function in use is a metric (particularly, when it obeys the triangle inequality).
+CAKES is most effective when datasets are not uniform and do not obey a ``simple'' distribution such as Gaussian, but rather adhere to ``interesting'' low-dimensional manifolds even when embedded in a high-dimensional space; thus, CAKES is best when the manifold hypothesis is upheld.
 
-CLAM-CAKES.
-This is most effective when datasets exhibit low metric entropy and low local fractal dimension.
+Unlike locality-sensitive hashing (LSH) approaches, which require a novel hashing function for each distance metric in use, CAKES is extensible to any user-provided distance function.
+Also unlike LSH approaches, CAKES guarantees perfect precision and recall as long as the distance function in use is a \emph{metric}; that is, it obeys the properties of identity, symmetry, and the triangle inequality.
+As mentioned in Section~\ref{sec:introduction}, this should not be conflated with having $k$-NN itself provide perfect \emph{inference} accuracy.
 
-Unlike LSH, this is extensible to any user provided distance function.
+In comparison to other methods, While CAKES has perfect recall for distance metrics, it exhibits worse recall under non-metrics (specifically, cosine distance). This bears further investigation, but likely stems from how heavily the knn and clustering algorithms depend on the triangle inequality.
+Preliminary results suggest that when FAISS and HNSW are tuned for lower recall, they are still slower than CAKES in all cases.
 
-Exactness of search and metric vs non-metric.
+Some of the questions raised by this study suggest that future work is justified; a comparison across more datasets and larger datasets is clearly in order, as is further analysis with distance functions that existing methods such as FAISS do not support, such as Wasserstein distance~\cite{vallender1974calculation} (particularly for arbitrary dimensionality), as Tanimoto distance~\cite{bajusz2015tanimoto}, which is particularly applicable to computing distances based on maximal common subgraphs of molecular structures.
+Incorporating these or other distance functions in CAKES only requires providing a Rust implementation of the distance function.
 
-While CAKES has perfect recall for distance metrics, it exhibits worse recall under non-metrics (specifically, cosine distance). This bears further investigation, but likely stems from how heavily the knn and clustering algorithms depend on the triangle inequality.
-
-\subsection{Future Works}
-\label{subsec:results:future-works}
-
-For future work, we plan to investigate compression by representing differences at each level of the
+In future work, we plan to investigate compression by representing differences at each level of the
 binary tree, particularly for string or genomic data, where all differences are discrete.
 When we descend a level in the cluster tree, it takes fewer bits to encode each point in terms of the center. 
 However, each descent of a level in the cluster tree increases the bit-cost of specifying a particular cluster. 
@@ -27,13 +27,8 @@ We also plan to use CAKES with anomaly detection. Our anomaly detection tool, CH
 a variety of methods in an ensemble to determine an anomaly score for a point. We would like to explore the effectiveness of 
 distance to the $k$-th nearest neighbor as an additional method in our ensemble.
 
-
-Additionally, we would like to implement additional distance functions to improve the genericity of CAKES. 
-For example, we would like to implement Tanimoto Distance using maximal-common-subgraph for molecular structures. Ultimately, 
-we would also like to implement Wasserstein distance for dimensions higher than two. In order to make this possible, 
-we plan to implement GPU-acceleration for the more computationally-intensive distance functions like Wasserstein.
-
 Finally, we would like to add the ability to view live-updates as new points are added to a dataset. For example, 
 we could build the cluster tree with a subsample of the full data set and then add the rest of the instances to 
 simulate live updates.
 
+% since this online update takes advantage of CAKES' fast search, it allows us to have our cake and eat it, too.

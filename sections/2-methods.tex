@@ -104,8 +104,7 @@ which we used during search to retrieve a cluster's points.
 Though this approach allowed us to retrieve the points in constant 
 time, its memory cost was prohibitively high; since each cluster stores indices for each of its
 points, for a dataset with cardinality $n$, we store a total of $n$ indices at each depth in the tree.
-Assuming $\log{}n$ levels in the tree, this approach had $\mathcal{O}(n\log{}n)$ memory cost. 
-[TODO: talk to Noah about how to phrase this, how to get at that balanced tree is the worst case]
+Assuming a balanced tree and thus $\mathcal{O}\log_2(n)$ depth, this approach had $\mathcal{O}(n\log_2(n)$ memory cost. We note that while a balanced tree is classically a best-case scenario (e.g. binary search), it represents a worst-case scenario for space complexity in this application; the space complexity of a completely unbalanced (linear) tree would be $\mathcal{O}(n)$.
 
 One may improve this memory cost to $\mathcal{O}(n)$ by storing only these indices at 
 the leaf cluster level.
@@ -524,5 +523,6 @@ those iterations is relatively short.
 
 
 After the first $\log_2{\frac{n}{2k}}$ iterations, we have that the cardinalities of clusters in $Q$ are at most $2k$, at which point, based on our assumption, we have that the length of $Q$ is close to $2d$.
+Therefore, the asymptotic complexity of the sieve algorithms is $\mathcal{O}(log_2(\frac{n}{d})$.
 
 
