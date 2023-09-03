@@ -1,15 +1,21 @@
 \section{Results}
 \label{sec:results}
 
+We did not run any of the competitor’s algorithms. We lifted the reported numbers from the ann-benhmarks site and their interactive plots. We made sure to use the same aws instance as they did so its a fair comparison
+
+
+Tables \ref{table:results:ann-10} and \ref{table:results:ann-100} show the results of our benchmarking against FAISS, bruteforce-blas, and HNSW. Our throughput values for these algorithms comes from the ANN benchmarks website's interactive plots, from which we can assess the throughput of each algorithm at a given recall value. We 
+
+
+We report the highest throughput value for each algorithm at a recall value of 1.0. We report the recall value for each algorithm at the highest throughput value. We report the mean and median speedup factor of CAKES over each algorithm.
+
 For $k= 10$, we report a mean $989\times$ (median $248\times$) speedup over faiss-ivf, a mean $1456\times$ (median $582\times$) speedup over bruteforce-blas, 
 and a mean $63\times$ (median $49\times$) speedup over HNSW. For $k=100$, we report a mean $109\times$ (median $71\times$) speedup over faiss-ivf, a mean $382\times$ (median $267\times$) speedup over bruteforce-blas, and a mean $10\times$ (median $9\times$) speedup over HNSW.
+
+
 For all datasets benchmarked in this manuscript, the auto-tuning method selected repeated $\rho$-nearest neighbor (Section~\ref{subsubsec:methods:knn-search:repeated-rnn}).
 
-The source code for CAKES is available under an MIT
-license at \url{https://github.com/URI-ABD/clam}.
-
-We notice that the mean and median speedup factors differ significantly for all methods. This is 
-due to the fact that the magnitude of the speedup factor is heavily dependent on the dataset; in particular, across all algorithms, CAKES 
+We notice that the mean and median speedup factors differ significantly for all methods, which suggests that the speedup factor is heavily dataset-dependent on the dataset; in particular, across all algorithms, and both values of $k$, CAKES exhibits particularly high speedup factors with SIFT and GIST, under Euclidean distance. As GIST was designed to be a difficult dataset for classifiers~\cite{Lee2019PracticalLP} , CAKES's strong performance with this dataset is particularly encouraging. Further investigation of CAKES's performance on other challenging or adversarial datasets is warranted. 
 
 \begin{table*}[!t]
     % \renewcommand{\arraystretch}{1.15}
@@ -74,25 +80,24 @@ due to the fact that the magnitude of the speedup factor is heavily dependent on
 
 \begin{table*}[!t]
     % \renewcommand{\arraystretch}{1.15}
-    \caption{Runtime performance (queries per second) of CAKES vs. linear, $k=10$}
+    \caption{Runtime performance (queries per second) of CAKES and Speedup Factor over Naive Linear Search, $k=10$}
     \label{table:results:ann-alt-10}
     \vskip 0.15in
     \begin{center}
     \begin{small}
     \begin{sc}
     \begin{tabular}{|l|l|l|l|l|}
-    \textbf{Dataset}  & \multicolumn{2}{|c|}{\textbf{linear}} & \multicolumn{2}{|c|}{\textbf{CAKES}}  \\
-    &                    Recall & QPS                           & Recall & QPS                           \\
+    \textbf{Dataset} & \textbf{CAKES Throughput} & \textbf{Speedup Factor over Linear} \\
     \hline
-    deep-image             & 1.000 & 0.00                           & 0.00 & 0.00      \\
+    deep-image            & 232.1 & 37.2      \\
     \hline
-    mnist                   & 1.000 & 0.00                          & 1.000 & 0.00      \\
+    mnist                   & 129,300 & 101.9      \\
     \hline
-    glove-50               & 1.000 & 0.00                           & 0.00 & 0.00      \\
+    glove-50              & 10,950 & 12.28      \\
     \hline 
-    glove-200              & 1.000 & 0.00                           & 0.00 & 0.00     \\
+    glove-200              & 2,290 & 8.55     \\
     \hline
-    lastfm                 & 1.000 & 0.00                           & 0.00 & 0.00           \\
+    lastfm               & 13,950 & 4.55           \\
     \hline
     \end{tabular}
     \end{sc}
@@ -104,25 +109,24 @@ due to the fact that the magnitude of the speedup factor is heavily dependent on
 
 \begin{table*}[!t]
     % \renewcommand{\arraystretch}{1.15}
-    \caption{Runtime performance (queries per second) of CAKES vs. linear, $k=100$}
+    \caption{Runtime performance (queries per second) of CAKES and Speedup Factor over Naive Linear Search, $k=100$}
     \label{table:results:ann-alt-100}
     \vskip 0.15in
     \begin{center}
     \begin{small}
     \begin{sc}
-    \begin{tabular}{|l|l|l|l|l|}
-    \textbf{Dataset}  & \multicolumn{2}{|c|}{\textbf{linear}} & \multicolumn{2}{|c|}{\textbf{CAKES}}  \\
-    &                    Recall & QPS                           & Recall & QPS                           \\
+    \begin{tabular}{|l|l|l|l|l|l|}
+    \textbf{Dataset} & \textbf{CAKES Throughput} & \textbf{Speedup Factor over Linear} \\
     \hline
-    deep-image             & 1.000 & 0.00                           & 0.00 & 0.00      \\
+    deep-image             &157.3 &25.74             \\
     \hline
-    mnist                   & 1.000 & 0.00                          & 1.000 & 0.00      \\
+    mnist                 &71,090 &56.63      \\
     \hline
-    glove-50               & 1.000 & 0.00                           & 0.00 & 0.00      \\
+    glove-50               & 8,867 & 9.84      \\
     \hline 
-    glove-200              & 1.000 & 0.00                           & 0.00 & 0.00     \\
+    glove-200              & 2,264 & 8.49    \\
     \hline
-    lastfm                 & 1.000 & 0.00                           & 0.00 & 0.00           \\
+    lastfm                 & 13,950     &4.55                               \\
     \hline
     \end{tabular}
     \end{sc}
