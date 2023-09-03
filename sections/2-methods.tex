@@ -160,13 +160,14 @@ $\frac{\sqrt{2}}{2}$ in practice, and the upper bound of $d$ partitions is seldo
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=3.4in]{images/geometry/geometry.pdf}
-    \caption{Scaling behavior of radii in the worst case two-dimensional scenario, 
-    a uniform-density disk. $R_0$ denotes the radius of the root cluster $C_0$, and $o_0$ denotes its center. 
+    \caption{Scaling behavior of radii on a uniform-density disk, which in two dimensions represents the worst-case scenario. 
+    $R_0$ denotes the radius of the root cluster $C_0$, and $o_0$ denotes its center. 
     After one application of Algorithm~\ref{1}, we have $C_1$, with radius $R_1$ and center $o_1$.
     The right triangle formed by $o_0$, $o_1$, and $y_+$ in $C_1$ shows that $R_0 \leq R_1$.
     Hence, the radius of a child cluster can be larger than its parent. However, 
     after another application of Algorithm~\ref{1}, we have consumed all $d$ orthogonal axes, 
-    as shown in $C_2$. Now, clearly $R_2 \leq R_0$. In fact, for each subsequent application of Algorithm~\ref{1},
+    as shown in $C_2$. 
+    Now, clearly $R_2 \leq R_0$. In fact, for each subsequent application of Algorithm~\ref{1},
     the radius of the resulting cluster is bounded above by $\frac{\sqrt{2}R}{2}$.}
     \label{fig:methods:scaling_behavior}
 \end{figure}
@@ -368,7 +369,7 @@ the complexity of coarse search for $k$-NN by Repeated $\rho$-NN is $\mathcal{O}
 To determine the asymptotic complexity of fine search, we must estimate $|F|$, the 
 number of clusters for which we must look at all of the cluster's points. With $\rho$-NN 
 search, $F$ is the union of clusters which are within a distance of $r + \hat{r_c}$ from the query,
-where $r$ is the search radius and $\hat{r_c}$ is the mean radius of leaf clusters,
+where $r$ is the search radius, and $\hat{r_c}$ is the mean radius of leaf clusters,
 as in \cite{yu2015entropy}. With $k$-NN by Repeated $\rho$-NN, however, 
 the value of $r$ is dependent on the distance to the $k$th nearest neighbor, which 
 is query-dependent. Thus, for $k$-NN by Repeated $\rho$-NN, we adjust the definition of 
