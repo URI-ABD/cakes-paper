@@ -1,12 +1,7 @@
 \section{Results}
 \label{sec:results}
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=3.4in]{images/result_plots/deep-image_1.png}
-    \caption{Performance of CAKES algorithms on deep-image dataset.}
-    \label{fig:methods:deep-image}
-\end{figure}
+
 
 Figure [ADD FIGURE NUMBER] is a violin plot which shows the performance of our algorithms
 on [ADD DATASET] under [ADD DISTANCE FUNCTION] distance, using [ADD NUMBER OF SHARDS] shards.
@@ -25,16 +20,6 @@ see longer lower tails than upper tails for many of these algorithms.
 
 
 https://github.com/URI-ABD/clam
-
-For each pair $(X, f)$ and a small selection of depths, measure:
-\begin{enumerate}[1.]
-    \item linear search vs accelerated search:
-    \begin{enumerate}[i.]
-        \item runtime performance,
-        \item speedup factor, and
-        \item number of distance comparisons.
-    \end{enumerate}
-\end{enumerate}
 
 \begin{table*}[!t]
     % \renewcommand{\arraystretch}{1.15}
@@ -97,11 +82,39 @@ For each pair $(X, f)$ and a small selection of depths, measure:
     \end{table*}
 
 
+\begin{table*}[!t]
+    % \renewcommand{\arraystretch}{1.15}
+    \caption{Runtime performance (queries per second) of CAKES vs. other methods, $k=100$. Other methods did not report results for glove-25. Asterisk on recall value indicates that the algorithm had imperfect recall greater than or equal to 0.9995}
+    \label{table:results:ann-100}
+    \vskip 0.15in
+    \begin{center}
+    \begin{small}
+    \begin{sc}
+    \begin{tabular}{|l|p{1cm}|p{1cm}|}
+    \textbf{Dataset}  & \multicolumn{2}{|c|}{\textbf{linear}} & \multicolumn{2}{|c|}{\textbf{CAKES}}  \\
     % \hline
-    % deep-image             & 0.00 & 0.00                           & 0.00 & 0.00                                 & 0.00 & 0.00                                                     & 1.00 & 42 \\
+    % deep-image             & 0.00 & 0.00                           & 0.00 & 0.00      \\
     % \hline
-    % mnist                   & 0.00 & 0.00                          & 0.00 & 0.00                                 & 0.00 & 0.00                                                    & 1.00 & 42 \\
+    % mnist                   & 0.00 & 0.00                          & 0.00 & 0.00      \\
     % \hline
-    % glove-50               & 0.00 & 0.00                           & 0.00 & 0.00                              & 0.00 & 0.00                                                    & 1.00 & 42 \\
+    % glove-50               & 0.00 & 0.00                           & 0.00 & 0.00      \\
+    % \hline 
+    % glove-200              & 0.00 & 0.00                           & 0.   % \hline
     % \hline
-    % lastfm                 & 0.00 & 0.00                           & 0.00 & 0.00                               & 0.00 & 0.00   
+    % mnist                   & 0.00 & 0.00                          & 0.00 & 0.00      \\
+    % \hline
+    % glove-50               & 0.00 & 0.00                           & 0.00 & 0.00      \\
+    % \hline 
+    % glove-200              & 0.00 & 0.00                           & 0.00 & 0.00      \\
+    % \hline
+    % lastfm                 & 0.00 & 0.00                           & 0.00 & 0.00      \\00 & 0.00      \\
+    % \hline
+    % lastfm                 & 0.00 & 0.00                           & 0.00 & 0.00      \\
+
+    \hline
+    \end{tabular}
+    \end{sc}
+    \end{small}
+    \end{center}
+    \vskip -0.1in
+    \end{table*}

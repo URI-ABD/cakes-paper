@@ -7,27 +7,27 @@ Their MaNGA dataset also contains spectral measurements across the face of each 
 
 Biology has also seen an influx of large, high-dimensional datasets. Silva 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of approximately 2.25 
 million genomes with aligned length of 50,000 letters; 
-the GreenGenes project~\cite{desantis2006greengenes} provides a multiple-sequence alignment of over one million bacterial 16S sequences.
+the GreenGenes project~\cite{desantis2006greengenes} provides a multiple-sequence alignment of over one million bacterial 16S sequences. [tTODO: add dimensionality here]
 
 
-More recently, Big-ANN's NeurIPS'23: Billion Scale Approximate Nearest Neighbor Search Challenge has 
-solicits development of data structures and search algorithms for Approximate Nearest Neighbor (ANN) search
-on four massive datasets: YFCC 100M~\cite{johnson2019billion} dataset, the Yandex Text-to-Image 10M~\cite{diskann-github}, cross-modal dataset, 
-the MSMARCO passage retrieval dataset~\cite{Bruch2023AnAA}, and a 10M slice of the MS Turing data set~\cite{Singh2021FreshDiskANNAF}. These datasets 
-are 192, 200, 30,000, and 100 dimensional respectively, and submissions are evaluated with 
-a ten million point sample of each. 
+% More recently, Big-ANN's NeurIPS'23: Billion Scale Approximate Nearest Neighbor Search Challenge has 
+% solicits development of data structures and search algorithms for Approximate Nearest Neighbor (ANN) search
+% on four massive datasets: YFCC 100M~\cite{johnson2019billion} dataset, the Yandex Text-to-Image 10M~\cite{diskann-github}, cross-modal dataset, 
+% the MSMARCO passage retrieval dataset~\cite{Bruch2023AnAA}, and a 10M slice of the MS Turing data set~\cite{Singh2021FreshDiskANNAF}. These datasets 
+% are 192, 200, 30,000, and 100 dimensional respectively, and submissions are evaluated with 
+% a ten million point sample of each. 
 
 
 In many fields, the rate of data collection outpaces the rate of computing performance improvements predicted by Moore's Law~\cite{brescia2012extracting}, indicating 
-that computer architecture will not "catch up" to our computational needs in the near future. As a result, analysis of these large datasets 
+that computer architecture will not ``catch up'' to our computational needs in the near future. As a result, analysis of these large datasets 
 requires better algorithms. 
 
-Many researchers are especially interested in performing similarity search on these datasets. 
+Many researchers are especially interested in similarity search on these datasets. 
 Similarity search enables a variety of applications, including recommendation and classification systems. 
-Additionally, with the rise of large language models such as GPT-3~\cite{2020arXiv200514165B}, similarity search can become a useful tool for 
-understanding and verifying the validity of model outputs. 
+Additionally, with the rise of large language models such as GPT-3~\cite{2020arXiv200514165B}, GPT-4, and LLAMA-2, [CITE] similarity search can become a useful tool for 
+understanding and verifying the validity of model embeddings. 
 As the sizes and dimensionalities of datasets have grown, however, efficient and accurate similarity search has become extremely challenging; 
-even state-of-the-art algorithms exhibit a steep recall versus speed tradeoff~\cite{ishaq2019clustered}.
+even state-of-the-art algorithms exhibit a steep recall versus throughput tradeoff~\cite{ishaq2019clustered}.
 
 
 In particular, $k$-nearest neighbors ($k$-NN) search is one of the most pervasive classification and recommendation methods in use~\cite{fix1952discriminatory, cover1967nearest}. 
@@ -37,9 +37,11 @@ exploit the geometric and topological structure inherent in large datasets. Appr
 need for efficient, \emph{exact} search remains.
 In particular, while approximate $k$-NN may agree with exact $k$-NN in a majority vote for large values of $k$, it may be sensitive to local perturbations with smaller values of $k$.
 
+[TODO: talk about need for exact search in a medical setting; talk to Noah about this, good strains of bacteria, drug response curves]
+
 Recent approaches to tackling the exponential growth of data include locality-sensitive hashing~\cite{indyk1999sublinear}, 
-clever indexing techniques such as the FM Index~\cite{simpson2010efficient}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. 
-Entropy-scaling search is a paradigm for similarity search that exploits the geometric and topological structure inherent in big datasets.
+clever indexing techniques such as the FM Index~\cite{simpson2010efficient}, hierarchical navigable small world (HNSW) networks [CITE], and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. 
+Entropy-scaling search is a paradigm for similarity search that exploits the geometric and topological structure inherent in large datasets.
 Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with geometric properties (such as the 
 \emph{metric entropy} and \emph{local fractal dimension}, defined in Section 2) of a dataset,
 rather than its cardinality. In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search), which extended entropy-scaling $\rho$-nearest 
@@ -49,9 +51,9 @@ Using the cluster tree constructed by CLAM, CAKES builds upon the capabilities o
 $k$-nearest neighbors search. 
 
 
-This paper focuses on four novel exact $k$-nearest neighbors search algorithms. We also explain some 
-implementation improvements to the clustering and $\rho$ nearest neighbors search algorithms in CHESS, 
+This paper focuses on four novel algorithms for exact $k$-NN search. We also present some 
+improvements to the clustering and $\rho$-nearest neighbors search algorithms in CHESS, 
 as well as improved genericity across distance functions. Additionally, we prove a guarantee about the scaling behavior of cluster radii. 
 Finally, we provide a comparison of 
-CAKES to the state-of-the-art in similarity search, FAISS~\cite{johnson2019billion} on several datasets 
-from the ANN and Big ANN benchmarks suites. 
+CAKES to the state-of-the-art in similarity search, FAISS~\cite{johnson2019billion} and HNSW, on several datasets 
+from the ANN benchmarks suite [CITE].
