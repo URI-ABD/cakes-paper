@@ -7,7 +7,7 @@ Their MaNGA dataset also contains spectral measurements across the face of each 
 
 Biology has also seen an influx of large, high-dimensional datasets. Silva 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of approximately 2.25 
 million genomes with aligned length of 50,000 letters; 
-the GreenGenes project~\cite{desantis2006greengenes} provides a multiple-sequence alignment of over one million bacterial 16S sequences. [tTODO: add dimensionality here]
+the GreenGenes project~\cite{desantis2006greengenes} provides a multiple-sequence alignment of over one million bacterial 16S sequences, each 7,682 characters in length. 
 
 
 % More recently, Big-ANN's NeurIPS'23: Billion Scale Approximate Nearest Neighbor Search Challenge has 
@@ -24,7 +24,7 @@ requires better algorithms.
 
 Many researchers are especially interested in similarity search on these datasets. 
 Similarity search enables a variety of applications, including recommendation and classification systems. 
-Additionally, with the rise of large language models such as GPT-3~\cite{2020arXiv200514165B}, GPT-4, and LLAMA-2, [CITE] similarity search can become a useful tool for 
+Additionally, with the rise of large language models such as GPT-3~\cite{2020arXiv200514165B}, GPT-4~\cite{OpenAI2023GPT4TR}, and LLAMA-2~\cite{Touvron2023Llama2O}, similarity search can become a useful tool for 
 understanding and verifying the validity of model embeddings. 
 As the sizes and dimensionalities of datasets have grown, however, efficient and accurate similarity search has become extremely challenging; 
 even state-of-the-art algorithms exhibit a steep recall versus throughput tradeoff~\cite{ishaq2019clustered}.
@@ -48,7 +48,7 @@ This has implications for the accuracy of classification, but does not guarantee
 There is some evidence that non-metrics such as cosine distance perform poorly for $k$-NN in biomedical settings~\cite{hu2016distance}; this may suggest that approximate $k$-NN (which may have imperfect precision and recall) could be exhibit suboptimal accuracy.
 
 Recent approaches to tackling the exponential growth of data include locality-sensitive hashing~\cite{indyk1999sublinear}, 
-clever indexing techniques such as the FM Index~\cite{simpson2010efficient}, hierarchical navigable small world (HNSW) networks [CITE], and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. 
+clever indexing techniques such as the FM Index~\cite{simpson2010efficient}, hierarchical navigable small world (HNSW) networks~\cite{Malkov2016EfficientAR}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. 
 Entropy-scaling search is a paradigm for similarity search that exploits the geometric and topological structure inherent in large datasets.
 Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with geometric properties (such as the 
 \emph{metric entropy} and \emph{local fractal dimension}, defined in Section 2) of a dataset,

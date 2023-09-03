@@ -58,7 +58,6 @@ While we sometimes use Euclidean notions, such as voids and volumes, to talk abo
 properties of clusters and of the manifold, CLAM does not rely on such notions; 
 they serve merely as a convenient, intuitive way to talk about the underlying mathematics.
 
-[TODO: change to just partition because I took about quicksort partition]
 \subsubsection {Cluster Partitioning}
 
 For a cluster $C$ with $|C|$ points, we begin by computing a 
@@ -76,7 +75,7 @@ is met. This process is described in Algorithm \ref{alg:partition}.
 
 
 \begin{algorithm} % enter the algorithm environment
-\caption{ClusterPartition(\emph{C})} % give the algorithm a caption
+\caption{Partition(\emph{C})} % give the algorithm a caption
 \label{alg:partition} % and a label for \ref{} commands later in the document
 \begin{algorithmic} % enter the algorithmic environment
     \STATE $m \Leftarrow \lfloor \sqrt{|C|} \rfloor$
@@ -87,10 +86,10 @@ is met. This process is described in Algorithm \ref{alg:partition}.
     \STATE $left \Leftarrow \{x | x \in C.points \land d(l,x) \le d(r,x)\}$
     \STATE $right \Leftarrow \{x | x \in C.points \land d(r,x) < d(l,x)\}$
     \IF{$|left| > 1$}
-        \STATE ClusterPartition($left$)
+        \STATE Partition($left$)
     \ENDIF
     \IF{$|right| > 1$}
-        \STATE ClusterPartition($right$)
+        \STATE Partition($right$)
     \ENDIF
 \end{algorithmic}
 \end{algorithm}
@@ -151,7 +150,7 @@ bounded above by $\frac{R}{\sqrt{2}}$. In other words, cluster radii are guarant
 most $d$ partitions. 
 
 
-Note that, in practice, we never see a balanced clustering. Cluster Partition  produces unbalanced trees due to the varying density of the sampling 
+Note that, in practice, we never see a balanced clustering. Partition  produces unbalanced trees due to the varying density of the sampling 
 in different regions of the manifold and the low dimensional ``shape'' of the manifold. Further, in practice, the cluster radii decrease by a factor much larger than 
 $\frac{\sqrt{2}}{2}$ with every partition; the upper bound of $d$ partitions is seldom realized. 
 

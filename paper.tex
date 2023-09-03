@@ -105,11 +105,14 @@ noah\_daniels@uri.edu}}
 % this must go after the closing bracket ] following \twocolumn[ ...
 
 \begin{abstract}
-
-  We introduce CAKES, a novel algorithm for $k$-nearest-neighbor search. CAKES assumes the manifold hypothesis and performs 
+  Many fields are experiencing a Big Data explosion, with data collection rates outpacing the rate of computing performance improvements predicted by Moore's Law. 
+  Researchers are often interested similarity search on such data. 
+  We present CAKES (CLAM-Accelerated $K$-NN Entropy Scaling Search), a novel algorithm for $k$-nearest-neighbor ($k$-NN) search which leverages geometric and topological properties inherent in large datasets. CAKES assumes the manifold hypothesis and performs 
   best when data occupy a low dimensional manifold, even if the data occupy a very high dimensional embedding space. 
-  We demonstrate performance improvements over state-of-the-art approaches such as FAISS and HNSW, when benchmarked on N datasets.
-  When data occupy a metric space, CAKES exhibits perfect recall. 
+  We demonstrate performance improvements over state-of-the-art approaches such as FAISS and HNSW, when benchmarked on 5 standard datasets. In particular, for $k= 10$, we report a mean $989\times$ (median $248\times$) speedup over FAISS, a mean $1456\times$ (median $582\times$) speedup over bruteforce-blas, 
+  and a mean $63\times$ (median $49\times$) speedup over HNSW. For $k=100$, we report a mean $109\times$ (median $71\times$) speedup over faiss-ivf, a mean $382\times$ (median $267\times$) speedup over bruteforce-blas, and a mean $10\times$ (median $9\times$) speedup over HNSW. CAKES exhibits asymptotic complexity that is not directly dependent on dataset size.  Unlike locality-sensitive hashing
+  approaches, CAKES can work with any user-defined distance
+  function. When data occupy a metric space, CAKES exhibits perfect recall.
 \end{abstract}
 
 
