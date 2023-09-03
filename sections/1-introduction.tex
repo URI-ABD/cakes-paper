@@ -39,7 +39,7 @@ In particular, while approximate $k$-NN may agree with exact $k$-NN in a majorit
 
 For the sake of clarity, it is important to be precise about what we mean by \emph{exact} $k$-NN, and exact search in general.
 In the context of $\rho$-NN search, exact search typically means returning only those data points that are identical to the query.
-There are many algorithms that perform well here, such as FM-Index~\cite{ferragina2000opportunistic}, which are less applicable to $\rho$-NN search.
+There are many algorithms that perform well here, such as FM-Index~\cite{ferragina2000opportunistic}, which are less applicable to approximate search.
 In contrast, in the context of $k$-NN search, while all approaches return exactly $k$ elements (ignoring how distance ties are handled), some approaches may miss some of the $k$ nearest elements, and erroneously include some of the elements outside the truly nearest $k$.
 In any case, $k$-NN is typically used for inference; the \emph{prediction} of a class for a query is obviously not guaranteed to be correct.
 When we refer to \emph{exact} $k$-NN, we refer to precisely the $k$ nearest neighbors being returned; no closer points are elided and no further points are included.
