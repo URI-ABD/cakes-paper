@@ -191,7 +191,7 @@ In addition to sharding, we perform some naive auto-tuning to select the optimal
 With this approach, we begin by taking a random sample of up to 10\% of the data. This sample 
 is considered the first shard. 
 The exact proportion of the dataset in this random sample depends on the dimensionality of the dataset and a user-specified memory limit. 
-FIrst, we build a cluster tree on this sample, and 
+First, we build a cluster tree on this sample, and 
 then consider all clusters at some user-specified depth in the tree. Using the cluster centers 
 of these clusters as queries, and a user-specified value of $k$, we perform $k$-NN search using each of the four algorithms described in Section~\ref{subsec:methods:knn-search}. 
 We record the 
