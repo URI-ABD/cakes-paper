@@ -511,32 +511,8 @@ After this process, the points left in $H$ are the $k$ nearest neighbors of $q$.
 
 We group the Sieve-based algorithms together, as their complexity analyses are similar.
 
+The complexity of the Sieve-based algorithms relies on the assumption that when the cardinalities of clusters is sufficiently close to $k$, the distribution of clusters will mimic the distribution of points in the dataset. 
+From this assumption, we can infer that number of clusters which overlap with the query ball is a function of the local fractal dimension near the query point.
+In particular, we assume that the number of clusters which overlap the query ball is bounded above by 2$d$, where $d$ is the local fractal dimension of the dataset near the query point, as at each end of each of the $d$ axes, we could have a cluster which overlaps the query ball.
 
-% Our $k$-NN algorithms do not use two completely distinct phases of coarse and fine search, 
-% as is the case in $\rho$-NN search. Still, this distinction is useful in analyzing 
-% the asymptotic complexity of $k$-NN search. In particular, we can think of the complexity of 
-% coarse search as an estimate of how many clusters we examine during search, and 
-% the complexity of fine search as an estimate of how many clusters we must examine all the points 
-% from during search, even if we do not actually perform these as two distinct phases. 
-
-
-% To determine the asymptotic complexity of fine search, we must estimate $|F|$, the 
-% number of clusters we must examine all the points from during search. With $\rho$-NN 
-% search, $F$ is the union of clusters which are within a distance of $r + r_c$ from the query,
-% where $r$ is the search radius and $r_c$ is the radius of leaf clusters,
-% as in \cite{yu2015entropy}. With $k$-NN search, however, 
-% the value of $r$ is dependent on the distance to the $k$th nearest neighbor, which 
-% is query-dependent. Thus, for $k$-NN search, we  adjust the definition of 
-% $F$ to be the union of clusters which are within a distance of $r' + r_c$ from the query, 
-% where $r'$ is the distance to the $k$th nearest neighbor and $r_c$ is defined as before.
-
-% By the triangle inequality, we have that $F \subseteq B(q, r' + 2r_c)$, 
-% where $B(q, r' + r_c)$ is the ball of radius $r' + r_c$ centered at $q$.
-% Hence, $|F| \leq |B(q, r' + 2r_c)|$.
-
-% Now we have that \begin{align*} \mathbb{E}_q[|B(q, r' + 2r_c)|] &\leq \gamma|B(p, r' + 2r_c)| \\ %because of the assumption that density at different locations on the manifold differ by only a constant factor%
-%     &\leq \gamma|B(p, r')|\left(\frac{r' + 2r_c}{r'}\right)^d \label{5}\\ %because d = lfd tells us how the number of additional hits reached scales with a change in radius, and our ratio between radii is (r' + 2r_c)/r'%
-%     &\leq \gamma^2 \mathbb{E}[|B(q, r')|]\left(\frac{r'+2r_c}{r'}\right)^d \\ %using density bound again to go from a statement about an arbitrary point back to a statement about the query%
-%     &\leq \gamma^2 k\left(\frac{r'+ 2r_c}{r'}\right)^d  \\   %using the fact that for k-nn, the number points in the query ball is k%
-% \end{align*}
-
+In the worst case scenario, where the data are distributed with uniform density in their embedding space, it takes at most $\log_2{\frac{n}{k}}$ iterations of Sieve to reduce the cardinality of clusters to at most $k$.
