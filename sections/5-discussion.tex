@@ -14,6 +14,9 @@ Preliminary results suggest that when FAISS and HNSW are tuned for lower recall,
 
 Some of the questions raised by this study suggest that future work is justified; a comparison across more datasets and larger datasets is clearly in order, as is further analysis with distance functions that existing methods such as FAISS do not support, such as Wasserstein distance~\cite{vallender1974calculation} (particularly for arbitrary dimensionality), as Tanimoto distance~\cite{bajusz2015tanimoto}, which is particularly applicable to computing distances based on maximal common subgraphs of molecular structures.
 Incorporating these or other distance functions in CAKES only requires providing a Rust implementation of the distance function.
+For all datasets benchmarked, the auto-tuning method selected repeated $\rho$-nearest neighbor (Section~\ref{subsubsec:methods:knn-search:repeated-rnn}).
+However, in limited testing on synthetic datasets obeying simple distributions, this was not always the case.
+We seek to evaluate these approaches on many more datasets and distance metrics; it could be that repeated $\rho$-NN is always best (and thus the autotuning is unnecessary), but such a determination is premature.
 
 In future work, we plan to investigate compression by representing differences at each level of the
 binary tree, particularly for string or genomic data, where all differences are discrete.
