@@ -10,6 +10,7 @@ Unlike LSH, this is extensible to any user provided distance function.
 
 Exactness of search and metric vs non-metric.
 
+While CAKES has perfect recall for distance metrics, it exhibits worse recall under non-metrics (specifically, cosine distance). This bears further investigation, but likely stems from how heavily the knn and clustering algorithms depend on the triangle inequality.
 
 \subsection{Future Works}
 \label{subsec:results:future-works}
