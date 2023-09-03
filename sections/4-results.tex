@@ -49,15 +49,15 @@ For each pair $(X, f)$ and a small selection of depths, measure:
     \cline{2-9}
     &                    Recall & QPS                           & Recall & QPS                           & Recall & QPS                                           & Recall & QPS \\
     \hline
-    fashion-mnist      & 0.54 & 324.79                           & 1.00 & 52.91                                  & 0.94 & 60.89                                                    & 1.00 & 16,220 \\
+    fashion-mnist      & 1.000 & 188.03                           & 1.000 & 52.91                                  & 1.000* & 339.74                                                    & 1.000 & 16,220 \\
     \hline
-    gist                   & 1.00 & 3.55                           & 1.00 & 2.63                                     & 0.95 & 149.58                                                   & 1.00 & 10,600 \\
+    gist                   & 1.000 & 3.55                           & 1.000 & 2.63                                     & 0.953 & 149.58                                                   & 1.000 & 10,600 \\
     \hline
-    glove-25              & 1.00 & 78.78                          & 1.00 & 33.52                              & 1.00 & 552.67                                                  & -- & 19,520 \\
+    glove-25              & 1.000 & 78.78                          & 1.000 & 33.52                              & 1.000 & 552.67                                                  & -- & 19,520 \\
     \hline
-    glove-100             & 1.00 & 21.16                          & 1.00 & 16.52                                & 0.99 & 155.90                                                  & -- & 6,935 \\
+    glove-100             & 1.000 & 21.16                          & 1.000 & 16.52                                & 0.998 & 155.90                                                  & -- & 6,935 \\
     \hline
-    sift                  & 1.00 &  24.52                          & 1.00 & 16.40                               & 1.00 & 275.07                                                    & 1.00 & 31,800 \\
+    sift                  & 1.000 &  24.52                          & 1.000 & 16.40                               & 1.000 & 275.07                                                    & 1.000 & 31,800 \\
     \hline
     \end{tabular}
     \end{sc}
@@ -79,15 +79,15 @@ For each pair $(X, f)$ and a small selection of depths, measure:
     \textbf{Dataset}  & \multicolumn{2}{|c|}{\textbf{faiss-ivf}} & \multicolumn{2}{|c|}{\textbf{bruteforce-blas}} & \multicolumn{2}{|c|}{\textbf{hnsw(faiss)}} & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
     &                    Recall & QPS                           & Recall & QPS                           & Recall & QPS                                           & Recall & QPS \\
     \hline
-    fashion-mnist         & 1.00 & 111.47                           & 0.99 & 16.02                                  & 0.99 & 277.80                                                    & 1.00 & 1,549 \\ 
+    fashion-mnist         & 1.000 & 111.47                           & 1.000* & 16.02                                  & 1.000* & 277.80                                                    & 1.000 & 1,549 \\ 
     \hline
-    gist                   & 1.00 & 2.70                           & 0.99 & 0.80                                 & 0.99 & 59.71                                                    & 1.00 & 753.9 \\
+    gist                   & 1.000 & 2.70                           & 1.000* & 0.80                                 & 0.995 & 59.71                                                    & 1.000 & 753.9 \\
     \hline
     glove-25              & -- & --                                & -- & --                                & -- & --                                                    & -- & 1,471 \\
     \hline
-    glove-100             & 0.99 &  7.52                          & 0.99 & 3.11                                  & 0.99 & 92.58                                                    & -- & 396.0 \\
+    glove-100             & 1.000* &  19.04                          & 1.000* & 7.52                                 & 0.987 & 92.58                                                    & -- & 396.0 \\
     \hline
-    sift                  & 1.00 &  23.50                          & 1.00 & 6.51                                  & 0.99 & 179.14                                                    & 1.00 & 2,852 \\                                                 
+    sift                  & 1.000 &  23.50                          & 1.000 & 6.51                                  & 1.000* & 179.14                                                    & 1.000 & 2,852 \\                                                 
     \hline
     \end{tabular}
     \end{sc}
