@@ -23,16 +23,12 @@ binary tree, particularly for string or genomic data, where all differences are 
 When we descend a level in the cluster tree, it takes fewer bits to encode each point in terms of the center. 
 However, each descent of a level in the cluster tree increases the bit-cost of specifying a particular cluster. 
 This presents the following tradeoff: \emph{How do we algorithmically determine the depth to which we should cluster a dataset to achieve optimal compression?} 
-In our future work, we will explore which properties of the dataset and of clusters can inform this optimal depth. 
-
+In our future work, we will explore which properties of the dataset and of clusters can inform this optimal depth.
+Along with compression, we would like to add the ability to perform ``online'' updates as new points are added to a dataset.
 
 We also plan to use CAKES with anomaly detection. Our anomaly detection tool, CHAODA~\cite{ishaq2021clustered}, uses 
-a variety of methods in an ensemble to determine an anomaly score for a point. We would like to explore the effectiveness of 
+a variety of methods in an ensemble to determine an anomaly score for a point. We would like to explore the effectiveness of using
 distance to the $k$-th nearest neighbor as an additional method in our ensemble.
-
-Finally, we would like to add the ability to view live-updates as new points are added to a dataset. For example, 
-we could build the cluster tree with a subsample of the full data set and then add the rest of the instances to 
-simulate live updates.
 
 The source code for CAKES is available under an MIT
 license at https://github.com/URI-ABD/clam.

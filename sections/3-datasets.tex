@@ -9,14 +9,11 @@ Table~\ref{table:datasets:summary} summarizes the properties of these datasets.
 
 We compared against FAISS 1.7.4~\cite{johnson2019billion} (IVF and HNSW) and a BLAS-accelerated implementation of na\"ive search as reported in~\cite{johnson2019billion}.
 
-The specifications for the machines used in benchmarking are as follows:
+All benchmarks were conducted on an Amazon AWS (EC2) \texttt{r6i.16xlarge} instance, with a 64-core Intel Xeon Platinum 8375C CPU 2.90GHz processor, 512GB RAM.
+This is the same configuration used in~\cite{Aumller2018ANNBenchmarksAB}
+The OS kernel was Ubuntu 22.04.3-Ubuntu SMP. 
+The Rust compiler was Rust 1.71.1, and the Python interpreter version was 3.10.12.
 
-
-
-\begin{itemize}
-\item Comparisons to FAISS: 28-core Intel Xeon E5-2690 v4 2.60GHz, 512GB RAM, Manjaro Linux with kernel 5.15.78-1-MANJARO \#1 SMP PREEMPT. Rust 1.70, Python 3.10.5
-\item Amazon AWS: 64-core Intel Xeon Platinum 8375C CPU 2.90GHz, 512GB RAM, Ubuntu 22.04.3-Ubuntu SMP. Rust 1.71.1, Python 3.10.12
-\end{itemize}
 
 % \begin{itemize} 
 %     \item DEEP1B (Cosine): $\sim$1 billion 96-dimensional deep descriptors to 
