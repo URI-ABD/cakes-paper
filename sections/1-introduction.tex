@@ -1,14 +1,14 @@
 \section{Introduction}
 \label{sec:introduction}
-Often dubbed "the Big Data explosion," rapidly advancing technologies have enabled researchers to collect complex data at an unprecedented scale. 
+
+Often dubbed ``the Big Data explosion,'' rapidly advancing technologies have enabled researchers to collect complex data at an unprecedented scale. 
 This is especially true in the field of astronomy. 
 The Sloan Digital Sky Survey (SDSS)~\cite{blanton2017sdss}, for example, in its APOGEE~\cite{alam2015eleventh} dataset, has collected near-infrared spectra of approximately 430,000 stars in approximately 9,000 dimensions. 
 Their MaNGA dataset also contains spectral measurements across the face of each of about 10,000 galaxies across 2,700 deg$^2$. 
 
-Biology has also seen an influx of large, high-dimensional datasets. Silva 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of approximately 2.25 
-million genomes with aligned length of 50,000 letters; 
-the GreenGenes project~\cite{desantis2006greengenes} provides a multiple-sequence alignment of over one million bacterial 16S sequences, each 7,682 characters in length. 
-
+Biology has also seen an influx of large, high-dimensional datasets.
+The GreenGenes project~\cite{desantis2006greengenes} provides a multiple-sequence alignment of over one million bacterial 16S sequences, each 7,682 characters in length;
+Silva 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of approximately 2.25 million genomes with aligned length of 50,000 letters.
 
 % More recently, Big-ANN's NeurIPS'23: Billion Scale Approximate Nearest Neighbor Search Challenge has 
 % solicits development of data structures and search algorithms for Approximate Nearest Neighbor (ANN) search
@@ -17,51 +17,43 @@ the GreenGenes project~\cite{desantis2006greengenes} provides a multiple-sequenc
 % are 192, 200, 30,000, and 100 dimensional respectively, and submissions are evaluated with 
 % a ten million point sample of each. 
 
-
-In many fields, the rate of data collection outpaces the rate of computing performance improvements predicted by Moore's Law~\cite{brescia2012extracting}, indicating 
-that computer architecture will not ``catch up'' to our computational needs in the near future. As a result, analysis of these large datasets 
-requires better algorithms. 
+In many fields, the rate of data collection outpaces the rate of computing performance improvements predicted by Moore's Law~\cite{brescia2012extracting}, indicating that computer architecture will not ``catch up'' to our computational needs in the near future.
+As a result, analysis of these large datasets requires better algorithms. 
 
 Many researchers are especially interested in similarity search on these datasets. 
 Similarity search enables a variety of applications, including recommendation and classification systems. 
-Additionally, with the rise of large language models such as GPT-3~\cite{2020arXiv200514165B}, GPT-4~\cite{OpenAI2023GPT4TR}, and LLAMA-2~\cite{Touvron2023Llama2O}, similarity search can become a useful tool for 
-understanding and verifying the validity of model embeddings. 
+Additionally, with the rise of large language models such as GPT-3~\cite{2020arXiv200514165B}, GPT-4~\cite{OpenAI2023GPT4TR}, and LLAMA-2~\cite{Touvron2023Llama2O}, similarity search can become a useful tool for understanding and verifying the validity of model embeddings. 
 As the sizes and dimensionalities of datasets have grown, however, efficient and accurate similarity search has become extremely challenging; 
 even state-of-the-art algorithms exhibit a steep recall versus throughput tradeoff~\cite{ishaq2019clustered}.
 
-
 In particular, $k$-nearest neighbors ($k$-NN) search is one of the most pervasive classification and recommendation methods in use~\cite{fix1952discriminatory, cover1967nearest}. 
-Naive implementations of kNN, whose time complexity is linear in the dataset's cardinality, 
-prove prohibitively slow for large datasets. While algorithms for fast $k$-NN on large datasets exist, most of them are approximate and do not 
-exploit the geometric and topological structure inherent in large datasets. Approximate search is sufficient for some applications, but the 
-need for efficient, \emph{exact} search remains.
+Naive implementations of kNN, whose time complexity is linear in the dataset's cardinality, prove prohibitively slow for large datasets.
+While algorithms for fast $k$-NN on large datasets exist, most of them are approximate and do not exploit the geometric and topological structure inherent in large datasets.
+Approximate search is sufficient for some applications, but the need for efficient, \emph{exact} search remains.
 In particular, while approximate $k$-NN may agree with exact $k$-NN in a majority vote for large values of $k$, it may be sensitive to local perturbations with smaller values of $k$, and small values of $k$ may be necessary when classes are not well-separated.
 
 For the sake of clarity, it is important to be precise about what we mean by \emph{exact} $k$-NN, and exact search in general.
 In the context of $\rho$-NN search, exact search typically means returning only those data points that are identical to the query.
 There are many algorithms that perform well here, such as FM-Index~\cite{ferragina2000opportunistic}, which are less applicable to approximate search.
 In contrast, in the context of $k$-NN search, while all approaches return exactly $k$ elements (ignoring how distance ties are handled), some approaches may miss some of the $k$ nearest elements, and erroneously include some of the elements outside the truly nearest $k$.
-In any case, $k$-NN is typically used for inference; the \emph{prediction} of a class for a query is obviously not guaranteed to be correct.
-When we refer to \emph{exact} $k$-NN, we refer to precisely the $k$ nearest neighbors being returned; no closer points are elided and no further points are included.
+In any case, $k$-NN is commonly used for inference;
+the \emph{prediction} of a class for a query is obviously not guaranteed to be correct.
+When we refer to \emph{exact} $k$-NN, we refer to precisely the $k$ nearest neighbors being returned;
+no closer points are elided and no further points are included.
 This has implications for the accuracy of classification, but does not guarantee perfect classification accuracy.
  
-There is some evidence that non-metrics such as cosine distance perform poorly for $k$-NN in biomedical settings~\cite{hu2016distance}; this may suggest that approximate $k$-NN (which may have imperfect precision and recall) could be exhibit suboptimal accuracy.
+There is some evidence that non-metrics such as cosine distance perform poorly for $k$-NN in biomedical settings~\cite{hu2016distance};
+this may suggest that approximate $k$-NN (which may have imperfect precision and recall) could exhibit suboptimal accuracy.
 
-Recent approaches to tackling the exponential growth of data include locality-sensitive hashing~\cite{indyk1999sublinear}, 
-clever indexing techniques such as the FM Index~\cite{simpson2010efficient}, hierarchical navigable small world (HNSW) networks~\cite{Malkov2016EfficientAR}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. 
+Recent approaches to tackling the exponential growth of data include locality-sensitive hashing~\cite{indyk1999sublinear}, clever indexing techniques such as the FM Index~\cite{simpson2010efficient}, hierarchical navigable small world (HNSW) networks~\cite{Malkov2016EfficientAR}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}.
 Entropy-scaling search is a paradigm for similarity search that exploits the geometric and topological structure inherent in large datasets.
-Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with geometric properties (such as the 
-\emph{metric entropy} and \emph{local fractal dimension}, defined in Section 2) of a dataset,
-rather than its cardinality. In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search), which extended entropy-scaling $\rho$-nearest 
-neighbors search to a hierarchical clustering approach. In this paper, we introduce CAKES (CLAM-Accelerated $K$-nearest-neighbor 
-Entropy-scaling Search). CLAM (Clustered Learning of Approximate Manifolds), developed to allow ``manifold mapping'' for anomaly detection~\cite{ishaq2021clustered}, is a refinement of the CHESS clustering algorithm. 
-Using the cluster tree constructed by CLAM, CAKES builds upon the capabilities of CHESS to perform
-$k$-nearest neighbors search. 
+Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with geometric properties (such as the \emph{metric entropy} and \emph{local fractal dimension}, defined in Section 2) of a dataset, rather than its cardinality.
+In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search), which extended entropy-scaling $\rho$-nearest neighbors search to a hierarchical clustering approach.
+In this paper, we introduce CAKES (CLAM-Accelerated $K$-nearest-neighbor Entropy-scaling Search).
+CLAM (Clustered Learning of Approximate Manifolds), developed to allow ``manifold mapping'' for anomaly detection~\cite{ishaq2021clustered}, is a refinement of the CHESS clustering algorithm. 
+Using the cluster tree constructed by CLAM, CAKES builds upon the capabilities of CHESS to perform $k$-nearest neighbors search.
 
-
-This paper focuses on four novel algorithms for exact $k$-NN search. We also present some 
-improvements to the clustering and $\rho$-nearest neighbors search algorithms in CHESS, 
-as well as improved genericity across distance functions. Additionally, we prove a guarantee about the scaling behavior of cluster radii. 
-Finally, we provide a comparison of 
-CAKES to the state-of-the-art in similarity search, FAISS~\cite{johnson2019billion} and HNSW, on several datasets 
-from the ANN benchmarks suite [CITE].
+This paper focuses on four novel algorithms for exact $k$-NN search.
+We also present some improvements to the clustering and $\rho$-nearest neighbors search algorithms in CHESS, as well as improved genericity across distance functions.
+Additionally, we prove a guarantee about the scaling behavior of cluster radii. 
+Finally, we provide a comparison of CAKES to the state-of-the-art in similarity search, FAISS~\cite{johnson2019billion} and HNSW, on several datasets from the ANN benchmarks suite~\cite{aumuller2020ann}.

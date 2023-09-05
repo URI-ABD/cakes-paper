@@ -107,12 +107,11 @@ noah\_daniels@uri.edu}}
 \begin{abstract}
   Many fields are experiencing a Big Data explosion, with data collection rates outpacing the rate of computing performance improvements predicted by Moore's Law. 
   Researchers are often interested similarity search on such data. 
-  We present CAKES (CLAM-Accelerated $K$-NN Entropy Scaling Search), a novel algorithm for $k$-nearest-neighbor ($k$-NN) search which leverages geometric and topological properties inherent in large datasets. CAKES assumes the manifold hypothesis and performs 
-  best when data occupy a low dimensional manifold, even if the data occupy a very high dimensional embedding space. 
+  We present CAKES (CLAM-Accelerated $K$-NN Entropy Scaling Search), a novel algorithm for $k$-nearest-neighbor ($k$-NN) search which leverages geometric and topological properties inherent in large datasets.
+  CAKES assumes the manifold hypothesis and performs best when data occupy a low dimensional manifold, even if the data occupy a very high dimensional embedding space. 
   We demonstrate performance improvements ranging from hundreds to tens of thousands of times faster when compared to state-of-the-art approaches such as FAISS and HNSW, when benchmarked on 5 standard datasets.
-  Unlike locality-sensitive hashing
-  approaches, CAKES can work with any user-defined distance
-  function. When data occupy a metric space, CAKES exhibits perfect recall.
+  Unlike locality-sensitive hashing approaches, CAKES can work with any user-defined distance function.
+  When data occupy a metric space, CAKES exhibits perfect recall.
 \end{abstract}
 
 
@@ -124,8 +123,7 @@ noah\_daniels@uri.edu}}
     \input{sections/5-discussion.tex}
 
     \section*{Acknowledgments}
-    The authors thank the members of the University of Rhode Island's Algorithms for Big Data research group for their helpful 
-    comments throughout the development of this work.
+    The authors thank the members of the University of Rhode Island's Algorithms for Big Data research group for their helpful comments throughout the development of this work.
 
     % \afterpage{\clearpage}
     \FloatBarrier

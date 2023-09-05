@@ -2,35 +2,36 @@
 \label{sec:discussion}
 
 We have presented CAKES, a method for fast $k$-nearest-neighbors search that can adapt to a variety of distance functions.
-CAKES provides exact $k$-NN when the distance function in use is a metric (particularly, when it obeys the triangle inequality).
-CAKES is most effective when datasets are not uniform and do not obey a ``simple'' distribution such as Gaussian, but rather adhere to ``interesting'' low-dimensional manifolds even when embedded in a high-dimensional space; thus, CAKES is best when the manifold hypothesis is upheld.
+CAKES provides exact recall with $k$-NN when the distance function in use is a metric (particularly, when it obeys the triangle inequality).
+CAKES is most effective when datasets are not uniform and do not obey a ``simple'' distribution such as Gaussian, but rather adhere to ``interesting'' low-dimensional manifolds even when embedded in a high-dimensional space;
+thus, CAKES works best when the manifold hypothesis is upheld.
 
-Unlike locality-sensitive hashing (LSH) approaches, which require a novel hashing function for each distance metric in use, CAKES is extensible to any user-provided distance function.
-Also unlike LSH approaches, CAKES guarantees perfect precision and recall as long as the distance function in use is a \emph{metric}; that is, it obeys the properties of identity, symmetry, and the triangle inequality.
-As mentioned in Section~\ref{sec:introduction}, this should not be conflated with having $k$-NN itself provide perfect \emph{inference} accuracy.
+In comparison to other methods, while CAKES has perfect recall for distance metrics, it exhibits worse recall under non-metrics (specifically, cosine distance). This bears further investigation, but likely stems from how heavily the $k$-NN and clustering algorithms depend on the triangle inequality when discarding clusters from consideration.
+However, the ann-benchmarks results show that even when FAISS and HNSW are tuned for lower recall, they are still slower than CAKES in all cases.
 
-In comparison to other methods, While CAKES has perfect recall for distance metrics, it exhibits worse recall under non-metrics (specifically, cosine distance). This bears further investigation, but likely stems from how heavily the $k$-NN and clustering algorithms depend on the triangle inequality.
-Preliminary results suggest that when FAISS and HNSW are tuned for lower recall, they are still slower than CAKES in all cases.
+The questions raised by this study suggest several avenues for future work.
+A comparison across more datasets and larger datasets is clearly in order, as is further analysis with distance functions that existing methods such as FAISS do not support, such as Wasserstein distance~\cite{vallender1974calculation} (particularly for arbitrary dimensionality), and Tanimoto distance~\cite{bajusz2015tanimoto}, which is particularly applicable to computing distances based on maximal common subgraphs of molecular structures.  % TODO: Add Lev, NW, SW
+Incorporating these or other distance functions in CAKES only requires a Rust implementation of the distance function.
 
-Some of the questions raised by this study suggest that future work is justified; a comparison across more datasets and larger datasets is clearly in order, as is further analysis with distance functions that existing methods such as FAISS do not support, such as Wasserstein distance~\cite{vallender1974calculation} (particularly for arbitrary dimensionality), as Tanimoto distance~\cite{bajusz2015tanimoto}, which is particularly applicable to computing distances based on maximal common subgraphs of molecular structures.
-Incorporating these or other distance functions in CAKES only requires providing a Rust implementation of the distance function.
 For all datasets benchmarked, the auto-tuning method selected repeated $\rho$-nearest neighbor (Section~\ref{subsubsec:methods:knn-search:repeated-rnn}).
-However, in limited testing on synthetic datasets obeying simple distributions, this was not always the case.
-We seek to evaluate these approaches on many more datasets and distance metrics; it could be that repeated $\rho$-NN is always best (and thus the autotuning is unnecessary), but such a determination is premature.
+However, during limited testing on synthetic datasets obeying simple distributions, this was not always the case.
+We seek to evaluate these approaches on many more datasets and distance metrics;
+it could be that repeated $\rho$-NN is always best (and thus the auto-tuning is unnecessary), but such a determination would be premature.
 
-In future work, we plan to investigate compression by representing differences at each level of the
-binary tree, particularly for string or genomic data, where all differences are discrete.
-When we descend a level in the cluster tree, it takes fewer bits to encode each point in terms of the center. 
+In future work, we plan to investigate compression by representing differences at each level of the binary tree, particularly for string or genomic data, where all differences are discrete.
+When we descend some levels in the cluster tree, it takes fewer bits to encode each point in terms of the center because the radii decrease.
 However, each descent of a level in the cluster tree increases the bit-cost of specifying a particular cluster. 
-This presents the following tradeoff: \emph{How do we algorithmically determine the depth to which we should cluster a dataset to achieve optimal compression?} 
+This presents the following tradeoff:
+\emph{How do we algorithmically determine the depth to which we should cluster a dataset to achieve optimal compression?} 
 In our future work, we will explore which properties of the dataset and of clusters can inform this optimal depth.
-Along with compression, we would like to add the ability to perform ``online'' updates as new points are added to a dataset.
 
-We also plan to use CAKES with anomaly detection. Our anomaly detection tool, CHAODA~\cite{ishaq2021clustered}, uses 
-a variety of methods in an ensemble to determine an anomaly score for a point. We would like to explore the effectiveness of using
-distance to the $k$-th nearest neighbor as an additional method in our ensemble.
+We would like to add the ability to perform ``online'' updates to the tree as points are added to or deleted from a dataset.
+This would enable CAKES to be used in a streaming environment.
 
-The source code for CAKES is available under an MIT
-license at https://github.com/URI-ABD/clam.
+We also plan to use CAKES with anomaly detection.
+Our anomaly detection tool, CHAODA~\cite{ishaq2021clustered}, uses a variety of methods in an ensemble to determine an anomaly score for a point.
+We would like to explore the effectiveness of using the distribution of distances among the $k$-th nearest neighbors as an additional method in our ensemble.
+
+CLAM and CAKES are implemented in Rust and their source code is available under an MIT license at https://github.com/URI-ABD/clam.
 
 % since this online update takes advantage of CAKES' fast search, it allows us to have our cake and eat it, too.

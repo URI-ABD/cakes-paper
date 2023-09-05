@@ -1,33 +1,16 @@
 
 \section{Datasets And Benchmarking}
-\label{sec:datasets-and-distance-functions}
+\label{sec:datasets-and-benchmarks}
 
-
-We benchmark on a variety of datasets from the ann-benchmarks suite~\cite{Aumller2018ANNBenchmarksAB}, 
-along with the appropriate distance function.
+We benchmark on a variety of datasets from the ann-benchmarks suite~\cite{Aumller2018ANNBenchmarksAB}, along with the appropriate distance function.
 Table~\ref{table:datasets:summary} summarizes the properties of these datasets.
 
-We compared against FAISS 1.7.4~\cite{johnson2019billion} (IVF and HNSW) and a BLAS-accelerated implementation of na\"ive search as reported in~\cite{johnson2019billion}.
+We compared against FAISS~\cite{johnson2019billion} (IVF and HNSW) and a BLAS-accelerated implementation of na\"ive search as reported in~\cite{johnson2019billion}.
 
 All benchmarks were conducted on an Amazon AWS (EC2) \texttt{r6i.16xlarge} instance, with a 64-core Intel Xeon Platinum 8375C CPU 2.90GHz processor, 512GB RAM.
 This is the same configuration used in~\cite{Aumller2018ANNBenchmarksAB}
 The OS kernel was Ubuntu 22.04.3-Ubuntu SMP. 
 The Rust compiler was Rust 1.71.1, and the Python interpreter version was 3.10.12.
-
-
-% \begin{itemize} 
-%     \item DEEP1B (Cosine): $\sim$1 billion 96-dimensional deep descriptors to 
-%     \item Fashion-MNIST (Euclidean): 60,000 784-dimensional vector representations of images of clothing items
-%     \item GIST (Euclidean): 1 million 960-dimensional image descriptors 
-%     \item GloVe (Cosine): $\sim$1.2 million 25-dimensional vector representations of words
-%     \item Kosarak (Jaccard): $\sim$75 thousand ~28 thousand-dimensional binary vectors representing user clickstreams
-%     \item MNIST (Euclidean): 60,000 784-dimensional vector representations of images of handwritten digits
-%     \item NYTimes (Cosine): 290,000 256-dimensional vector representations of words
-%     \item SIFT (Euclidean): 1 million 128-dimensional image descriptors
-%     \item Last.fm (Cosine): $\sim$292, 000 65-dimensional vector representations of songs
-% \end{itemize}
-
-
 
 \begin{table}[!t]
     % \renewcommand{\arraystretch}{1.15}
@@ -35,36 +18,33 @@ The Rust compiler was Rust 1.71.1, and the Python interpreter version was 3.10.1
     \label{table:datasets:summary}
     \vskip 0.15in
     \begin{center}
-    \begin{small}
-    \begin{sc}
-    \begin{tabular}{|l|l|l|l|}
-    \hline
-    \textbf{Dataset} & \textbf{Distance}  &\textbf{Cardinality}  & \textbf{Dim.}  \\
-    &                &                  &                         \\
-    \hline
-    nytimes          & cosine              & 290,000            & 256       \\
-    \hline
-    fashion-mnist    & euclidean              & 60,000             & 784       \\
-    \hline 
-    gist             & euclidean              & 1,000,000          & 960       \\
-    \hline
-    glove-25         & cosine              & 1,183,514          & 25        \\
-    \hline
-    glove-100        & cosine              & 1,183,514          & 100       \\
-    \hline
-    sift             & euclidean              & 1,000,000          & 128       \\
-    \hline
-    deep-image       & cosine              & 9,990,000          & 96        \\
-    \hline
-    mnist            & euclidean              & 60,000             & 784       \\
-    \hline
-    glove-50         & cosine              & 1,183,514          & 50        \\
-    \hline
-    lastfm           & cosine              & 292,385            & 65        \\
-    \hline
-    \end{tabular}
-    \end{sc}
-    \end{small}
+        \begin{small}
+            \begin{sc}
+                \begin{tabular}{|l|l|l|l|}
+                    \hline
+                    \textbf{Dataset} & \textbf{Distance}  &\textbf{Cardinality}  & \textbf{Dim.}  \\
+                    \hline
+                    fashion-mnist    & euclidean              & 60,000             & 784       \\
+                    \hline 
+                    gist             & euclidean              & 1,000,000          & 960       \\
+                    \hline
+                    glove-25         & cosine              & 1,183,514          & 25        \\
+                    \hline
+                    glove-50         & cosine              & 1,183,514          & 50        \\
+                    \hline
+                    glove-100        & cosine              & 1,183,514          & 100       \\
+                    \hline
+                    sift             & euclidean              & 1,000,000          & 128       \\
+                    \hline
+                    deep-image       & cosine              & 9,990,000          & 96        \\
+                    \hline
+                    mnist            & euclidean              & 60,000             & 784       \\
+                    \hline
+                    lastfm           & cosine              & 292,385            & 65        \\
+                    \hline
+                \end{tabular}
+            \end{sc}
+        \end{small}
     \end{center}
     \vskip -0.1in
-    \end{table}
+\end{table}
