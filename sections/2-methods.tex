@@ -42,7 +42,7 @@ The \emph{center} is the geometric median of a sample of points in the \emph{clu
 The \emph{radius} is the maximum distance from any point in the cluster to the \emph{center}.
 We estimate \emph{local fractal dimension} at the scale of the cluster radius and half the cluster radius.
 Each cluster (unless it is a leaf cluster) has two child clusters in much the same way that a node in a binary tree has two child nodes.
-We define the \emph{metric entropy} $\mathcal{N}_{\hat{r_c}}(D)$ of a data set $D$ under a hierarchical clustering scheme as a refinement of~\cite{yu2015entropy}, where metric entropy for a given cluster radius $r_c$ was the number of clusters of radius $r_c$ needed to cover all data.
+We define the \emph{metric entropy} $\mathcal{N}_{\hat{r_c}}(X)$ of a data set $X$ under a hierarchical clustering scheme as a refinement of~\cite{yu2015entropy}, where metric entropy for a given cluster radius $r_c$ was the number of clusters of radius $r_c$ needed to cover all data.
 Here, we use a hierarchical, divisive clustering approach, but with early stopping criteria; clusters which satisfy a user-specified stopping criterion (e.g. a specified cardinality or radius) are not further split.
 Since we frame the asymptotic complexity of $\rho$-NN search in terms of the number of leaf clusters, the \emph{metric entropy} is best thought of in terms of the number of leaf clusters.
 
