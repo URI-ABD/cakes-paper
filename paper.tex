@@ -1,15 +1,22 @@
-\documentclass[conference,compsoc]{IEEEtran}
+% below is for IEEE
+% \documentclass[conference,compsoc]{IEEEtran}
 
-\ifCLASSOPTIONcompsoc
-  % IEEE Computer Society needs nocompress option
-  % requires cite.sty v4.0 or later (November 2003)
-  \usepackage[nocompress]{cite}
-\else
-  % normal IEEE
-  \usepackage{cite}
-\fi
+% \ifCLASSOPTIONcompsoc
+%   % IEEE Computer Society needs nocompress option
+%   % requires cite.sty v4.0 or later (November 2003)
+%   \usepackage[nocompress]{cite}
+% \else
+%   % normal IEEE
+%   \usepackage{cite}
+% \fi
 
-% \usepackage{arxiv} # uncomment for preprint
+% below is for arxiv
+\documentclass{article}
+\pdfoutput=1
+\usepackage{arxiv}
+
+
+
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
@@ -66,43 +73,83 @@
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{
-\IEEEauthorblockN{Morgan E. Prior}
-\IEEEauthorblockA{Mathematics\\
-University of Rhode Island\\
-Kingston, RI 02881\\
-meprior424@gmail.com}
-\and
-\IEEEauthorblockN{Thomas J. Howard III}
-\IEEEauthorblockA{Computer Science and Statistics\\
-University of Rhode Island\\
-Kingston, RI 02881\\
-thoward27@uri.edu}
-\and
-\IEEEauthorblockN{Oliver McLaughlin}
-\IEEEauthorblockA{Computer Science and Statistics\\
-University of Rhode Island\\
-Kingston, RI 02881\\
-olwmcjp@gmail.com}
-\linebreakand
-\IEEEauthorblockN{Najib Ishaq}
-\IEEEauthorblockA{Computer Science and Statistics\\
-University of Rhode Island\\
-Kingston, RI 02881\\
-najib\_ishaq@zoho.com}
-\and
-\IEEEauthorblockN{Noah M. Daniels}
-\IEEEauthorblockA{Computer Science and Statistics\\
-University of Rhode Island\\
-Kingston, RI 02881\\
-noah\_daniels@uri.edu}}
 
-\IEEEoverridecommandlockouts
-\IEEEpubid{\makebox[\columnwidth]{978-1-6654-3902-2/21/\$31.00~\copyright2021 IEEE \hfill} \hspace{\columnsep}\makebox[\columnwidth]{ }}
-% make the title area
-\maketitle
-\IEEEpubidadjcol
+% Below is for IEEE authors
+
+
+% \author{
+% \IEEEauthorblockN{Morgan E. Prior}
+% \IEEEauthorblockA{Mathematics\\
+% University of Rhode Island\\
+% Kingston, RI 02881\\
+% meprior424@gmail.com}
+% \and
+% \IEEEauthorblockN{Thomas J. Howard III}
+% \IEEEauthorblockA{Computer Science and Statistics\\
+% University of Rhode Island\\
+% Kingston, RI 02881\\
+% thoward27@uri.edu}
+% \and
+% \IEEEauthorblockN{Oliver McLaughlin}
+% \IEEEauthorblockA{Computer Science and Statistics\\
+% University of Rhode Island\\
+% Kingston, RI 02881\\
+% olwmcjp@gmail.com}
+% \linebreakand
+% \IEEEauthorblockN{Najib Ishaq}
+% \IEEEauthorblockA{Computer Science and Statistics\\
+% University of Rhode Island\\
+% Kingston, RI 02881\\
+% najib\_ishaq@zoho.com}
+% \and
+% \IEEEauthorblockN{Noah M. Daniels}
+% \IEEEauthorblockA{Computer Science and Statistics\\
+% University of Rhode Island\\
+% Kingston, RI 02881\\
+% noah\_daniels@uri.edu}}
+
+% \IEEEoverridecommandlockouts
+% \IEEEpubid{\makebox[\columnwidth]{978-1-6654-3902-2/21/\$31.00~\copyright2021 IEEE \hfill} \hspace{\columnsep}\makebox[\columnwidth]{ }}
+% % make the title area
+% \maketitle
+% \IEEEpubidadjcol
 % this must go after the closing bracket ] following \twocolumn[ ...
+
+% Below is for arxiv authors
+
+\author{
+    Morgan E. Prior \\
+    Department of Mathematics \\
+    University of Rhode Island \\
+    Kingston, RI \\
+    \texttt{meprior424@gmail.com} \\
+    \And
+    Thomas J. Howard III \\
+    Department of Computer Science and Statistics\\
+    University of Rhode Island\\
+    Kingston, RI\\
+    \texttt{thoward27@uri.edu} \\
+    \And
+    Oliver McLaughlin \\
+    Department of Computer Science and Statistics\\
+    University of Rhode Island\\
+    Kingston, RI\\
+    \texttt{olwmc@gmail.com} \\
+    \And
+    Najib Ishaq \\
+    Department of Computer Science and Statistics\\
+    University of Rhode Island\\
+    Kingston, RI\\
+    \texttt{najib\_ishaq@zoho.com} \\
+    \AND
+    Noah M. Daniels \\
+    Department of Computer Science and Statistics\\
+    University of Rhode Island\\
+    Kingston, RI\\
+    \texttt{noah\_daniels@uri.edu} \\
+}
+
+\maketitle
 
 \begin{abstract}
   Many fields are experiencing a Big Data explosion, with data collection rates outpacing the rate of computing performance improvements predicted by Moore's Law. 
@@ -115,7 +162,12 @@ noah\_daniels@uri.edu}}
 \end{abstract}
 
 
-\IEEEpeerreviewmaketitle
+
+% Below is for IEEE
+% \IEEEpeerreviewmaketitle
+
+
+
     \input{sections/1-introduction.tex}
     \input{sections/2-methods.tex}
     \input{sections/3-datasets.tex}
