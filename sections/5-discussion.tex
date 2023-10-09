@@ -7,16 +7,18 @@ CAKES is most effective when datasets are not uniform and do not obey a ``simple
 thus, CAKES works best when the manifold hypothesis is upheld.
 
 In comparison to other methods, while CAKES has perfect recall for distance metrics, it exhibits worse recall under non-metrics (specifically, cosine distance). This bears further investigation, but likely stems from how heavily the $k$-NN and clustering algorithms depend on the triangle inequality when discarding clusters from consideration.
-However, the ann-benchmarks results show that even when FAISS and HNSW are tuned for lower recall, they are still slower than CAKES in all cases.
+
+% Is this still true: "However, the ann-benchmarks results show that even when FAISS and HNSW are tuned for lower recall, they are still slower than CAKES in all cases."
 
 The questions raised by this study suggest several avenues for future work.
 A comparison across more datasets and larger datasets is clearly in order, as is further analysis with distance functions that existing methods such as FAISS do not support, such as Wasserstein distance~\cite{vallender1974calculation} (particularly for arbitrary dimensionality), and Tanimoto distance~\cite{bajusz2015tanimoto}, which is particularly applicable to computing distances based on maximal common subgraphs of molecular structures.  % TODO: Add Lev, NW, SW
 Incorporating these or other distance functions in CAKES only requires a Rust implementation of the distance function.
 
-For all datasets benchmarked, the auto-tuning method selected repeated $\rho$-nearest neighbor (Section~\ref{subsubsec:methods:knn-search:repeated-rnn}).
-However, during limited testing on synthetic datasets obeying simple distributions, this was not always the case.
-We seek to evaluate these approaches on many more datasets and distance metrics;
-it could be that repeated $\rho$-NN is always best (and thus the auto-tuning is unnecessary), but such a determination would be premature.
+
+% For all datasets benchmarked, the auto-tuning method selected repeated $\rho$-nearest neighbor (Section~\ref{subsubsec:methods:knn-search:repeated-rnn}).
+% However, during limited testing on synthetic datasets obeying simple distributions, this was not always the case.
+% We seek to evaluate these approaches on many more datasets and distance metrics;
+% it could be that repeated $\rho$-NN is always best (and thus the auto-tuning is unnecessary), but such a determination would be premature.
 
 In future work, we plan to investigate compression by representing differences at each level of the binary tree, particularly for string or genomic data, where all differences are discrete.
 When we descend some levels in the cluster tree, it takes fewer bits to encode each point in terms of the center because the radii decrease.
