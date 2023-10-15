@@ -42,12 +42,6 @@
     \label{fig:results:random-scaling}
 \end{figure}
 
-We stress that CAKES is intended for large datasets, and thus we do not expect to see sublinear performance on small datasets. 
-To explore the scaling behavior of CAKES, we augmented datasets in the ANN-benchmarks suite by adding random points within a 
-small error distance of existing points. This allowed us to isolate the effect of \emph{cardinality} on the performance of CAKES 
-from that of other factors such as dimensionality, metric, or topological structure of the dataset. 
-
-
 Figures \ref{fig:results:fashion-mnist-scaling}, \ref{fig:results:glove-100-scaling}, and \ref{fig:results:gist-scaling} show the scaling behavior of CAKES on augmented versions of the following ann-benchmark datasets: fashion-mnist under Euclidean distance, glove-100 under cosine distance, and gist under Euclidean distance. 
 Figure \ref{fig:results:random-scaling} shows the scaling behavior of CAKES on a completely randomly generated dataset which does not obey any manifold structure. 
 The the horizontal axes in each figure denote the multiplier by which the cardinality of the original dataset has been increased with synthetic points. The vertical axes denote throughput in queries per second, on a logarithmic scale. 

@@ -527,4 +527,18 @@ In the worst case scenario, where the data are distributed with uniform density 
 However, since high cardinality clusters occur only at low depths in the tree, the length of $Q$ for those iterations is relatively low. 
 
 After the first $\log{\frac{n}{2k}}$ iterations, we have that the cardinalities of clusters in $Q$ are at most $2k$, at which point, based on our assumption, we have that the length of $Q$ is close to $2d$.
-Therefore, the asymptotic complexity of the sieve algorithms is $\mathcal{O}\left(log(\frac{n}{d})\right)$.
+Therefore, the asymptotic complexity of the sieve algorithms is $\mathcal{O}\left(\log(\frac{n}{d})\right)$.
+
+\subsection{Synthetic Data}
+\label{subsec:methods:synthetic-data}
+
+We expect CAKES to perform well as the cardinality of datasets increases, and to explore this scaling behavior, we augmented datasets in the ANN-benchmarks suite by adding random points within a 
+small noise threshold of existing points. This allowed us to isolate the effect of \emph{cardinality} on the performance of CAKES 
+from that of other factors such as dimensionality, metric, or topological structure of the dataset. 
+
+
+To elaborate, we start with an original dataset $X$ from the ANN-benchmark suite, a user-specified noise tolerance $\epsilon$, and a mutliplier $m$.
+For each datum $x \in X$, we create $m$ new data points within a distance $\epsilon$ of $x$. To construct a synthetic data point $x'$, we choose $d$ random numbers 
+$r_1, r_2, \cdots r_d$ in the interval $[-\tfrac{\epsilon}{\sqrt{d}}, \tfrac{\epsilon}{\sqrt{d}}]$ and then add them componentwise to the original datapoint. 
+This ensures that any synthetic point is within a distance of $\epsilon$ from a real point in the original dataset.
+

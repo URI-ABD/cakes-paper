@@ -5,6 +5,8 @@
 We benchmark on a variety of datasets from the ann-benchmarks suite~\cite{Aumller2018ANNBenchmarksAB}, along with the appropriate distance function.
 Table~\ref{table:datasets:summary} summarizes the properties of these datasets.
 
+In addition to benchmarks on datasets from the ANN Benchmarks suite, we also benchmarked on synthetic augmentations of these real datasets, using the process described in \ref{subsec:methods:synthetic-data}. In particular, we use a noise tolerance $\epsilon = 0.01$ and explore the scaling behavior as the multiplier $m$ of new points increases. While we explored the scaling behavior of CAKES with augmented versions of each dataset in \ref{table:datasets:summary}, we give an in-depth discussion of results for scaling behavior on fashion-mnist, glove-100, gist, and a purely random dataset. 
+
 We compared against FAISS~\cite{johnson2019billion} (IVF and HNSW) and a BLAS-accelerated implementation of na\"ive search as reported in~\cite{johnson2019billion}.
 
 All benchmarks were conducted on an Amazon AWS (EC2) \texttt{r6i.16xlarge} instance, with a 64-core Intel Xeon Platinum 8375C CPU 2.90GHz processor, 512GB RAM.
@@ -48,3 +50,5 @@ The Rust compiler was Rust 1.71.1, and the Python interpreter version was 3.10.1
     \end{center}
     \vskip -0.1in
 \end{table}
+
+
