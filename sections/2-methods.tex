@@ -539,6 +539,5 @@ from that of other factors such as dimensionality, metric, or topological struct
 
 To elaborate, we start with an original dataset $X$ from the ANN-benchmark suite, a user-specified noise tolerance $\epsilon$, and a mutliplier $m$.
 For each datum $x \in X$, we create $m$ new data points within a distance $\epsilon$ of $x$. To construct a synthetic data point $x'$, we choose $d$ random numbers 
-$r_1, r_2, \cdots r_d$ in the interval $[-\tfrac{\epsilon}{\sqrt{d}}, \tfrac{\epsilon}{\sqrt{d}}]$ and then add them componentwise to the original datapoint. 
-This ensures that any synthetic point is within a distance of $\epsilon$ from a real point in the original dataset.
-
+$r_1, r_2, \cdots , r_d$ in the interval $[-\tfrac{\epsilon}{\sqrt{d}}, \tfrac{\epsilon}{\sqrt{d}}]$ and add them componentwise to the original datapoint. 
+Since $\sqrt{d \cdot (\tfrac{\epsilon}{\sqrt{d}})^2 } = \sqrt{d \cdot \tfrac{\epsilon^2}{d}}  = \sqrt{\epsilon^2} = \epsilon$, this ensures that any synthetic point is within a distance of $\epsilon$ from a real point in the original dataset.
