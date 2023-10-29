@@ -26,23 +26,30 @@ Additionally, with the rise of large language models such as GPT-3~\cite{2020arX
 As the sizes and dimensionalities of datasets have grown, however, efficient and accurate similarity search has become extremely challenging; 
 even state-of-the-art algorithms exhibit a steep recall versus throughput tradeoff~\cite{ishaq2019clustered}.
 
-In particular, $k$-nearest neighbors ($k$-NN) search is one of the most pervasive classification and recommendation methods in use~\cite{fix1952discriminatory, cover1967nearest}. 
-Naive implementations of kNN, whose time complexity is linear in the dataset's cardinality, prove prohibitively slow for large datasets.
+{\color{red} We now define two types of similarity search: $k$-nearest neighbor search ($k$-NN) and $\rho$-nearest neighbor search ($\rho$-NN). 
+Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, $k$-nearest neighbors search aims to find 
+the set $S_q$ such that  $|S_q| = k$ and $\forall x \in \textbf{X} \ \setminus \ S_q$, $f(x, q) > \max\{f(y, q): y \in S_q \}$;
+that is, for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$.
+On the other hand, $\rho$-nearest neighbors search aims to find the set $\{x \in \textbf{X}: f(q, x) \leq \rho \}$;
+that is, find all points in $\textbf{X}$ that are at most a distance $\rho$ from $q$.}
+
+
+
+
+{\color{red} 
+Previous works have used the term \emph{approximate} search to refer to $\rho$-nearest neighbor search, but in this paper, 
+we reserve the term \emph{approximate} for $k$-NN algorihtms which may miss some of the $k$ nearest elements, and erroneously include some of the elements other than the truly nearest $k$.
+In other words, we call a $k$-NN algorithm \emph{approximate} if there exists a query, dataset, distance function, or value of $k$ for which its set $H$ of returned points satisfies the condition $H \triangle S_q \neq \emptyset$, where $\triangle$ denotes a symmetric difference.
+When we refer to an \emph{exact} $k$-NN algorithm, we describe an algorithm which, no matter the query, dataset, distance function, nor value of $k$, returns precisely the $k$ nearest neighbors to that query;
+no closer points are elided and no further points are included. }
+
+
+$k$-nearest neighbors ($k$-NN) search is one of the most pervasive classification and recommendation methods in use~\cite{fix1952discriminatory, cover1967nearest}. 
+Naive implementations of $k$-NN, whose time complexity is linear in the dataset's cardinality, prove prohibitively slow for large datasets.
 While algorithms for fast $k$-NN on large datasets exist, most of them are approximate and do not exploit the geometric and topological structure inherent in large datasets.
 Approximate search is sufficient for some applications, but the need for efficient, \emph{exact} search remains.
 In particular, while approximate $k$-NN may agree with exact $k$-NN in a majority vote for large values of $k$, it may be sensitive to local perturbations with smaller values of $k$, and small values of $k$ may be necessary when classes are not well-separated.
-
-For the sake of clarity, it is important to be precise about what we mean by \emph{exact} $k$-NN, and exact search in general.
-In the context of $\rho$-NN search, exact search typically means returning only those data points that are identical to the query.
-There are many algorithms that perform well here, such as FM-Index~\cite{ferragina2000opportunistic}, which are less applicable to approximate search.
-In contrast, in the context of $k$-NN search, while all approaches return exactly $k$ elements (ignoring how distance ties are handled), some approaches may miss some of the $k$ nearest elements, and erroneously include some of the elements outside the truly nearest $k$.
-In any case, $k$-NN is commonly used for inference;
-the \emph{prediction} of a class for a query is obviously not guaranteed to be correct.
-When we refer to \emph{exact} $k$-NN, we refer to precisely the $k$ nearest neighbors being returned;
-no closer points are elided and no further points are included.
-This has implications for the accuracy of classification, but does not guarantee perfect classification accuracy.
- 
-There is some evidence that non-metrics such as cosine distance perform poorly for $k$-NN in biomedical settings~\cite{hu2016distance};
+There is some evidence that distance functions which are non-metrics, such as cosine distance, perform poorly for $k$-NN in biomedical settings~\cite{hu2016distance};
 this may suggest that approximate $k$-NN (which may have imperfect precision and recall) could exhibit suboptimal accuracy.
 
 Recent approaches to tackling the exponential growth of data include locality-sensitive hashing~\cite{indyk1999sublinear}, clever indexing techniques such as the FM Index~\cite{simpson2010efficient}, hierarchical navigable small world (HNSW) networks~\cite{Malkov2016EfficientAR}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}.
