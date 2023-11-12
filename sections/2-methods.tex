@@ -112,54 +112,56 @@ A left child has the same offset as that of its parent, and the corresponding ri
 With no additional memory cost nor time cost for retrieving points during search, depth-first reordering offers significant improvements over the approach used in CHESS.
 
 
-\subsubsection {Scaling Behavior of Cluster Radii}
-\label{subsubsec:methods:clustering:guaranteed-decrease-in-cluster-radii}
+% % WE WILL USE THIS FOR COMPRESSION, so removing it for now 
 
-While it may be tempting to assume that cluster radii decrease with each application of Partition (refer to Algorithm \ref{alg:methods:clustering:partition}), unfortunately, this assumption is incorrect. 
-Fortunately, we \emph{can} make some guarantees about the scaling behavior of cluster radii;
-in particular, we prove in this section that cluster radii will stop increasing after at most $d$ partitions, where $d$ is the fractal dimensionality of the dataset. 
+% \subsubsection {Scaling Behavior of Cluster Radii}
+% \label{subsubsec:methods:clustering:guaranteed-decrease-in-cluster-radii}
 
-We can describe a $d$-dimensional distribution of data by choosing some set of $d$ mutually orthogonal axes.
-Let $2R$ be the maximum pairwise distance among the points in the dataset. 
-We choose the axes such that the two points that are $2R$ apart lie \emph{along one of the axes}. 
-Thus, a $d$-dimensional hyper-sphere of radius $R$ would bound the dataset. 
-In the worst case, (i.e., with a uniform-density distribution that fills the $d$-sphere), our axes will be such that $2R$ is the maximum pairwise distance \emph{along every axis}. 
-Such a distribution would also produce a balanced cluster tree.
+% While it may be tempting to assume that cluster radii decrease with each application of Partition (refer to Algorithm \ref{alg:methods:clustering:partition}), unfortunately, this assumption is incorrect. 
+% Fortunately, we \emph{can} make some guarantees about the scaling behavior of cluster radii;
+% in particular, we prove in this section that cluster radii will stop increasing after at most $d$ partitions, where $d$ is the fractal dimensionality of the dataset. 
 
-In this case, Partition will select a maximally distant pair of points to use as poles;
-without loss of generality, say it chooses two points at the extrema one of the $d$ axes. 
-After one partition, the maximum pairwise distance along that axis will be halved, i.e. bounded above by $R$.
-The next recursive Partition will select another of the $d$ axes, and once again, the distance along that axis will be bounded above by $R$
-Thus, after at most $d$ partitions, the maximum pairwise distance along each axis will be bounded above by $R$. 
-The overall (i.e., not restricted to one axis) maximum pairwise distance 
-will be bounded above by $R\sqrt{2}$ by, for example, two instances that lie at the extrema of different axes. 
-See Figure~\ref{fig:methods:scaling-behavior} for an example.
+% We can describe a $d$-dimensional distribution of data by choosing some set of $d$ mutually orthogonal axes.
+% Let $2R$ be the maximum pairwise distance among the points in the dataset. 
+% We choose the axes such that the two points that are $2R$ apart lie \emph{along one of the axes}. 
+% Thus, a $d$-dimensional hyper-sphere of radius $R$ would bound the dataset. 
+% In the worst case, (i.e., with a uniform-density distribution that fills the $d$-sphere), our axes will be such that $2R$ is the maximum pairwise distance \emph{along every axis}. 
+% Such a distribution would also produce a balanced cluster tree.
 
-Thus, starting with a cluster $C$ of radius $R$, after at most $d$ Partitions, the descendants of $C$ will each have radius
-bounded above by $\frac{R}{\sqrt{2}}$. In other words, cluster radii are guaranteed to decrease by a multiplicative factor of $\frac{\sqrt{2}}{2}$ after at 
-most $d$ partitions. 
+% In this case, Partition will select a maximally distant pair of points to use as poles;
+% without loss of generality, say it chooses two points at the extrema one of the $d$ axes. 
+% After one partition, the maximum pairwise distance along that axis will be halved, i.e. bounded above by $R$.
+% The next recursive Partition will select another of the $d$ axes, and once again, the distance along that axis will be bounded above by $R$
+% Thus, after at most $d$ partitions, the maximum pairwise distance along each axis will be bounded above by $R$. 
+% The overall (i.e., not restricted to one axis) maximum pairwise distance 
+% will be bounded above by $R\sqrt{2}$ by, for example, two instances that lie at the extrema of different axes. 
+% See Figure~\ref{fig:methods:scaling-behavior} for an example.
 
-Note that, in practice, we never see a balanced clustering.
-Partition produces unbalanced trees due to the varying density of the sampling in different regions of the manifold and the low dimensional ``shape'' of the manifold.
-Further, in practice, the cluster radii decrease by a factor much larger than $\frac{\sqrt{2}}{2}$ with almost every partition;
-the upper bound of $d$ partitions is seldom realized. 
+% Thus, starting with a cluster $C$ of radius $R$, after at most $d$ Partitions, the descendants of $C$ will each have radius
+% bounded above by $\frac{R}{\sqrt{2}}$. In other words, cluster radii are guaranteed to decrease by a multiplicative factor of $\frac{\sqrt{2}}{2}$ after at 
+% most $d$ partitions. 
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=3.4in]{images/geometry/geometry.pdf}
-    \caption{
-        Scaling behavior of radii on a uniform-density disk, which represents the worst-case scenario for a two-dimensional distribution. 
-        $R_0$ denotes the radius of the root cluster $C_0$, and $o_0$ denotes its center. 
-        After one application of Algorithm~\ref{alg:methods:clustering:partition}, we have $C_1$, with radius $R_1$ and center $o_1$.
-        The right triangle formed by $o_0$, $o_1$, and $y_+$ in $C_1$ shows that $R_0 < R_1$.
-        Hence, the radius of a child cluster can be larger than its parent.
-        However, after another application of Algorithm~\ref{alg:methods:clustering:partition}, we have consumed all $d$ orthogonal axes, 
-        as shown in $C_2$.
-        Now, clearly $R_2 < R_0$.
-        In fact, for each subsequent application of Algorithm~\ref{alg:methods:clustering:partition}, the radius of the resulting cluster is bounded above by $\frac{\sqrt{2}R}{2}$.
-    }
-    \label{fig:methods:scaling-behavior}
-\end{figure}
+% Note that, in practice, we never see a balanced clustering.
+% Partition produces unbalanced trees due to the varying density of the sampling in different regions of the manifold and the low dimensional ``shape'' of the manifold.
+% Further, in practice, the cluster radii decrease by a factor much larger than $\frac{\sqrt{2}}{2}$ with almost every partition;
+% the upper bound of $d$ partitions is seldom realized. 
+
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=3.4in]{images/geometry/geometry.pdf}
+%     \caption{
+%         Scaling behavior of radii on a uniform-density disk, which represents the worst-case scenario for a two-dimensional distribution. 
+%         $R_0$ denotes the radius of the root cluster $C_0$, and $o_0$ denotes its center. 
+%         After one application of Algorithm~\ref{alg:methods:clustering:partition}, we have $C_1$, with radius $R_1$ and center $o_1$.
+%         The right triangle formed by $o_0$, $o_1$, and $y_+$ in $C_1$ shows that $R_0 < R_1$.
+%         Hence, the radius of a child cluster can be larger than its parent.
+%         However, after another application of Algorithm~\ref{alg:methods:clustering:partition}, we have consumed all $d$ orthogonal axes, 
+%         as shown in $C_2$.
+%         Now, clearly $R_2 < R_0$.
+%         In fact, for each subsequent application of Algorithm~\ref{alg:methods:clustering:partition}, the radius of the resulting cluster is bounded above by $\frac{\sqrt{2}R}{2}$.
+%     }
+%     \label{fig:methods:scaling-behavior}
+% \end{figure}
 
 
 \subsubsection {Complexity}
