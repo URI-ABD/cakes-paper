@@ -400,10 +400,15 @@ Simplifying the expression for fine search, we have that
 Since we are dealing with asymptotic complexity, we can ignore the additive factor of $1$.
 Putting our bounds for coarse and fine search together, we have that $k$-NN by Repeated $\rho$-NN has a complexity of
 
-\begin{equation}
-    \mathcal{O}\left(\log_2{\mathcal{N}_{\hat{r_c}}(X)} + k\left(\frac{2\hat{r_c}}{\hat{r}}\right)^d\left(\frac{k}{\hat{C}}\right)^{\frac{-d}{\hat{d}}}\right)
+
+
+\begin{gather}
+    \mathcal{O}\Bigg(
+    \underbrace{\log_2{\mathcal{N}_{\hat{r_c}}(X)}}_{\textrm{metric entropy}} + 
+    \overbrace{k}^{\textrm{output size}}
+    \underbrace{\left(\frac{2\hat{r_c}}{\hat{r}}\right)^d\left(\frac{k}{\hat{C}}\right)^{\frac{-d}{\hat{d}}}}_{\textrm{scaling factor}}\Bigg)
     \label{eq:methods:knn-by-rnn-complexity}
-\end{equation}
+\end{gather}
 
 where $\mathcal{N}_{\hat{r_c}}(X)$ is the metric entropy of the dataset, $d$ is the dimensionality of the dataset, and $k$ is the number of nearest neighbors.
 We note that the fraction $\frac{-d}{\hat{d}}$ should be relatively close to 1 unless fractal dimension is highly variable in a small region (that is, $\hat{d}$ differs significantly from $d$).
