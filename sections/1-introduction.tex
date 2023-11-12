@@ -45,7 +45,7 @@ no closer points are elided and no further points are included. }
 
 
 $k$-nearest neighbors ($k$-NN) search is one of the most pervasive classification and recommendation methods in use~\cite{fix1952discriminatory, cover1967nearest}. 
-Naive implementations of $k$-NN, whose time complexity is linear in the dataset's cardinality, prove prohibitively slow for large datasets.
+Na\"{i}ve implementations of $k$-NN, whose time complexity is linear in the dataset's cardinality, prove prohibitively slow for large datasets.
 While algorithms for fast $k$-NN on large datasets exist, most of them are approximate and do not exploit the geometric and topological structure inherent in large datasets.
 Approximate search is sufficient for some applications, but the need for efficient, \emph{exact} search remains.
 In particular, while approximate $k$-NN may agree with exact $k$-NN in a majority vote for large values of $k$, it may be sensitive to local perturbations with smaller values of $k$, and small values of $k$ may be necessary when classes are not well-separated.

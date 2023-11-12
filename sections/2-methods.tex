@@ -177,7 +177,7 @@ This is a significant improvement over exact partitioning and tree-building, whi
 
 In this work, we also introduce a method of \emph{sharding} for datasets that cannot fit in memory.
 This approach also leverages the fact that $\rho$-nearest neighbors search at the radius of the $k$-th farthest neighbor is typically much faster than $k$-nearest neighbors search.
-In addition to sharding, we perform some naive auto-tuning to select the optimal $k$-NN algorithm to be used with a given dataset.
+In addition to sharding, we perform some na\"{i}ve auto-tuning to select the optimal $k$-NN algorithm to be used with a given dataset.
 
 With this approach, we begin by taking a random sample of no more than 10\% of the data.
 This sample is considered the first shard.
@@ -305,7 +305,7 @@ In particular, we increase the radius by a factor of
 
 where $\mu$ is the harmonic mean of the local fractal dimensions (abbreviated lfd in algorithm below) of each cluster which contains one of the nearest neighbors found thus far.
 We use the harmonic mean to ensure that $\mu$ is not dominated by outlier clusters with very high fractal dimension. 
-Intuitively, the factor by which we increase the radius should be \emph{inversely} related to the number of points found so far. 
+Intuitively, the factor by which we increase the radius should also be \emph{inversely} related to the number of points found so far. 
 Additionally, when the local fractal dimension at the radius scale from the previous iteration is low, this suggests that the data are relatively concentrated in that region.
 In other words, a small increase in the radius would likely encounter unoccupied space around the manifold, so a larger radial increase is needed.
 Thus, the factor of radius increase should be \emph{inversely} related to the local fractal dimension.

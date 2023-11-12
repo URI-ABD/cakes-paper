@@ -4,67 +4,83 @@
 \subsection{Scaling Behavior}
 
 
-Figures \ref{fig:results:fashion-mnist-scaling}, \ref{fig:results:glove-100-scaling}, and \ref{fig:results:gist-scaling} show the scaling behavior of CAKES on augmented versions of the following ann-benchmark datasets: fashion-mnist under Euclidean distance, glove-100 under cosine distance, and gist under Euclidean distance. 
-Figure \ref{fig:results:random-scaling} shows the scaling behavior of CAKES on a completely randomly generated dataset which does not obey any manifold structure. 
-The the horizontal axes in each figure denote the multiplier by which the cardinality of the original dataset has been increased with synthetic points. The vertical axes denote throughput in queries per second, on a logarithmic scale. 
+Figures~\ref{fig:results:fashion-mnist-scaling}, ~\ref{fig:results:glove-25-scaling}, and ~\ref{fig:results:sift-scaling} show the scaling behavior of CAKES on augmented versions of the following ann-benchmark datasets: fashion-mnist under Euclidean distance, deep-image under cosine distance, and glove-25 under cosine distance. 
+Figure~\ref{fig:results:random-scaling} shows the scaling behavior of CAKES on a completely randomly generated dataset which does not obey any manifold structure. 
+The the horizontal axes in each figure denote the multiplier by which we increased the cardinality of the original dataset with synthetic points (see Section \ref{subsec:methods:synthetic-data}). 
+The vertical axes denote throughput in queries per second. Both axes are on a logarithmic scale. In this section, we discuss results only for $k = 10$. 
+To see results with other values of $k$, refer to {\color{red} ADD SECTION}.
 
-In Figure \ref{fig:results:fashion-mnist-scaling}, which shows results for fashion-mnist, we observe that as cardinality grows, all of our algorithms exhibit significantly better throughput than linear search. 
-Of our algorithms, GreedySieve consistently performs best for both $k=10$ and $k=100$. For $k=10$, GreedySieve exhibits sublinear time performance for all cardinality multipliers, and for $k = 100$, GreedySieve begins to exhibit sublinear time performance at a relatively low multiplier (less than 1.5).  
+In Figure~\ref{fig:results:fashion-mnist-scaling}, which shows results for fashion-mnist, we observe that as the augmentation multiplier increases, each of CAKES's four algorithms exhibits significantly higher throughput than na\"{i}ve linear search, plotted in orange. 
+Amongst them, GreedySieve, plotted in blue, consistently performs best, exhibiting sublinear time performance for nearly all cardinality multipliers. 
+We see that for multipliers around $10^3$, Greedy Sieve exhibits throughput which is nearly three orders of magnitude higher than that of linear search.
 
-For glove-100, as shown in Figure \ref{fig:results:glove-100-scaling}, we observe that all of our algorithms exhibit superior performance compared to linear search for large cardinalities. However, for $k=10$, linear search outperforms all of our algorithms until about a cardinality multiplier of 4, when Sieve and Sieve with Separate Centers begin to show superior performance. For $k=100$, this transition happens even later, at a mutliplier of about 6, when GreedySieve begins to have better throughput. 
 
-With the notably adversial dataset gist, we observe that for $k=10$, three of our algorithms--GreedySieve, Sieve, and Sieve with Separate Centers--begin to outperform linear search at cardinality multipliers of aboyt 4, 6, and 6 respectively. 
-For low values of $k$, Sieve and Sieve with Separate Centers appear to the be the best-performing algorithms. For $k=100$, we observe that GreedySieve significantly outperforms all other algorithms after a cardinality multiplier of 4. At multipliers lower than this threshold value, linear search exhibits the best throughput. With gist, unlike with the other datasets we benchmarked on, we see that RepeatedRnn (for both values of $k$), Sieve (for $k=100$), and Sieve with Separate Centers (for $k=100$) all show performance inferior to linear search even at high cardinalies. 
+With glove-25 (Figure~\ref{fig:results:glove-25-scaling}), we observe that each of our four algorithms outperforms linear search at high cardinality multipliers. 
+On this dataset, Repeated $\rho$-NN, plotted in green, is consistently the best performing algorithm. {\color{red} Revive lfd violin plots to add explanation for this.}
 
-Figure \ref{fig:results:random-scaling} displays results for a random datset of base cardinality 1000000. 
-These results illustrate the fact that absent a manifold structure in the dataset, it takes a much higher cardinality before CAKES begins to outperform linear search. 
-In particular, for $k=10$, we see that Sieve is the best-performing method as cardinality grows, but that it only begins to outperform linear search after a multiplier of about 15. 
-For $k=100$, we have that GreedySieve is the best-performing algorithm, but that it does not begin to have superior throughput until a multiplier of about 20. 
-RepeatedRnn shows significantly worse performance on this dataset relative to both the other algorithms and to its own performance on real datasets. 
-This is unsurprising, given that RepeatedRnn relies on a low local fractal dimension around the query in order to quickly zero in on the correct radius for $k$ hits. 
-With a completely random dataset, which likely has much higher local fractal dimension, RepeatedRnn will meander for longer before finding this correct radius. 
 
-Notably, we observe that on all datasets, GreedySieve's throughput stays nearly constant as cardinality increases. This observation warrants further investigation, but it is especially promising given that GreedySieve consistently outperforms linear search for high cardinalities and consistently outperforms our other algorithms for $k=100$. 
-We also notice an interesting trend with Sieve and Sieve with Separate centers: for all datasets, at both values of $k$, both algorithms exhibit a sharp ``pivot point'' after which throughput starts to increase. 
-While we observe that this pivot point seems to be proportional to the value of $k$, as it often occurs at about a multiplier of 4 when $k=10$ and a mulitplier of 32 when $k=100$, the reason for this behavior requires further investigation.  
-Finally, we reiterate that the variation in performance across our algorithms based on dataset, value of $k$, and cardinality support our use of an autotuning function to select the best choice of algorithm. 
-Currently, our autotuning function always uses $k=10$ for its determination, but our observation that the best algorithm often differs between small and large values of $k$ suggests that more sophisticated autotuning is necessary.
+In Figure~\ref{fig:results:sift-scaling}, we observe that while linear search performs best for low cardinality multipliers, our algorithms begin outperforming linear search beginning at a multiplier of approximately 7. 
+For this dataset, Sieve, plotted in red, is the highest throughput algorithm for all multipliers greater than 7. 
+
+Figure \ref{fig:results:random-scaling} displays results for a random datset with the same dimensionality and cardinality as Sift (i.e., 128 and 1,000,000 respectively). 
+These results illustrate the fact that \emph{ceteris paribus}, absent a manifold structure in the dataset, CAKES's algorithms do not begin to outperform linear search until the cardinality multiplier is around 10. 
+Repeated $\rho$-NN shows significantly worse performance on this dataset relative to both the other algorithms and to its own performance on real datasets. 
+This is unsurprising, given that RepeatedRnn relies on a low local fractal dimension around the query in order to quickly home in on the correct radius for $k$ hits. 
+With a completely random dataset, whose average local fractal dimension will be near its embedding dimension, RepeatedRnn will meander for longer before finding this correct radius. 
+
+Notably, we observe that on all datasets, GreedySieve's throughput stays nearly constant as cardinality increases. This observation warrants further investigation, but it is especially promising given that GreedySieve consistently outperforms linear search for high cardinalities. 
+% We also notice an interesting trend with Sieve and Sieve with Separate centers: for all datasets, at both values of $k$, both algorithms exhibit a sharp ``pivot point'' after which throughput starts to increase. 
+% While we observe that this pivot point seems to be proportional to the value of $k$, as it often occurs at about a multiplier of 4 when $k=10$ and a mulitplier of 32 when $k=100$, the reason for this behavior requires further investigation.  
+Finally, we reiterate that the variation in performance of our algorithms across different datasets and cardinalities support our use of an autotuning function to select the best choice of algorithm. 
+% Currently, our autotuning function always uses $k=10$ for its determination, but our observation that the best algorithm often differs between small and large values of $k$ suggests that more sophisticated autotuning is necessary.
 
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=3.4in]{images/result_plots/fashion-mnist_0.1_scaling.png}
+    \includegraphics[width=3.4in]{images/result_plots/fashion-mnist_10_scaling.png}
     \caption{
-        Fashion-mnist scaling
+        Fashion-mnist Scaling
     }
     \label{fig:results:fashion-mnist-scaling}
 \end{figure}
 
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=3.4in]{images/result_plots/deep-image_10_scaling.png}
+%     \caption{
+%         Deep-image Scaling
+%     }
+%     \label{fig:results:deep-image-scaling}
+% \end{figure}
+
+
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=3.4in]{images/result_plots/glove-100_0.1_scaling.png}
+    \includegraphics[width=3.4in]{images/result_plots/glove-25_10_scaling.png}
     \caption{
-        Glove-100 scaling
+        Glove-25 Scaling
     }
-    \label{fig:results:glove-100-scaling}
+    \label{fig:results:glove-25-scaling}
 \end{figure}
 
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=3.4in]{images/result_plots/gist_0.1_scaling.png}
+    \includegraphics[width=3.4in]{images/result_plots/sift_10_scaling.png}
     \caption{
-        Gist scaling
+        Sift Scaling
     }
-    \label{fig:results:gist-scaling}
+    \label{fig:results:sift-scaling}
 \end{figure}
 
+% We need to redo this plot so that we do not actually augment random datasets but instead take larger and larger 
+% random datasets
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=3.4in]{images/result_plots/random_0.1_scaling.png}
+    \includegraphics[width=3.4in]{images/result_plots/random_placeholder_10_scaling.png}
     \caption{
-        Random scaling
+        Random Scaling
     }
     \label{fig:results:random-scaling}
 \end{figure}
