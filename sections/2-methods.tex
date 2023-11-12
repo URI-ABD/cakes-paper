@@ -306,7 +306,7 @@ We use the harmonic mean to ensure that $\mu$ is not dominated by outlier cluste
 Intuitively, the factor by which we increase the radius should be \emph{inversely} related to the number of points found so far. 
 Additionally, when the local fractal dimension at the radius scale from the previous iteration is low, this suggests that the data are relatively concentrated in that region.
 In other words, a small increase in the radius would likely encounter unoccupied space around the manifold, so a larger radial increase is needed.
-Thus, the factor of radius increase should be \emph{directly} related to the local fractal dimension.
+Thus, the factor of radius increase should be \emph{inversely} related to the local fractal dimension.
 Once $|H| >= k$, we sort the points by their distance to the query and return the $k$ closest points.
 
 \begin{algorithm} % enter the algorithm environment
