@@ -352,15 +352,15 @@ Based on the assumption that the local fractal dimension at the query point is n
 one iteration to find at least one neighbor, and the one more to find enough remaining neighbors.
 Since this is a constant factor, it does not affect the asymptotic complexity of coarse search, and thus we have that the complexity of coarse search for $k$-NN by Repeated $\rho$-NN is $\mathcal{O}(\log_2\mathcal{N}_{\hat{r_c}}(X))$.
 
-To determine the asymptotic complexity of fine search, we must estimate $|F|$, the number of clusters for which we must look at all of the cluster's points.
-With $\rho$-NN search, $F$ is the union of clusters which are within a distance of $r + \hat{r_c}$ from the query, where $r$ is the search radius, and $\hat{r_c}$ is the mean radius of leaf clusters, as in \cite{yu2015entropy}.
+To determine the asymptotic complexity of fine search, we must estimate $|H|$, the expected number of hits we examine.
+With $\rho$-NN search, $H$ is the union of clusters which are within a distance of $r + \hat{r_c}$ from the query, where $r$ is the search radius, and $\hat{r_c}$ is the mean radius of leaf clusters, as in \cite{yu2015entropy}.
 With $k$-NN by Repeated $\rho$-NN, however, the value of $r$ is dependent on the distance to the $k$th nearest neighbor, which is query-dependent.
-Thus, for $k$-NN by Repeated $\rho$-NN, we adjust the definition of $F$ to be the union of clusters which are within a distance of $r' + \hat{r_c}$ from the query, where $r'$ is the distance to the $k$th nearest neighbor and $\hat{r_c}$ is defined as before.
+Thus, for $k$-NN by Repeated $\rho$-NN, we adjust the definition of $H$ to be the union of clusters which are within a distance of $r' + \hat{r_c}$ from the query, where $r'$ is the distance to the $k$th nearest neighbor and $\hat{r_c}$ is defined as before.
 
 The work in~\cite{yu2015entropy} showed that
 
 \begin{equation*}
-    |F| \leq \gamma |B(q, r')|\left(1+ \frac{2\hat{r_c}}{r'}\right)^d
+    |H| \leq \gamma |B(q, r')|\left(1+ \frac{2\hat{r_c}}{r'}\right)^d
 \end{equation*}
 
 where $\gamma$ is a constant. 
@@ -368,7 +368,7 @@ By definition of
 $r'$, we have that $|B(q, r')| = k$. Thus, we have that
 
 \begin{equation}
-    |F| \leq \gamma k\left(1+ \frac{2\hat{r_c}}{r'}\right)^d
+    |H| \leq \gamma k\left(1+ \frac{2\hat{r_c}}{r'}\right)^d
     \label{eq:methods:knn-by-rnn-fine-search}
 \end{equation}
 
