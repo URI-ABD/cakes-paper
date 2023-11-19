@@ -63,10 +63,10 @@ Based on those pairwise distances, we compute the \emph{geometric median} of thi
 i.e., the point which minimizes the sum of distances to all other points in the sample.
 This geometric median is $C$'s \emph{center}.
 The \emph{radius} of $C$ is the maximum distance from any point in $C$ to its center.
-The point $l$ which is responsible for that radius (i.e., the furthest point from the center) is designated the \emph{left pole}.
-The point $r$ which is furthest from $l$ is designated the \emph{right pole}.
-We then partition the cluster into a \emph{left child} and \emph{right child}, where the left child contains all points in the cluster which are closer to $l$ than to $r$, and the right child contains all points in the cluster which are closer to $r$ than to $l$.
-Without loss of generality, we assign to the left child those points which are equidistant from $l$ and $r$.
+The point $\ell$ which is responsible for that radius (i.e., the furthest point from the center) is designated the \emph{left pole}.
+The point $r$ which is furthest from $\ell$ is designated the \emph{right pole}.
+We then partition the cluster into a \emph{left child} and \emph{right child}, where the left child contains all points in the cluster which are closer to $\ell$ than to $r$, and the right child contains all points in the cluster which are closer to $r$ than to $\ell$.
+Without loss of generality, we assign to the left child those points which are equidistant from $\ell$ and $r$.
 Starting from a root-cluster containing the entire dataset, we repeat this procedure until each leaf contains only one datum or some other user-specified stopping criterion is met.
 This process is described in Algorithm \ref{alg:methods:clustering:partition}.
 
@@ -214,23 +214,32 @@ Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $\rho$- an
 
 \begin{itemize}
     \item $\delta = f(q, c)$ is the distance from the query to the cluster center $c$.
-    \item $\delta_{max} = \delta + r$ is the distance from the query to the theoretically farthest possible instance in $C$.
-    \item $\delta_{min} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest possible instance in $C$.
+    \item $\delta_{\max} = \delta + r$ is the distance from the query to the theoretically farthest possible instance in $C$.
+    \item $\delta_{\min} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest possible instance in $C$.
 \end{itemize}
 
 We define a \emph{singleton} as a cluster which either contains a single point (i.e., has cardinality 1) or which contains 
 duplicates of the same point (i.e., has cardinality greater than 1 but contains only one unique point).
-A singleton clearly has zero radius, and so $\delta_{max} = \delta = \delta_{min}$ for these clusters.
+A singleton clearly has zero radius, and so $\delta_{\max} = \delta = \delta_{\min}$ for these clusters.
 Hence, we sometimes overload the above notation to also refer to distance from a query to a point;
-in these cases, we also have that $\delta_{max} = \delta = \delta_{min}$.
+in these cases, we also have that $\delta_{\max} = \delta = \delta_{\min}$.
 
 
 \subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
 \label{subsec:methods:rnn-search}
 
-We conduct $\rho$-nearest neighbors search as described in \cite{ishaq2019clustered}, but with the following improvement:
-when a cluster overlaps with the query ball, instead of  always proceeding with both of its children, we proceed only with those children which also overlap with the query ball.
-This improvement is described in Algorithm \ref{alg:methods:rnn-search}.
+We conduct $\rho$-nearest neighbors search as described in~\cite{ishaq2019clustered}, but with the following improvement:
+when a cluster overlaps the query ball, instead of always proceeding with both of its children, we proceed only with those children which also overlap the query ball.
+
+To determine whether both children overlap the query ball, we consider the following geometry. 
+Let $c$ denote the center of a cluster, $\ell$ and $r$ its left and right poles (see Section~\ref{subsubsec:methods:cluster-partitioning}), $q$ the query, and $\rho$ the search radius, as shown in Figure [ADD FIGURE].
+Without loss of generality, we assume that $\overline{qr} \leq \overline{q\ell}$ (i.e., the query is closer to the right pole than to the left pole). 
+
+Now let $m$ be the midpoint of $\ell$ and $r$. Let $d$ denote the distance from $q$ to the perpendicular bisector of $\overline{lr}$, as shown in Figure [ADD FIGURE]. Since we assign a point in the parent cluster to the left child if it is closer to the left pole, if $d > \rho$, (i.e., if $d$ is to the left of the perpendicular bisector of $\overline{\ell r}$), 
+the left child does not overlap the query ball. In this case, we proceed only with the right child. If $d \leq \rho$, 
+then both child clusters overlap the query ball. 
+
+We can do a quick check using values computed at partition time to determine whether $d \leq \rho$. 
 
 \begin{algorithm} 
     \caption{$\rho$-NN(\emph{cluster, query, r})} 
@@ -241,7 +250,7 @@ This improvement is described in Algorithm \ref{alg:methods:rnn-search}.
         \STATE $results \Leftarrow \emptyset$
         \IF{$cluster.left \cap B_X(query, r) \neq \emptyset$}
             \IF{$cluster.left.\delta$ $\leq$ $r$ + $cluster.left.radius$}
-                \STATE $\rho$-NN($cluster.left, query, r$)
+                \STATE{$\rho$-NN($cluster.left, query, r$)}
             \ENDIF
         \ENDIF
         \IF{$cluster.right \cap B_X(query, r) \neq \emptyset$}
@@ -421,14 +430,14 @@ In this algorithm, we begin by letting $Q$ be a list of clusters and points, sta
 While $Q$ contains at least one cluster (i.e., $Q$ is not a list of only points), we repeat the process described in 
 the following paragraphs. 
 
-First, we aim to find the element $q_{\tau} \in Q$ with the smallest $\delta_{max}$ such that 
-$q_{\tau}$ and all elements in $Q$ with smaller $\delta_{max}$ collectively contain at least $k$ points. 
+First, we aim to find the element $q_{\tau} \in Q$ with the smallest $\delta_{\max}$ such that 
+$q_{\tau}$ and all elements in $Q$ with smaller $\delta_{\max}$ collectively contain at least $k$ points. 
 
 To find this element, we use a process similar to the Partition algorithm used in Quicksort~\cite{10.1093/comjnl/5.1.10}, adjusted to account for the varying cardinalities of clusters in $Q$ by having each cluster count a number of times equal to its cardinality.
-Our modified version of this algorithm finds the smallest index $i$ such that all elements in $Q$ with $\delta_{max}$ less than or equal to $Q[i]$'s $\delta_{max}$ collectively have cardinality greater than or equal to $k$.
-We consider $Q[i]$ to be our $q_{\tau}$, and our threshold $\tau$ to be $Q[i]$'s $\delta_{max}$.
+Our modified version of this algorithm finds the smallest index $i$ such that all elements in $Q$ with $\delta_{\max}$ less than or equal to $Q[i]$'s $\delta_{\max}$ collectively have cardinality greater than or equal to $k$.
+We consider $Q[i]$ to be our $q_{\tau}$, and our threshold $\tau$ to be $Q[i]$'s $\delta_{\max}$.
 
-We then remove from $Q$ any element whose $\delta_{min}$ is greater than $\tau$.
+We then remove from $Q$ any element whose $\delta_{\min}$ is greater than $\tau$.
 Then we remove all leaf clusters from $Q$ and add their points to $Q$ instead.
 Finally, we replace all non-leaf clusters in $Q$ with their children. 
 
@@ -463,7 +472,7 @@ This process is described in Algorithm~\ref{alg:methods:sieve}.
             \ENDFOR 
         \ENDWHILE
         \STATE Return $Q$
-    \end{algorithmic}
+    \end{algorithmic}How do we algorithmically determine the depth to which we
 \end{algorithm}
 
 
@@ -479,12 +488,12 @@ Because we have that for any cluster $C$, $C.\delta \leq C.\delta_{max}$, repres
 \subsubsection{Greedy Sieve}
 \label{subsubsec:methods:knn-search:greedy-search}
 
-We first let $Q$ be a min-queue of clusters prioritized by $\delta_{min}$.
+We first let $Q$ be a min-queue of clusters prioritized by $\delta_{\min}$.
 $Q$ starts containing only the root cluster.
 We also let $H$ be a fixed-size ($k$) max-queue of points prioritized by $\delta$.
 $H$ starts empty.
 
-While $H$ has fewer than $k$ points or $\delta$ of the top priority element in $H$ is greater than $\delta_{min}$ of the top priority element in $Q$, we do the following:
+While $H$ has fewer than $k$ points or $\delta$ of the top priority element in $H$ is greater than $\delta_{\min}$ of the top priority element in $Q$, we do the following:
 
 \begin{enumerate}
 \item While the top priority element $q$ in $Q$ is not a leaf, pop it from $Q$ and push its children to $Q$.
@@ -499,18 +508,18 @@ This algorithm is described in Algorithm~\ref{alg:greedy-sieve}.
 \caption{Greedy Sieve(\emph{root, query, k})} 
 \label{alg:greedy-sieve} 
 \begin{algorithmic}
-    \STATE $Q \Leftarrow$ priority queue
-    \STATE $Q.push(root)$
-    \STATE $H \Leftarrow$ priority queue
-    \WHILE{$|H| < k \lor H.peek.\delta > Q.peek.\delta_{min}$}
+    \STATE{$Q \Leftarrow$ priority queue}
+    \STATE{$Q.push(root)$}
+    \STATE{$H \Leftarrow$ priority queue}
+    \WHILE{$|H| < k \lor H.peek.\delta > Q.peek.\delta_{\min}$}
         \WHILE{$\neg Q.peek.isLeaf$}
-            \STATE $[l, r] \Leftarrow Q.pop().children$
-            \STATE $Q.push([l, r])$
+            \STATE{$[l, r] \Leftarrow Q.pop().children$}
+            \STATE{$Q.push([l, r])$}
         \ENDWHILE
-        \STATE $leaf \Leftarrow Q.pop()$
-        \STATE $H.push(leaf)$
+        \STATE{$leaf \Leftarrow Q.pop()$}
+        \STATE{$H.push(leaf)$}
         \WHILE{$|H| > k$}
-            \STATE $H.pop()$
+            \STATE{$H.pop()$}
         \ENDWHILE
     \ENDWHILE
     \STATE Return $H$
