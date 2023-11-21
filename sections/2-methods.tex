@@ -231,23 +231,57 @@ in these cases, we also have that $\delta_{\max} = \delta = \delta_{\min}$.
 We conduct $\rho$-nearest neighbors search as described in~\cite{ishaq2019clustered}, but with the following improvement:
 when a cluster overlaps with the query ball, instead of always proceeding with both of its children, we proceed only with those children which could contain points in the query ball. 
 
-To determine whether both children can contain points in the query ball, we consider the following geometry. 
-Let $\ell$ and $r$ denote the cluster's left and right poles (see Section~\ref{subsubsec:methods:cluster-partitioning}), $q$ denote the query, and $\rho$ denote the search radius, as shown in Figure [ADD FIGURE].
-Without loss of generality, we assume that $\overline{qr} \leq \overline{q\ell}$ (i.e., the query is closer to the right pole than to the left pole). 
 
-Now let $m$ be the midpoint of $\overline{\ell r}$. Let $d$ denote the distance from $q$ to the perpendicular bisector of $\overline{lr}$, as shown in Figure [ADD FIGURE]. Since we assign a point in the parent cluster to the left child if it is closer to the left pole, if $d > \rho$, 
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[scale=0.5]{images/geometry/overlapping-children-1.pdf}
+    \caption{
+        Triangle formed by query $q$, and poles $\ell$ and $r$. Query ball of radius $\rho$ centered at $q$. 
+    }
+    \label{fig:methods:overlapping-children-1}
+\end{figure}
+
+
+To determine whether both children can contain points in the query ball, we consider the following geometry. 
+Let $\ell$ and $r$ denote the cluster's left and right poles (see Section~\ref{subsubsec:methods:cluster-partitioning}), $q$ denote the query, and $\rho$ denote the search radius, as shown in Figure~\ref{fig:methods:overlapping-children-1}.
+Without loss of generality, we assume that $\overline{qr \vphantom \ell} \leq \overline{q\ell}$ (i.e., the query is closer to the right pole than to the left pole). 
+
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[scale=0.5]{images/geometry/overlapping-children-3.pdf}
+    \caption{
+        $m$ denotes the midpoint of $\overline{\ell r}$. $q'$ is the projection of $q$ onto $\overline{\ell r}$. $d$ is the distance from $q$ to the perpendiculat bisector of $\overline{\ell r}$. If $d \leq \rho$, both the left child and right child clusters could contain points in the query ball. Otherwise, only the right child cluster could contain such points. 
+    }
+    \label{fig:methods:overlapping-children-3}
+\end{figure}
+
+Now let $m$ be the midpoint of $\overline{\ell r}$. Let $d$ denote the distance from $q$ to the perpendicular bisector of $\overline{lr}$, as shown in Figure~\ref{fig:methods:overlapping-children-3}. Since we assign a point in the parent cluster to the left child if it is closer to the left pole, if $d > \rho$, 
 the left child cannot contain points in the query ball. In this case, we proceed only with the right child. If $d \leq \rho$, 
 then both child clusters could contain points in the query ball, and we proceed with both of them. 
 
 We can do a quick check using values computed during partitioning (see Section~\ref{subsubsec:methods:cluster-partitioning}) to determine whether $d \leq \rho$. 
-We note that $d = ||mq'|| = ||mr||-||q'r||$. Since $m$ is the midpoint of $\overline{\ell r}$, we have that $||mr|| = \tfrac{||\ell r||}{2}$, so it remains to find $||q'r||$. To do this, we use the Law of Cosines with $\triangle \ell rq$. Let $\theta$ denote $\angle lrq$, as shown in Figure [ADD FIGURE]. By the Law of Cosines, we have that 
-\begin{equation} \text{cos}(\theta) = \tfrac{||\overline{qr}||^2 + ||\overline{\ell r}||^2 - ||\overline{q\ell}||^2}{2||\overline{\ell r}||}.\end{equation}. 
+We note that $d = ||\overline{mq'}|| = ||\overline{mr \vphantom {q'}}||-||\overline{q'r}||$. Since $m$ is the midpoint of $\overline{\ell r}$, we have that $||\overline{mr}|| = \tfrac{||\overline{\ell r}||}{2}$, so \begin{equation} d = \tfrac{||\overline{\ell r}||}{2} - ||\overline{q'r}||.
+\label{eq:methods:d-expression}
+\end{equation}
+
+
+
+It remains to find $||\overline{q'r}||$. To do this, we use the Law of Cosines with $\triangle \ell rq$. Let $\theta$ denote $\angle lrq$, as shown in Figure~\ref{fig:methods:overlapping-children-3}. By the Law of Cosines, we have that 
+\begin{equation} \text{cos}(\theta) = \tfrac{||\overline{qr\vphantom \ell}||^2 + ||\overline{\ell r}||^2 - ||\overline{q\ell}||^2}{2||\overline{\ell r}||||\overline{qr \vphantom \ell}||}.\end{equation}
 On the other hand, since $\triangle q'qr$ is a right triangle, 
 
-\begin{equation} \text{cos}(\theta) = \tfrac{||\overline{q'r}||}{||\overline{qr}||}.\end{equation}
+\begin{equation} \text{cos}(\theta) = \tfrac{||\overline{q'r}||}{||\overline{qr \vphantom \ell}||}.\end{equation}
 
 
-To check this, it suffices to verify that \begin{equation}(||\overline{q\ell}|| + ||\overline{qr}||)(||\overline{q\ell}||- ||\overline{qr}||) \leq 2||\overline{\ell r}||\rho. \end{equation} 
+Equating the two expressions for $\text{cos}(\theta)$ and solving for $||\overline{q'r}||$, we have \begin{equation} ||\overline{q'r}|| = \tfrac{||\overline{qr\vphantom \ell}||^2 + ||\overline{\ell r}||^2 - ||\overline{q\ell}||^2}{2 ||\overline{\ell r}||}. \end{equation}
+
+
+Substituting this back in equation~\ref{eq:methods:d-expression} gives 
+\begin{equation} d = \tfrac{||\overline{q\ell}||^2 - ||\overline{qr \vphantom \ell}||^2}{2||\overline{lr}||}.\end{equation}
+
+
+Then to check if $d \leq \rho$, it suffices to verify that \begin{equation}(||\overline{q\ell}|| + ||\overline{qr \vphantom \ell}||)(||\overline{q\ell}||- ||\overline{qr \vphantom \ell}||) \leq 2||\overline{\ell r}||\rho. \end{equation} 
 
 \begin{algorithm} 
     \caption{$\rho$-NN(\emph{cluster, query, r})} 

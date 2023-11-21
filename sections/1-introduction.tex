@@ -36,12 +36,11 @@ that is, find all points in $\textbf{X}$ that are at most a distance $\rho$ from
 
 
 
-{\color{red} 
 Previous works have used the term \emph{approximate} search to refer to $\rho$-nearest neighbor search, but in this paper, 
-we reserve the term \emph{approximate} for $k$-NN algorihtms which may miss some of the $k$ nearest elements, and erroneously include some of the elements other than the truly nearest $k$.
-In other words, we call a $k$-NN algorithm \emph{approximate} if there exists a query, dataset, distance function, or value of $k$ for which its set $H$ of returned points satisfies the condition $H \triangle S_q \neq \emptyset$, where $\triangle$ denotes a symmetric difference.
+we reserve the term \emph{approximate} for $k$-NN search algorithms which may miss some of the $k$ nearest elements, and erroneously include some of the elements other than the truly nearest $k$.
+In other words, we call a $k$-NN search algorithm \emph{approximate} if there exists a query, dataset, distance function, or value of $k$ for which its set $H$ of returned points satisfies the condition $H \triangle S_q \neq \emptyset$, where $\triangle$ denotes a symmetric difference.
 When we refer to an \emph{exact} $k$-NN algorithm, we describe an algorithm which, no matter the query, dataset, distance function, nor value of $k$, returns precisely the $k$ nearest neighbors to that query;
-no closer points are elided and no further points are included. }
+no closer points are elided and no further points are included.
 
 
 $k$-nearest neighbors ($k$-NN) search is one of the most pervasive classification and recommendation methods in use~\cite{fix1952discriminatory, cover1967nearest}. 
