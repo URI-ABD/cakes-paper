@@ -26,12 +26,12 @@ Additionally, with the rise of large language models such as GPT-3~\cite{2020arX
 As the sizes and dimensionalities of datasets have grown, however, efficient and accurate similarity search has become extremely challenging; 
 even state-of-the-art algorithms exhibit a steep recall versus throughput tradeoff~\cite{ishaq2019clustered}.
 
-{\color{red} We now define two types of similarity search: $k$-nearest neighbor search ($k$-NN) and $\rho$-nearest neighbor search ($\rho$-NN). 
+We now define two types of similarity search: $k$-nearest neighbor search ($k$-NN) and $\rho$-nearest neighbor search ($\rho$-NN). 
 Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, $k$-nearest neighbors search aims to find 
 the set $S_q$ such that  $|S_q| = k$ and $\forall x \in \textbf{X} \ \setminus \ S_q$, $f(x, q) > \max\{f(y, q): y \in S_q \}$;
 that is, for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$.
 On the other hand, $\rho$-nearest neighbors search aims to find the set $\{x \in \textbf{X}: f(q, x) \leq \rho \}$;
-that is, find all points in $\textbf{X}$ that are at most a distance $\rho$ from $q$.}
+that is, find all points in $\textbf{X}$ that are at most a distance $\rho$ from $q$.
 
 
 

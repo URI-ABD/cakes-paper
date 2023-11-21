@@ -229,17 +229,25 @@ in these cases, we also have that $\delta_{\max} = \delta = \delta_{\min}$.
 \label{subsec:methods:rnn-search}
 
 We conduct $\rho$-nearest neighbors search as described in~\cite{ishaq2019clustered}, but with the following improvement:
-when a cluster overlaps the query ball, instead of always proceeding with both of its children, we proceed only with those children which also overlap the query ball.
+when a cluster overlaps with the query ball, instead of always proceeding with both of its children, we proceed only with those children which could contain points in the query ball. 
 
-To determine whether both children overlap the query ball, we consider the following geometry. 
-Let $c$ denote the center of a cluster, $\ell$ and $r$ its left and right poles (see Section~\ref{subsubsec:methods:cluster-partitioning}), $q$ the query, and $\rho$ the search radius, as shown in Figure [ADD FIGURE].
+To determine whether both children can contain points in the query ball, we consider the following geometry. 
+Let $\ell$ and $r$ denote the cluster's left and right poles (see Section~\ref{subsubsec:methods:cluster-partitioning}), $q$ denote the query, and $\rho$ denote the search radius, as shown in Figure [ADD FIGURE].
 Without loss of generality, we assume that $\overline{qr} \leq \overline{q\ell}$ (i.e., the query is closer to the right pole than to the left pole). 
 
-Now let $m$ be the midpoint of $\ell$ and $r$. Let $d$ denote the distance from $q$ to the perpendicular bisector of $\overline{lr}$, as shown in Figure [ADD FIGURE]. Since we assign a point in the parent cluster to the left child if it is closer to the left pole, if $d > \rho$, (i.e., if $d$ is to the left of the perpendicular bisector of $\overline{\ell r}$), 
-the left child does not overlap the query ball. In this case, we proceed only with the right child. If $d \leq \rho$, 
-then both child clusters overlap the query ball. 
+Now let $m$ be the midpoint of $\overline{\ell r}$. Let $d$ denote the distance from $q$ to the perpendicular bisector of $\overline{lr}$, as shown in Figure [ADD FIGURE]. Since we assign a point in the parent cluster to the left child if it is closer to the left pole, if $d > \rho$, 
+the left child cannot contain points in the query ball. In this case, we proceed only with the right child. If $d \leq \rho$, 
+then both child clusters could contain points in the query ball, and we proceed with both of them. 
 
-We can do a quick check using values computed at partition time to determine whether $d \leq \rho$. 
+We can do a quick check using values computed during partitioning (see Section~\ref{subsubsec:methods:cluster-partitioning}) to determine whether $d \leq \rho$. 
+We note that $d = ||mq'|| = ||mr||-||q'r||$. Since $m$ is the midpoint of $\overline{\ell r}$, we have that $||mr|| = \tfrac{||\ell r||}{2}$, so it remains to find $||q'r||$. To do this, we use the Law of Cosines with $\triangle \ell rq$. Let $\theta$ denote $\angle lrq$, as shown in Figure [ADD FIGURE]. By the Law of Cosines, we have that 
+\begin{equation} \text{cos}(\theta) = \tfrac{||\overline{qr}||^2 + ||\overline{\ell r}||^2 - ||\overline{q\ell}||^2}{2||\overline{\ell r}||}.\end{equation}. 
+On the other hand, since $\triangle q'qr$ is a right triangle, 
+
+\begin{equation} \text{cos}(\theta) = \tfrac{||\overline{q'r}||}{||\overline{qr}||}.\end{equation}
+
+
+To check this, it suffices to verify that \begin{equation}(||\overline{q\ell}|| + ||\overline{qr}||)(||\overline{q\ell}||- ||\overline{qr}||) \leq 2||\overline{\ell r}||\rho. \end{equation} 
 
 \begin{algorithm} 
     \caption{$\rho$-NN(\emph{cluster, query, r})} 
