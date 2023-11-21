@@ -210,7 +210,14 @@ that is, for a given $k$, find the $k$ closest points to $q$ in $ \textbf{X}$.
 We also have the $\rho$-nearest neighbors search problem, which aims to find the set $\{x \in \textbf{X}: f(q, x) \leq \rho \}$;
 that is, find all points in $\textbf{X}$ that are at most a distance $\rho$ from $q$.
 
-Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $\rho$- and $k$-NN algorithms make use of the following properties:
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[scale=0.5]{images/geometry/deltas.png}
+    \caption{}
+    \label{fig:methods:deltas}
+\end{figure}
+
+Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $\rho$- and $k$-NN algorithms make use of the following properties, as illustrated in Figure~\ref{fig:methods:deltas}.
 
 \begin{itemize}
     \item $\delta = f(q, c)$ is the distance from the query to the cluster center $c$.
