@@ -346,7 +346,14 @@ $Q$ to refer to the data structure which stores the clusters and points which ar
 \subsubsection{\texorpdfstring{$k$}{k}-NN by Repeated \texorpdfstring{$\rho$}{p}-NN}
 \label{subsubsec:methods:knn-search:repeated-rnn}
 
-In this algorithm, we perform $\rho$-nearest neighbors search starting with a small search radius, and repeatedly increasing the radius until we find $k$ neighbors.
+In this algorithm, we perform $\rho$-nearest neighbors search starting with a small search radius,
+\subsubsection{Sieve with Separate Centers}
+\label{subsubsec:methods:knn-search:sieve2}
+
+This algorithm is the same as Sieve, but with the following modification:
+clusters in $Q$ are represented twice -- once as their center and once as the rest of their points.
+The clusters' multiplicities in $Q$ are adjusted to be one less than their cardinalities.
+Because we have that for any cluster $C$, $C.\delta \leq C.\delta_{max}$, representing the cluster center separately from the rest of the points causes the threshold $\tau$ to decrease more quickly, thus allowing us to eliminate some clusters from $Q$ earlier in the process.  and repeatedly increasing the radius until we find $k$ neighbors.
 
 Let $H$ be the set of nearest neighbors found thus far.
 Search starts with a radius $m$ equal to the radius of the root cluster divided by the cardinality of the dataset.
@@ -475,7 +482,9 @@ We note that the fraction $\frac{-d}{\hat{d}}$ should be relatively close to 1 u
 \subsubsection{Sieve}
 \label{subsubsec:methods:knn-search:sieve}
 
-In this algorithm, we begin by letting $Q$ be a list of clusters and points, starting with only the root cluster. 
+In this algorithm, we begin by letting $Q$ be a list of clusters and points. 
+{ \color{red} We represent each cluster twice in $Q$ -- once as just its center and once as the rest of its points. $Q$ is initialized with two elements: the root cluster and the root cluster's center. }
+
 While $Q$ contains at least one cluster (i.e., $Q$ is not a list of only points), we repeat the process described in 
 the following paragraphs. 
 
@@ -521,17 +530,8 @@ This process is described in Algorithm~\ref{alg:methods:sieve}.
             \ENDFOR 
         \ENDWHILE
         \STATE Return $Q$
-    \end{algorithmic}How do we algorithmically determine the depth to which we
+    \end{algorithmic}
 \end{algorithm}
-
-
-\subsubsection{Sieve with Separate Centers}
-\label{subsubsec:methods:knn-search:sieve2}
-
-This algorithm is the same as Sieve, but with the following modification:
-clusters in $Q$ are represented twice -- once as their center and once as the rest of their points.
-The clusters' multiplicities in $Q$ are adjusted to be one less than their cardinalities.
-Because we have that for any cluster $C$, $C.\delta \leq C.\delta_{max}$, representing the cluster center separately from the rest of the points causes the threshold $\tau$ to decrease more quickly, thus allowing us to eliminate some clusters from $Q$ earlier in the process. 
 
 
 \subsubsection{Greedy Sieve}
