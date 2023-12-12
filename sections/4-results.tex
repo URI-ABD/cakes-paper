@@ -104,49 +104,6 @@ Finally, we reiterate that the variation in performance of our algorithms across
 % Further investigation of CAKES's performance on other challenging or adversarial datasets is warranted. 
 
 
-\begin{table*}[!t]
-    % \renewcommand{\arraystretch}{1.15}
-    \caption{Runtime performance (queries per second) and recall of CAKES vs. other methods on the sift dataset. We use 1.000* to denote that the recall is imperfect, but rounds to 1.000 when we consider only three decimal places.}
-    \label{table:results:ann-fashion}
-    \vskip 0.15in
-    \begin{center}
-        \begin{small}
-            \begin{sc}
-                \begin{tabular}{|l|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
-                    \hline
-                    \textbf{Scaling Factor}  & \multicolumn{2}{|c|}{\textbf{annoy}} & \multicolumn{2}{|c|}{\textbf{faiss-flat}} & \multicolumn{2}{|c|}{\textbf{faiss-ivf-flat}}  & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
-                    \hline
-                    &             QPS & Recall        & QPS & Recall      & QPS & Recall       & QPS & Recall       \\
-                    \hline
-                    1.000 & 2191.849 & 0.950 & 212.602 & 1.000 & 2009.483 & 1.000 & 2167.365 & 1.000 \\
-                    \hline
-                    2.000 & 2118.513 & 0.927 & 106.372 & 1.000 & 939.169 & 1.000* & 1141.225 & 1.000 \\
-                    \hline
-                    4.000 & 2043.628 & 0.898 & 53.077 & 1.000 & 461.016 & 0.997 & 982.117 & 1.000 \\
-                    \hline
-                    8.000 & 1925.593 & 0.857 & 26.577 & 1.000 & 225.827 & 0.995 & 1179.813 & 1.000 \\
-                    \hline
-                    16.000 & 1841.863 & 0.862 & 13.292 & 1.000 & 116.960 & 0.991 & 1201.409 & 1.000 \\
-                    \hline
-                    32.000 & 1850.943 & 0.775 & 6.647 & 1.000 & 59.148 & 0.985 & 1157.667 & 1.000 \\
-                    \hline
-                    64.000 & 1787.142 & 0.677 & 3.324 & 1.000 & 26.068 & 0.968 & 1102.849 & 1.000 \\
-                    \hline
-                    128.000 & 1659.660 & 0.538 & 1.662 & 1.000 & 13.265 & 0.964 & 1039.607 & 1.000 \\
-                    \hline
-                    256.000 & 1597.264 & 0.592 & 0.831 & 1.000 & 6.650 & 0.962 & 1058.972 & 1.000 \\
-                    \hline
-                    512.000 & 1826.362 & 0.581 & 0.416 & 1.000 & 3.563 & 0.949 & 1035.260 & 1.000 \\
-                    \hline
-                \end{tabular}
-            \end{sc}
-        \end{small}
-    \end{center}
-    \vskip -0.1in
-\end{table*}
-
-
-
 
 
 \begin{table*}[!t]
@@ -157,31 +114,148 @@ Finally, we reiterate that the variation in performance of our algorithms across
     \begin{center}
         \begin{small}
             \begin{sc}
-                \begin{tabular}{|l|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
+                \begin{tabular}{|l|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
                     \hline
-                    \textbf{Scaling Factor}  & \multicolumn{2}{|c|}{\textbf{annoy}} & \multicolumn{2}{|c|}{\textbf{faiss-flat}} & \multicolumn{2}{|c|}{\textbf{faiss-ivf-flat}}  & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
+                    \textbf{Scale}  & \multicolumn{2}{|c|}{\textbf{hnsw}} & \multicolumn{2}{|c|}{\textbf{annoy}} & \multicolumn{2}{|c|}{\textbf{faiss-flat}} & \multicolumn{2}{|c|}{\textbf{faiss-ivf}}  & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
                     \hline
-                    &             QPS & Recall        & QPS & Recall      & QPS & Recall       & QPS & Recall       \\
+                    &             QPS & Recall        & QPS & Recall      & QPS & Recall       & QPS & Recall     & QPS & Recall    \\
                     \hline
-                    1.000 & 2191.849 & 0.950 & 212.602 & 1.000 & 2009.483 & 1.000 & 2167.365 & 1.000 \\
+                    1 & 13330.275 & 0.954 & 2191.849 & 0.950 & 212.602 & 1.000 & 2009.483 & 1.000 & 2167.365 & 1.000 \\
                     \hline
-                    2.000 & 2118.513 & 0.927 & 106.372 & 1.000 & 939.169 & 1.000* & 1141.225 & 1.000 \\
+                    2 & 13822.528 & 0.803 & 2118.513 & 0.927 & 106.372 & 1.000 & 939.169 & 1.000 & 1141.225 & 1.000 \\
                     \hline
-                    4.000 & 2043.628 & 0.898 & 53.077 & 1.000 & 461.016 & 0.997 & 982.117 & 1.000 \\
+                    4 & 16648.524 & 0.681 & 2043.628 & 0.898 & 53.077 & 1.000 & 461.016 & 0.997 & 982.117 & 1.000 \\
                     \hline
-                    8.000 & 1925.593 & 0.857 & 26.577 & 1.000 & 225.827 & 0.995 & 1179.813 & 1.000 \\
+                    8 & 16785.981 & 0.525 & 1925.593 & 0.857 & 26.577 & 1.000 & 225.827 & 0.995 & 1179.813 & 1.000 \\
                     \hline
-                    16.000 & 1841.863 & 0.862 & 13.292 & 1.000 & 116.960 & 0.991 & 1201.409 & 1.000 \\
+                    16 & 18717.175 & 0.494 & 1841.863 & 0.862 & 13.292 & 1.000 & 116.960 & 0.991 & 1201.409 & 1.000 \\
                     \hline
-                    32.000 & 1850.943 & 0.775 & 6.647 & 1.000 & 59.148 & 0.985 & 1157.667 & 1.000 \\
+                    32 & 15597.778 & 0.542 & 1850.943 & 0.775 & 6.647 & 1.000 & 59.148 & 0.985 & 1157.667 & 1.000 \\
                     \hline
-                    64.000 & 1787.142 & 0.677 & 3.324 & 1.000 & 26.068 & 0.968 & 1102.849 & 1.000 \\
+                    64 & 14997.277 & 0.378 & 1787.142 & 0.677 & 3.324 & 1.000 & 26.068 & 0.968 & 1102.849 & 1.000 \\
                     \hline
-                    128.000 & 1659.660 & 0.538 & 1.662 & 1.000 & 13.265 & 0.964 & 1039.607 & 1.000 \\
+                    128 & 14866.019 & 0.357 & 1659.660 & 0.538 & 1.662 & 1.000 & 13.265 & 0.964 & 1039.607 & 1.000 \\
                     \hline
-                    256.000 & 1597.264 & 0.592 & 0.831 & 1.000 & 6.650 & 0.962 & 1058.972 & 1.000 \\
+                    256 & -- & -- & 1597.264 & 0.592 & 0.831 & 1.000 & 6.650 & 0.962 & 1058.972 & 1.000 \\
                     \hline
-                    512.000 & 1826.362 & 0.581 & 0.416 & 1.000 & 3.563 & 0.949 & 1035.260 & 1.000 \\
+                    512 & -- & -- & 1826.362 & 0.581 & 0.416 & 1.000 & 3.563 & 0.949 & 1035.260 & 1.000 \\
+                    \hline
+                \end{tabular}
+            \end{sc}
+        \end{small}
+    \end{center}
+    \vskip -0.1in
+\end{table*}
+
+
+\begin{table*}[!t]
+    % \renewcommand{\arraystretch}{1.15}
+    \caption{Runtime performance (queries per second) and recall of CAKES vs. other methods on the glove-25 dataset. We use 1.000* to denote that the recall is imperfect, but rounds to 1.000 when we consider only three decimal places.}
+    \label{table:results:ann-fashion}
+    \vskip 0.15in
+    \begin{center}
+        \begin{small}
+            \begin{sc}
+                \begin{tabular}{|l|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
+                    \hline
+                    \textbf{Scale}  & \multicolumn{2}{|c|}{\textbf{hnsw}} & \multicolumn{2}{|c|}{\textbf{annoy}} & \multicolumn{2}{|c|}{\textbf{faiss-flat}} & \multicolumn{2}{|c|}{\textbf{faiss-ivf}}  & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
+                    \hline
+                    &             QPS & Recall        & QPS & Recall      & QPS & Recall       & QPS & Recall     & QPS & Recall    \\
+                    \hline
+                    1 & 22755.175 & 0.801 & 2829.338 & 0.835 & 278.176 & 1.000 & 2378.006 & 1.000 & 722.326 & 1.000 \\
+                    \hline
+                    2 & 23792.690 & 0.607 & 2701.804 & 0.832 & 139.414 & 1.000 & 1188.398 & 1.000 & 574.516 & 1.000 \\
+                    \hline
+                    4 & 24990.630 & 0.443 & 2609.474 & 0.839 & 69.813 & 1.000 & 619.241 & 1.000 & 625.208 & 1.000 \\
+                    \hline
+                    8 & 27843.055 & 0.294 & 2514.357 & 0.834 & 34.878 & 1.000 & 302.683 & 1.000 & 592.699 & 1.000 \\
+                    \hline
+                    16 & 31114.062 & 0.213 & 2225.654 & 0.885 & 17.437 & 1.000 & 150.971 & 1.000 & 549.073 & 1.000 \\
+                    \hline
+                    32 & 32423.543 & 0.178 & 2008.537 & 0.764 & 8.701 & 1.000 & 74.016 & 0.999 & 475.266 & 1.000 \\
+                    \hline
+                    64 & -- & -- & 1990.317 & 0.631 & 4.362 & 1.000 & 37.735 & 0.997 & 461.066 & 1.000 \\
+                    \hline
+                    128 & -- & -- & -- & -- & 2.176 & 1.000 & 18.960 & 0.998 & 440.758 & 1.000 \\
+                    \hline
+                    256 & -- & -- & -- & -- & 1.067 & 1.000 & 9.472 & 0.998 & 422.591 & 1.000 \\
+                    \hline
+                    % 512 & -- & -- & -- & -- & 0.544 & 1.000 & 4.499 & 0.996 & 0.000 & 0.000 \\
+                    % \hline
+                \end{tabular}
+            \end{sc}
+        \end{small}
+    \end{center}
+    \vskip -0.1in
+\end{table*}
+
+\begin{table*}[!t]
+    % \renewcommand{\arraystretch}{1.15}
+    \caption{Runtime performance (queries per second) and recall of CAKES vs. other methods on the sift dataset. We use 1.000* to denote that the recall is imperfect, but rounds to 1.000 when we consider only three decimal places.}
+    \label{table:results:ann-fashion}
+    \vskip 0.15in
+    \begin{center}
+        \begin{small}
+            \begin{sc}
+                \begin{tabular}{|l|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
+                    \hline
+                    \textbf{Scale}  & \multicolumn{2}{|c|}{\textbf{hnsw}}  & \multicolumn{2}{|c|}{\textbf{annoy}} & \multicolumn{2}{|c|}{\textbf{faiss-flat}} & \multicolumn{2}{|c|}{\textbf{faiss-ivf-flat}}  & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
+                    \hline
+                    &             QPS & Recall        & QPS & Recall      & QPS & Recall       & QPS & Recall    & QPS & Recall    \\
+                    \hline
+                    1 & 19330.282 & 0.782 & 3977.432 & 0.686 & 72.610 & 1.000 & 697.809 & 1.000 & 551.894 & 1.000 \\
+                    \hline
+                    2 & 20319.372 & 0.552 & 3800.401 & 0.614 & 36.237 & 1.000 & 329.950 & 1.000 & 265.615 & 1.000 \\
+                    \hline
+                    4 & 21765.007 & 0.394 & 3686.606 & 0.637 & 18.152 & 1.000 & 165.175 & 1.000 & 142.545 & 1.000 \\
+                    \hline
+                    8 & 24796.528 & 0.298 & 3582.099 & 0.710 & 9.077 & 1.000 & 77.187 & 1.000 & 79.353 & 1.000 \\
+                    \hline
+                    16 & 26760.717 & 0.210 & 3498.893 & 0.690 & 4.539 & 1.000 & 39.809 & 1.000 & 81.172 & 1.000 \\
+                    \hline
+                    32 & 27522.668 & 0.193 & 3435.058 & 0.639 & 2.269 & 1.000 & 20.910 & 0.999 & 78.124 & 1.000 \\
+                    \hline
+                    64 & -- & -- & 3391.916 & 0.678 & 1.135 & 1.000 & 8.867 & 0.997 & 74.344 & 1.000 \\
+                    \hline
+                    128 & -- & -- & 3363.965 & 0.643 & 0.566 & 1.000 & 4.786 & 0.993 & 68.005 & 1.000 \\
+                    \hline
+                \end{tabular}
+            \end{sc}
+        \end{small}
+    \end{center}
+    \vskip -0.1in
+\end{table*}
+
+
+\begin{table*}[!t]
+    % \renewcommand{\arraystretch}{1.15}
+    \caption{Runtime performance (queries per second) and recall of CAKES vs. other methods on a random dataset. We use 1.000* to denote that the recall is imperfect, but rounds to 1.000 when we consider only three decimal places.}
+    \label{table:results:ann-fashion}
+    \vskip 0.15in
+    \begin{center}
+        \begin{small}
+            \begin{sc}
+                \begin{tabular}{|l|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
+                    \hline
+                    \textbf{Scale}  & \multicolumn{2}{|c|}{\textbf{hnsw}}  & \multicolumn{2}{|c|}{\textbf{annoy}} & \multicolumn{2}{|c|}{\textbf{faiss-flat}} & \multicolumn{2}{|c|}{\textbf{faiss-ivf-flat}}  & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
+                    \hline
+                    &             QPS & Recall        & QPS & Recall      & QPS & Recall       & QPS & Recall    & QPS & Recall    \\
+                    \hline
+                    1 & 11713.738 & 0.060 & 4283.182 & 0.028 & 71.575 & 1.000 & 733.821 & 1.000 & 553.948 & 1.000 \\
+                    \hline
+                    2 & 10061.864 & 0.048 & 4043.999 & 0.021 & 36.157 & 1.000 & 358.083 & 1.000 & 269.314 & 1.000 \\
+                    \hline
+                    4 & 9120.868 & 0.031 & 3639.337 & 0.014 & 18.072 & 1.000 & 189.802 & 1.000 & 137.236 & 1.000 \\
+                    \hline
+                    8 & 8352.077 & 0.022 & 3371.923 & 0.013 & 9.036 & 1.000 & 88.375 & 1.000 & 56.871 & 1.000 \\
+                    \hline
+                    16 & 8250.619 & 0.008 & 3174.156 & 0.006 & 4.531 & 1.000 & 43.613 & 1.000 & 26.136 & 1.000 \\
+                    \hline
+                    32 & -- & -- & 3013.970 & 0.007 & 2.270 & 1.000 & 17.201 & 1.000 & 13.534 & 1.000 \\
+                    % \hline
+                    % 64 & -- & -- & -- & -- & 1.135 & 1.000 & 9.939 & 1.000 & 0.000 & 0.000 \\
+                    % \hline
+                    % 128 & --& -- & -- & -- & 0.567 & 1.000 & 5.106 & 1.000 & 0.000 & 0.000 \\
                     \hline
                 \end{tabular}
             \end{sc}
