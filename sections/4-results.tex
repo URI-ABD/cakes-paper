@@ -34,14 +34,42 @@ Finally, we reiterate that the variation in performance of our algorithms across
 % Currently, our autotuning function always uses $k=10$ for its determination, but our observation that the best algorithm often differs between small and large values of $k$ suggests that more sophisticated autotuning is necessary.
 
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=3.4in]{plots/fashion-mnist-knn-10.png}
-    \caption{
-        Algorithm performance by cardinality multiplier on fashion-mnist for $k=10$.
-    }
-    \label{fig:results:fashion-mnist-scaling}
+\begin{figure}
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.95\textwidth]{plots/fashion-mnist-knn-10.png}\\
+\subcaption{Fashion-mnist for $k=10$.}
+\label{fig:results:fashion-mnist-scaling}
+\end{subfigure}%
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.95\textwidth]{plots/glove-25-knn-10.png}\\
+\subcaption{Glove-25 for $k=10$.  }
+\label{fig:results:glove-25-scaling}
+\end{subfigure}%
+\\
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.95\textwidth]{plots/sift-knn-10.png}\\
+\subcaption{Sift for $k=10$.    }
+\label{fig:results:sift-scaling}
+\end{subfigure}%
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.95\textwidth]{plots/random-1000000-128-knn-10.png}\\
+\subcaption{A random dataset for $k=10$.
+}
+\label{fig:results:random-scaling}
+\end{subfigure}%
+
+\caption{Algorithm performance across four datasets. In each plot, the horizontal axis represents increasing cardinality (size) of the dataset, while the vertical axis represents the throughput in queries per second (higher is better).}
 \end{figure}
+
+% 
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=3.4in]{plots/fashion-mnist-knn-10.png}
+%     \caption{
+%         Algorithm performance by cardinality multiplier on fashion-mnist for $k=10$.
+%     }
+%     \label{fig:results:fashion-mnist-scaling}
+% \end{figure}
 
 % \begin{figure}[ht!]
 %     \centering
@@ -53,34 +81,34 @@ Finally, we reiterate that the variation in performance of our algorithms across
 % \end{figure}
 
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=3.4in]{plots/glove-25-knn-10.png}
-    \caption{
-        Algorithm performance by cardinality multiplier on glove-25 for $k=10$.  }
-    \label{fig:results:glove-25-scaling}
-\end{figure}
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=3.4in]{plots/glove-25-knn-10.png}
+%     \caption{
+%         Algorithm performance by cardinality multiplier on glove-25 for $k=10$.  }
+%     \label{fig:results:glove-25-scaling}
+% \end{figure}
 
-
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=3.4in]{plots/sift-knn-10.png}
-    \caption{
-        Algorithm performance by cardinality multiplier on sift for $k=10$.    }
-    \label{fig:results:sift-scaling}
-\end{figure}
+% 
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=3.4in]{plots/sift-knn-10.png}
+%     \caption{
+%         Algorithm performance by cardinality multiplier on sift for $k=10$.    }
+%     \label{fig:results:sift-scaling}
+% \end{figure}
 
 % We need to redo this plot so that we do not actually augment random datasets but instead take larger and larger 
 % random datasets
-
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=3.4in]{plots/random-1000000-128-knn-10.png}
-    \caption{
-        Algorithm performance by cardinality multiplier on a random dataset for $k=10$.
-    }
-    \label{fig:results:random-scaling}
-\end{figure}
+% 
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=3.4in]{plots/random-1000000-128-knn-10.png}
+%     \caption{
+%         Algorithm performance by cardinality multiplier on a random dataset for $k=10$.
+%     }
+%     \label{fig:results:random-scaling}
+% \end{figure}
 
 
 % We did not run any of the competitor's algorithms.
