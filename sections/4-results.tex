@@ -1,6 +1,50 @@
 \section{Results}
 \label{sec:results}
 
+Figures~\ref{fig:results:fashion-mnist-lfd} show the local fractal dimension of.... (TODO fill this in)
+
+%% LFD plots
+
+\begin{figure}
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.95\textwidth]{images/lfd_plots/fashion-mnist-60000-lfd.png}\\
+\subcaption{Fashion-mnist}
+\label{fig:results:fashion-mnist-lfd}
+\end{subfigure}%
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.95\textwidth]{images/lfd_plots/glove-25-1183514-lfd.png}\\
+\subcaption{Glove-25}
+\label{fig:results:glove-25-lfd}
+\end{subfigure}
+\vspace{1em}
+\\
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.95\textwidth]{images/lfd_plots/sift-1000000-lfd.png}\\
+\subcaption{Sift}
+\label{fig:results:sift-lfd}
+\end{subfigure}%
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.95\textwidth]{images/lfd_plots/random-1000000-128-1000000-lfd.png}\\
+\subcaption{A random dataset}
+\label{fig:results:random-lfd}
+\end{subfigure}
+\vspace{1em}
+\\
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.95\textwidth]{images/lfd_plots/silva-2224640-lfd.png}\\
+\subcaption{Silva 18S metagenomics}
+\label{fig:results:silva-lfd}
+\end{subfigure}%
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.95\textwidth]{images/lfd_plots/radioml-97920-lfd.png}\\
+\subcaption{RadioML}
+\label{fig:results:radioml-lfd}
+\end{subfigure}%
+
+
+\caption{Local fractal dimension vs. cluster depth, grouped by decile of LFD, across six datasets.}
+\end{figure}
+%% end LFD plots
 
 Figures~\ref{fig:plots:fashion-mnist-scaling}A, ~\ref{fig:plots:glove-25-scaling}B, and ~\ref{fig:plots:sift-scaling}C show the scaling behavior of CAKES on augmented versions of the following ann-benchmark datasets: fashion-mnist under Euclidean distance, glove-25 under cosine distance, and sift under Euclidean distance. 
 Figure~\ref{fig:plots:random-scaling}D shows the scaling behavior of CAKES on a completely randomly generated dataset with same cardinality and dimensionality as sift (1 million points in 128 dimensions).
@@ -27,6 +71,7 @@ With glove-25 (Figure~\ref{fig:results:glove-25-scaling}), we observe that each 
 On this dataset, Repeated $\rho$-NN, plotted in green, is consistently the best-performing algorithm. {\color{red} Revive lfd violin plots to add explanation for this.}
 
 
+
 In Figure~\ref{fig:results:sift-scaling}, we observe that while linear search performs best for low cardinality multipliers, our algorithms begin outperforming linear search beginning at a multiplier of approximately 7. 
 For this dataset, Sieve, plotted in red, is the highest throughput algorithm for all multipliers greater than 7. 
 
@@ -45,29 +90,45 @@ Finally, we reiterate that the variation in performance of our algorithms across
 
 \begin{figure}
 \begin{subfigure}[b]{0.4\textwidth}
-\includegraphics[width=0.95\textwidth]{plots/fashion-mnist-knn-10.png}\\
+\includegraphics[width=0.95\textwidth]{plots/fashion-mnist-knn-10.png}
 \subcaption{Fashion-mnist for $k=10$.}
 \label{fig:results:fashion-mnist-scaling}
 \end{subfigure}%
 \begin{subfigure}[b]{0.4\textwidth}
-\includegraphics[width=0.95\textwidth]{plots/glove-25-knn-10.png}\\
+\includegraphics[width=0.95\textwidth]{plots/glove-25-knn-10.png}
 \subcaption{Glove-25 for $k=10$.  }
 \label{fig:results:glove-25-scaling}
 \end{subfigure}%
+\vspace{1em}
 \\
 \begin{subfigure}[b]{0.4\textwidth}
-\includegraphics[width=0.95\textwidth]{plots/sift-knn-10.png}\\
+\includegraphics[width=0.95\textwidth]{plots/sift-knn-10.png}
 \subcaption{Sift for $k=10$.    }
 \label{fig:results:sift-scaling}
 \end{subfigure}%
 \begin{subfigure}[b]{0.4\textwidth}
-\includegraphics[width=0.95\textwidth]{plots/random-1000000-128-knn-10.png}\\
+\includegraphics[width=0.95\textwidth]{plots/random-1000000-128-knn-10.png}
 \subcaption{A random dataset for $k=10$.
 }
 \label{fig:results:random-scaling}
 \end{subfigure}%
+\vspace{1em}
+\\
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.95\textwidth]{plots/silva-knn-10.png}
+\subcaption{Silva for $k=10$.    }
+\label{fig:results:silva-scaling}
+\end{subfigure}%
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=0.95\textwidth]{plots/radioml-knn-10.png}
+\subcaption{RadioML for $k=10$.
+}
+\label{fig:results:radioml-scaling}
+\end{subfigure}%
 
-\caption{Algorithm performance across four datasets. In each plot, the horizontal axis represents increasing cardinality (size) of the dataset, while the vertical axis represents the throughput in queries per second (higher is better). TODO say something about plots that didn't finish.}
+
+
+\caption{Algorithm performance across six datasets, including a randomly-generated dataset. In each plot, the horizontal axis represents increasing cardinality (size) of the dataset, while the vertical axis represents the throughput in queries per second (higher is better). TODO say something about plots that didn't finish.}
 \end{figure}
 
 % 
