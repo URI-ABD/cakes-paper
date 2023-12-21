@@ -11,71 +11,75 @@ The GreenGenes project~\cite{desantis2006greengenes} provides a multiple-sequenc
 Silva 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of approximately 2.25 million genomes with an aligned length of 50,000 letters.
 
 Radio frequency data offers another example of massive datasets. 
-The RadioML~\cite{oshea2018radioml} dataset contains 2,555,504 samples of both live and synthetically generated signal captures of different modulation modes over a range of SNR levels.
+The RadioML~\cite{oshea2018radioml} dataset contains approximately 2.55 million samples of both live and synthetically generated signal captures of different modulation modes over a range of SNR levels.
 
 The field of astronomy has also seen an influx of large datasets.
+% Najib: Add exact dimensions of the SDSS dataset from the CHESS paper.
 The Sloan Digital Sky Survey (SDSS)~\cite{blanton2017sdss}, for example, in its APOGEE~\cite{alam2015eleventh} dataset, has collected near-infrared spectra of approximately 430,000 stars in approximately 9,000 dimensions. 
 
-In many fields, the sizes of datasets are growing exponentially, and this increase in the rate of data collection outpaces the rate of computing performance improvements predicted by Moore's Law~\cite{brescia2012extracting}.
+In many fields, the sizes of datasets are growing exponentially, and this increase in the rate of data collection outpaces the rate of improvements in computing performance as predicted by Moore's Law~\cite{brescia2012extracting}.
 This indicates that computer architecture will not ``catch up'' to computational needs in the near future.
 Thus, analysis of these large datasets requires better algorithms.
 
-Many researchers are especially interested in similarity search on these datasets. 
+Many researchers are especially interested in similarity search on such datasets. 
 Similarity search enables a variety of applications, including recommendation~\cite{annoy} and classification systems~\cite{suyanto2022knnclassifier}. 
 
 % Najib: We should not cite CHESS for the recall-throughput tradeoff. Cite something else.
 As the cardinalities and dimensionalities of datasets have grown, however, efficient and accurate similarity search has become extremely challenging; 
 even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{ishaq2019clustered}.
 
-We now define two types of similarity search: $k$-nearest neighbor search ($k$-NN) and $\rho$-nearest neighbor search ($\rho$-NN). 
-Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, $k$-nearest neighbors search 
-aims to find the $k$ closest points to $q$ in $ \textbf{X}$.
-On the other hand, $\rho$-nearest neighbors search aims to find all points in $\textbf{X}$ that are at most a distance $\rho$ from $q$.
+Given some measure of similarity between data points, e.g. a distance function, we define two types of similarity search: $k$-nearest neighbor search ($k$-NN) and $\rho$-nearest neighbor search ($\rho$-NN).
+$k$-NN search aims to find the $k$ most similar points to a query point, while $\rho$-NN search aims to find all points within a similarity threshold $\rho$ of a query point.
 
-Previous works have used the term \emph{approximate} search to refer to $\rho$-nearest neighbor search, but in this paper, 
-we reserve the term \emph{approximate} for search algorithms which do not exhibit perfect recall.
-When we refer to an \emph{exact} search algorithm, we mean an algorithm which exhibits perfect recall when compared to a na\"{i}ve linear search.
+Previous works have used the term \emph{approximate} search to refer to $\rho$-NN search, but in this paper, we reserve the term \emph{approximate} for search algorithms which do not exhibit perfect recall when compared to a na\"{i}ve linear search.
+In contrast, an \emph{exact} search algorithm exhibits perfect recall.
 
-$k$-nearest neighbors ($k$-NN) search is one of the most ubiquitous classification and recommendation methods in use~\cite{fix1952discriminatory, cover1967nearest}. 
+$k$-NN search is one of the most ubiquitous classification and recommendation methods in use~\cite{fix1952discriminatory, cover1967nearest}.
 Na\"{i}ve implementations of $k$-NN, whose time complexity is linear in the dataset's cardinality, prove prohibitively slow for large datasets because their cardinalities are growing exponentially.
 
-While fast algorithms for $k$-NN search on large datasets do exist, most do not exploit the geometric and topological structure inherent in large datasets.
+While fast algorithms for $k$-NN search on large datasets do exist, most do not exploit the geometric and topological structure inherent in these datasets.
 Further, such algorithms are often approximate and while approximate search may be sufficient for some applications, the need for efficient and \emph{exact} search remains.
 For example, for a majority voting classifier, approximate $k$-NN search may agree with exact $k$-NN search for large values of $k$, but may be sensitive to local perturbations with smaller values of $k$.
 This is especially true when classes are not well-separated~\cite{zhang2022imbalanced}.
-Further, there is some evidence that distance functions which are non-metrics, such as cosine distance, perform poorly for $k$-NN search in biomedical settings~\cite{hu2016distance};
-this may suggest that approximate $k$-NN search could exhibit suboptimal accuracy.
+Further, there is some evidence that distance functions which do not obey the triangle inequality, such as cosine distance, perform poorly for $k$-NN search in biomedical settings~\cite{hu2016distance};
+this suggests that approximate $k$-NN search could exhibit suboptimal classification accuracy in such contexts.
 
 This paper focuses on three novel algorithms for exact $k$-NN search.
-We also present some improvements to the clustering and $\rho$-nearest neighbors search algorithms in CHESS, as well as improved genericity across distance functions.
-Finally, we provide a comparison of CAKES to several state-of-the-art algorithms in similarity search, FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy} on several datasets from the ANN benchmarks suite~\cite{aumuller2020ann}.
+We also present some improvements to the clustering and $\rho$-NN search algorithms in CHESS, as well as improved genericity across distance functions.
+We provide a comparison of CAKES to several state-of-the-art algorithms in similarity search, FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}, on several datasets from the ANN benchmarks suite~\cite{aumuller2020ann}.
+We also benchmark CAKES on a genomic dataset, the Silva 18S dataset [citation needed], and a radio frequency dataset, the RadioML dataset [citation needed].
+
 
 \subsection{Related Works}
 \label{subsec:intoduction:related-works}
 
 Recent search algorithms to tackling the exponential growth of data include hierarchical navigable small world networks (HNSW)~\cite{Malkov2016EfficientAR}, Inverted File indexing (FAISS-IVF)~\cite{johnson2019billion}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}.
 
+
 \subsubsection{HNSW}
 \label{subsubsec:introduction:related-works:hnsw}
 
 TODO: Paragraph summarizing HNSW.
+
 
 \subsubsection{FAISS-IVF}
 \label{subsubsec:introduction:related-works:faiss-ivf}
 
 TODO: Paragraph summarizing FAISS-IVF.
 
+
 \subsubsection{ANNOY}
 \label{subsubsec:introduction:related-works:annoy}
 
 TODO: Paragraph summarizing ANNOY.
 
+
 \subsubsection{Entropy-Scaling Search}
 \label{subsubsec:introduction:related-works:entropy-scaling-search}
 
 Entropy-scaling search is a paradigm for similarity search that exploits the geometric and topological structure inherent in large datasets.
-Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with geometric properties (such as the \emph{metric entropy} and \emph{local fractal dimension}, as defined in Section~\ref{sec:methods}) of a dataset, rather than its cardinality.
-In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search), which extended entropy-scaling $\rho$-nearest neighbors search from a flat clustering approach to a tree-based hierarchical clustering approach.
-In this paper, we introduce CAKES (CLAM-Accelerated $K$-nearest-neighbors Entropy-scaling Search).
-CLAM (Clustered Learning of Approximate Manifolds), originally developed to allow ``manifold mapping'' for anomaly detection~\cite{ishaq2021clustered}, is a refinement of the CHESS clustering algorithm. 
-Using the cluster tree constructed by CLAM, CAKES extends CHESS to perform $k$-nearest neighbors search.
+Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with topological properties (such as the \emph{metric entropy} and \emph{local fractal dimension}, as defined in Section~\ref{sec:methods}) of the dataset, rather than its cardinality.
+In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search), which extended entropy-scaling $\rho$-NN search from a flat clustering approach to a tree-based hierarchical clustering approach.
+In this paper, we introduce CAKES (CLAM-Accelerated $K$-nn Entropy-scaling Search).
+CLAM (Clustering, Learning and Approximation with Manifolds), originally developed to allow ``manifold mapping'' for anomaly detection~\cite{ishaq2021clustered}, is a refinement of the clustering algorithm from CHESS.
+Using the cluster tree constructed by CLAM, CAKES extends CHESS to perform $k$-NN search and improves the performance of CHESS's $\rho$-NN search.
