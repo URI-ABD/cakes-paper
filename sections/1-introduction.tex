@@ -46,13 +46,32 @@ This is especially true when classes are not well-separated~\cite{zhang2022imbal
 Further, there is some evidence that distance functions which are non-metrics, such as cosine distance, perform poorly for $k$-NN search in biomedical settings~\cite{hu2016distance};
 this may suggest that approximate $k$-NN search could exhibit suboptimal accuracy.
 
-Recent search algorithms to tackling the exponential growth of data include locality-sensitive hashing~\cite{indyk1999sublinear} such as MRPT~\cite{hyvonen2016fast}, hierarchical navigable small world (HNSW) networks~\cite{Malkov2016EfficientAR}, Inverted File indexing~\cite{johnson2019billion}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}.
+This paper focuses on three novel algorithms for exact $k$-NN search.
+We also present some improvements to the clustering and $\rho$-nearest neighbors search algorithms in CHESS, as well as improved genericity across distance functions.
+Finally, we provide a comparison of CAKES to several state-of-the-art algorithms in similarity search, FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy} on several datasets from the ANN benchmarks suite~\cite{aumuller2020ann}.
 
-TODO: Paragraph summarizing LSH.
+\subsection{Related Works}
+\label{subsec:intoduction:related-works}
+
+Recent search algorithms to tackling the exponential growth of data include hierarchical navigable small world networks (HNSW)~\cite{Malkov2016EfficientAR}, Inverted File indexing (FAISS-IVF)~\cite{johnson2019billion}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}.
+
+\subsubsection{HNSW}
+\label{subsubsec:introduction:related-works:hnsw}
 
 TODO: Paragraph summarizing HNSW.
 
+\subsubsection{FAISS-IVF}
+\label{subsubsec:introduction:related-works:faiss-ivf}
+
 TODO: Paragraph summarizing FAISS-IVF.
+
+\subsubsection{ANNOY}
+\label{subsubsec:introduction:related-works:annoy}
+
+TODO: Paragraph summarizing ANNOY.
+
+\subsubsection{Entropy-Scaling Search}
+\label{subsubsec:introduction:related-works:entropy-scaling-search}
 
 Entropy-scaling search is a paradigm for similarity search that exploits the geometric and topological structure inherent in large datasets.
 Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with geometric properties (such as the \emph{metric entropy} and \emph{local fractal dimension}, as defined in Section~\ref{sec:methods}) of a dataset, rather than its cardinality.
@@ -60,7 +79,3 @@ In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search), wh
 In this paper, we introduce CAKES (CLAM-Accelerated $K$-nearest-neighbors Entropy-scaling Search).
 CLAM (Clustered Learning of Approximate Manifolds), originally developed to allow ``manifold mapping'' for anomaly detection~\cite{ishaq2021clustered}, is a refinement of the CHESS clustering algorithm. 
 Using the cluster tree constructed by CLAM, CAKES extends CHESS to perform $k$-nearest neighbors search.
-
-This paper focuses on three novel algorithms for exact $k$-NN search.
-We also present some improvements to the clustering and $\rho$-nearest neighbors search algorithms in CHESS, as well as improved genericity across distance functions.
-Finally, we provide a comparison of CAKES to several state-of-the-art algorithms in similarity search, FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy} on several datasets from the ANN benchmarks suite~\cite{aumuller2020ann}.
