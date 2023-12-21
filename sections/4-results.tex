@@ -6,55 +6,55 @@ Figures~\ref{fig:results:fashion-mnist-lfd} show the local fractal dimension of.
 %% LFD plots
 
 \begin{figure}
-\begin{subfigure}[b]{0.47\textwidth}
-\includegraphics[width=0.95\textwidth]{images/lfd_plots/fashion-mnist-60000-lfd.png}\\
-\subcaption{Fashion-mnist}
-\label{fig:results:fashion-mnist-lfd}
-\end{subfigure}%
-\begin{subfigure}[b]{0.47\textwidth}
-\includegraphics[width=0.95\textwidth]{images/lfd_plots/glove-25-1183514-lfd.png}\\
-\subcaption{Glove-25}
-\label{fig:results:glove-25-lfd}
-\end{subfigure}
-\vspace{1em}
-\\
-\begin{subfigure}[b]{0.47\textwidth}
-\includegraphics[width=0.95\textwidth]{images/lfd_plots/sift-1000000-lfd.png}\\
-\subcaption{Sift}
-\label{fig:results:sift-lfd}
-\end{subfigure}%
-\begin{subfigure}[b]{0.47\textwidth}
-\includegraphics[width=0.95\textwidth]{images/lfd_plots/random-1000000-lfd.png}\\
-\subcaption{A random dataset}
-\label{fig:results:random-lfd}
-\end{subfigure}
-\vspace{1em}
-\\
-\begin{subfigure}[b]{0.47\textwidth}
-\includegraphics[width=0.95\textwidth]{images/lfd_plots/silva-2224640-lfd.png}\\
-\subcaption{Silva 18S metagenomics}
-\label{fig:results:silva-lfd}
-\end{subfigure}%
-\begin{subfigure}[b]{0.47\textwidth}
-\includegraphics[width=0.95\textwidth]{images/lfd_plots/radio-ml-97920-lfd.png}\\
-\subcaption{RadioML}
-\label{fig:results:radioml-lfd}
-\end{subfigure}%
+    \begin{subfigure}[b]{0.47\textwidth}
+    \includegraphics[width=0.95\textwidth]{images/lfd_plots/fashion-mnist-60000-lfd.png}\\
+    \subcaption{Fashion-mnist}
+    \label{fig:results:fashion-mnist-lfd}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.47\textwidth}
+    \includegraphics[width=0.95\textwidth]{images/lfd_plots/glove-25-1183514-lfd.png}\\
+    \subcaption{Glove-25}
+    \label{fig:results:glove-25-lfd}
+    \end{subfigure}
+    \vspace{1em}
+    \\
+    \begin{subfigure}[b]{0.47\textwidth}
+    \includegraphics[width=0.95\textwidth]{images/lfd_plots/sift-1000000-lfd.png}\\
+    \subcaption{Sift}
+    \label{fig:results:sift-lfd}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.47\textwidth}
+    \includegraphics[width=0.95\textwidth]{images/lfd_plots/random-1000000-lfd.png}\\
+    \subcaption{A random dataset}
+    \label{fig:results:random-lfd}
+    \end{subfigure}
+    \vspace{1em}
+    \\
+    \begin{subfigure}[b]{0.47\textwidth}
+    \includegraphics[width=0.95\textwidth]{images/lfd_plots/silva-2224640-lfd.png}\\
+    \subcaption{Silva 18S metagenomics}
+    \label{fig:results:silva-lfd}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.47\textwidth}
+    \includegraphics[width=0.95\textwidth]{images/lfd_plots/radio-ml-97920-lfd.png}\\
+    \subcaption{RadioML}
+    \label{fig:results:radioml-lfd}
+    \end{subfigure}%
 
-
-\caption{Local fractal dimension vs. cluster depth, grouped by decile of LFD, across six datasets.}
+    \caption{Local fractal dimension vs. cluster depth across six datasets, grouped by decile of LFD and weighted by the cardinalities of the clusters.}
+    \label{fig:results:lfd-plots}
 \end{figure}
 %% end LFD plots
 
-Figures~\ref{fig:plots:fashion-mnist-scaling}A, ~\ref{fig:plots:glove-25-scaling}B, and ~\ref{fig:plots:sift-scaling}C show the scaling behavior of CAKES on augmented versions of the following ann-benchmark datasets: fashion-mnist under Euclidean distance, glove-25 under cosine distance, and sift under Euclidean distance. 
-Figure~\ref{fig:plots:random-scaling}D shows the scaling behavior of CAKES on a completely randomly generated dataset with same cardinality and dimensionality as sift (1 million points in 128 dimensions).
+Figures~\ref{fig:results:fashion-mnist-scaling}, ~\ref{fig:results:glove-25-scaling}, and ~\ref{fig:results:sift-scaling} show the scaling behavior of CAKES on augmented versions of the following ann-benchmark datasets: fashion-mnist under Euclidean distance, glove-25 under cosine distance, and sift under Euclidean distance. 
+Figure~\ref{fig:results:random-scaling} shows the scaling behavior of CAKES on a completely randomly generated dataset with same cardinality and dimensionality as sift (1 million points in 128 dimensions).
 The horizontal axis in each figure denotes the multiplier by which we increased the cardinality of the original dataset with synthetic points (see Section \ref{subsec:methods:synthetic-data}). 
 The vertical axis denotes throughput in queries per second. Both axes are on a logarithmic scale. In this section, we discuss results only for $k$-NN search with $k = 10$, but similar plots for $k=100$ can be found in our Supplement section. In these plots, we label the recall at each scale for algorithms which do not exhibit perfect recall; if no such labels are given for an algorithm, then that algorithm exhibits perfect recall at all scales.
 
 Tables \ref{table:results:ann-fashion}, \ref{table:results:ann-glove-25}, \ref{table:results:ann-sift}, and \ref{table:results:ann-random} show the throughput and recall of CAKES's algorithms at each cardinality multiplier (i.e., scale) for the fashion-mnist, glove-25, sift, and random datasets respectively. When reporting recall, we use 1.000* to denote that the recall is imperfect, but rounds to 1.000 when we consider
 only three decimal places.
-Figures~\ref{fig:plots:fashion-mnist-scaling}A, ~\ref{fig:plots:glove-25-scaling}B, and ~\ref{fig:plots:sift-scaling}C show the scaling behavior of CAKES on augmented versions of the following ann-benchmark datasets: fashion-mnist under Euclidean distance, glove-25 under cosine distance, and sift under Euclidean distance. 
-Figure~\ref{fig:plots:random-scaling}D shows the scaling behavior of CAKES on a completely randomly generated dataset with same cardinality and dimensionality as sift (1 million points in 128 dimensions).
+Figures~\ref{fig:results:fashion-mnist-scaling}, ~\ref{fig:results:glove-25-scaling}, and ~\ref{fig:results:sift-scaling} show the scaling behavior of CAKES on augmented versions of the following ann-benchmark datasets: fashion-mnist under Euclidean distance, glove-25 under cosine distance, and sift under Euclidean distance. 
+Figure~\ref{fig:results:random-scaling} shows the scaling behavior of CAKES on a completely randomly generated dataset with same cardinality and dimensionality as sift (1 million points in 128 dimensions).
 The horizontal axis in each figure denotes the multiplier by which we increased the cardinality of the original dataset with synthetic points (see Section \ref{subsec:methods:synthetic-data}). 
 The vertical axis denotes throughput in queries per second. Both axes are on a logarithmic scale. In this section, we discuss results only for $k$-NN search with $k = 10$, but similar plots for $k=100$ can be found in our Supplement section. In these plots, we label the recall at each scale for algorithms which do not exhibit perfect recall; if no such labels are given for an algorithm, then that algorithm exhibits perfect recall at all scales.
 
@@ -248,7 +248,7 @@ Finally, we reiterate that the variation in performance of our algorithms across
 \begin{table*}[!t]
     % \renewcommand{\arraystretch}{1.15}
     \caption{Runtime performance (queries per second) and recall of CAKES vs. other methods on the glove-25 dataset. We use 1.000* to denote that the recall is imperfect, but rounds to 1.000 when we consider only three decimal places.}
-    \label{table:results:ann-fashion}
+    \label{table:results:ann-glove-25}
     \vskip 0.15in
     \begin{center}
         \begin{small}
@@ -289,7 +289,7 @@ Finally, we reiterate that the variation in performance of our algorithms across
 \begin{table*}[!t]
     % \renewcommand{\arraystretch}{1.15}
     \caption{Runtime performance (queries per second) and recall of CAKES vs. other methods on the sift dataset. We use 1.000* to denote that the recall is imperfect, but rounds to 1.000 when we consider only three decimal places.}
-    \label{table:results:ann-fashion}
+    \label{table:results:ann-sift}
     \vskip 0.15in
     \begin{center}
         \begin{small}
@@ -327,7 +327,7 @@ Finally, we reiterate that the variation in performance of our algorithms across
 \begin{table*}[!t]
     % \renewcommand{\arraystretch}{1.15}
     \caption{Runtime performance (queries per second) and recall of CAKES vs. other methods on a random dataset. We use 1.000* to denote that the recall is imperfect, but rounds to 1.000 when we consider only three decimal places.}
-    \label{table:results:ann-fashion}
+    \label{table:results:ann-random}
     \vskip 0.15in
     \begin{center}
         \begin{small}
