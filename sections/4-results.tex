@@ -419,3 +419,102 @@ Finally, we reiterate that the variation in performance of our algorithms across
 %     \end{center}
 %     \vskip -0.1in
 % \end{table*}
+
+
+Tables~\ref{table:results:fashion}, ~\ref{table:results:glove-25}, ~\ref{table:results:sift}, and ~\ref{table:results:random} show the throughput and recall of CAKES's algorithms at each cardinality multiplier (i.e., scale) for the fashion-mnist, glove-25, sift, and random datasets respectively. When reporting recall, we use 1.000* to denote that the recall is imperfect, but rounds to 1.000 when we consider only three decimal places.
+
+
+
+In Figure~\ref{fig:results:fashion-mnist-scaling}, which shows results for fashion-mnist, we observe that as the augmentation multiplier increases, the CAKES algorithms (GreedySieve in blue, RepeatedRnn in green, and Sieve in red) exhibit higher throughput than na\"{i}ve linear search, plotted in orange. We also observe that CAKES outperforms state-of-the-art similarity search algorithm FAISS-Flat (plotted in brown) for all cardinality multipliers and outperforms FAISS-IVF (plotted in pink) for all multipliers greater than $10^{5.5}$. Though state-of-the-art algorithms HNSW (plotted in gray), and Annoy (plotted in purple) have higher throughput than CAKES for all multipliers, we note that CAKES exhibits perfect recall for all multipliers, while hnsw and annoy exhibit much lower recall, as shown in Table~\ref{table:results:ann-fashion}. For example, at a cardinality multiplier as low as eight, hnsw and annoy have recall of 0.525 and 0.857 respectively, while CAKES exhibits perfect recall.
+Amongst the CAKES algorithms, GreedySieve consistently performs best on this dataset, exhibiting sublinear time performance for nearly all cardinality multipliers. 
+In Figure~\ref{fig:results:fashion-mnist-scaling}, which shows results for fashion-mnist, we observe that as the augmentation multiplier increases, the CAKES algorithms (GreedySieve in blue, RepeatedRnn in green, and Sieve in red) exhibit higher throughput than na\"{i}ve linear search, plotted in orange. We also observe that CAKES outperforms state-of-the-art similarity search algorithm FAISS-Flat (plotted in brown) for all cardinality multipliers and outperforms FAISS-IVF (plotted in pink) for all multipliers greater than $10^{5.5}$. Though state-of-the-art algorithms HNSW (plotted in gray), and Annoy (plotted in purple) have higher throughput than CAKES for all multipliers, we note that CAKES exhibits perfect recall for all multipliers, while hnsw and annoy exhibit much lower recall, as shown in Table~\ref{table:results:ann-fashion}. For example, at a cardinality multiplier as low as eight, hnsw and annoy have recall of 0.525 and 0.857 respectively, while CAKES exhibits perfect recall.
+Amongst the CAKES algorithms, GreedySieve consistently performs best on this dataset, exhibiting sublinear time performance for nearly all cardinality multipliers. 
+
+
+With glove-25 (Figure~\ref{fig:results:glove-25-scaling}), we observe that each of CAKES' algorithms outperforms linear search at high cardinality multipliers. Similar to the results for fashion-mnist, we see that CAKES outperforms FAISS-Flat for all cardinality multipliers and outperforms FAISS-IVF for all multipliers greater than $10^{7}$. We also see that while hnsw and annoy have higher throughput than CAKES for all multipliers, CAKES exhibits perfect recall for all multipliers, while hnsw and annoy exhibit much lower recall, as shown in Table~\ref{table:results:ann-glove-25}. For example, at a cardinality multiplier as low as eight, hnsw and annoy have recall of 0.294 and 0.857 respectively, while CAKES exhibits perfect recall.
+On this dataset, Repeated $\rho$-NN, plotted in green, is consistently the best-performing algorithm. {\color{red} Revive lfd violin plots to add explanation for this.}
+
+
+In Figure~\ref{fig:results:sift-scaling}, we observe that while linear search performs best for low cardinality multipliers, our algorithms begin outperforming linear search beginning at a multiplier of approximately 7. 
+For this dataset, Sieve, plotted in red, is the highest throughput algorithm for all multipliers greater than 7. 
+
+Figure \ref{fig:results:random-scaling} displays results for a random datset with the same dimensionality and cardinality as Sift (i.e., 128 and 1,000,000 respectively). 
+These results illustrate the fact that \emph{ceteris paribus}, absent a manifold structure in the dataset, CAKES's algorithms do not begin to outperform linear search until the cardinality multiplier is around 10. 
+Repeated $\rho$-NN shows significantly worse performance on this dataset relative to both the other algorithms and to its own performance on real datasets. 
+This is unsurprising, given that Repeated $\rho$-NN relies on a low local fractal dimension around the query in order to quickly home in on the correct radius for $k$ hits. 
+With a completely random dataset, whose average local fractal dimension will be near its embedding dimension, Repeated $\rho$-NN will iterate for longer before finding this correct radius. 
+
+Notably, we observe that on all datasets, GreedySieve's throughput stays nearly constant as cardinality increases. This observation warrants further investigation, but it is especially promising given that GreedySieve consistently outperforms linear search for high cardinalities. 
+% We also notice an interesting trend with Sieve and Sieve with Separate centers: for all datasets, at both values of $k$, both algorithms exhibit a sharp ``pivot point'' after which throughput starts to increase. 
+% While we observe that this pivot point seems to be proportional to the value of $k$, as it often occurs at about a multiplier of 4 when $k=10$ and a mulitplier of 32 when $k=100$, the reason for this behavior requires further investigation.  
+Finally, we reiterate that the variation in performance of our algorithms across different datasets and cardinalities support our use of an autotuning function to select the best choice of algorithm. 
+% Currently, our autotuning function always uses $k=10$ for its determination, but our observation that the best algorithm often differs between small and large values of $k$ suggests that more sophisticated autotuning is necessary.
+
+% 
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=3.4in]{plots/fashion-mnist-knn-10.png}
+%     \caption{
+%         Algorithm performance by cardinality multiplier on fashion-mnist for $k=10$.
+%     }
+%     \label{fig:results:fashion-mnist-scaling}
+% \end{figure}
+
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=3.4in]{images/result_plots/deep-image_10_scaling.png}
+%     \caption{
+%         Deep-image Scaling
+%     }
+%     \label{fig:results:deep-image-scaling}
+% \end{figure}
+
+
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=3.4in]{plots/glove-25-knn-10.png}
+%     \caption{
+%         Algorithm performance by cardinality multiplier on glove-25 for $k=10$.  }
+%     \label{fig:results:glove-25-scaling}
+% \end{figure}
+
+% 
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=3.4in]{plots/sift-knn-10.png}
+%     \caption{
+%         Algorithm performance by cardinality multiplier on sift for $k=10$.    }
+%     \label{fig:results:sift-scaling}
+% \end{figure}
+
+% We need to redo this plot so that we do not actually augment random datasets but instead take larger and larger 
+% random datasets
+% 
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=3.4in]{plots/random-1000000-128-knn-10.png}
+%     \caption{
+%         Algorithm performance by cardinality multiplier on a random dataset for $k=10$.
+%     }
+%     \label{fig:results:random-scaling}
+% \end{figure}
+
+
+% We did not run any of the competitor's algorithms.
+% We lifted the reported numbers from the ann-benchmarks site and their interactive plots.
+% We made sure to use the same AWS instance as they did so it is a fair comparison.
+
+% Tables \ref{table:results:ann-10} and \ref{table:results:ann-100} show the results of our benchmarks against FAISS, bruteforce-blas, and HNSW.
+% The throughput values for these algorithms comes from the ANN benchmarks website's interactive plots, from which we can assess the throughput of each algorithm at a given recall value.
+
+% We report the highest throughput value for each algorithm at a recall value of 1.0.
+% We report the mean and median speedup factor of CAKES over each algorithm.
+% For $k= 10$, we report a mean $7,654 \times$ (median $1,200 \times$) speedup over faiss-ivf, a mean $11,325 \times$ (median $2,821 \times$) speedup over bruteforce-blas, and a mean $485 \times$ (median $417 \times$) speedup over HNSW. 
+% For $k=100$, we report a mean $4,479 \times$ (median $3,456 \times$) speedup over faiss-ivf, a mean $16,010 \times$ (median $13,548 \times$) speedup over bruteforce-blas, and a mean $403 \times$ (median $372 \times$) speedup over HNSW.
+
+% For all datasets benchmarked in this manuscript, the auto-tuning method selected repeated $\rho$-nearest neighbor (Section~\ref{subsubsec:methods:knn-search:repeated-rnn}).
+
+% We note that the mean and median speedup factors differ significantly for all methods, which suggests that the speedup factor is heavily dataset-dependent;
+% in particular, across all algorithms, and both values of $k$, CAKES exhibits particularly high speedup factors with SIFT and GIST, under Euclidean distance.
+% As GIST was designed to be a difficult dataset for classifiers~\cite{Lee2019PracticalLP}, CAKES's strong performance with this dataset is particularly encouraging.
+% Further investigation of CAKES's performance on other challenging or adversarial datasets is warranted. 
