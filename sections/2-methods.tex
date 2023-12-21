@@ -1,32 +1,37 @@
 \section{Methods}
 \label{sec:methods}
 
-In this manuscript, we are primarily concerned with $k$-nearest neighbors search in a finite-dimensional space.
+In this manuscript, we are primarily concerned with $k$-NN search in a finite-dimensional space.
 Given a dataset $\textbf{X} = \{x_1 \dots x_n\}$, we define a \emph{point} or \emph{datum} $x_i \in \textbf{X}$ as a singular observation, for example, the genome of an organism, the neural-network embedding of an image, etc.
 
 We define a \emph{distance function} $f : \textbf{X} \times \textbf{X} \mapsto \mathbb{R}^+ \ \cup \ \{0\}$ which, given two points $x, y \in \textbf{X}$, deterministically returns a non-negative real number.
-We require that the distance function be symmetric (i.e., $f(x, y) = f(y, x) \ \forall \ x, y \in \textbf{X}$) and have an identity (i.e. $f(x, y) = 0 \iff x = y$). 
-In addition to these constraints, if the distance function obeys the triangle inequality, i.e., it is a \emph{distance metric}, then we guarantee that CAKES has perfect recall. 
-The choice of distance function varies by dataset.
-For example, with neural-network embeddings, one could use Euclidean (L2) distance or Cosine distance.
-With biological or string data, Levenshtein or Hamming distances are more appropriate.
-With time-series data, one could use Dynamic Time Warping (DTW).
+% Najib: I don't like the ``have an identity'' wording here. The Measure Theory A-Grader will have to prove her chops for this one.
+We require that the distance function be symmetric (i.e., $f(x, y) = f(y, x) \ \forall \ x, y \in \textbf{X}$) and have an identity (i.e. $f(x, y) = 0 \iff x = y$).
+If, in addition to these constraints, the distance function obeys the triangle inequality (i.e. $f(x, y) \leq f(x, z) + f(z, y) \ \forall \ x, y, z \in \textbf{X}$), then the distance function is also a \emph{distance metric}.
+For example, Euclidean, Levenshtein and Dynamic Time Warping (DTW)~\cite{muller2007dynamic} distances are all distance metrics while Cosine distance is not a metric because it does not obey the triangle inequality.
+Under distance metrics, all search algorithms in CAKES are exact.
 
-Some of our search algorithms rely on the \emph{local fractal dimension} (LFD) at some point and length scale in the dataset.
-We define LFD as:
+The choice of distance function varies by dataset.
+For example, with neural-network embeddings, one could use Euclidean (L2) or Cosine distance.
+With genomic or proteomic data, Levenshtein or Hamming distances are more appropriate.
+With time-series data, one could use Dynamic Time Warping (DTW) distance.
+
+% Najib: Reword the following sentence.
+CAKES assumes the manifold hypothesis~\cite{fefferman2016testing}, i.e., high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold within their embedding space, and exploits this low \emph{local fractal dimension} (LFD) to improve the performance of its search.
+We define LFD at some length scale around a point in the dataset as:
 
 \begin{equation}
-    \frac{\text{log}(\frac{|B_X(q, r_1)|}{|B_X(q, r_2)|})}{\text{log}(\frac{r_1}{r_2}) }
+    \frac{\text{log} \left( \frac{|B_X(q, r_1)|}{|B_X(q, r_2)|} \right) }{\text{log} \left( \frac{r_1}{r_2} \right) }
     \label{eq:methods:lfd-original}
 \end{equation}
 
-where $B_X(q, r)$ is the set of points contained in a ball of radius $r$ centered at a point $q$ in the dataset $\textbf{X}$.
+where $B_X(q, r)$ is the set of points contained in the metric ball of radius $r$ centered at a point $q$ in the dataset $\textbf{X}$.
 We stress that this concept differs from the \emph{embedding dimension} of a dataset.
 To illustrate the difference, consider SDSS's APOGEE dataset, wherein each datum is a nonnegative real-valued vector of length 8,575.
 Hence, the \emph{embedding dimension} of this dataset is 8,575. 
 However, due to physical constraints (namely, the laws of physics that govern stellar fusion and spectral emission lines), the data are constrained to a lower-dimensional manifold within the 8,575-dimensional embedding space.
-The LFD is an approximation of the dimensionality of that lower-dimensional manifold in the ``vicinity'' of a given point.
-This is the \emph{manifold hypothesis}~\cite{fefferman2016testing}, i.e. high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold within their embedding space.
+LFD is an approximation of the dimensionality of that lower-dimensional manifold in the ``vicinity'' of a given point.
+Figure~\ref{fig:results:lfd-plots} illustrates this concept, showing how real datasets obey the manifold hypothesis.
 
 
 \subsection{Clustering}
@@ -36,28 +41,25 @@ We define a \emph{cluster} as a set of points with a \emph{center} and a \emph{r
 The \emph{center} is the geometric median of the points (or a smaller sample of the points) in the \emph{cluster}, and so it is a real data point.
 The \emph{radius} is the maximum distance from the \emph{center} to any point in the \emph{cluster}.
 Each non-leaf cluster has two child clusters in much the same way that a node in a binary tree has two child nodes.
-We estimate LFD at the scale of the cluster radius and half that radius. 
-This allows us to rewrite Equation~\ref{eq:methods:lfd-original} as:
+Hereafter, when we refer to LFD, it is estimated at the scale of the cluster radius and half that radius. 
+This allows us to rewrite Definition~\ref{eq:methods:lfd-original} as:
 
 \begin{equation} 
-    \log_2 \left( \frac{|B_X(q, r)}{|B_X(q, r/2)|} \right)
+    \log_2 \left( \frac{|B_X(q, r)|}{|B_X(q, r/2)|} \right)
     \label{eq:methods:lfd-simplified}
 \end{equation}
 
-In~\cite{yu2015entropy}, metric entropy for a given cluster radius $r_c$ was defined as the number of clusters of a uniform radius $r_c$ needed to cover all data.
-In this paper, we define the metric entropy $\mathcal{N}_{\hat{r_c}}(X)$ of a data set $X$ for the hierarchical clustering scheme as the number of leaf clusters in the tree.
-
-% Here, we use a hierarchical, divisive clustering approach, but with early stopping criteria; clusters which satisfy a user-specified stopping criterion (e.g. a specified cardinality or radius) are not further split.
-% Since we frame the asymptotic complexity of $\rho$-NN search in terms of the number of leaf clusters, the \emph{metric entropy} is best thought of in terms of the number of leaf clusters.
+In~\cite{yu2015entropy}, metric entropy for a given cluster radius $r$ was defined as the number of clusters of a uniform radius $r$ needed to cover all data.
+In this paper, we define the metric entropy $\mathcal{N}_{\hat{r}}(X)$ of a dataset $X$ for the hierarchical clustering scheme as the number of leaf clusters in the tree.
 
 We start by performing a divisive hierarchical clustering on the dataset using CLAM.
-The procedure is similar to what was outlined in CHESS, but with the following improvements:
+The procedure is similar to that outlined in CHESS, but with the following improvements:
 better selection of poles for partitioning (see Algorithm~\ref{alg:methods:clustering:partition}) and depth-first reordering of the dataset (see Section~\ref{subsubsec:methods:clustering:dataset-depth-first-reordering}). 
 
 CAKES assumes the manifold hypothesis. 
 In other words, we assume that the dataset is embedded in a $D$-dimensional space, but that the data only occupy a $d$-dimensional manifold, where $d \ll D$. 
-While we sometimes use Euclidean notions, such as voids and volumes, to talk about the geometric and topological properties of clusters and of the manifold, CLAM does not rely on such notions; 
-they serve only as a convenient, intuitive way to talk about the underlying mathematics.
+While we sometimes use Euclidean notions, such as voids, volumes and proximity, to talk about the geometric and topological properties of clusters and of the manifold, CLAM does not rely on such notions; 
+they serve merely as a convenient and intuitive way to discuss the underlying mathematics.
 
 
 \subsubsection {Cluster Partitioning}
