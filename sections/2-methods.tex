@@ -669,22 +669,27 @@ TODO: Analyze complexity of Greedy Sieve.
 \label{subsec:methods:auto-tuning}
 
 We perform some na\"{i}ve auto-tuning to select the optimal $k$-NN algorithm to use with a given dataset.
-With this approach, we begin by taking a random sample of no more than 10\% of the data.
-We build a cluster tree with this sample using Algorithm~\ref{alg:methods:clustering:partition}, and select all clusters at some user-specified depth in the tree, with a default depth of 10.
-Using these clusters' centers as queries, and a user-specified value of $k$, we record the time taken for $k$-NN search on the sample using each of the four algorithms described in Section~\ref{subsec:methods:knn-search}.
-We select the algorithm which had the lowest total search time over all the queries. 
+We start by taking the center of every cluster at a low depth, e.g. 10, in the cluster tree as a query.
+This gives us a small set of queries which are representative of the dataset.
+Using these clusters' centers as queries, and a user-specified value of $k$, we record the time taken for $k$-NN search on the sample using each of the three algorithms described in Section~\ref{subsec:methods:knn-search}.
+We select the fastest over all the queries as the optimal algorithm for the dataset and value of $k$.
 Note that even though we select the optimal algorithm based on use with some user-specified value of $k$, we still allow search with any value of $k$.
 
 
 \subsection{Synthetic Data}
 \label{subsec:methods:synthetic-data}
 
-We expect CAKES to perform well as the cardinality of datasets increases, and to explore this scaling behavior, we augmented datasets in the ANN-benchmarks suite by adding random points within a 
-small noise threshold of existing points; this technique has been used in a number of bioinformatics contexts~\cite{kumar2009augmented, kumar2010recognition, daniels2012smurflite, velasco2018combining, lu2020evolution}. This allowed us to isolate the effect of \emph{cardinality} on the performance of CAKES 
-from that of other factors such as dimensionality, metric, or topological structure of the dataset. 
+Based on our asymptotic complexity analyses, we expect CAKES to perform well on datasets with low LFD, and for that performance to scale sub-linearly with the cardinality of the dataset.
+To test this hypothesis, we use some datasets from the ANN-benchmarks suite~\cite{aumuller2020ann} and synthetically augment them to generate similar datasets with much higher cardinalities.
+We do the same with a large random dataset of uniformly distributed points in a hypercube.
+We then compare the performance of CAKES to that of other algorithms on the original datasets and the synthetically augmented datasets.
 
+To elaborate on the augmentation process, we start with an original dataset from the ANN-benchmarks suite.
+Let $X$ be the dataset, $d$ be its dimensionality, $\epsilon$ be a user-specified noise level and $m$ be a user-specified integer multiplier.
+For each datum $x \in X$, we create $m$ new data points within a distance $\epsilon \cdot ||x||$ of $x$ where $||x||$ is the euclidean distance from $x$ to the origin.
+We construct a random vector $r$ of $d$ dimensions in the hypersphere of radius $\epsilon$ centered at the origin.
+We then add $r$ to $x$ to get a new point $x'$.
+Since $||r|| = \epsilon$, we have that $||x - x'|| \leq \epsilon$, i.e. $x'$ is within a distance $\epsilon$ of $x$.
+We repeat this process $m$ times for each $x \in X$ to get a new dataset $X'$.
 
-To elaborate, we start with an original dataset $X$ from the ANN-benchmark suite, a user-specified noise tolerance $\epsilon$, and a mutliplier $m$.
-For each datum $x \in X$, we create $m$ new data points within a distance $\epsilon$ of $x$. To construct a synthetic data point $x'$, we choose $d$ random numbers 
-$r_1, r_2, \cdots , r_d$ in the interval $[-\tfrac{\epsilon}{\sqrt{d}}, \tfrac{\epsilon}{\sqrt{d}}]$ and add them componentwise to the original datapoint. 
-Since $\sqrt{d \cdot (\tfrac{\epsilon}{\sqrt{d}})^2 } = \sqrt{d \cdot \tfrac{\epsilon^2}{d}}  = \sqrt{\epsilon^2} = \epsilon$, this ensures that any synthetic point is within a distance of $\epsilon$ from a real point in the original dataset.
+This augmentation process preserves the topological structure of the original dataset, but increases its cardinality by a factor of $m$, allowing us to isolate the effect of cardinality on search performance from that of other factors such as dimensionality, choice of metric, or the topological structure of the dataset.
