@@ -1,6 +1,8 @@
 \section{Results}
 \label{sec:results}
 
+% These are going to be boring; saving the interesting discussion for the discussion section
+
 Since the time complexity of CAKES algorithms scales with the local fractal dimension of the dataset, we examine the local fractal dimension of each dataset we benchmarked CAKES algorithms on. 
 
 
@@ -16,6 +18,12 @@ We observe that up until depth 5, the LFD at most locations is low, as the 95th 
 For depths 15 through 25, we observe that the LFD is higher, as the 95th percentile (orange plotted line) of LFD is slightly less than 6, and the 50th percentile (red plotted line) is near 3.
 Finally, for depths 25 through the maximum depth, we observe that the LFD is lower again, as the 95th percentile is between 3 and 4, and the 50th percentile is less than 2.
 
+
+Figure~\ref{fig:results:glove-25-lfd} shows the local fractal dimension by depth for the glove-25 dataset. 
+Relative to fashion-mnist, percentile lines for glove-25 are flatter and lower, indicating that the LFD is lower across the entire dataset, and that the LFD does not vary as much by depth.
+The 95th percentile of LFD is less than 4 for all depths, and the 50th percentile is less than 2 for all depths. 
+Before depth 25, the 95th percentile hovers near 2, and from depth 20 onward, it hovers near 3.5 before dipping sharply at the maximum depths. 
+The 50th percentile hovers near 1.5 for all depths. 
 
 
 
