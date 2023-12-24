@@ -2,39 +2,57 @@
 \label{sec:results}
 
 % These are going to be boring; saving the interesting discussion for the discussion section
-% I think I should vary the wording more but just getting down the key observations for now
+
+\subsection{Local Fractal Dimension of Datasets}
+\label{subsec:lfd-results}
 
 Since the time complexity of CAKES algorithms scales with the local fractal dimension of the dataset, we examine the local fractal dimension of each dataset we benchmarked CAKES algorithms on. 
 
 
-The figures in~\ref{fig:results:lfd-plots} show the LFD of fashion-mnist, glove-25, sift, a random dataset, Silva 18S, and RadioML.
+Figure~\ref{fig:results:lfd-plots} plots LFD by depth for fashion-mnist, glove-25, sift, a random dataset, Silva 18S, and RadioML.
 The horizontal axis denotes the depth in the cluster tree, and the vertical axis denotes the LFD (as calculated by Equation~\ref{eq:methods:lfd-simplified}) of clusters at that depth.
 We plot lines for the 0th, 5th, 25th, 50th, 75th, 95th, and 100th percentiles of LFD.
-So that these plots best reflect the distribution of LFDs across the entire \emph{dataset}, we compute percentiles counting each cluster as many times as its cardinality. 
-In other words, if, for some dataset, the 95th percentile of LFD at depth 40 is 1.5, this means that 95\% of the points in clusters at depth 40 belong to a cluster whose LFD is at most 1.5.
+In order to have the plots to best reflect the distribution of LFDs across the entire \emph{dataset}, we compute percentiles counting each cluster as many times as its cardinality. 
+In other words, if, for some dataset, the 95th percentile of LFD at depth 40 is 3, this means that 95\% of the points in clusters at depth 40 belong to a cluster whose LFD is at most 3.
 
 
-Figure~\ref{fig:results:fashion-mnist-lfd} shows the local fractal dimension by depth for the fashion-mnist dataset. 
-We observe that until about depth 5, the LFD at most locations is low, as the 95th percentile (orange plotted line) is less than 4, and the 50th percentile is just above 2.
-For depths 15 through 25, we observe that the LFD is higher, as the 95th percentile (orange plotted line) of LFD is slightly less than 6, and the 50th percentile (red plotted line) is near 3.
-Finally, for depths 25 through the maximum depth, we observe that the LFD is lower again, as the 95th percentile is between 3 and 4, and the 50th percentile is less than 2.
+Figure~\ref{fig:results:fashion-mnist-lfd} shows the LFD by depth for fashion-mnist. 
+We observe that until about depth 5, the LFD is low, as the 95th percentile (orange plotted line) is less than 4, and the median (red line) is just above 2.
+For depths 15 through 25, we observe that the LFD increases, with the 95th percentile (orange plotted line) slightly less than 6, and the median near 3.
+Finally, for depths 25 through the maximum depth, we observe that the LFD decreases again, as the 95th percentile is between 3 and 4, and the median is less than 2.
 
 
-Figure~\ref{fig:results:glove-25-lfd} shows the local fractal dimension by depth for the glove-25 dataset. 
-Relative to fashion-mnist, percentile lines for glove-25 are flatter and lower, indicating that the LFD is lower across the entire dataset, and that the LFD does not vary as much by depth.
-The 95th percentile of LFD is less than 4 for all depths, and the 50th percentile is less than 2 for all depths. 
+Relative to fashion-mnist, glove-25 has low LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}. 
+Percentile lines for glove-25 are flatter and lower, indicating that the LFD is lower across the entire dataset, and that the LFD does not vary as much by depth.
+The 95th percentile of LFD is less than 4 for all depths, and the median is less than 2 for all depths. 
 Before depth 25, the 95th percentile hovers near 2, and from depth 20 onward, it hovers near 3.5 before dipping sharply at the maximum depths. 
-The 50th percentile hovers near 1.5 for all depths. 
+The median hovers near 1.5 for all depths. 
 
 
-Figure~\ref{fig:results:sift-lfd} shows the local fractal dimension by depth for the sift dataset. 
+Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for sift. 
 Until about depth 5, the 95th percentile is between 2 and 6. From about depth 5 through about depth 20, the 95th percentile is greater than 6, even exceeding 8 near depth 10. 
 From about depth 20 onward, the 95th percentile is less than 6, and from about depth 30 onward, it is between 3 and 4. 
-The 50th percentile reaches its peak of about 5 at around depth 15, but hovers near 2 after about depth 30. 
+The median reaches its peak of about 5 at around depth 15, but hovers near 2 after about depth 30. 
 
 
+In contrast with Figure~\ref{fig:results:sift-lfd}, Figure~\ref{fig:results:random-lfd} shows the LFD by depth for a random dataset with the same cardinality and dimensionality as sift. 
+We observe that the LFD starts as high as 20 (for all data) at depth 0. As shown by the needlepoint shape of the plot, the LFD for all clusters 
+is about the same from depth 0 through depth 5. 
+After depth 5, we begin to see a wider spread between the maximum and minimum LFD at each depth. 
+The median decreases seemingly linearly from about 20 at depth 0 to about 2 at depth 20, remaining less than 2 for all depths greater than 20.
 
 
+Silva, as shown in Figure~\ref{fig:results:silva-lfd}, exhibits consistently show LFD.
+The 95th percentile is less than about 3 for all depths, hovering near 1 for depths 40 through 130. 
+The median reaches its peak at 2 for about depth 10 and remains close to 0 for depths 40 through 130. 
+
+
+Relative to the other datasets, RadioML, as displayed in Figure~\ref{fig:results:radioml-lfd}, exhibits high LFD. 
+Notably however, for the frist approximately 15 depths, the 95th percentile and median LFD are very close to 0. 
+Both percentiles increase sharply after depth 20, nearly reaching 16. 
+LFD remains high even as depth increases, with the 95th percentile fluctuating between about 6 and 15 for depths about 20-40. 
+It then spikes up again to about 10 at around depth 45 before decreasing linearly to 1 at depth 60. 
+The median LFD follows a similar pattern of peaks and troughs, fluctuating between about 3 and 15 for depths 20-40, spiking at about depth 50 to 5, and then decreasing approximately linearly to 1 at depth 60.
 
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
@@ -76,6 +94,11 @@ The 50th percentile reaches its peak of about 5 at around depth 15, but hovers n
     \label{fig:results:lfd-plots}
 \end{figure}
 %% end LFD plots
+
+
+
+\subsection{Scaling Behavior and Recall}
+\label{subsec:scaling-behavior-results}
 
 Figures~\ref{fig:results:fashion-mnist-scaling}, ~\ref{fig:results:glove-25-scaling}, and ~\ref{fig:results:sift-scaling} show the scaling behavior of CAKES on augmented versions of the following ann-benchmark datasets: fashion-mnist under Euclidean distance, glove-25 under cosine distance, and sift under Euclidean distance. 
 Figure~\ref{fig:results:random-scaling} shows the scaling behavior of CAKES on a completely randomly generated dataset with same cardinality and dimensionality as sift (1 million points in 128 dimensions).
