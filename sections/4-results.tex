@@ -1,9 +1,23 @@
 \section{Results}
 \label{sec:results}
 
-Figures~\ref{fig:results:fashion-mnist-lfd} show the local fractal dimension of.... (TODO fill this in)
+Since the time complexity of CAKES algorithms scales with the local fractal dimension of the dataset, we examine the local fractal dimension of each dataset we benchmarked CAKES algorithms on. 
 
-%% LFD plots
+
+The figures in~\ref{fig:results:lfd-plots} show the LFD of fashion-mnist, glove-25, sift, a random dataset, Silva 18S, and RadioML.
+The horizontal axis denotes the depth in the cluster tree, and the vertical axis denotes the LFD (as calculated by Equation~\ref{eq:methods:lfd-simplified}) of clusters at that depth.
+We plot lines for the 0th, 5th, 25th, 50th, 75th, 95th, and 100th percentiles of LFD.
+So that these plots best reflect the distribution of LFDs across the entire \emph{dataset}, we compute percentiles counting each cluster as many times as its cardinality. 
+In other words, if, for some dataset, the 95th percentile of LFD at depth 40 is 1.5, this means that 95\% of the points in clusters at depth 40 belong to a cluster whose LFD is at most 1.5.
+
+
+Figure~\ref{fig:results:fashion-mnist-lfd} shows the local fractal dimension by depth for the fashion-mnist dataset. 
+We observe that up until depth 5, the LFD at most locations is low, as the 95th percentile (orange plotted line) is less than 4, and the 50th percentile is just above 2.
+For depths 15 through 25, we observe that the LFD is higher, as the 95th percentile (orange plotted line) of LFD is slightly less than 6, and the 50th percentile (red plotted line) is near 3.
+Finally, for depths 25 through the maximum depth, we observe that the LFD is lower again, as the 95th percentile is between 3 and 4, and the 50th percentile is less than 2.
+
+
+
 
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
