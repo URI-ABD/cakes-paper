@@ -1,6 +1,23 @@
 \section{Discussion and Future Work}
 \label{sec:discussion}
 
+{\color{red} TODO: Use lfd plots to discuss repeated rnn being best for glove low lfd.}
+
+% Moving stuff out of results into discussion: 
+These results illustrate the fact that \emph{ceteris paribus}, absent a manifold structure in the dataset, CAKES's algorithms do not begin to outperform linear search until the cardinality multiplier is around 10. 
+Repeated $\rho$-NN shows significantly worse performance on this dataset relative to both the other algorithms and to its own performance on real datasets. 
+This is unsurprising, given that Repeated $\rho$-NN relies on a low local fractal dimension around the query in order to quickly home in on the correct radius for $k$ hits. 
+With a completely random dataset, whose average local fractal dimension will be near its embedding dimension, Repeated $\rho$-NN will iterate for longer before finding this correct radius. 
+
+Notably, we observe that on all datasets, GreedySieve's throughput stays nearly constant as cardinality increases. This observation warrants further investigation, but it is especially promising given that GreedySieve consistently outperforms linear search for high cardinalities. 
+% We also notice an interesting trend with Sieve and Sieve with Separate centers: for all datasets, at both values of $k$, both algorithms exhibit a sharp ``pivot point'' after which throughput starts to increase. 
+% While we observe that this pivot point seems to be proportional to the value of $k$, as it often occurs at about a multiplier of 4 when $k=10$ and a mulitplier of 32 when $k=100$, the reason for this behavior requires further investigation.  
+Finally, we reiterate that the variation in performance of our algorithms across different datasets and cardinalities support our use of an autotuning function to select the best choice of algorithm. 
+% Currently, our autotuning function always uses $k=10$ for its determination, but our observation that the best algorithm often differs between small and large values of $k$ suggests that more sophisticated autotuning is necessary.
+
+
+
+
 We have presented CAKES, a method for fast $k$-nearest-neighbors search that can adapt to a variety of distance functions.
 CAKES provides exact recall with $k$-NN when the distance function in use is a metric (particularly, when it obeys the triangle inequality).
 CAKES is most effective when datasets are not uniform and do not obey a ``simple'' distribution such as Gaussian, but rather adhere to ``interesting'' low-dimensional manifolds even when embedded in a high-dimensional space;
