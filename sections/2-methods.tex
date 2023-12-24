@@ -537,7 +537,7 @@ This algorithm performs a breadth-first traversal of the tree, pruning clusters 
 
 We begin by letting $Q$ be a list of 3-tuples $(p, \delta^{+}_{p}, m)$, where $p$ is a cluster or a point, $\delta^{+}_{p}$ is the $\delta^{+}$ of $p$ as illustrated in Figure~\ref{fig:methods:deltas}, and $m$ is the multiplicity of $p$ in $Q$.
 During the breadth-first traversal, for every cluster $C$ we encounter, we add $(C, \delta^{+}_{C}, |C| - 1)$ and $(c, \delta_{C}, 1)$ to $Q$, where $c$ is the center of $C$.
-Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\ref{subsec:methods:the-search-problem}, $\delta_{C} = \delta_{c} = \delta^{+}_{c}$.
+Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\ref{subsec:methods:the-search-problem}, since $c$ is a point, $\delta_{C} = \delta_{c} = \delta^{+}_{c}$.
 
 
 
