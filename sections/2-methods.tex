@@ -406,10 +406,10 @@ In particular, we increase the radius by a factor of
 
 where $\mu$ is the harmonic mean of the LFD of the clusters in $S$.
 We use the harmonic mean to ensure that $\mu$ is not dominated by outlier clusters with very high LFD. 
-Intuitively, the factor by which we increase the radius should also be \emph{inversely} related to the number of points found so far. 
+Intuitively, the factor by which we increase the radius should be \emph{inversely} related to the number of points found so far. 
 Additionally, when the LFD at the radius scale from the previous iteration is low, this suggests that the data are relatively concentrated in that region.
 In such a region, a small increase in the radius would likely encounter unoccupied space, so a larger radial increase is needed.
-Thus, the factor of radius increase should be \emph{inversely} related to the LFD.
+Thus, the factor of radius increase should also be \emph{inversely} related to the LFD.
 
 Once $\sum_{C \in S} |C| >= k$, we are guaranteed to have found at least $k$ neighbors, and so we can stop increasing the radius.
 We perform $\rho$-nn-search with radius $r$ and return the $k$ nearest neighbors.
@@ -460,11 +460,12 @@ Leaf-search refers to the process of identifying the $k$ nearest neighbors among
 In ~\cite{ishaq2019clustered}, we showed that the complexity of tree-search is $\mathcal{O}(\log\mathcal{N}_{\hat{r}}(X))$, where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of the dataset $X$ at a radius $\hat{r}$.
 To adjust this bound for Repeated $\rho$-NN, we must estimate the number of iterations of tree-search needed to find at least $k$ neighbors.
 
-Based on the assumption that the LFD at the query point is not significantly different from that of nearby clusters, the factor from Equation~\ref{eq:repeated-rnn-factor} suggests that in the expected case, we need only two iterations of tree-search to find $k$ neighbors:
+Based on the assumption that the LFD at the query point does not differ significantly from that of nearby clusters, the factor from Equation~\ref{eq:repeated-rnn-factor} suggests that in the expected case, we need only two iterations of tree-search to find $k$ neighbors:
 one iteration to find at least one neighbor, and the one more to find enough remaining neighbors.
-Since this is a constant factor, it does not affect the asymptotic complexity of Repeated $\rho$-NN.
+Since this is a constant factor, complexity of tree search for Repeated $\rho$-NN is the same as that of $\rho$-NN.
 
-To determine the asymptotic complexity of leaf-search, we must estimate $\sum_{C \in S} |C|$, the number of points we examine.
+To determine the asymptotic complexity of leaf-search, we must estimate $\sum_{C \in S} |C|$, the number of points in the clusters returned by tree search.
+Since we must examine each of these points, time complexity of leaf-search is linear in $\sum_{C \in S} |C|$. 
 Let $\rho_k$ be the distance from the query to the $k$th nearest neighbor.
 Then, we see that $S$ is expected to be the set of clusters which overlap with a ball of radius $\rho_k$ around the query.
 We can estimate this region as a ball of radius $\rho_k + \hat{r}$, where $\hat{r}$ is the mean radius of clusters in $S$.
@@ -488,7 +489,7 @@ It remains to provide an estimate for $\rho_k$.
 For this, we once again rely on the assumption that the query is from the same distribution as the rest of the data, and thus the LFD at the query point is not significantly different than that of nearby clusters.
 
 We let $\hat{d}$ be the mean LFD of the clusters in $S$.
-While ordinarily we compute LDS by comparing cardinalities of two balls with two different radii centered at \emph{the same} point, in order to estimate $\rho_k$, we instead compare the cardinality of a ball \emph{around the query} of radius $\rho_k$ to the mean cardinality, $\hat{C}$, of clusters in $S$ at a radius equal to the mean of their radii, $\hat{r}$.
+While ordinarily we compute LFD by comparing cardinalities of two balls with two different radii centered at \emph{the same} point, in order to estimate $\rho_k$, we instead compare the cardinality of a ball \emph{around the query} of radius $\rho_k$ to the mean cardinality, $\hat{C}$, of clusters in $S$ at a radius equal to the mean of their radii, $\hat{r}$.
 
 We justify this approach by noting that, since the query is from the same distribution as the rest of the data, we could replace the query with the center of one of the nearby clusters without significantly changing the LFD at the query point.
 
