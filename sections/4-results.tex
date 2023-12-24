@@ -2,6 +2,7 @@
 \label{sec:results}
 
 % These are going to be boring; saving the interesting discussion for the discussion section
+% I think I should vary the wording more but just getting down the key observations for now
 
 Since the time complexity of CAKES algorithms scales with the local fractal dimension of the dataset, we examine the local fractal dimension of each dataset we benchmarked CAKES algorithms on. 
 
@@ -14,7 +15,7 @@ In other words, if, for some dataset, the 95th percentile of LFD at depth 40 is 
 
 
 Figure~\ref{fig:results:fashion-mnist-lfd} shows the local fractal dimension by depth for the fashion-mnist dataset. 
-We observe that up until depth 5, the LFD at most locations is low, as the 95th percentile (orange plotted line) is less than 4, and the 50th percentile is just above 2.
+We observe that until about depth 5, the LFD at most locations is low, as the 95th percentile (orange plotted line) is less than 4, and the 50th percentile is just above 2.
 For depths 15 through 25, we observe that the LFD is higher, as the 95th percentile (orange plotted line) of LFD is slightly less than 6, and the 50th percentile (red plotted line) is near 3.
 Finally, for depths 25 through the maximum depth, we observe that the LFD is lower again, as the 95th percentile is between 3 and 4, and the 50th percentile is less than 2.
 
@@ -24,6 +25,14 @@ Relative to fashion-mnist, percentile lines for glove-25 are flatter and lower, 
 The 95th percentile of LFD is less than 4 for all depths, and the 50th percentile is less than 2 for all depths. 
 Before depth 25, the 95th percentile hovers near 2, and from depth 20 onward, it hovers near 3.5 before dipping sharply at the maximum depths. 
 The 50th percentile hovers near 1.5 for all depths. 
+
+
+Figure~\ref{fig:results:sift-lfd} shows the local fractal dimension by depth for the sift dataset. 
+Until about depth 5, the 95th percentile is between 2 and 6. From about depth 5 through about depth 20, the 95th percentile is greater than 6, even exceeding 8 near depth 10. 
+From about depth 20 onward, the 95th percentile is less than 6, and from about depth 30 onward, it is between 3 and 4. 
+The 50th percentile reaches its peak of about 5 at around depth 15, but hovers near 2 after about depth 30. 
+
+
 
 
 
