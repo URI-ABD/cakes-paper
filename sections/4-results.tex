@@ -64,40 +64,41 @@ The median LFD follows a similar pattern of peaks and troughs, fluctuating betwe
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[width=0.95\textwidth]{images/lfd_plots/fashion-mnist-60000-lfd.png}\\
-    \subcaption{Fashion-mnist}
+    % \subcaption{Fashion-mnist}
     \label{fig:results:fashion-mnist-lfd}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[width=0.95\textwidth]{images/lfd_plots/glove-25-1183514-lfd.png}\\
-    \subcaption{Glove-25}
+    % \subcaption{Glove-25}
     \label{fig:results:glove-25-lfd}
     \end{subfigure}
-    \vspace{1em}
+    % \vspace{1em}
     \\
     \begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[width=0.95\textwidth]{images/lfd_plots/sift-1000000-lfd.png}\\
-    \subcaption{Sift}
+    % \subcaption{Sift}
     \label{fig:results:sift-lfd}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/lfd_plots/random-1000000-lfd.png}\\
-    \subcaption{A random dataset}
-    \label{fig:results:random-lfd}
-    \end{subfigure}
-    \vspace{1em}
+    \includegraphics[width=0.95\textwidth]{images/lfd_plots/radio-ml-97920-lfd.png}\\
+    % \subcaption{RadioML}
+    \label{fig:results:radioml-lfd}
+    \end{subfigure}%
     \\
     \begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[width=0.95\textwidth]{images/lfd_plots/silva-2224640-lfd.png}\\
-    \subcaption{Silva 18S metagenomics}
+    % \subcaption{Silva 18S metagenomics}
     \label{fig:results:silva-lfd}
-    \end{subfigure}%
+    \end{subfigure}%  
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/lfd_plots/radio-ml-97920-lfd.png}\\
-    \subcaption{RadioML}
-    \label{fig:results:radioml-lfd}
-    \end{subfigure}%
+    \includegraphics[width=0.95\textwidth]{images/lfd_plots/random-1000000-lfd.png}\\
+    % \subcaption{A random dataset}
+    \label{fig:results:random-lfd}
+    \end{subfigure}
+    % \vspace{1em}
+    
 
-    \caption{Local fractal dimension vs. cluster depth across six datasets, grouped by decile of LFD and weighted by the cardinalities of the clusters.}
+    \caption{Local fractal dimension vs. cluster depth across six datasets, grouped by decile of local fractal dimension and weighted by the cardinalities of the clusters. The last dataset is randomly generated. The number in the header of each plot indicates the cardinality of the dataset.}
     \label{fig:results:lfd-plots}
 \end{figure}
 %% end LFD plots
