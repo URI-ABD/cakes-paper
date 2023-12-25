@@ -11,11 +11,15 @@ Table~\ref{table:datasets:summary} summarizes the properties of these datasets.
 
 We compared against FAISS~\cite{johnson2019billion} (IVF and HNSW) and a BLAS-accelerated implementation of na\"ive search as reported in~\cite{johnson2019billion}.
 
-% TODO FIXME is this still true? We used Ark for the scaling benchmarks, no?
-All benchmarks were conducted on an Amazon AWS (EC2) \texttt{r6i.16xlarge} instance, with a 64-core Intel Xeon Platinum 8375C CPU 2.90GHz processor, 512GB RAM.
-This is the same configuration used in~\cite{Aumller2018ANNBenchmarksAB}
-The OS kernel was Ubuntu 22.04.3-Ubuntu SMP. 
-The Rust compiler was Rust 1.71.1, and the Python interpreter version was 3.10.12.
+The benchmarks for Fashion-MNIST, Glove-25, Sift and Random (and for their synthetic augmentations) were conducted on an Amazon AWS (EC2) \texttt{r6i.16xlarge} instance, with a 64-core Intel Xeon Platinum 8375C CPU 2.90GHz processor, 512GB RAM.
+This is the same configuration used in~\cite{Aumller2018ANNBenchmarksAB}.
+The OS kernel was Ubuntu 22.04.3-Ubuntu SMP.
+The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16.
+
+The benchmarks for Silva and RadioML were conducted on an Intel Xeon E5-2690 v4 CPU @ 2.60GHz with 512GB RAM.
+The OS kernel was Manjaro Linux 5.15.130-1-MANJARO.
+The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16.
+
 
 \begin{table}[!t]
     % \renewcommand{\arraystretch}{1.15}
@@ -27,25 +31,19 @@ The Rust compiler was Rust 1.71.1, and the Python interpreter version was 3.10.1
             \begin{sc}
                 \begin{tabular}{|l|l|l|l|}
                     \hline
-                    \textbf{Dataset} & \textbf{Distance}  &\textbf{Cardinality}  & \textbf{Dim.}  \\
+                    \textbf{Dataset} & \textbf{Distance}  &\textbf{Cardinality}  & \textbf{Dimensionality}  \\
                     \hline
-                    fashion-mnist    & euclidean              & 60,000             & 784       \\
-                    \hline 
-                    gist             & euclidean              & 1,000,000          & 960       \\
+                    Fashion-Mnist    & Euclidean              & 60,000             & 784       \\
                     \hline
-                    glove-25         & cosine              & 1,183,514          & 25        \\
+                    Glove-25         & Cosine                 & 1,183,514          & 25        \\
                     \hline
-                    glove-50         & cosine              & 1,183,514          & 50        \\
+                    Sift             & Euclidean              & 1,000,000          & 128       \\
                     \hline
-                    glove-100        & cosine              & 1,183,514          & 100       \\
+                    Random           & Euclidean              & 1,000,000          & 128       \\
                     \hline
-                    sift             & euclidean              & 1,000,000          & 128       \\
+                    Silva            & Levenshtein            & 2,224,640          & -         \\
                     \hline
-                    deep-image       & cosine              & 9,990,000          & 96        \\
-                    \hline
-                    mnist            & euclidean              & 60,000             & 784       \\
-                    \hline
-                    lastfm           & cosine              & 292,385            & 65        \\
+                    RadioML          & Dynamic Time Warping   & 97,920             & 1,024     \\
                     \hline
                 \end{tabular}
             \end{sc}
@@ -60,21 +58,26 @@ The Rust compiler was Rust 1.71.1, and the Python interpreter version was 3.10.1
 In addition to benchmarks on datasets from the ANN Benchmarks suite, we also benchmarked on synthetic augmentations of these real datasets, using the process described in \ref{subsec:methods:synthetic-data}. 
 In particular, we use a noise tolerance $\epsilon = 0.01$ and explore the scaling behavior as the cardinality multiplier (refered to as ``scale'' in Table~\ref{table:results:ann-fashion} {\color{red} TODO: merge the tables into one and confirm this reference is still correct after the merge}) increases. 
 
-We also benchmarked on a purely random dataset with the same cardinality and dimensionality as sift: 1,000,000 points in 128 dimensions. 
-This benchmark allows us to isolate the effect of a manifold structure (which we expect to be absent in a purely random dataset) on the performance of CAKES's algorithms. 
+For the Random dataset, we used a cardinality of 1,000,000 and a dimensionality of 128 to match the Sift dataset.
+This benchmark allows us to isolate the effect of a manifold structure (which we expect to be absent in a purely random dataset) on the performance of the CAKES' algorithms. 
+
 
 \subsection{Silva}
 \label{subsec:silva}
-Silva 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of approximately 2.25 million genomes with an aligned length of 50,000 letters.
-We use Levenshtein distance with this dataset.
+
+Silva 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of 2,224,640 genomes with an aligned length of 50,000 letters.
+We use Levenshtein distance on unaligned sequences as the distance function for this dataset.
+{\color{red} TODO: Define and/or cite Levenshtein distance.}
 % I think this needs another sentence but I'm not sure what else to say
 
 
 \subsection{Radio ML}
-The RadioML dataset contains samples of both live and synthetically generated signal captures of different modulation modes over a range of SNR levels. 
-Specifically, it is comprised of 24 modulation modes at 26 different SNR levels ranging from -20 dB to 30 dB, with 4,096 samples at each modulation mode and SNR level~\cite{oshea2018radioml}. 
-Thus, it contains $24 \cdot 26 \cdot 4096 = 2,555,504$ samples in total. 
-Each sample provided in RadioML can be thought of as an array of 2048 floating point values for a single signal capture with labels for SNR and modulation mode.
-We use Dynamic Time Warping distance with this dataset. 
-
 \label{subsec:radioml}
+
+The RadioML dataset contains samples of both live and synthetically generated signal captures of different modulation modes over a range of SNR levels.
+Specifically, it is comprised of 24 modulation modes at 26 different SNR levels ranging from -20 dB to 30 dB, with 4,096 samples at each modulation mode and SNR level~\cite{oshea2018radioml}.
+Thus, it contains $24 \cdot 26 \cdot 4096 = 2,555,504$ samples in total.
+Each sample is a 1,024-dimensional complex-valued vector, representing a signal capture (a time series of complex-valued numbers).
+We used a subset of this dataset, containing only the 97,920 samples at 10dB SNR.
+We use Dynamic Time Warping as the distance function for this dataset.
+{\color{red} TODO: Define and/or cite Dynamic Time Warping distance.}
