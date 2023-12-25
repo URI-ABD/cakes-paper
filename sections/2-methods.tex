@@ -2,22 +2,22 @@
 \label{sec:methods}
 
 In this manuscript, we are primarily concerned with $k$-NN search in a finite-dimensional space.
-Given a dataset $\textbf{X} = \{x_1 \dots x_n\}$, we define a \emph{point} or \emph{datum} $x_i \in \textbf{X}$ as a singular observation, for example, the genome of an organism, the neural-network embedding of an image, etc.
+Given a dataset $\textbf{X} = \{x_1 \dots x_n\}$ of cardinality $|\textbf{X}| = n$, we define a \emph{point} or \emph{datum} $x_i \in \textbf{X}$ as a singular observation, for example, the neural-network embedding of an image, the genome of an organism, a radio frequency signal, etc.
 
 We define a \emph{distance function} $f : \textbf{X} \times \textbf{X} \mapsto \mathbb{R}^+ \ \cup \ \{0\}$ which, given two points $x, y \in \textbf{X}$, deterministically returns a non-negative real number.
-% Najib: I don't like the ``have an identity'' wording here. The Measure Theory A-Grader will have to prove her chops for this one.
-We require that the distance function be symmetric (i.e., $f(x, y) = f(y, x) \ \forall \ x, y \in \textbf{X}$) and have an identity (i.e. $f(x, y) = 0 \iff x = y$).
+We require that the distance function be symmetric (i.e., $f(x, y) = f(y, x) \ \forall \ x, y \in \textbf{X}$) and {\color{red} have an identity (TODO: improve the wording for this phrase)} (i.e. $f(x, y) = 0 \iff x = y$).
 If, in addition to these constraints, the distance function obeys the triangle inequality (i.e. $f(x, y) \leq f(x, z) + f(z, y) \ \forall \ x, y, z \in \textbf{X}$), then the distance function is also a \emph{distance metric}.
-For example, Euclidean, Levenshtein and Dynamic Time Warping (DTW)~\cite{muller2007dynamic} distances are all distance metrics while Cosine distance is not a metric because it does not obey the triangle inequality.
 Under distance metrics, all search algorithms in CAKES are exact.
+For example, Euclidean, Levenshtein and Dynamic Time Warping (DTW)~\cite{muller2007dynamic} distances are all distance metrics while Cosine distance is not a metric because it does not obey the triangle inequality.
 
-The choice of distance function varies by dataset.
+The choice of distance function varies by dataset and domain.
 For example, with neural-network embeddings, one could use Euclidean (L2) or Cosine distance.
 With genomic or proteomic data, Levenshtein or Hamming distances are more appropriate.
 With time-series data, one could use Dynamic Time Warping (DTW) distance.
 
-% Najib: Reword the following sentence.
-CAKES assumes the manifold hypothesis~\cite{fefferman2016testing}, i.e., high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold within their embedding space, and exploits this low \emph{local fractal dimension} (LFD) to improve the performance of its search.
+CAKES assumes the manifold hypothesis~\cite{fefferman2016testing}, i.e., high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold within their embedding space.
+We say that such data are \emph{manifold-constrained}, and have low \emph{local fractal dimension} (LFD).
+CAKES exploits this topological property, i.e. low LFD, to accelerate search.
 We define LFD at some length scale around a point in the dataset as:
 
 \begin{equation}
@@ -31,7 +31,7 @@ To illustrate the difference, consider SDSS's APOGEE dataset, wherein each datum
 Hence, the \emph{embedding dimension} of this dataset is 8,575. 
 However, due to physical constraints (namely, the laws of physics that govern stellar fusion and spectral emission lines), the data are constrained to a lower-dimensional manifold within the 8,575-dimensional embedding space.
 LFD is an approximation of the dimensionality of that lower-dimensional manifold in the ``vicinity'' of a given point.
-Figure~\ref{fig:results:lfd-plots} illustrates this concept, showing how real datasets obey the manifold hypothesis.
+Figure~\ref{fig:results:lfd-plots} illustrates this concept on a variety of datasets, showing how real datasets obey the manifold hypothesis.
 
 
 \subsection{Clustering}
@@ -49,8 +49,8 @@ This allows us to rewrite Definition~\ref{eq:methods:lfd-original} as:
     \label{eq:methods:lfd-simplified}
 \end{equation}
 
-In~\cite{yu2015entropy}, metric entropy for a given cluster radius $r$ was defined as the number of clusters of a uniform radius $r$ needed to cover all data.
-In this paper, we define the metric entropy $\mathcal{N}_{\hat{r}}(X)$ of a dataset $X$ for the hierarchical clustering scheme as the number of leaf clusters in the tree.
+The \emph{metric entropy} ($\mathcal{N}_{r}(X)$) for a given cluster radius $r$ was defined, in~\cite{yu2015entropy}, as the minimum number of clusters of a uniform radius $r$ needed to cover all data.
+In this paper, we define the metric entropy $\mathcal{N}_{\hat{r}}(X)$ of a dataset $X$ for the hierarchical clustering scheme as the number of leaf clusters in the tree where $\hat{r}$ is the mean radius of all leaf clusters.
 
 We start by performing a divisive hierarchical clustering on the dataset using CLAM.
 The procedure is similar to that outlined in CHESS, but with the following improvements:
@@ -58,7 +58,7 @@ better selection of poles for partitioning (see Algorithm~\ref{alg:methods:clust
 
 CAKES assumes the manifold hypothesis. 
 In other words, we assume that the dataset is embedded in a $D$-dimensional space, but that the data only occupy a $d$-dimensional manifold, where $d \ll D$. 
-While we sometimes use Euclidean notions, such as voids, volumes and proximity, to talk about the geometric and topological properties of clusters and of the manifold, CLAM does not rely on such notions; 
+While we sometimes use Euclidean notions, such as voids, volumes and proximity, to talk about the geometric and topological properties of clusters and of the manifold, CLAM and CAKES do not rely on such notions; 
 they serve merely as a convenient and intuitive way to discuss the underlying mathematics.
 
 
@@ -77,26 +77,28 @@ The point which is furthest from \emph{left pole} is designated the \emph{right 
 We then partition the cluster into a \emph{left child} and a \emph{right child}, where the left child contains all points in the cluster which are closer to the \emph{left pole} than to the \emph{right pole}, and the right child contains all points in the cluster which are closer to the \emph{right pole} than to the \emph{left pole}.
 Without loss of generality, we assign to the left child those points which are equidistant from the two poles.
 
-Starting from a root cluster containing the entire dataset, we repeat this procedure until each leaf contains only one datum, or we meet some other user-specified stopping criteria.
+Starting from a root cluster containing the entire dataset, we repeat this procedure until each leaf contains only one datum, or we meet some other user-specified stopping criteria, for example, a minimum cluster radius, a minimum cluster cardinality, a maximum tree depth, etc.
 This process is described in Algorithm \ref{alg:methods:clustering:partition}.
 
 During the partitioning process, we also compute (and cache) the LFD of each cluster using Equation~\ref{eq:methods:lfd-simplified}.
 
 \begin{algorithm} % enter the algorithm environment
-    \caption{Partition(\emph{C})} % give the algorithm a caption
+    \caption{Partition(\emph{C, criteria})} % give the algorithm a caption
     \label{alg:methods:clustering:partition} % and a label for \ref{} commands later in the document
     \begin{algorithmic} % enter the algorithmic environment
         \REQUIRE $C$, a cluster
+        \REQUIRE $criteria$, user-specified stopping criteria
+
         \STATE $seeds \Leftarrow \lfloor \sqrt{|C|} \rfloor$ random points from $C$
         \STATE $c \Leftarrow$ geometric median of $seeds$
         \STATE $l \Leftarrow \argmax f(c, x) \ \forall \ x \in C$
         \STATE $r \Leftarrow \argmax f(l, x) \ \forall \ x \in C$
         \STATE $L \Leftarrow \{x \ | \ x \in C \land f(l, x) \le f(r, x)\}$
         \STATE $R \Leftarrow \{x \ | \ x \in C \land f(r, x) < f(l, x)\}$
-        \IF{$|L| > 1$}
+        \IF{$|L| > 1$ \textbf{and} $L$ satisfies $criteria$}
             \STATE Partition($L$)
         \ENDIF
-        \IF{$|R| > 1$}
+        \IF{$|R| > 1$ \textbf{and} $R$ satisfies $criteria$}
             \STATE Partition($R$)
         \ENDIF
     \end{algorithmic}
@@ -112,7 +114,7 @@ In CHESS, each cluster stored a list of indices into the dataset.
 This list was used to retrieve the clusters' points during search.
 Though this approach allowed us to retrieve the points in constant time, its memory cost was prohibitively high.
 With a dataset of cardinality $n$ and each cluster storing a list of indices for its points, we stored a total of $n$ indices at each depth in the tree.
-Assuming a balanced tree, and thus $\mathcal{O}\log(n)$ depth, this approach had a memory overhead of $\mathcal{O}(n\log(n))$.
+Assuming a balanced tree, and thus $\mathcal{O}(\log(n))$ depth, this approach had a memory overhead of $\mathcal{O}(n\log(n))$.
 
 One may improve this memory overhead to $\mathcal{O}(n)$ by only storing indices at the leaf clusters.
 This approach, however, introduces a time cost of $\mathcal{O}(n\log(n))$ whenever we need to find the indices for a non-leaf cluster (because it requires a traversal of the subtree rooted at that cluster).
@@ -125,7 +127,7 @@ A left child has the same offset as that of its parent, and the corresponding ri
 
 With no additional memory cost nor time cost for retrieving points during search, depth-first reordering offers significant improvements over the approach used in CHESS.
 
-% % WE WILL USE THIS FOR COMPRESSION, so removing it for now 
+% % WE WILL USE THIS FOR COMPRESSION. DO NOT DELETE
 
 % \subsubsection {Scaling Behavior of Cluster Radii}
 % \label{subsubsec:methods:clustering:guaranteed-decrease-in-cluster-radii}
@@ -190,9 +192,9 @@ This is a significant improvement over exact partitioning and tree-building, whi
 
 Given Algorithm~\ref{alg:methods:clustering:partition}, we can now pose the $k$-NN and $\rho$-NN search problems.
 
-Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, $k$-nearest neighbors search aims to find the set $S_q$ such that $|S_q| = k$ and $\forall x \in \textbf{X} \setminus S_q$, $\ f(x, q) > \max\{f(y, q): y \in S_q \}$;
-in other words, for a given $k$, $k$-NN finds the $k$ closest points to $q$ in $\textbf{X}$.
-We also have the $\rho$-nearest neighbors search problem, which aims to find the set $\{x \in \textbf{X}: f(q, x) \leq \rho \}$;
+Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, $k$-NN search aims to find the set $S_q$ such that $|S_q| = k$ and $\forall x \in \textbf{X} \setminus S_q$, $\ f(x, q) > \max\{f(y, q): y \in S_q \}$;
+in other words, $k$-NN finds the $k$ closest points to $q$ in $\textbf{X}$.
+We also have the $\rho$-NN search problem, which aims to find the set $\{x \in \textbf{X}: f(q, x) \leq \rho \}$;
 that is, find all points in $\textbf{X}$ that are no more than a distance $\rho$ from $q$.
 
 Given a Cluster $C$, let $c$ be its center and $r$ be its radius. Our $\rho$- and $k$-NN algorithms make use of the following properties, as illustrated in Figure~\ref{fig:methods:deltas}.
@@ -219,7 +221,7 @@ Hence, we overload the above notation to also refer to the distance from a query
 \subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
 \label{subsec:methods:rnn-search}
 
-We conduct $\rho$-nearest neighbors search as described in~\cite{ishaq2019clustered}, but with the following improvement:
+We conduct $\rho$-NN search as described in~\cite{ishaq2019clustered}, but with the following improvement:
 when a cluster overlaps with the query ball, instead of always proceeding with both of its children, we proceed only with those children which might contain points in the query ball.
 
 % Najib: Visually, ``m'' is not centered on the line segment. It's a little bit to the right. Moving ``l'' to the right is probably the easiest fix.
@@ -238,13 +240,13 @@ when a cluster overlaps with the query ball, instead of always proceeding with b
 To determine whether both children can contain points in the query ball, we consider Figure~\ref{fig:methods:overlapping-children-3}.
 Here, we overload the notation for $\overline{x y}$ to refer to the line segment joining points $x$ and $y$ as well as the length of that line segment.
 
-Let $q$ denote the query, $\rho$ denote the search radius, and $l$ and $r$ denote the cluster's left and right poles (see Section~\ref{subsubsec:methods:cluster-partitioning}).
+Let $q$ denote the query, $\rho$ denote the search radius, and $l$ and $r$ denote the cluster's left and right poles respectively (see Section~\ref{subsubsec:methods:cluster-partitioning}).
 Without loss of generality, we assume that $\overline{q r \vphantom{l}} \leq \overline{q l}$ (i.e., the query is closer to $r$ than to $l$).
 
 Now let $q'$ be the projection of $q$ to $\overline{l r}$, $m$ be the midpoint of $\overline{l r}$ and $d$ be the distance from $q'$ to $m$.
-Since we assign a point in the parent cluster to the left child if it is closer to the left pole, if $d > \rho$ then the left child cannot contain points inside the query ball.
-In this case, we proceed only with the right child.
-If, however, $d \leq \rho$ then both child clusters could contain points in the query ball, and so we proceed with both of them.
+From Algorithm~\ref{alg:methods:clustering:partition}, we assign a point in the parent cluster to the left child,
+Thus, if if $q'$ is too far from $m$, i.e. $\rho < d$, then when the left child cannot contain points inside the query ball, we proceed only with the right child.
+Otherwise, we proceed with both children.
 
 To check whether $d \leq \rho$, we note that
 
@@ -360,7 +362,7 @@ Then, for all such clusters, we perform a finer-grained search, as outlined in A
     \end{algorithmic}
 \end{algorithm}
 
-The asymptotic complexity of $\rho$-nearest neighbors is the same as in~\cite{ishaq2019clustered}, namely:
+The asymptotic complexity of $\rho$-nearest neighbors is the same as in~\cite{ishaq2019clustered} and shown in Equation~\ref{eq:methods:rnn:complexity}.
 
 \begin{gather}
     \mathcal{O}
@@ -380,7 +382,7 @@ While one might worry that the exponential scaling factor would dominate, the ma
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
 \label{subsec:methods:knn-search}
 
-In this section, we present three novel algorithms for exact $k$-nearest neighbors search:
+In this section, we present three novel algorithms for exact $k$-NN search:
 Repeated $\rho$-NN, Sieve, and Greedy Sieve.
 
 In these algorithms, we use $H$, for \emph{hits}, to refer to the data structure which stores the closest points to the query found so far and $Q$ to refer to the data structure which stores the clusters and points which are still in contention for being one of the $k$ nearest neighbors.
@@ -491,15 +493,15 @@ For this, we once again rely on the assumption that the query is from the same d
 We let $\hat{d}$ be the mean LFD of the clusters in $S$.
 While ordinarily we compute LFD by comparing cardinalities of two balls with two different radii centered at \emph{the same} point, in order to estimate $\rho_k$, we instead compare the cardinality of a ball \emph{around the query} of radius $\rho_k$ to the mean cardinality, $\hat{C}$, of clusters in $S$ at a radius equal to the mean of their radii, $\hat{r}$.
 
-We justify this approach by noting that, since the query is from the same distribution as the rest of the data, we could replace the query with the center of one of the nearby clusters without significantly changing the LFD at the query point.
+We justify this approach by noting that, since the query is from the same distribution as the rest of the data, we could move from the query to the center of one of the nearby clusters without significantly changing our estimate of the LFD.
 
-By Equation~\ref{eq:repeated-rnn-factor}, we then have that
+By Equation~\ref{eq:methods:lfd-original}, we then have that
 
 \begin{equation*}
     \hat{d} = \frac{\log{}\frac{\hat{|C|}}{k}}{\log{}\frac{\hat{r}}{\rho_k}}
 \end{equation*}
 
-Since $\hat{d}$, $\hat{C}$, $\hat{r}$, and $k$ are all known values, we can solve Equation~\ref{eq:methods:repeated-rnn-leaf-search} for $\rho_k$ to get
+Since $\hat{d}$, $\hat{C}$, $\hat{r}$, and $k$ are all known values, we can solve this equation for $\rho_k$ to get
 
 \begin{equation*}
     \rho_k = \hat{r} \left( \frac{k}{\hat{C}} \right)^{\hat{d}^{-1}}
@@ -527,7 +529,7 @@ By combining the bounds for tree-search and leaf-search, we see that Repeated $\
 \end{gather}
 
 where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of the dataset, $d$ is the LFD of the dataset, and $k$ is the number of nearest neighbors.
-We note that the fraction $d \cdot \hat{d}^{-1}$ should be relatively close to 1 unless fractal dimension is highly variable in a small region (that is, $\hat{d}$ differs significantly from $d$).
+We note that the term $d \cdot \hat{d}^{-1}$ should be relatively close to 1 unless fractal dimension is highly variable in a small region (that is, $\hat{d}$ differs significantly from $d$).
 
 
 \subsubsection{Sieve}
@@ -549,7 +551,7 @@ Next, we remove all leaf clusters from $Q$ and add their points to $Q$ instead.
 Finally, we replace all non-leaf clusters in $Q$ with the pairs of 3-tuples corresponding to their child clusters.
 
 We continue this process until $Q$ no longer contains any clusters.
-We then use the QuickSelect algorithm once last time to reorder $Q$, to find the $k^{th}$ element, and to return the $k$ nearest neighbors.
+We then use the QuickSelect algorithm once last time to reorder $Q$, find the $k^{th}$ element, and return the $k$ nearest neighbors.
 
 This process is described in Algorithm~\ref{alg:methods:sieve}. 
 
@@ -611,7 +613,7 @@ However, since high cardinality clusters occur only at low depths in the tree, t
 
 After the first $\log{\frac{n}{2k}}$ iterations, we are left with clusters in $Q$ whose cardinalities are at most $2k$.
 At this point, based on our assumption, we have that the length of $Q$ is close to $2d$.
-Therefore, the asymptotic complexity of the Sieve Algorithm is $\mathcal{O} \left( \log(\frac{n}{d}) \right)$.
+Therefore, the asymptotic complexity of the Sieve Algorithm is $\mathcal{O} \left( k \cdot \log(\frac{n}{d}) \right)$.
 
 
 \subsubsection{Greedy Sieve}
@@ -625,13 +627,13 @@ $Q$ starts containing only the root cluster while $H$ starts empty.
 So long as $H$ is not full or the top priority element in $H$ has $\delta$ greater than or equal to the top priority element in $Q$, we take the following steps:
 
 \begin{itemize}
-    \item While the top priority element $q$ in $Q$ is not a leaf, pop it from $Q$ and push its children to $Q$.
-    \item For each point $p \in q$, push $p$ to $H$.
+    \item While the top priority element $Q$ is not a leaf, pop it from $Q$ and push its children to $Q$.
+    \item Let $q$ the top priority element (a leaf) in $Q$. For each point $p \in q$, push $p$ to $H$.
     \item If $H$ has more than $k$ points, pop from $H$ until $H$ has $k$ points.
 \end{itemize}
 
 This algorithm is described in Algorithm~\ref{alg:methods:greedy-sieve}.
-It terminates when $H$ is full and the top priority element in $H$ has $\delta$ less than the top priority element in $Q$ (i.e., when the top priority element in $Q$ is farther from the query than the $k^{th}$ nearest neighbor in $H$).
+It terminates when $H$ is full and the top priority element in $H$ has $\delta$ less than the top priority element in $Q$ (i.e., the theoretically closest point left to be considered in $Q$ is farther from the query than the $k^{th}$ nearest neighbor in $H$).
 This leaves $H$ containing exactly the $k$ nearest neighbors to the query.
 
 
@@ -692,10 +694,10 @@ We then compare the performance of CAKES to that of other algorithms on the orig
 
 To elaborate on the augmentation process, we start with an original dataset from the ANN-benchmarks suite.
 Let $X$ be the dataset, $d$ be its dimensionality, $\epsilon$ be a user-specified noise level and $m$ be a user-specified integer multiplier.
-For each datum $x \in X$, we create $m$ new data points within a distance $\epsilon \cdot ||x||$ of $x$ where $||x||$ is the euclidean distance from $x$ to the origin.
+For each datum $x \in X$, we create $m$ new data points within a distance $\epsilon \cdot ||x||$ of $x$ where $||x||$ is the Euclidean distance from $x$ to the origin.
 We construct a random vector $r$ of $d$ dimensions in the hypersphere of radius $\epsilon$ centered at the origin.
 We then add $r$ to $x$ to get a new point $x'$.
-Since $||r|| = \epsilon$, we have that $||x - x'|| \leq \epsilon$ (i.e., $x'$ is within a distance $\epsilon$ of $x$).
+Since $||r|| \leq \epsilon$, we have that $||x - x'|| \leq \epsilon$ (i.e., $x'$ is within a distance $\epsilon$ of $x$).
 We repeat this process $m$ times for each $x \in X$ to get a new dataset $X'$.
 
 This augmentation process preserves the topological structure of the original dataset, but increases its cardinality by a factor of $m$, allowing us to isolate the effect of cardinality on search performance from that of other factors such as dimensionality, choice of metric, or the topological structure of the dataset.
