@@ -6,147 +6,141 @@
 \subsection{Local Fractal Dimension of Datasets}
 \label{subsec:lfd-results}
 
-Since the time complexity of CAKES algorithms scales with the local fractal dimension of the dataset, we examine the local fractal dimension of each dataset we benchmarked CAKES algorithms on. 
-
+Since the time complexity of CAKES algorithms scales with the local fractal dimension of the dataset, we examine the local fractal dimension of each dataset we benchmarked CAKES algorithms on.
 
 Figure~\ref{fig:results:lfd-plots} plots LFD by depth for fashion-mnist, glove-25, sift, a random dataset, Silva 18S, and RadioML.
 The horizontal axis denotes the depth in the cluster tree, and the vertical axis denotes the LFD (as calculated by Equation~\ref{eq:methods:lfd-simplified}) of clusters at that depth.
 We plot lines for the 0th, 5th, 25th, 50th, 75th, 95th, and 100th percentiles of LFD.
-In order to have the plots to best reflect the distribution of LFDs across the entire \emph{dataset}, we compute percentiles counting each cluster as many times as its cardinality. 
+In order to have the plots to best reflect the distribution of LFDs across the entire \emph{dataset}, we compute percentiles counting each cluster as many times as its cardinality.
 In other words, if, for some dataset, the 95th percentile of LFD at depth 40 is 3, this means that 95\% of the points in clusters at depth 40 belong to a cluster whose LFD is at most 3.
 
-
-Figure~\ref{fig:results:fashion-mnist-lfd} shows the LFD by depth for fashion-mnist. 
+Figure~\ref{fig:results:fashion-mnist-lfd} shows the LFD by depth for fashion-mnist.
 We observe that until about depth 5, the LFD is low, as the 95th percentile (orange plotted line) is less than 4, and the median (red line) is just above 2.
 For depths 15 through 25, we observe that the LFD increases, with the 95th percentile (orange plotted line) slightly less than 6, and the median near 3.
 Finally, for depths 25 through the maximum depth, we observe that the LFD decreases again, as the 95th percentile is between 3 and 4, and the median is less than 2.
 
-
-Relative to fashion-mnist, glove-25 has low LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}. 
+Relative to fashion-mnist, glove-25 has low LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}.
 Percentile lines for glove-25 are flatter and lower, indicating that the LFD is lower across the entire dataset, and that the LFD does not vary as much by depth.
-The 95th percentile of LFD is less than 4 for all depths, and the median is less than 2 for all depths. 
-Before depth 25, the 95th percentile hovers near 2, and from depth 20 onward, it hovers near 3.5 before dipping sharply at the maximum depths. 
-The median hovers near 1.5 for all depths. 
+The 95th percentile of LFD is less than 3 for all depths, and the median is less than 2 for all depths. 
+Before depth 25, the 95th percentile hovers near 2, and from depth 20 onward, it hovers near 3.5 before dipping sharply at the maximum depths.
+The median hovers near 1.5 for all depths.
 
+Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for sift.
+Until about depth 5, the 95th percentile is between 2 and 6. From about depth 5 through about depth 20, the 95th percentile is greater than 6, even exceeding 8 near depth 10.
+From about depth 20 onward, the 95th percentile is less than 6, and from about depth 30 onward, it is between 3 and 4.
+The median reaches its peak of about 5 at around depth 15, but hovers near 2 after about depth 30.
 
-Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for sift. 
-Until about depth 5, the 95th percentile is between 2 and 6. From about depth 5 through about depth 20, the 95th percentile is greater than 6, even exceeding 8 near depth 10. 
-From about depth 20 onward, the 95th percentile is less than 6, and from about depth 30 onward, it is between 3 and 4. 
-The median reaches its peak of about 5 at around depth 15, but hovers near 2 after about depth 30. 
-
-
-In contrast with Figure~\ref{fig:results:sift-lfd}, Figure~\ref{fig:results:random-lfd} shows the LFD by depth for a random dataset with the same cardinality and dimensionality as sift. 
-We observe that the LFD starts as high as 20 (for all data) at depth 0. As shown by the needlepoint shape of the plot, the LFD for all clusters 
-is about the same from depth 0 through depth 5. 
-After depth 5, we begin to see a wider spread between the maximum and minimum LFD at each depth. 
+In contrast with Figure~\ref{fig:results:sift-lfd}, Figure~\ref{fig:results:random-lfd} shows the LFD by depth for a random dataset with the same cardinality and dimensionality as sift.
+We observe that the LFD starts as high as 20 (for all data) at depth 0.
+As shown by the needlepoint shape of the plot, the LFD for all clusters is about the same from depth 0 through depth 5.
+After depth 5, we begin to see a wider spread between the maximum and minimum LFD at each depth.
 The median decreases seemingly linearly from about 20 at depth 0 to about 2 at depth 20, remaining less than 2 for all depths greater than 20.
-The LFD of approximately 20 at depth 0 is what we expect for a random dataset.
-To elaborate, the distribution of points in such a dataset should reflect the curse of dimensionality, or the fact that in high dimensional spaces, the minimum pairwise distance between any two points is approximately equal to maximum pairwise distance. 
-As a result, the root cluster's radius $r$, which reflects the maximum distance between the center $c$ and any other point, should not differ significantly from the distance between the center and its closest point. 
-A consequence of this is that with high probability, a point in the root cluster is a distance greater than half the root radius from the center; $B_X(c, \tfrac{r}{2})$ contains only $c$ while $B_X(c, r) = |X|$, where $X$ is the dataset. 
+The LFD of approximately 20 at depth 0 is what we expect for this random dataset.
+To elaborate, the distribution of points in such a dataset should reflect the curse of dimensionality, or the fact that in high dimensional spaces, the minimum and maximum pairwise distances between any two points are approximately equal.
+As a result, the root cluster's radius $r$, which reflects the maximum distance between the center $c$ and any other point, should not differ significantly from the distance between the center and its closest point.
+A consequence of this is that with high probability, a point in the root cluster is a distance greater than half the root radius from the center; $B_X(c, \tfrac{r}{2})$ contains only $c$ while $B_X(c, r) = |X|$, where $X$ is the dataset.
 Given our definition of LFD in Equation~\ref{eq:methods:lfd-simplified}, this means that the LFD of the root cluster is approximately $\log_2(\frac{|X|}{1}) = \log_2(1,000,000) \approx 20$, which is what we observe in Figure~\ref{fig:results:random-lfd}.
 
+Silva, as shown in Figure~\ref{fig:results:silva-lfd}, exhibits consistently low LFD.
+The 95th percentile is less than about 3 for all depths, hovering near 1 for depths 40 through 128.
+The median reaches its peak at 2 for about depth 10 and remains close to 0 for depths 40 through 128.
 
-
-
-Silva, as shown in Figure~\ref{fig:results:silva-lfd}, exhibits consistently show LFD.
-The 95th percentile is less than about 3 for all depths, hovering near 1 for depths 40 through 130. 
-The median reaches its peak at 2 for about depth 10 and remains close to 0 for depths 40 through 130. 
-
-
-Relative to the other datasets, RadioML, as displayed in Figure~\ref{fig:results:radioml-lfd}, exhibits high LFD. 
-Notably however, for the frist approximately 15 depths, the 95th percentile and median LFD are very close to 0. 
-Both percentiles increase sharply after depth 20, nearly reaching 16. 
-LFD remains high even as depth increases, with the 95th percentile fluctuating between about 6 and 15 for depths about 20-40. 
-It then spikes up again to about 10 at around depth 45 before decreasing linearly to 1 at depth 60. 
+Relative to the other datasets, RadioML, as displayed in Figure~\ref{fig:results:radioml-lfd}, exhibits high LFD.
+Notably however, for the first approximately 15 depths, the 95th percentile and median LFD are very close to 0.
+Both percentiles increase sharply after depth 20, nearly reaching 16.
+LFD remains high even as depth increases, with the 95th percentile fluctuating between about 6 and 15 for depths about 20-40.
+It then spikes up again to about 10 at around depth 45 before decreasing linearly to 1 at depth 60.
 The median LFD follows a similar pattern of peaks and troughs, fluctuating between about 3 and 15 for depths 20-40, spiking at about depth 50 to 5, and then decreasing approximately linearly to 1 at depth 60.
 
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[width=0.95\textwidth]{images/lfd_plots/fashion-mnist-60000-lfd.png}\\
-    % \subcaption{Fashion-mnist}
+    \subcaption{Fashion-mnist}
     \label{fig:results:fashion-mnist-lfd}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[width=0.95\textwidth]{images/lfd_plots/glove-25-1183514-lfd.png}\\
-    % \subcaption{Glove-25}
+    \subcaption{Glove-25}
     \label{fig:results:glove-25-lfd}
     \end{subfigure}
-    % \vspace{1em}
+    \vspace{1em}
     \\
     \begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[width=0.95\textwidth]{images/lfd_plots/sift-1000000-lfd.png}\\
-    % \subcaption{Sift}
+    \subcaption{Sift}
     \label{fig:results:sift-lfd}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[width=0.95\textwidth]{images/lfd_plots/radio-ml-97920-lfd.png}\\
-    % \subcaption{RadioML}
+    \subcaption{RadioML}
     \label{fig:results:radioml-lfd}
     \end{subfigure}%
     \\
     \begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[width=0.95\textwidth]{images/lfd_plots/silva-2224640-lfd.png}\\
-    % \subcaption{Silva 18S metagenomics}
+    \subcaption{Silva 18S}
     \label{fig:results:silva-lfd}
     \end{subfigure}%  
     \begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[width=0.95\textwidth]{images/lfd_plots/random-1000000-lfd.png}\\
-    % \subcaption{A random dataset}
+    \subcaption{A random dataset}
     \label{fig:results:random-lfd}
     \end{subfigure}
-    % \vspace{1em}
-    
-
-    \caption{Local fractal dimension vs. cluster depth across six datasets, grouped by decile of local fractal dimension and weighted by the cardinalities of the clusters. The last dataset is randomly generated. The number in the header of each plot indicates the cardinality of the dataset.}
+    \vspace{1em}
+    \caption{Local fractal dimension vs. cluster depth across six datasets, grouped by decile of local fractal dimension and weighted by the cardinalities of the clusters.
+    The last dataset is randomly generated.
+    {\color{red} TODO: Remove the headers from the plots themselves and rely on subcaptions instead.}}
     \label{fig:results:lfd-plots}
 \end{figure}
-%% end LFD plots
 
 
 
 \subsection{Scaling Behavior and Recall}
 \label{subsec:scaling-behavior-results}
 
-Figures~\ref{fig:results:fashion-mnist-scaling}, ~\ref{fig:results:glove-25-scaling}, and ~\ref{fig:results:sift-scaling} show the scaling behavior of CAKES algorithms and existing algorithms on augmented versions of the following ann-benchmark datasets: fashion-mnist under Euclidean distance, glove-25 under cosine distance, and sift under Euclidean distance. 
+Figures~\ref{fig:results:fashion-mnist-scaling}, ~\ref{fig:results:glove-25-scaling}, and ~\ref{fig:results:sift-scaling} show the scaling behavior of CAKES algorithms and existing algorithms on augmented versions of the following ann-benchmark datasets: fashion-mnist under Euclidean distance, glove-25 under cosine distance, and sift under Euclidean distance.
 Figure~\ref{fig:results:random-scaling} shows the scaling behavior of CAKES algorithms and existing algorithms on a completely randomly generated dataset with same cardinality and dimensionality as sift (1 million points in 128 dimensions).
 Figures~\ref{fig:results:silva-scaling} and ~\ref{fig:results:radioml-scaling} show the scaling behavior of CAKES on Silva and RadioML respectively.
-The horizontal axis in each figure denotes the multiplier by which we increased the cardinality of the original dataset with synthetic points (see Section \ref{subsec:methods:synthetic-data}). 
-The vertical axis denotes throughput in queries per second. 
-Both axes are on a logarithmic scale. 
-In this section, we report results only for $k$-NN search with $k = 10$, but similar plots for $k=100$ can be found in our Supplement section. 
-In these plots, we label the recall at each scale for algorithms which do not exhibit perfect recall; if no such labels are given for an algorithm, then that algorithm exhibits perfect recall at all scales.
+The horizontal axis in each figure shows the cardinality of the augmented dataset with synthetic points (see Section \ref{subsec:methods:synthetic-data}).
+The left-most point on each line is on the original dataset without any synthetic augmentation.
+The vertical axis denotes throughput in queries per second.
+Both axes are on a logarithmic scale.
+In this section, we report results only for $k$-NN search with $k = 10$, but similar plots for $k=100$ can be found in the Supplement.
+In these plots, we label the recall for algorithms which do not exhibit perfect recall;
+if no such labels are given for an algorithm, then that algorithm exhibits perfect recall.
 
 
-Tables \ref{table:results:ann-fashion}, \ref{table:results:ann-glove-25}, \ref{table:results:ann-sift}, and \ref{table:results:ann-random} show the throughput and recall of CAKES's algorithms at each cardinality multiplier (i.e., scale) for the fashion-mnist, glove-25, sift, and random datasets respectively. When reporting recall, we use 1.000* to denote that the recall is imperfect, but rounds to 1.000 when we consider
-only three decimal places.
+Tables \ref{table:results:ann-fashion}, \ref{table:results:ann-glove-25}, \ref{table:results:ann-sift}, and \ref{table:results:ann-random} show the throughput and recall of CAKES's algorithms at each cardinality multiplier for the fashion-mnist, glove-25, sift, and random datasets respectively.
+When reporting recall, we use 1.000* to denote that the recall is imperfect, but rounds to 1.000 when we consider only three decimal places.
 
-In Figure~\ref{fig:results:fashion-mnist-scaling}, which shows results for fashion-mnist, we observe that as the augmentation multiplier increases, the CAKES algorithms (GreedySieve in blue, RepeatedRnn in green, and Sieve in red) exhibit higher throughput than na\"{i}ve linear search, plotted in orange. 
-We also observe that CAKES outperforms state-of-the-art similarity search algorithm FAISS-Flat (plotted in brown) for all cardinality multipliers and outperforms FAISS-IVF (plotted in pink) for all multipliers greater than $10^{5.5}$. 
-Though state-of-the-art algorithms HNSW (plotted in gray), and Annoy (plotted in purple) have higher throughput than CAKES for all multipliers, we note that CAKES exhibits perfect recall for all multipliers, while hnsw and annoy exhibit much lower recall, as shown in Table~\ref{table:results:ann-fashion}. 
-For example, at a cardinality multiplier as low as eight, hnsw and annoy have recall of 0.525 and 0.857 respectively, while CAKES exhibits perfect recall.
-Amongst the CAKES algorithms, GreedySieve consistently performs best on this dataset, exhibiting sublinear time performance for nearly all cardinality multipliers. 
+In Figure~\ref{fig:results:fashion-mnist-scaling}, which shows results for fashion-mnist, we observe that as the multiplier increases, the CAKES algorithms (GreedySieve in blue, RepeatedRnn in green, and Sieve in red) exhibit higher throughput than na\"{i}ve linear search, plotted in orange.
+We also observe that CAKES outperforms FAISS-IVF (plotted in pink) for all multipliers greater than one.
+Though state-of-the-art algorithms HNSW (plotted in gray), and ANNOY (plotted in purple) have higher throughput than CAKES for all cardinalities, we note that CAKES always exhibits perfect recall while HNSW and ANNOY exhibit much lower recall, as shown in Table~\ref{table:results:ann-fashion}.
+For example, at a multiplier as low as eight, HNSW and ANNOY have recall of 0.525 and 0.857 respectively,
+and this recall gets worse as the multiplier increases.
+Meanwhile, while CAKES exhibits perfect recall.
+Amongst the CAKES algorithms, GreedySieve consistently performs best on this dataset, exhibiting sublinear time performance with increasing multipliers.
 
 
-With glove-25 (Figure~\ref{fig:results:glove-25-scaling}), we observe that each of CAKES' algorithms outperforms linear search at high cardinality multipliers. 
-Similar to the results for fashion-mnist, we see that CAKES outperforms FAISS-Flat for all cardinality multipliers and outperforms FAISS-IVF for all multipliers greater than $10^{7}$. 
-We also see that while HNSW and Annoy have higher throughput than CAKES for all multipliers, CAKES exhibits better recall at all multupliers, as shown in Table~\ref{table:results:ann-glove-25}.
-In particular, at a cardinality multiplier as low as two, HNSW and Annoy have recall as low as 0.607 and 0.832 respectively, while CAKES exhibits perfect recall.
+With glove-25 (Figure~\ref{fig:results:glove-25-scaling}), we observe that each of CAKES' algorithms outperforms linear search at high multipliers.
+Similar to the results for fashion-mnist, we see that CAKES outperforms FAISS-IVF for all multipliers greater than four.
+We see once again that HNSW and ANNOY have higher throughput than CAKES for all multipliers, CAKES exhibits better recall at all multipliers, as shown in Table~\ref{table:results:ann-glove-25}.
+In particular, at a multiplier as low as two, HNSW and ANNOY have recall as low as 0.607 and 0.832 respectively, and this recall continues to decrease as we increase the multiplier.
+In contrast, CAKES exhibits perfect recall at all multipliers.
 On this dataset, unlike with fashion-mnist, Repeated $\rho$-NN, plotted in green, is consistently the best-performing CAKES algorithm. 
 
 
-In Figure~\ref{fig:results:sift-scaling}, which displays the scaling behavior of algorithms on the sift dataset, we observe that while linear search performs best for low cardinality multipliers, our algorithms begin outperforming linear search at a multiplier of approximately 7. 
-Again, we observe that CAKES outperforms state-of-the-art similarity search algorithm FAISS-Flat for all cardinality multipliers and outperforms FAISS-IVF for all multipliers greater than $10^{7}$. 
-For this dataset, Sieve, plotted in red, is the highest throughput CAKES algorithm for all multipliers greater than 7. 
-Similar to the results with fashion-mnist and glove-25, we observe that while HNSW and Annoy exhibit higher throughput than CAKES for all multipliers, CAKES has better recall. 
+In Figure~\ref{fig:results:sift-scaling}, which displays the scaling behavior of algorithms on the sift dataset, we observe that while linear search performs best for low multipliers, our algorithms begin to outperform linear search at a multiplier of eight.
+Again, we observe that CAKES outperforms FAISS-IVF for all multipliers greater than four. 
+For this dataset, Sieve, plotted in red, is the highest throughput CAKES algorithm for all multipliers greater than right.
+Similar to the results with fashion-mnist and glove-25, we observe that while HNSW and Annoy exhibit higher throughput than CAKES for all multipliers, CAKES has better recall.
 Table~\ref{table:results:ann-sift} shows that even with a multiplier of 1 (i.e., the original dataset), HNSW and Annoy have recall as low as 0.782 and 0.686 respectively, while CAKES exhibits perfect recall.
 
 
-With the random dataset, as seen in Figure~\ref{fig:results:random-scaling}, we observe that the three CAKES algorithms exhibt the worst throughput out of all algorithms, at all cardinality multipliers. 
-As with the real datasets, HNSW and Annoy exhibit the highest throughput of any of the algorithms. 
-As with the real datasets, CAKES exhibits perfect recall at all cardinality multipliers. 
+With the random dataset, as seen in Figure~\ref{fig:results:random-scaling}, we observe that the three CAKES algorithms exhibit the worst throughput out of all algorithms, at all multipliers. 
+As with the real datasets, HNSW and ANNOY exhibit the highest throughput of any of the algorithms and CAKES exhibits perfect recall at all multipliers. 
 HNSW and Annoy exhibit \emph{much} lower recall on this random dataset than on the real datasets; 
-in particular, with a cardinality multiplier of 1, HNSW and Annoy have recall as low as 0.060 and 0.028 respectively, as reported in Table~\ref{table:results:ann-random}.
+in particular, with a multiplier of 1, HNSW and Annoy have recall as low as 0.060 and 0.028 respectively, as reported in Table~\ref{table:results:ann-random}.
 
 
 
