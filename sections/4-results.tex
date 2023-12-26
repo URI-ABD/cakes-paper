@@ -96,7 +96,18 @@ The median LFD follows a similar pattern of peaks and troughs, fluctuating betwe
 \label{subsec:indexing-time-results}
 
 
-For each of the ANN benchmark datasets and the Random dataset, we report the time taken for each algorithm to build the index and to tune the hyperparameters for these indices to achieve the highest possible recall. 
+For each of the ANN benchmark datasets and the Random dataset, we report the time taken for each algorithm to build the index and to tune the hyperparameters for these indices to achieve the highest possible recall (lower is better). 
+Though CAKES has three different algorithms, indexing is the same for each of them, so we can simply report the indexing time for CAKES as a whole. 
+
+The horizontal axis in each figure shows the cardinality of the augmented dataset with synthetic points (see Section \ref{subsec:methods:synthetic-data}).
+The left-most point on each line is on the original dataset without any synthetic augmentation.
+The vertical axis denotes throughput in queries per second.
+Both axes are on a logarithmic scale.
+
+With the Fashion-Mnist dataset, as shown in Figure~\ref{fig:results:fashion-mnist-indexing}, we observe that the indexing time for CAKES is much lower than that of HNSW, ANNOY, and FAISS-IVF, but higher than that of FAISS-Flat.
+This is not surprising, given that FAISS-Flat is a naive linear search algorithm and is not building an index. 
+
+{\color{red} TODO: Add a sentence or two about the indexing time for the other datasets.}
 
 
 \begin{figure}
@@ -124,7 +135,7 @@ For each of the ANN benchmark datasets and the Random dataset, we report the tim
     \end{subfigure}%
     \\
     \vspace{1em}
-    \caption{Indexing and tuning time with each of the ANN benchmark datasets and the Random dataset.}
+    \caption{Indexing and tuning time for each algorithm with each of the ANN benchmark datasets and the Random dataset.}
     \label{fig:results:indexing}
 \end{figure}
 
