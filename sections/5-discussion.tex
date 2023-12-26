@@ -27,7 +27,11 @@ For example, on Glove-25, Repeated $\rho$-NN exhibits the highest throughput of 
 On Silva,  Repeated $\rho$-NN is comparable to the other CAKES algorithms at low multipliers, but becomes the best of the three at higher multipliers. 
 When we view these results in light of the LFD plots in Section~\ref{subsec:lfd-results}, we realize that  Repeated $\rho$-NN appears to be the best-performing CAKES algorithm on datasets where a large proportion of the dataset has a very low LFD (i.e., near 2), like Glove-25 and Silva. 
 This general trend is unsurprising, given that Repeated $\rho$-NN relies on a low LFD around the query in order to quickly home in on the correct radius for $k$ hits. 
-While it varies which of the two algorithms has better throughput, we observe that on all three ANN benchmark datasets (Fashion-mnist, Glove-25, and Sift), GreedySieve's and Sieve's throughput stays nearly constant as the cardinality multiplier increases. 
+These findings suggest that Repeated $\rho$-NN is the most ``sensitive'' to the manifold structure of the dataset. 
+Exploring this sensitivity is a potential avenue for future investigation, as it remains to determine at what LFD value Repeated $\rho$-NN transitions from being the best-throughput CAKES algorithm to being the worst-throughput CAKES algorithm, and whether this transition is sharp. 
+
+
+While the algorithm with best throughput varies, we observe that on all three ANN benchmark datasets (Fashion-mnist, Glove-25, and Sift), GreedySieve's and Sieve's throughput stays nearly constant as the cardinality multiplier increases. 
 This observation warrants further investigation, but it is especially promising given that GreedySieve and Sieve consistently outperform linear search for high cardinalities. 
 Finally, we emphasize that the variation in performance of our algorithms across different datasets and cardinalities support our use of an auto-tuning function (as discussed in Section~ref{subsec:methods:auto-tuning}) to select the best choice of algorithm for a given dataset. 
 Given the trends such as that with low LFD and Repeated $\rho$-NN's performance, we suspect that a more sophisticated, less-heuristic auto-tuning function could be developed to select the best algorithm based on the properties of the dataset.
@@ -35,8 +39,6 @@ Given the trends such as that with low LFD and Repeated $\rho$-NN's performance,
 
 We also stress that the CAKES's algorithms are designed to work well for \emph{big} data, and our results support this claim; we observe that while linear search can outperform CAKES on datasets with small cardinality, CAKES always overtakes linear search at some cardinality multiplier for each of the ANN benchmark datasets we tested on. Moreover, we notice that the cardinality multiplier at which CAKES overtakes linear search is lower for datasets with lower LFD. For example, Sift has much higher LFD than Fashion-mnist and Glove-25, and we observe that CAKES overtakes linear search at a cardinality of $10^7$ for Sift, as opposed to about $10^5$ and $10^6$ for Fashion-mnist and Glove-25, respectively. For the truly random dataset, which had the highest LFD, CAKES's algorithms \emph{never} outperform linear search. These observations support our claims that CAKES's algorithms work well with big datasets, and further support our claims that they are much better suited to datasets which exhibit a manifold structure.
 
-
-% Is this still true: "However, the ann-benchmarks results show that even when FAISS and HNSW are tuned for lower recall, they are still slower than CAKES in all cases."
 
 The questions raised by this study suggest several avenues for future work.
 A comparison across more datasets and larger datasets is clearly in order, as is further analysis with distance functions that existing methods such as FAISS do not support, such as Wasserstein distance~\cite{vallender1974calculation} (particularly for arbitrary dimensionality), and Tanimoto distance~\cite{bajusz2015tanimoto}, which is particularly applicable to computing distances based on maximal common subgraphs of molecular structures.  % TODO: Add Lev, NW, SW
