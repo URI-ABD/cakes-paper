@@ -106,39 +106,40 @@ The left-most point on each line is on the original dataset without any syntheti
 The vertical axis denotes throughput in queries per second.
 Both axes are on a logarithmic scale.
 In this section, we report results only for $k$-NN search with $k = 10$, but similar plots for $k=100$ can be found in the Supplement.
-In these plots, we label the recall for algorithms which do not exhibit perfect recall;
-if no such labels are given for an algorithm, then that algorithm exhibits perfect recall.
+{\color{red} TODO: revisit this sentence with cosine dist plot in mind: In these plots, we label the recall for algorithms which do not exhibit perfect recall; if no such labels are given for an algorithm, then that algorithm exhibits perfect recall" }.
 
 
-Tables \ref{table:results:ann-fashion}, \ref{table:results:ann-glove-25}, \ref{table:results:ann-sift}, and \ref{table:results:ann-random} show the throughput and recall of CAKES's algorithms at each cardinality multiplier for the fashion-mnist, glove-25, sift, and random datasets respectively.
+Tables \ref{table:results:ann-fashion}, \ref{table:results:ann-glove-25}, \ref{table:results:ann-sift}, and \ref{table:results:ann-random} show the throughput and recall of CAKES's algorithms at each cardinality for  Fashion-mnist, Glove-25, Sift, and a random dataset respectively. Though the scaling plots above present results for each of CAKES's three algorithms separately, the results in the CAKES column in these tables represent the highest throughput CAKES algorithm at that dataset and cardinality only. 
+Given that we redo the auto-tuning process described in Section~\ref{subsec:methods:auto-tuning} for each augmented dataset, these values are an accurate representation of CAKES's performance on each dataset and cardinality multiplier. 
 When reporting recall, we use 1.000* to denote that the recall is imperfect, but rounds to 1.000 when we consider only three decimal places.
 
-In Figure~\ref{fig:results:fashion-mnist-scaling}, which shows results for fashion-mnist, we observe that as the multiplier increases, the CAKES algorithms (GreedySieve in blue, RepeatedRnn in green, and Sieve in red) exhibit higher throughput than na\"{i}ve linear search, plotted in orange.
-We also observe that CAKES outperforms FAISS-IVF (plotted in pink) for all multipliers greater than one.
-Though state-of-the-art algorithms HNSW (plotted in gray), and ANNOY (plotted in purple) have higher throughput than CAKES for all cardinalities, we note that CAKES always exhibits perfect recall while HNSW and ANNOY exhibit much lower recall, as shown in Table~\ref{table:results:ann-fashion}.
+In Figure~\ref{fig:results:fashion-mnist-scaling}, which shows results for Fashion-mnist, we observe that as cardinality increases, the CAKES algorithms (GreedySieve in blue, Repeated $\rho$-NN in green, and Sieve in red) exhibit higher throughput than na\"{i}ve linear search (plotted in orange).
+In particular, we see that GreedySieve and Sieve begin to exhibit sublinear time performance at a cardinality near $10^5$ (i.e., at a multiplier of about {\color{red} add value} times the original dataset's cardinality). 
+We also observe that CAKES's algorithms outperform FAISS-IVF (plotted in pink) for all cardinalities larger than the original dataset's cardinality.
+Though state-of-the-art algorithms HNSW (plotted in gray), and Annoy (plotted in purple) have higher throughput than CAKES for all cardinalities, we note that CAKES always exhibits perfect recall while HNSW and Annoy exhibit much lower recall, as shown in Table~\ref{table:results:ann-fashion}.
 For example, at a multiplier as low as eight, HNSW and ANNOY have recall of 0.525 and 0.857 respectively,
 and this recall gets worse as the multiplier increases.
-Meanwhile, while CAKES exhibits perfect recall.
+Meanwhile, CAKES exhibits perfect recall.
 Amongst the CAKES algorithms, GreedySieve consistently performs best on this dataset, exhibiting sublinear time performance with increasing multipliers.
 
 
-With glove-25 (Figure~\ref{fig:results:glove-25-scaling}), we observe that each of CAKES' algorithms outperforms linear search at high multipliers.
-Similar to the results for fashion-mnist, we see that CAKES outperforms FAISS-IVF for all multipliers greater than four.
-We see once again that HNSW and ANNOY have higher throughput than CAKES for all multipliers, CAKES exhibits better recall at all multipliers, as shown in Table~\ref{table:results:ann-glove-25}.
+With glove-25 (Figure~\ref{fig:results:glove-25-scaling}), we observe that each of CAKES' algorithms outperforms linear search at some cardinality.
+Specifically, all three of CAKES' algorithms outperform linear search at a cardinality just slightly more than the original dataset's cardinality, $10^6$.
+Similar to the results for Fashion-mnist, we see that CAKES's algorithms outperform FAISS-IVF for all cardinalities greater than $10^7$.
+We see once again that HNSW and Annoy have higher throughput than CAKES's algorithms for all cardinality multipliers, CAKES's algorithms exhibit better recall at all multipliers, as shown in Table~\ref{table:results:ann-glove-25}.
 In particular, at a multiplier as low as two, HNSW and ANNOY have recall as low as 0.607 and 0.832 respectively, and this recall continues to decrease as we increase the multiplier.
 In contrast, CAKES exhibits perfect recall at all multipliers.
 On this dataset, unlike with fashion-mnist, Repeated $\rho$-NN, plotted in green, is consistently the best-performing CAKES algorithm. 
 
 
-In Figure~\ref{fig:results:sift-scaling}, which displays the scaling behavior of algorithms on the sift dataset, we observe that while linear search performs best for low multipliers, our algorithms begin to outperform linear search at a multiplier of eight.
-Again, we observe that CAKES outperforms FAISS-IVF for all multipliers greater than four. 
-For this dataset, Sieve, plotted in red, is the highest throughput CAKES algorithm for all multipliers greater than right.
-Similar to the results with fashion-mnist and glove-25, we observe that while HNSW and Annoy exhibit higher throughput than CAKES for all multipliers, CAKES has better recall.
+In Figure~\ref{fig:results:sift-scaling}, which displays the scaling behavior of algorithms on the Sift dataset, we observe that while linear search performs best for lower cardinalities, our algorithms begin to outperform our implementation of linear search and FAISS-IVF at a cardinality near $10^7$.
+For this dataset, Sieve, plotted in red, is the highest-throughput CAKES algorithm for all cardinalities.
+Similar to the results with Fashion-mnist and Glove-25, we observe that while HNSW and Annoy exhibit higher throughput than CAKES's algorithms for all cardinality multipliers, CAKES has better recall.
 Table~\ref{table:results:ann-sift} shows that even with a multiplier of 1 (i.e., the original dataset), HNSW and Annoy have recall as low as 0.782 and 0.686 respectively, while CAKES exhibits perfect recall.
 
 
-With the random dataset, as seen in Figure~\ref{fig:results:random-scaling}, we observe that the three CAKES algorithms exhibit the worst throughput out of all algorithms, at all multipliers. 
-As with the real datasets, HNSW and ANNOY exhibit the highest throughput of any of the algorithms and CAKES exhibits perfect recall at all multipliers. 
+With the random dataset, as seen in Figure~\ref{fig:results:random-scaling}, we observe that the three CAKES algorithms exhibit the worst throughput out of all algorithms, at all cardinalities. 
+As with the real datasets, HNSW and Annoy exhibit the highest throughput of any of the algorithms, and CAKES exhibits perfect recall at all cardinalities. 
 HNSW and Annoy exhibit \emph{much} lower recall on this random dataset than on the real datasets; 
 in particular, with a multiplier of 1, HNSW and Annoy have recall as low as 0.060 and 0.028 respectively, as reported in Table~\ref{table:results:ann-random}.
 
@@ -247,23 +248,23 @@ in particular, with a multiplier of 1, HNSW and Annoy have recall as low as 0.06
                     \hline
                     &             QPS & Recall        & QPS & Recall      & QPS & Recall       & QPS & Recall     & QPS & Recall    \\
                     \hline
-                    1   & 2.28~$\times10^{4}$ & 0.801 & 2.83~$\times10^{3}$ & 0.835 & 2.78~$\times10^{2}$ & 1.000 & 2.38~$\times10^{3}$ & 1.000* & 7.22~$\times10^{2}$ & 1.000 \\
+                    1   & 2.28~$\times10^{4}$ & 0.801 & 2.83~$\times10^{3}$ & 0.835 & 2.78~$\times10^{2}$ & 1.000 & 2.38~$\times10^{3}$ & 1.000* & 7.22~$\times10^{2}$ & 1.000* \\
                     \hline
-                    2   & 2.38~$\times10^{4}$ & 0.607 & 2.70~$\times10^{3}$ & 0.832 & 1.39~$\times10^{2}$ & 1.000 & 1.19~$\times10^{3}$ & 1.000* & 5.75~$\times10^{2}$ & 1.000 \\
+                    2   & 2.38~$\times10^{4}$ & 0.607 & 2.70~$\times10^{3}$ & 0.832 & 1.39~$\times10^{2}$ & 1.000 & 1.19~$\times10^{3}$ & 1.000* & 5.75~$\times10^{2}$ & 1.000* \\
                     \hline
-                    4   & 2.50~$\times10^{4}$ & 0.443 & 2.61~$\times10^{3}$ & 0.839 & 6.98~$\times10^{1}$ & 1.000 & 6.19~$\times10^{2}$ & 1.000* & 6.25~$\times10^{2}$ & 1.000 \\
+                    4   & 2.50~$\times10^{4}$ & 0.443 & 2.61~$\times10^{3}$ & 0.839 & 6.98~$\times10^{1}$ & 1.000 & 6.19~$\times10^{2}$ & 1.000* & 6.25~$\times10^{2}$ & 1.000* \\
                     \hline
-                    8   & 2.78~$\times10^{4}$ & 0.294 & 2.51~$\times10^{3}$ & 0.834 & 3.49~$\times10^{1}$ & 1.000 & 3.03~$\times10^{2}$ & 1.000* & 5.93~$\times10^{2}$ & 1.000 \\
+                    8   & 2.78~$\times10^{4}$ & 0.294 & 2.51~$\times10^{3}$ & 0.834 & 3.49~$\times10^{1}$ & 1.000 & 3.03~$\times10^{2}$ & 1.000* & 5.93~$\times10^{2}$ & 1.000* \\
                     \hline
-                    16  & 3.11~$\times10^{4}$ & 0.213 & 2.23~$\times10^{3}$ & 0.885 & 1.74~$\times10^{1}$ & 1.000 & 1.51~$\times10^{2}$ & 1.000* & 5.49~$\times10^{2}$ & 1.000 \\
+                    16  & 3.11~$\times10^{4}$ & 0.213 & 2.23~$\times10^{3}$ & 0.885 & 1.74~$\times10^{1}$ & 1.000 & 1.51~$\times10^{2}$ & 1.000* & 5.49~$\times10^{2}$ & 1.000* \\
                     \hline
-                    32  & 3.24~$\times10^{4}$ & 0.178 & 2.01~$\times10^{3}$ & 0.764 & 8.70~$\times10^{0}$ & 1.000 & 7.40~$\times10^{1}$ & 0.999  & 4.75~$\times10^{2}$ & 1.000 \\
+                    32  & 3.24~$\times10^{4}$ & 0.178 & 2.01~$\times10^{3}$ & 0.764 & 8.70~$\times10^{0}$ & 1.000 & 7.40~$\times10^{1}$ & 0.999  & 4.75~$\times10^{2}$ & 1.000* \\
                     \hline
-                    64  & --                  & --    & 1.99~$\times10^{3}$ & 0.631 & 4.36~$\times10^{0}$ & 1.000 & 3.77~$\times10^{1}$ & 0.997  & 4.61~$\times10^{2}$ & 1.000 \\
+                    64  & --                  & --    & 1.99~$\times10^{3}$ & 0.631 & 4.36~$\times10^{0}$ & 1.000 & 3.77~$\times10^{1}$ & 0.997  & 4.61~$\times10^{2}$ & 1.000* \\
                     \hline
-                    128 & --                  & --    & --                  & --    & 2.18~$\times10^{0}$ & 1.000 & 1.90~$\times10^{1}$ & 0.998  & 4.41~$\times10^{2}$ & 1.000 \\
+                    128 & --                  & --    & --                  & --    & 2.18~$\times10^{0}$ & 1.000 & 1.90~$\times10^{1}$ & 0.998  & 4.41~$\times10^{2}$ & 1.000* \\
                     \hline
-                    256 & --                  & --    & --                  & --    & 1.07~$\times10^{0}$ & 1.000 & 9.47~$\times10^{0}$ & 0.998  & 4.23~$\times10^{2}$ & 1.000 \\
+                    256 & --                  & --    & --                  & --    & 1.07~$\times10^{0}$ & 1.000 & 9.47~$\times10^{0}$ & 0.998  & 4.23~$\times10^{2}$ & 1.000* \\
                     \hline
                     % 512 & -- & -- & -- & -- & 0.544 & 1.000 & 4.499 & 0.996 & 0.000 & 0.000 \\
                     % \hline
