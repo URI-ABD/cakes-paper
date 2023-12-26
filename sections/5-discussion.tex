@@ -7,42 +7,42 @@ Even under Cosine distance, which is not a metric, CAKES's algorithms exhibit ne
 
 CAKES's algorithms are designed to be most effective when the dataset upholds the manifold hypothesis, i.e. when the dataset is constrained to a low-dimensional manifold even when embedded in a high-dimensional space.
 As a consequence, these algorithms do not perform well on datasets with random distributions, because such datasets do not exhibit a manifold structure.
-In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each of the datasets we tested on exhibits a manifold structure, as quantified by the percentiles of LFD.
+In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each of the datasets we tested exhibits a manifold structure, as quantified by the percentiles of LFD.
 As expected, our results from Figure~\ref{fig:results:scaling-plots} indicate that CAKES's algorithms scale sub-linearly with cardinality on datasets with low LFD, and scale linearly on datasets with high LFD.
 
-As seen in Figures~\ref{fig:results:random-lfd}~and~\ref{fig:results:sift-lfd}, the LFD of the random dataset is much higher than that of Sift.
-This is unsurprising, given that the random dataset is, by definition, uniformly distributed, while Sift is not.
-On the random dataset, CAKES's algorithms' throughputs decrease linearly as the multiplier increases, while with Sift, GreedySieve and Sieve both exhibit nearly constant throughput.
-While Repeated $\rho$-NN does not exhibit constant throughput with Sift, it does exhibit a much slower decrease in throughput than it does with the random dataset.
-Since these two datasets have the same cardinality and embedding dimension, the aforementioned discrepancies show the effect of the manifold structure on algorithm performance.
-We emphasize that even though CAKES's algorithms are slower on the random dataset, their recalls remain perfect at all multipliers.
+As seen in Figures~\ref{fig:results:random-lfd}~and~\ref{fig:results:sift-lfd}, the LFD of the Random dataset is much higher than that of Sift.
+This is unsurprising, given that the Random dataset is, by definition, uniformly distributed, while Sift is not.
+On the Random dataset, CAKES's algorithms' throughputs decrease linearly as the multiplier increases, while with Sift, GreedySieve and Sieve both exhibit nearly constant throughput.
+While Repeated $\rho$-NN does not exhibit near-constant throughput with Sift, the throughput decreases much more slowly than it does with the Random dataset.
+Since these two datasets have the same cardinality and embedding dimension, the aforementioned discrepancies show the effect of a manifold structure on algorithm performance.
+We emphasize that even though CAKES's algorithms are slower on the Random dataset, their recalls remain perfect at all multipliers.
 
 Figure~\ref{fig:results:scaling-plots} also shows that HNSW and ANNOY have near constant throughput as the multiplier increases, however, their recall continues to decrease as the multiplier increases.
-This, coupled with the prohibitively increasing cost (in terms of memory and time) of building the indexes for HNSW and ANNOY, makes these algorithms unsuitable for real-world applications in which the dataset cardinalities are growing exponentially.
+This, coupled with the prohibitively increasing cost (in terms of memory and time) of building the indices for HNSW and ANNOY, makes these algorithms unsuitable for real-world applications in which the dataset cardinalities are growing exponentially.
 CAKES's tree is orders of magnitude cheaper to build and CAKES's algorithms', while a little slower than HNSW and ANNOY, still show near constant scaling with cardinality in addition to having perfect recall.
 
-We also note that the CAKES algorithm with the best throughput varies across different datasets.
+We also note that the CAKES algorithm with the best throughput varies by dataset.
 For example, on Glove-25, Repeated $\rho$-NN exhibits the highest throughput of any CAKES algorithm, despite having the lowest throughput of the three on Sift and Fashion-Mnist. 
-On Silva, Repeated $\rho$-NN is comparable to the other CAKES algorithms at low multipliers, but becomes the best at the higher multipliers. 
-When we view these results in light of the LFD plots in Section~\ref{subsec:lfd-results}, we realize that  Repeated $\rho$-NN appears to be the best-performing CAKES algorithm on datasets where a large proportion of the dataset has a very low LFD (i.e., near 2), such as Glove-25 and Silva. 
+On Silva, Repeated $\rho$-NN is comparable to the other CAKES algorithms at low multipliers, but becomes the fastest at the higher multipliers. 
+When we view these results in light of the LFD plots in Section~\ref{subsec:lfd-results}, we realize that Repeated $\rho$-NN appears to be the fastest CAKES algorithm on datasets where a large proportion of the dataset has a very low LFD (i.e., near $2$), such as Glove-25 and Silva. 
 This trend is unsurprising, given that Repeated $\rho$-NN relies on a low LFD around the query in order to quickly estimate the correct radius for $k$ hits. 
 These findings suggest that Repeated $\rho$-NN is the most ``sensitive'' to the manifold structure of the dataset.
-Exploring this sensitivity is a potential avenue for future investigation, as it remains to determine at what LFD value Repeated $\rho$-NN transitions away from being the fastest CAKES algorithm, and whether this transition is sharp.
+Exploring this sensitivity is a potential avenue for future investigation, as it remains to be determined at what LFD Repeated $\rho$-NN transitions away from being the fastest CAKES algorithm, and whether this transition is sharp.
 
-While the fastest CAKES algorithm varies by dataset, we observe that on all three ANN-benchmark datasets (Fashion-mnist, Glove-25, and Sift), GreedySieve and Sieve show nearly constant throughput as the multiplier increases.
+While the fastest CAKES algorithm varies by dataset, we observe that on all three ANN-benchmark datasets (Fashion-mnist, Glove-25, and Sift), GreedySieve and Sieve show nearly constant throughput as the cardinality increases.
 This observation warrants further investigation, but it is especially promising given that GreedySieve and Sieve consistently outperform linear search for high cardinalities.
-Finally, we emphasize that the variation in performance of our algorithms across different datasets and cardinalities support our use of an auto-tuning function (as discussed in Section~ref{subsec:methods:auto-tuning}) to select the best algorithm for a given dataset.
-Given trends such as the performance of Repeated $\rho$-NN with low LFD, we suspect that a more sophisticated auto-tuning function could be developed to select the best algorithm based on the properties of the dataset.
+Finally, we emphasize that the variation in performance of our algorithms across different datasets and cardinalities supports our use of an auto-tuning function (as discussed in Section~\ref{subsec:methods:auto-tuning}) to select the best algorithm for a given dataset.
+Given trends such as the performance of Repeated $\rho$-NN with low LFD, we suspect that a more sophisticated auto-tuning function could be developed to select the fastest algorithm based on the properties of the dataset.
 
-We also stress that the CAKES's algorithms are designed to work well for \emph{big} data, and our results support this claim;
-we observe that while linear search can outperform CAKES on datasets with small cardinality, CAKES always overtakes linear search at a large enough multiplier for each of the ANN-benchmarks' datasets we tested.
-Moreover, we observe that CAKES's algorithms outperform linear search at a lower multiplier when the dataset has a lower LFD.
+We also stress that CAKES's algorithms are designed to work well for \emph{big} data, and our results support this claim;
+we observe that while linear search can outperform CAKES on datasets with small cardinality, CAKES always overtakes linear search at a large enough cardinality for each of the ANN-benchmarks' datasets we tested.
+Moreover, we observe that CAKES's algorithms outperform linear search at a lower cardinality when the dataset has a lower LFD.
 For example, Sift has much higher LFD than Fashion-mnist and Glove-25, and we observe that CAKES overtakes linear search at a cardinality of $10^7$ for Sift, as opposed to about $10^5$ and $10^6$ for Fashion-mnist and Glove-25, respectively.
 For the Random dataset, which has the highest LFD, CAKES's algorithms \emph{never} outperform linear search.
 These observations support our claim that CAKES performs well on datasets that arise from constrained generating phenomena, even as the cardinalities of these datasets grow exponentially.
 
 The questions raised by this study suggest several avenues for future work.
-A comparison across more datasets and larger datasets is clearly in order, as is further analysis with distance functions that existing methods such as FAISS do not support, such as Wasserstein distance~\cite{vallender1974calculation} for probability distributions (particularly for high dimensional distributions), and Tanimoto distance~\cite{bajusz2015tanimoto} for comparing molecular structures by their maximal common subgraphs.
+A comparison across more (and larder) datasets is clearly in order, as is further analysis with distance functions that existing methods, such as FAISS, HNSW and ANNOY, do not support, such as Wasserstein distance~\cite{vallender1974calculation} for probability distributions (particularly for high dimensional distributions), and Tanimoto distance~\cite{bajusz2015tanimoto} for comparing molecular structures by their maximal common subgraphs.
 Incorporating these or other distance functions in CAKES requires only that a Rust implementation of the distance function be provided.
 
 {\color{red} TODO: Trim this paragraph by a lot, because we never discuss compression and radii scaling in the paper and we don't want to leak too much of our thoughts on compression.}
@@ -55,9 +55,9 @@ In our future work, we will explore which properties of the dataset and of clust
 
 Another avenue for future work is to explore the use of CAKES in a streaming environment.
 This would require the ability to perform ``online'' updates to the tree as points are added to or deleted from the dataset.
-Such online updates would take advantage of the fast search algorithm provided by CAKES.  % and would allow us to have our cake and eat it, too.
+Such online updates would take advantage of the fast search algorithms provided by CAKES.  % and would allow us to have our cake and eat it, too.
 
-CAKES can also be used to extend anomaly detection in CHAODA.
+CAKES can also be used to extend anomaly detection in CHAODA~\cite{ishaq2021clustered}.
 We could add to CHAODA's ensemble of graph-based anomaly detection methods by using the distribution of distances among the $k$ nearest neighbors of cluster centers.
 
 CLAM and CAKES are implemented in Rust and their source code is available under an MIT license at https://github.com/URI-ABD/clam.
