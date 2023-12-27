@@ -44,26 +44,37 @@ We also benchmark CAKES on a genomic dataset, the Silva 18S dataset~\cite{10.109
 \subsection{Related Works}
 \label{subsec:intoduction:related-works}
 
-Recent search algorithms for tackling the exponential growth of data include hierarchical navigable small world networks (HNSW)~\cite{Malkov2016EfficientAR}, InVerted File indexing (FAISS-IVF)~\cite{johnson2019billion}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}.
+Recent search algorithms for tackling the exponential growth of data include hierarchical navigable small world networks (HNSW)~\cite{Malkov2016EfficientAR}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}.
 
 
 \subsubsection{HNSW}
 \label{subsubsec:introduction:related-works:hnsw}
 
-TODO: Paragraph summarizing HNSW.
+HNSW is an approximate $k$-NN search method based on navigable small world (NSW) graphs and skip lists. 
+Similar to the NSW algorithm, HNSW builds a graph of the dataset, but unlike NSW, the graph is multi-layered.
+The query point and each data point are inserted into the graph one at a time, and, upon insertion, the element is joined by an edge to the $M$ nearest nodes in the in the graph, where $M$ is a tunable parameter. 
+The highest layer in which an element can be placed is determined randomly with an exponentially decaying probability distribution.
+Search starts at the highest layer and descends to the lowest layer, greedily following a path of edges to the nearest node, until reaching the query point. 
+To improve accuracy, the efSearch hyperparameter can be changed to specify the number of closest nearest neighbors to the query vector to be found at each layer. 
 
 
 \subsubsection{FAISS-IVF}
 \label{subsubsec:introduction:related-works:faiss-ivf}
 
-TODO: Paragraph summarizing FAISS-IVF.
+InVerted File indexing (IVF) is a method for approximate $k$-NN search. 
+The dataset is clustered into a high dimensional Voronoi diagram, and whichever cell the query point falls into is then searched exhaustively.
+The number of cells created is governed by the $n_{list}$ parameter. 
+Increasing this parameter decreases the number of points being exhaustively searched, so it improves speed at the cost of accuracy.
+To mitigate accuracy issues caused by a query point falling near a cell boundary, IVF has a tunable parameter $n_{probe}$, which specifies the number of cells to search.
 
 
 \subsubsection{ANNOY}
 \label{subsubsec:introduction:related-works:annoy}
 
-TODO: Paragraph summarizing ANNOY.
-
+Annoy is an approximate $k$-NN search method based on random projection and tree building.
+At each intermediate node of the tree, two points are sampled from the space, and the hyperplane equidistant from them is chosen to divide the space into two subspaces.
+This process is repeated multiple times to create a forest of trees, and the number of times the process is repeated is a tunable parameter.
+{\color{red} TODO: I'm still unclear what they are doing with these trees.}
 
 \subsubsection{Entropy-Scaling Search}
 \label{subsubsec:introduction:related-works:entropy-scaling-search}
