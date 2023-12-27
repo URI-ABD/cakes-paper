@@ -40,7 +40,7 @@ The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16
                     \hline
                     Random           & Euclidean              & 1,000,000          & 128       \\
                     \hline
-                    Silva            & Levenshtein            & 2,224,640          & -         \\
+                    Silva            & Levenshtein            & 2,224,640          & 50,000         \\
                     \hline
                     RadioML          & Dynamic Time Warping   & 97,920             & 1,024     \\
                     \hline
@@ -66,21 +66,18 @@ This benchmark allows us to isolate the effect of a manifold structure (which we
 \label{subsec:silva}
 To showcase the use of CAKES with a more exotic distance function, we also benchmarked on the Silva dataset.
 Silva 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of 2,224,640 genomes with an aligned length of 50,000 letters.
-We use Levenshtein distance on unaligned sequences as the distance function for this dataset.
-{\color{red} TODO: Define and/or cite Levenshtein distance.}
-% I think this needs another sentence but I'm not sure what else to say
+We use Levenshtein distance~\cite{levenshtein1966binary} on unaligned sequences as the distance function for this dataset.
 
 
 \subsection{Radio ML}
 \label{subsec:radioml}
 To provide another example of use of CAKES with a more exotic distance function, we benchmarked on the RadioML dataset.
-The RadioML dataset contains samples of both live and synthetically generated signal captures of different modulation modes over a range of SNR levels.
+The RadioML dataset contains samples of synthetically generated signal captures of different modulation modes over a range of SNR levels.
 Specifically, it is comprised of 24 modulation modes at 26 different SNR levels ranging from -20 dB to 30 dB, with 4,096 samples at each modulation mode and SNR level~\cite{oshea2018radioml}.
 Thus, it contains $24 \cdot 26 \cdot 4096 = 2,555,504$ samples in total.
 Each sample is a 1,024-dimensional complex-valued vector, representing a signal capture (a time series of complex-valued numbers).
 We used a subset of this dataset, containing only the 97,920 samples at 10dB SNR.
-We use Dynamic Time Warping as the distance function for this dataset.
-{\color{red} TODO: Define and/or cite Dynamic Time Warping distance.}
+We use Dynamic Time Warping~\cite{muller2007dynamic} as the distance function for this dataset.
 
 
 \subsection{Other Algorithms}
