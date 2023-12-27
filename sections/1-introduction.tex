@@ -42,13 +42,13 @@ We also benchmark CAKES on a genomic dataset, the Silva 18S dataset~\cite{10.109
 
 
 \subsection{Related Works}
-\label{subsec:intoduction:related-works}
+\label{sec:intoduction:related-works}
 
 Recent search algorithms for tackling the exponential growth of data include hierarchical navigable small world networks (HNSW)~\cite{Malkov2016EfficientAR}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}.
 
 
 \subsubsection{HNSW}
-\label{subsubsec:introduction:related-works:hnsw}
+\label{sec:introduction:related-works:hnsw}
 
 HNSW is an approximate $k$-NN search method based on navigable small world (NSW) graphs and skip lists. 
 Similar to the NSW algorithm, HNSW builds a graph of the dataset, but unlike NSW, the graph is multi-layered.
@@ -59,7 +59,7 @@ To improve accuracy, the efSearch hyperparameter can be changed to specify the n
 
 
 \subsubsection{FAISS-IVF}
-\label{subsubsec:introduction:related-works:faiss-ivf}
+\label{sec:introduction:related-works:faiss-ivf}
 
 InVerted File indexing (IVF) is a method for approximate $k$-NN search. 
 The dataset is clustered into a high dimensional Voronoi diagram, and whichever cell the query point falls into is then searched exhaustively.
@@ -69,7 +69,7 @@ To mitigate accuracy issues caused by a query point falling near a cell boundary
 
 
 \subsubsection{ANNOY}
-\label{subsubsec:introduction:related-works:annoy}
+\label{sec:introduction:related-works:annoy}
 
 Annoy is an approximate $k$-NN search method based on random projection and tree building.
 At each intermediate node of the tree, two points are sampled from the space, and the hyperplane equidistant from them is chosen to divide the space into two subspaces.
@@ -77,7 +77,7 @@ This process is repeated multiple times to create a forest of trees, and the num
 {\color{red} TODO: I'm still unclear what they are doing with these trees.}
 
 \subsubsection{Entropy-Scaling Search}
-\label{subsubsec:introduction:related-works:entropy-scaling-search}
+\label{sec:introduction:related-works:entropy-scaling-search}
 
 This search paradigm exploits the geometric and topological structure inherent in large datasets.
 Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with topological properties (such as the \emph{metric entropy} and \emph{local fractal dimension}, as defined in Section~\ref{sec:methods}) of the dataset, instead of its cardinality.
