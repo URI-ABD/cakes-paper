@@ -1,16 +1,13 @@
-
 \section{Datasets And Benchmarking}
 \label{sec:datasets-and-benchmarks}
 
-\subsection{ANN Benchmark Datasets}
-\label{subsec:ann-benchmarks}
+\subsection{ANN-Benchmark Datasets}
+\label{sec:datasets-and-benchmarks:ann-benchmark-datasets}
 
+We benchmark on a variety of datasets from the ANN-benchmarks suite~\cite{Aumller2018ANNBenchmarksAB}, using the associated distance function.
+Table~\ref{tab:datasets:summary} summarizes the properties of these datasets.
 
-We benchmark on a variety of datasets from the ANN-benchmarks suite~\cite{Aumller2018ANNBenchmarksAB}, along with the appropriate distance function.
-Table~\ref{table:datasets:summary} summarizes the properties of these datasets.
-
-
-The benchmarks for Fashion-Mnist, Glove-25, and Sift (and for their synthetic augmentations) were conducted on an Amazon AWS (EC2) \texttt{r6i.16xlarge} instance, with a 64-core Intel Xeon Platinum 8375C CPU 2.90GHz processor, 512GB RAM.
+The benchmarks for Fashion-Mnist, Glove-25, Sift, and Random (and for their synthetic augmentations) were conducted on an Amazon AWS (EC2) \texttt{r6i.16xlarge} instance, with a 64-core Intel Xeon Platinum 8375C CPU 2.90GHz processor, 512GB RAM.
 This is the same configuration used in~\cite{Aumller2018ANNBenchmarksAB}.
 The OS kernel was Ubuntu 22.04.3-Ubuntu SMP.
 The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16.
@@ -19,11 +16,10 @@ The benchmarks for Silva and RadioML were conducted on an Intel Xeon E5-2690 v4 
 The OS kernel was Manjaro Linux 5.15.130-1-MANJARO.
 The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16.
 
-
 \begin{table}[!t]
     % \renewcommand{\arraystretch}{1.15}
     \caption{Datasets used in benchmarks.}
-    \label{table:datasets:summary}
+    \label{tab:datasets:summary}
     \vskip 0.15in
     \begin{center}
         \begin{small}
@@ -32,17 +28,17 @@ The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16
                     \hline
                     \textbf{Dataset} & \textbf{Distance}  &\textbf{Cardinality}  & \textbf{Dimensionality}  \\
                     \hline
-                    Fashion-Mnist    & Euclidean              & 60,000             & 784       \\
+                    Fashion-Mnist    & Euclidean              & 60,000             & 784                    \\
                     \hline
-                    Glove-25         & Cosine                 & 1,183,514          & 25        \\
+                    Glove-25         & Cosine                 & 1,183,514          & 25                     \\
                     \hline
-                    Sift             & Euclidean              & 1,000,000          & 128       \\
+                    Sift             & Euclidean              & 1,000,000          & 128                    \\
                     \hline
-                    Random           & Euclidean              & 1,000,000          & 128       \\
+                    Random           & Euclidean              & 1,000,000          & 128                    \\
                     \hline
-                    Silva            & Levenshtein            & 2,224,640          & 50,000         \\
+                    Silva            & Levenshtein            & 2,224,640          & 3,712 - 50,000         \\
                     \hline
-                    RadioML          & Dynamic Time Warping   & 97,920             & 1,024     \\
+                    RadioML          & Dynamic Time Warping   & 97,920             & 1,024                  \\
                     \hline
                 \end{tabular}
             \end{sc}
@@ -52,36 +48,42 @@ The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16
 \end{table}
 
 \subsection{Random Datasets and Synthetic Augmentations}
-\label{subsec:random-datasets}
+\label{sec:datasets-and-benchmarks:random-datasets}
 
-In addition to benchmarks on datasets from the ANN Benchmarks suite, we also benchmarked on synthetic augmentations of these real datasets, using the process described in \ref{subsec:methods:synthetic-data}. 
-In particular, we use a noise tolerance $\epsilon = 0.01$ and explore the scaling behavior as the cardinality multiplier (referred to as ``scale'' in Table~\ref{table:results:ann-fashion} {\color{red} TODO: merge the tables into one and confirm this reference is still correct after the merge}) increases. 
+In addition to benchmarks on datasets from the ANN-Benchmarks suite, we also benchmarked on synthetic augmentations of these real datasets, using the process described in \ref{sec:methods:synthetic-data}. 
+In particular, we use a noise tolerance $\epsilon = 0.01$ and explore the scaling behavior as the cardinality multiplier (referred to as ``Multiplier'' in Tables~\ref{tab:results:fashion-mnist},~\ref{tab:results:glove-25},~\ref{tab:results:sift},~and~\ref{tab:results:random} {\color{red} TODO: merge the tables into one and confirm this reference is still correct after the merge}) increases. 
 
-We also benchmarked on purely random (i.e., not an augmented version of a known dataset) datasets of various cardinalities. 
+We also benchmarked on purely random, i.e., not an augmented version of a known dataset, datasets of various cardinalities. 
 For this Random dataset, we used a base cardinality of 1,000,000 and a dimensionality of 128 to match the Sift dataset.
 This benchmark allows us to isolate the effect of a manifold structure (which we expect to be absent in a purely random dataset) on the performance of the CAKES' algorithms. 
 
 
-\subsection{Silva}
-\label{subsec:silva}
-To showcase the use of CAKES with a more exotic distance function, we also benchmarked on the Silva dataset.
-Silva 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of 2,224,640 genomes with an aligned length of 50,000 letters.
-We use Levenshtein distance~\cite{levenshtein1966binary} on unaligned sequences as the distance function for this dataset.
+\subsection{Silva 18S}
+\label{sec:datasets-and-benchmarks:silva-18s}
+
+To showcase the use of CAKES with a more exotic distance function, we also benchmarked on the Silva 18S ribosomal DNA dataset~\cite{10.1093/nar/gks1219}.
+This dataset contains ribosomal DNA sequences of 2,224,640 genomes with an aligned length of 50,000 letters.
+We held out a set of 1,000 random sequences from the dataset to use as queries for benchmarking.
+We use Levenshtein~\cite{levenshtein1966binary} distance on the unaligned sequences to build the tree and to perform $k$-NN search.
+Since this dataset contains many \emph{redundant}, i.e. nearly identical, sequences, we used a maximum tree-depth of 128 as a partition \emph{criterion} in Algorithm~\ref{alg:methods:partition}.
 
 
 \subsection{Radio ML}
-\label{subsec:radioml}
-To provide another example of use of CAKES with a more exotic distance function, we benchmarked on the RadioML dataset.
+\label{sec:datasets-and-benchmarks:radio-ml}
+
+To provide another example of use of CAKES with a more exotic distance function, we benchmarked on the RadioML dataset~\cite{oshea2018radioml}.
 The RadioML dataset contains samples of synthetically generated signal captures of different modulation modes over a range of SNR levels.
-Specifically, it is comprised of 24 modulation modes at 26 different SNR levels ranging from -20 dB to 30 dB, with 4,096 samples at each modulation mode and SNR level~\cite{oshea2018radioml}.
+Specifically, it is comprised of 24 modulation modes at 26 different SNR levels ranging from -20 dB to 30 dB, with 4,096 samples at each combination of modulation mode and SNR level.
 Thus, it contains $24 \cdot 26 \cdot 4096 = 2,555,504$ samples in total.
-Each sample is a 1,024-dimensional complex-valued vector, representing a signal capture (a time series of complex-valued numbers).
-We used a subset of this dataset, containing only the 97,920 samples at 10dB SNR.
+Each sample is a 1,024-dimensional complex-valued vector, representing a signal capture (a time-series of complex-valued numbers).
+We used a subset of this dataset, containing 97,920 samples at 10dB SNR and used the other 8,576 samples at 10dB SNR as a hold-out set of queries.
 We use Dynamic Time Warping~\cite{muller2007dynamic} as the distance function for this dataset.
 
 
 \subsection{Other Algorithms}
-We benchmarked CAKES's algorithms against the state-of-the-art similarity search algorithms HNSW and ANNOY, as well as on FAISS-IVF and two different implementations of linear search.
+\label{sec:datasets-and-benchmarks:other-algorithms}
+
+We benchmarked CAKES's algorithms against the state-of-the-art similarity search algorithms HNSW, ANNOY and FAISS-IVF, and two implementations of linear search.
 In particular, we use FAISS-Flat, a Python implementation of linear search, to provide ground-truth values for recall of HNSW, ANNOY, and FAISS-IVF.
-We use our own Rust implementation of linear search to provide ground-truth values for recall of CAKES's algorithms.
-We plot the throughput of these two implementations of linear search as a reference point for CAKES's algorithms' throughput in Section~\ref{subsec:scaling-behavior-results}.
+We use our own Rust implementation of linear search to provide ground-truth values for calculating recall of CAKES's algorithms.
+We plot the throughput of these two implementations of linear search as a reference point for all other algorithms in Figures~\ref{fig:results:scaling-plots}
