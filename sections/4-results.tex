@@ -173,11 +173,13 @@ Both axes are on a logarithmic scale.
 In this section, we report results only for $k$-NN search with $k = 10$, but similar plots for $k = 100$ can be found in the Supplement.
 For HNSW and ANNOY, we report the recall for each measurement in the plots. For algorithms which exhibit recall greater than $0.9995$, we do not report the recall in the plots, but we do report it in the tables below.
 
-Tables \ref{tab:results:fashion-mnist}, \ref{tab:results:glove-25}, \ref{tab:results:sift}, and \ref{tab:results:random} show the throughput and recall of CAKES's algorithms at each augmented cardinality for Fashion-Mnist, Glove-25, Sift, and Random respectively.
+Table~\ref{tab:results:qps-and-recall} show the throughput and recall of CAKES's algorithms at each augmented cardinality for Fashion-Mnist, Glove-25, Sift, and Random.
 Though the scaling plots above present results for each of CAKES's three algorithms separately, the results in the CAKES column in these tables represent the fastest CAKES algorithm at that dataset and cardinality only.
 We used our auto-tuning approach (see Section~\ref{sec:methods:auto-tuning}) for each new tree (i.e. at each cardinality), and this approach was always able to select the fastest algorithm for each dataset at each cardinality.
 Since we also allow for tuning hyper-parameters for the other algorithms, and we allow for different sets of hyper-parameters at each cardinality, it is a fair comparison for these tables to only list the performance of the tuned CAKES algorithm.
 When reporting recall, we use $1.000*$ to denote that the recall is imperfect, but rounds to $1.000$ when we consider only three decimal places.
+
+{\color{red} TODO: Combine the following four paragraphs into a single, larger paragraph that summarizes the results across all datasets. There is too much repetition here.}
 
 In Figure~\ref{fig:results:fashion-mnist-scaling}, which shows results for Fashion-Mnist, we observe that as cardinality increases, the CAKES algorithms (Depth-First Sieve in blue, Repeated $\rho$-NN in green, and Breadth-First Sieve in purple) become faster than na\"{i}ve linear search (plotted in orange).
 In particular, we see that Depth-First Sieve and Breadth-First Sieve begin to exhibit sub-linear time performance at a cardinality near $10^5$, i.e., at four times the original dataset's cardinality.
@@ -255,150 +257,64 @@ In particular, throughput of CAKES algorithms is identical within three signific
 \end{figure}
 
 
-\begin{table*}[!t]
+\begin{table*}[h]
     % \renewcommand{\arraystretch}{1.15}
-    \caption{Runtime performance (queries per second) and recall on the \textbf{fashion-mnist} dataset. 1.000* denotes imperfect recall that rounds to 1.000.}
-    \label{tab:results:fashion-mnist}
+    \caption{QPS (queries per second) and Recall vs naive linear search on the Fashion-Mnist, Glove-25, Sift and Random datasets.
+    A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
+    \label{tab:results:qps-and-recall}
     \vskip 0.15in
     \begin{center}
         \begin{small}
             \begin{sc}
-                \begin{tabular}{|l|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|}
+                \begin{tabular}{|c|l|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|}
                     \hline
-                    \textbf{Multiplier}  & \multicolumn{2}{|c|}{\textbf{hnsw}} & \multicolumn{2}{|c|}{\textbf{annoy}} & \multicolumn{2}{|c|}{\textbf{faiss-ivf}}  & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
+                    & \multirow{2}{*}{\textbf{Multiplier}} & \multicolumn{2}{|c}{\textbf{hnsw}} & \multicolumn{2}{|c}{\textbf{annoy}} & \multicolumn{2}{|c}{\textbf{faiss-ivf}}  & \multicolumn{2}{|c|}{\textbf{cakes}} \\\cline{3-10}
+                    & & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\\cline{2-10}
                     \hline
-                        & QPS                 & Recall & QPS                & Recall & QPS                & Recall& QPS                 & Recall \\
                     \hline
-                    1   & 1.33~$\times10^{4}$ & 0.954 & 2.19~$\times10^{3}$ & 0.950 & 2.01~$\times10^{3}$ & 1.000* & 2.17~$\times10^{3}$ & 1.000 \\
+                    \multirow{10}{*}{\rotatebox[origin=c]{90}{\textbf{Fashion-Mnist}}}
+                    & 1   & 1.33~$\times10^{4}$ & 0.954  & 2.19~$\times10^{3}$ & 0.950  & 2.01~$\times10^{3}$ & 1.000* & 2.17~$\times10^{3}$ & 1.000  \\\cline{2-10}
+                    & 2   & 1.38~$\times10^{4}$ & 0.803  & 2.12~$\times10^{3}$ & 0.927  & 9.39~$\times10^{2}$ & 1.000* & 1.14~$\times10^{3}$ & 1.000  \\\cline{2-10}
+                    & 4   & 1.66~$\times10^{4}$ & 0.681  & 2.04~$\times10^{3}$ & 0.898  & 4.61~$\times10^{2}$ & 0.997  & 9.82~$\times10^{2}$ & 1.000  \\\cline{2-10}
+                    & 8   & 1.68~$\times10^{4}$ & 0.525  & 1.93~$\times10^{3}$ & 0.857  & 2.26~$\times10^{2}$ & 0.995  & 1.18~$\times10^{3}$ & 1.000  \\\cline{2-10}
+                    & 16  & 1.87~$\times10^{4}$ & 0.494  & 1.84~$\times10^{3}$ & 0.862  & 1.17~$\times10^{2}$ & 0.991  & 1.20~$\times10^{3}$ & 1.000  \\\cline{2-10}
+                    & 32  & 1.56~$\times10^{4}$ & 0.542  & 1.85~$\times10^{3}$ & 0.775  & 5.91~$\times10^{1}$ & 0.985  & 1.16~$\times10^{3}$ & 1.000  \\\cline{2-10}
+                    & 64  & 1.50~$\times10^{4}$ & 0.378  & 1.78~$\times10^{3}$ & 0.677  & 2.61~$\times10^{1}$ & 0.968  & 1.10~$\times10^{3}$ & 1.000  \\\cline{2-10}
+                    & 128 & 1.49~$\times10^{4}$ & 0.357  & 1.66~$\times10^{3}$ & 0.538  & 1.33~$\times10^{1}$ & 0.964  & 1.04~$\times10^{3}$ & 1.000  \\\cline{2-10}
+                    & 256 & --                  & --     & 1.60~$\times10^{3}$ & 0.592  & 6.65~$\times10^{0}$ & 0.962  & 1.06~$\times10^{3}$ & 1.000  \\\cline{2-10}
+                    & 512 & --                  & --     & 1.83~$\times10^{3}$ & 0.581  & 3.56~$\times10^{0}$ & 0.949  & 1.04~$\times10^{3}$ & 1.000  \\
                     \hline
-                    2   & 1.38~$\times10^{4}$ & 0.803 & 2.12~$\times10^{3}$ & 0.927 & 9.39~$\times10^{2}$ & 1.000* & 1.14~$\times10^{3}$ & 1.000 \\
                     \hline
-                    4   & 1.66~$\times10^{4}$ & 0.681 & 2.04~$\times10^{3}$ & 0.898 & 4.61~$\times10^{2}$ & 0.997  & 9.82~$\times10^{2}$ & 1.000 \\
+                    \multirow{9}{*}{\rotatebox[origin=c]{90}{\textbf{Glove-25}}}
+                    & 1   & 2.28~$\times10^{4}$ & 0.801 & 2.83~$\times10^{3}$ & 0.835 & 2.38~$\times10^{3}$ & 1.000* & 7.22~$\times10^{2}$ & 1.000* \\\cline{2-10}
+                    & 2   & 2.38~$\times10^{4}$ & 0.607 & 2.70~$\times10^{3}$ & 0.832 & 1.19~$\times10^{3}$ & 1.000* & 5.75~$\times10^{2}$ & 1.000* \\\cline{2-10}
+                    & 4   & 2.50~$\times10^{4}$ & 0.443 & 2.61~$\times10^{3}$ & 0.839 & 6.19~$\times10^{2}$ & 1.000* & 6.25~$\times10^{2}$ & 1.000* \\\cline{2-10}
+                    & 8   & 2.78~$\times10^{4}$ & 0.294 & 2.51~$\times10^{3}$ & 0.834 & 3.03~$\times10^{2}$ & 1.000* & 5.93~$\times10^{2}$ & 1.000* \\\cline{2-10}
+                    & 16  & 3.11~$\times10^{4}$ & 0.213 & 2.23~$\times10^{3}$ & 0.885 & 1.51~$\times10^{2}$ & 1.000* & 5.49~$\times10^{2}$ & 1.000* \\\cline{2-10}
+                    & 32  & 3.24~$\times10^{4}$ & 0.178 & 2.01~$\times10^{3}$ & 0.764 & 7.40~$\times10^{1}$ & 0.999  & 4.75~$\times10^{2}$ & 1.000* \\\cline{2-10}
+                    & 64  & --                  & --    & 1.99~$\times10^{3}$ & 0.631 & 3.77~$\times10^{1}$ & 0.997  & 4.61~$\times10^{2}$ & 1.000* \\\cline{2-10}
+                    & 128 & --                  & --    & --                  & --    & 1.90~$\times10^{1}$ & 0.998  & 4.41~$\times10^{2}$ & 1.000* \\\cline{2-10}
+                    & 256 & --                  & --    & --                  & --    & 9.47~$\times10^{0}$ & 0.998  & 4.23~$\times10^{2}$ & 1.000* \\
                     \hline
-                    8   & 1.68~$\times10^{4}$ & 0.525 & 1.93~$\times10^{3}$ & 0.857 & 2.26~$\times10^{2}$ & 0.995  & 1.18~$\times10^{3}$ & 1.000 \\
                     \hline
-                    16  & 1.87~$\times10^{4}$ & 0.494 & 1.84~$\times10^{3}$ & 0.862 & 1.17~$\times10^{2}$ & 0.991  & 1.20~$\times10^{3}$ & 1.000 \\
+                    \multirow{8}{*}{\rotatebox[origin=c]{90}{\textbf{Sift}}}
+                    & 1   & 1.93~$\times10^{4}$ & 0.782 & 3.98~$\times10^{3}$ & 0.686 & 6.98~$\times10^{2}$ & 1.000* & 5.52~$\times10^{2}$ & 1.000 \\\cline{2-10}
+                    & 2   & 2.03~$\times10^{4}$ & 0.552 & 3.80~$\times10^{3}$ & 0.614 & 3.30~$\times10^{2}$ & 1.000* & 2.66~$\times10^{2}$ & 1.000 \\\cline{2-10}
+                    & 4   & 2.18~$\times10^{4}$ & 0.394 & 3.69~$\times10^{3}$ & 0.637 & 1.65~$\times10^{2}$ & 1.000* & 1.43~$\times10^{2}$ & 1.000 \\\cline{2-10}
+                    & 8   & 2.48~$\times10^{4}$ & 0.298 & 3.58~$\times10^{3}$ & 0.710 & 7.72~$\times10^{1}$ & 1.000* & 7.94~$\times10^{1}$ & 1.000 \\\cline{2-10}
+                    & 16  & 2.68~$\times10^{4}$ & 0.210 & 3.50~$\times10^{3}$ & 0.690 & 3.98~$\times10^{1}$ & 1.000* & 8.12~$\times10^{1}$ & 1.000 \\\cline{2-10}
+                    & 32  & 2.75~$\times10^{4}$ & 0.193 & 3.44~$\times10^{3}$ & 0.639 & 2.09~$\times10^{1}$ & 0.999  & 7.81~$\times10^{1}$ & 1.000 \\\cline{2-10}
+                    & 64  & --                  & --    & 3.39~$\times10^{3}$ & 0.678 & 8.87~$\times10^{0}$ & 0.997  & 7.43~$\times10^{1}$ & 1.000 \\\cline{2-10}
+                    & 128 & --                  & --    & 3.36~$\times10^{3}$ & 0.643 & 4.78~$\times10^{0}$ & 0.993  & 6.80~$\times10^{1}$ & 1.000 \\
                     \hline
-                    32  & 1.56~$\times10^{4}$ & 0.542 & 1.85~$\times10^{3}$ & 0.775 & 5.91~$\times10^{1}$ & 0.985  & 1.16~$\times10^{3}$ & 1.000 \\
                     \hline
-                    64  & 1.50~$\times10^{4}$ & 0.378 & 1.78~$\times10^{3}$ & 0.677 & 2.61~$\times10^{1}$ & 0.968  & 1.10~$\times10^{3}$ & 1.000 \\
-                    \hline
-                    128 & 1.49~$\times10^{4}$ & 0.357 & 1.66~$\times10^{3}$ & 0.538 & 1.33~$\times10^{1}$ & 0.964  & 1.04~$\times10^{3}$ & 1.000 \\
-                    \hline
-                    256 & --                  & --    & 1.60~$\times10^{3}$ & 0.592 & 6.65~$\times10^{0}$ & 0.962  & 1.06~$\times10^{3}$ & 1.000 \\
-                    \hline
-                    512 & --                  & --    & 1.83~$\times10^{3}$ & 0.581 & 3.56~$\times10^{0}$ & 0.949  & 1.04~$\times10^{3}$ & 1.000 \\
-                    \hline
-                \end{tabular}
-            \end{sc}
-        \end{small}
-    \end{center}
-    \vskip -0.1in
-\end{table*}
-
-
-\begin{table*}[!t]
-    % \renewcommand{\arraystretch}{1.15}
-    \caption{Runtime performance (queries per second) and recall on the \textbf{glove-25} dataset. 1.000* denotes imperfect recall that rounds to 1.000.}
-    \label{tab:results:glove-25}
-    \vskip 0.15in
-    \begin{center}
-        \begin{small}
-            \begin{sc}
-                \begin{tabular}{|l|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|}
-                    \hline
-                    \textbf{Multiplier}  & \multicolumn{2}{|c|}{\textbf{hnsw}} & \multicolumn{2}{|c|}{\textbf{annoy}} & \multicolumn{2}{|c|}{\textbf{faiss-ivf}}  & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
-                    \hline
-                    &             QPS & Recall        & QPS & Recall      & QPS & Recall     & QPS & Recall    \\
-                    \hline
-                    1   & 2.28~$\times10^{4}$ & 0.801 & 2.83~$\times10^{3}$ & 0.835 & 2.38~$\times10^{3}$ & 1.000* & 7.22~$\times10^{2}$ & 1.000* \\
-                    \hline
-                    2   & 2.38~$\times10^{4}$ & 0.607 & 2.70~$\times10^{3}$ & 0.832 & 1.19~$\times10^{3}$ & 1.000* & 5.75~$\times10^{2}$ & 1.000* \\
-                    \hline
-                    4   & 2.50~$\times10^{4}$ & 0.443 & 2.61~$\times10^{3}$ & 0.839 & 6.19~$\times10^{2}$ & 1.000* & 6.25~$\times10^{2}$ & 1.000* \\
-                    \hline
-                    8   & 2.78~$\times10^{4}$ & 0.294 & 2.51~$\times10^{3}$ & 0.834 & 3.03~$\times10^{2}$ & 1.000* & 5.93~$\times10^{2}$ & 1.000* \\
-                    \hline
-                    16  & 3.11~$\times10^{4}$ & 0.213 & 2.23~$\times10^{3}$ & 0.885 & 1.51~$\times10^{2}$ & 1.000* & 5.49~$\times10^{2}$ & 1.000* \\
-                    \hline
-                    32  & 3.24~$\times10^{4}$ & 0.178 & 2.01~$\times10^{3}$ & 0.764 & 7.40~$\times10^{1}$ & 0.999  & 4.75~$\times10^{2}$ & 1.000* \\
-                    \hline
-                    64  & --                  & --    & 1.99~$\times10^{3}$ & 0.631 & 3.77~$\times10^{1}$ & 0.997  & 4.61~$\times10^{2}$ & 1.000* \\
-                    \hline
-                    128 & --                  & --    & --                  & --    & 1.90~$\times10^{1}$ & 0.998  & 4.41~$\times10^{2}$ & 1.000* \\
-                    \hline
-                    256 & --                  & --    & --                  & --    & 9.47~$\times10^{0}$ & 0.998  & 4.23~$\times10^{2}$ & 1.000* \\
-                    \hline
-                \end{tabular}
-            \end{sc}
-        \end{small}
-    \end{center}
-    \vskip -0.1in
-\end{table*}
-
-\begin{table*}[!t]
-    % \renewcommand{\arraystretch}{1.15}
-    \caption{Runtime performance (queries per second) and recall on the \textbf{sift} dataset. 1.000* denotes imperfect recall that rounds to 1.000.}
-    \label{tab:results:sift}
-    \vskip 0.15in
-    \begin{center}
-        \begin{small}
-            \begin{sc}
-                \begin{tabular}{|l|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|}
-                    \hline
-                    \textbf{Multiplier}  & \multicolumn{2}{|c|}{\textbf{hnsw}}  & \multicolumn{2}{|c|}{\textbf{annoy}} & \multicolumn{2}{|c|}{\textbf{faiss-ivf-flat}}  & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
-                    \hline
-                    &             QPS & Recall        & QPS & Recall      & QPS & Recall    & QPS & Recall    \\
-                    \hline
-                    1   & 1.93~$\times10^{4}$ & 0.782 & 3.98~$\times10^{3}$ & 0.686 & 6.98~$\times10^{2}$ & 1.000* & 5.52~$\times10^{2}$ & 1.000 \\
-                    \hline
-                    2   & 2.03~$\times10^{4}$ & 0.552 & 3.80~$\times10^{3}$ & 0.614 & 3.30~$\times10^{2}$ & 1.000* & 2.66~$\times10^{2}$ & 1.000 \\
-                    \hline
-                    4   & 2.18~$\times10^{4}$ & 0.394 & 3.69~$\times10^{3}$ & 0.637 & 1.65~$\times10^{2}$ & 1.000* & 1.43~$\times10^{2}$ & 1.000 \\
-                    \hline
-                    8   & 2.48~$\times10^{4}$ & 0.298 & 3.58~$\times10^{3}$ & 0.710 & 7.72~$\times10^{1}$ & 1.000* & 7.94~$\times10^{1}$ & 1.000 \\
-                    \hline
-                    16  & 2.68~$\times10^{4}$ & 0.210 & 3.50~$\times10^{3}$ & 0.690 & 3.98~$\times10^{1}$ & 1.000* & 8.12~$\times10^{1}$ & 1.000 \\
-                    \hline
-                    32  & 2.75~$\times10^{4}$ & 0.193 & 3.44~$\times10^{3}$ & 0.639 & 2.09~$\times10^{1}$ & 0.999  & 7.81~$\times10^{1}$ & 1.000 \\
-                    \hline
-                    64  & --                  & --    & 3.39~$\times10^{3}$ & 0.678 & 8.87~$\times10^{0}$ & 0.997  & 7.43~$\times10^{1}$ & 1.000 \\
-                    \hline
-                    128 & --                  & --    & 3.36~$\times10^{3}$ & 0.643 & 4.78~$\times10^{0}$ & 0.993  & 6.80~$\times10^{1}$ & 1.000 \\
-                    \hline
-                \end{tabular}
-            \end{sc}
-        \end{small}
-    \end{center}
-    \vskip -0.1in
-\end{table*}
-
-
-\begin{table*}[!t]
-    % \renewcommand{\arraystretch}{1.15}
-    \caption{Runtime performance (queries per second) and recall on a \textbf{random} dataset. 1.000* denotes imperfect recall that rounds to 1.000.}
-    \label{tab:results:random}
-    \vskip 0.15in
-    \begin{center}
-        \begin{small}
-            \begin{sc}
-                \begin{tabular}{|l|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|p{1.2cm}|p{0.8cm}|}
-                    \hline
-                    \textbf{Multiplier}  & \multicolumn{2}{|c|}{\textbf{hnsw}}  & \multicolumn{2}{|c|}{\textbf{annoy}} & \multicolumn{2}{|c|}{\textbf{faiss-ivf-flat}}  & \multicolumn{2}{|c|}{\textbf{CAKES}} \\
-                    \hline
-                    &             QPS & Recall        & QPS & Recall      & QPS & Recall    & QPS & Recall    \\
-                    \hline
-                    1  & 1.17~$\times10^{4}$ & 0.060 & 4.28~$\times10^{3}$ & 0.028 & 7.34~$\times10^{2}$ & 1.000* & 5.54~$\times10^{2}$ & 1.000 \\
-                    \hline
-                    2  & 1.01~$\times10^{4}$ & 0.048 & 4.04~$\times10^{3}$ & 0.021 & 3.58~$\times10^{2}$ & 1.000* & 2.69~$\times10^{2}$ & 1.000 \\
-                    \hline
-                    4  & 9.12~$\times10^{3}$ & 0.031 & 3.64~$\times10^{3}$ & 0.014 & 1.90~$\times10^{2}$ & 1.000* & 1.37~$\times10^{2}$ & 1.000 \\
-                    \hline
-                    8  & 8.35~$\times10^{3}$ & 0.022 & 3.37~$\times10^{3}$ & 0.013 & 8.84~$\times10^{1}$ & 1.000* & 5.69~$\times10^{1}$ & 1.000 \\
-                    \hline
-                    16 & 8.25~$\times10^{3}$ & 0.008 & 3.17~$\times10^{3}$ & 0.006 & 4.36~$\times10^{1}$ & 1.000* & 2.61~$\times10^{1}$ & 1.000 \\
-                    \hline
-                    32 & --                  & --    & 3.01~$\times10^{3}$ & 0.007 & 1.72~$\times10^{1}$ & 1.000* & 1.35~$\times10^{1}$ & 1.000 \\
+                    \multirow{6}{*}{\rotatebox[origin=c]{90}{\textbf{Random}}}
+                    & 1  & 1.17~$\times10^{4}$ & 0.060 & 4.28~$\times10^{3}$ & 0.028 & 7.34~$\times10^{2}$ & 1.000* & 5.54~$\times10^{2}$ & 1.000 \\\cline{2-10}
+                    & 2  & 1.01~$\times10^{4}$ & 0.048 & 4.04~$\times10^{3}$ & 0.021 & 3.58~$\times10^{2}$ & 1.000* & 2.69~$\times10^{2}$ & 1.000 \\\cline{2-10}
+                    & 4  & 9.12~$\times10^{3}$ & 0.031 & 3.64~$\times10^{3}$ & 0.014 & 1.90~$\times10^{2}$ & 1.000* & 1.37~$\times10^{2}$ & 1.000 \\\cline{2-10}
+                    & 8  & 8.35~$\times10^{3}$ & 0.022 & 3.37~$\times10^{3}$ & 0.013 & 8.84~$\times10^{1}$ & 1.000* & 5.69~$\times10^{1}$ & 1.000 \\\cline{2-10}
+                    & 16 & 8.25~$\times10^{3}$ & 0.008 & 3.17~$\times10^{3}$ & 0.006 & 4.36~$\times10^{1}$ & 1.000* & 2.61~$\times10^{1}$ & 1.000 \\\cline{2-10}
+                    & 32 & --                  & --    & 3.01~$\times10^{3}$ & 0.007 & 1.72~$\times10^{1}$ & 1.000* & 1.35~$\times10^{1}$ & 1.000 \\
                     \hline
                 \end{tabular}
             \end{sc}
