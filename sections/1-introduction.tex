@@ -81,7 +81,7 @@ At search time, one can increase the number of trees to be searched to improve r
 
 This search paradigm exploits the geometric and topological structure inherent in large datasets.
 Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with topological properties (such as the \emph{metric entropy} and \emph{local fractal dimension}, as defined in Section~\ref{sec:methods}) of the dataset, instead of its cardinality.
-In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search), which extended entropy-scaling $\rho$-NN search from a flat clustering approach to a tree-based hierarchical clustering approach.
+In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search)~\cite{ishaq2019clustered}, which extended entropy-scaling $\rho$-NN search from a flat clustering approach to a tree-based hierarchical clustering approach.
 In this paper, we introduce CAKES (CLAM-Accelerated $K$-nn Entropy-scaling Search).
 CLAM (Clustering, Learning and Approximation with Manifolds), originally developed to allow ``manifold mapping'' for anomaly detection~\cite{ishaq2021clustered}, is a refinement of the clustering algorithm from CHESS.
 Using the cluster tree constructed by CLAM, CAKES extends CHESS to perform $k$-NN search and improves the performance of CHESS's $\rho$-NN search.
