@@ -4,7 +4,7 @@
 In this manuscript, we are primarily concerned with $k$-NN search in a finite-dimensional space.
 Given a dataset $\textbf{X} = \{x_1 \dots x_n\}$ of cardinality $|\textbf{X}| = n$, we define a \emph{point} or \emph{datum} $x_i \in \textbf{X}$ as a singular observation, for example, the neural-network embedding of an image, the genome of an organism, a measurement of a radio frequency signal, etc.
 
-We define a \emph{distance function} $f : \textbf{X} \times \textbf{X} \mapsto \mathbb{R}^+ \ \cup \ \{0\}$ which, given two points, deterministically returns a non-negative real number.
+We define a \emph{distance function} $f : \textbf{X} \times \textbf{X} \mapsto \mathbb{R}^+ \ \cup \ \{0\}$ which, given two points, deterministically returns a finite and non-negative real number.
 A distance value of zero defines an identity among points (i.e. $f(x, y) = 0 \Leftrightarrow x = y$) and larger values indicate greater dissimilarity among the points.
 We also require that the distance function be symmetric (i.e., $f(x, y) = f(y, x) \ \forall \ x, y \in \textbf{X}$).
 In addition to these constraints, if the distance function obeys the triangle inequality (i.e. $f(x, y) \leq f(x, z) + f(z, y) \ \forall \ x, y, z \in \textbf{X}$), then it is also a \emph{distance metric}.
@@ -18,7 +18,11 @@ With time-series data, one could use Dynamic Time Warping (DTW) or Wasserstein d
 
 CAKES assumes the manifold hypothesis~\cite{fefferman2016testing}, i.e., high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold within their embedding space.
 We say that such data are \emph{manifold-constrained}, and have low \emph{local fractal dimension} (LFD).
-CAKES exploits this topological property, i.e. low LFD, to accelerate search.
+In other words, we assume that the dataset is embedded in a $D$-dimensional space, but that the data only occupy a $d$-dimensional manifold, where $d \ll D$.
+While we sometimes use Euclidean notions, such as voids, volumes and proximity, to talk about the geometric and topological properties of the clusters and manifold, CLAM and CAKES do not rely on such notions;
+they serve merely as convenient and intuitive vocabulary to discuss the underlying mathematics.
+
+CAKES exploits the low LFD of such datasets to accelerate search.
 We define LFD at some length scale around a point in the dataset as:
 
 \begin{equation}
@@ -56,11 +60,6 @@ In this paper, we define the metric entropy $\mathcal{N}_{\hat{r}}(X)$ of a data
 We start by performing a divisive hierarchical clustering on the dataset using CLAM.
 The procedure is similar to that outlined in CHESS, but with the following improvements:
 better selection of poles for partitioning (see Algorithm~\ref{alg:methods:partition}) and depth-first reordering of the dataset (see Section~\ref{sec:methods:clustering:depth-first-reordering}).
-
-CAKES assumes the manifold hypothesis.
-In other words, we assume that the dataset is embedded in a $D$-dimensional space, but that the data only occupy a $d$-dimensional manifold, where $d \ll D$.
-While we sometimes use Euclidean notions, such as voids, volumes and proximity, to talk about the geometric and topological properties of the clusters and manifold, CLAM and CAKES do not rely on such notions;
-they serve merely as convenient and intuitive vocabulary to discuss the underlying mathematics.
 
 
 \subsubsection{Building the Tree}
