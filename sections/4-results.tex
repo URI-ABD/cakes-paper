@@ -101,15 +101,25 @@ For each of the ANN-benchmark datasets and the Random dataset, we report the tim
 Though CAKES has three different algorithms, they share the same tree and so they have the same indexing time.
 Thus, we show CAKES's indexing time only once.
 
-The horizontal axis in each figure shows the cardinality of the dataset augmented with synthetic points (see Section \ref{sec:methods:synthetic-data}).
+The plots in Figure~\ref{fig:results:indexing} show the results of these benchmarks.
+The horizontal axis in each subplot shows the cardinality of the dataset augmented with synthetic points (see Section \ref{sec:methods:synthetic-data}).
 The left-most point on each line is on the original dataset without any synthetic augmentation.
-The vertical axis denotes throughput in queries per second.
+The vertical axis denotes the sum of indexing and tuning time in seconds.
 Both axes are on a logarithmic scale.
+Hereafter, when we refer to the ``indexing time'' of an algorithm, we are implicitly referring to the sum of indexing and tuning time for said algorithm.
 
-With the Fashion-Mnist dataset, as shown in Figure~\ref{fig:results:fashion-mnist-indexing}, we observe that the indexing time for CAKES is much lower than that of HNSW, ANNOY, and FAISS-IVF, but higher than that of FAISS-Flat.
+
+On all datasets, we observe that the indexing time for CAKES increases roughly linearly as cardinality increases.
+HNSW and ANNOY have the slowest indexing times across all the algorithms we benchmarked for each of the four datasets, at each cardinality. 
+On some datasets, HNSW and ANNOY exhibit indexing times which are orders of magnitude slower than that of CAKES.
+FAISS-Flat also exhibits the fastest indexing time on each dataset. 
 This is not surprising, given that FAISS-Flat is a naive linear search algorithm and is not building an index.
 
-{\color{red} TODO: Add a sentence or two about the indexing time for the other datasets.}
+We also highlight some differences in indexing time between different datasets.
+With Fashion-Mnist, as shown in Figure~\ref{fig:results:fashion-mnist-indexing}, we observe that the indexing time for CAKES is lower than that of FAISS-IVF for all cardinalities.
+With Glove-25 (see Figure~\ref{fig:results:glove-25-indexing}), however, at cardinalities greater than $10^7$, FAISS-IVF has lower indexing time than CAKES.
+With Sift, CAKEs's indexing time is faster than that of FAISS-IVF until a cardinality of nearly $10^8$, and with the Random dataset, we observe that CAKES has faster indexing time than FAISS-IVF until a cardinality of nearly $10^7$.
+
 
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
