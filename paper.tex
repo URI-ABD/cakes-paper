@@ -191,49 +191,17 @@
 \renewcommand{\shortauthors}{Prior et al.}
 
 \begin{abstract}
-  % Many fields are experiencing a Big Data explosion, with data collection rates outpacing the rate of computing performance improvements predicted by Moore's Law. 
-  % Researchers are often interested similarity search on such data. 
-  % We present CAKES (CLAM-Accelerated $K$-NN Entropy Scaling Search), a novel algorithm for $k$-nearest-neighbor ($k$-NN) search which leverages geometric and topological properties inherent in large datasets.
-  % CAKES assumes the manifold hypothesis and performs best when data occupy a low dimensional manifold, even if the data occupy a very high dimensional embedding space. 
-  % We demonstrate performance improvements ranging from hundreds to tens of thousands of times faster when compared to state-of-the-art approaches such as FAISS and HNSW, when benchmarked on 5 standard datasets.
-  % Unlike locality-sensitive hashing approaches, CAKES can work with any user-defined distance function.
-  % When data occupy a metric space, CAKES exhibits perfect recall.
+Abstract-- Many fields are experiencing a Big Data explosion, with data collection rates outpacing the rate of computing performance improvements predicted by Moore's Law. 
+Researchers are often interested in similarity search, including $k$-nearest neighbor ($k$-NN) search, on such data. 
+Though approximate $k$-NN search algorithms are sufficient for some applications, for many applications, \emph{exact} $k$-NN search is ideal.
+Thus, we present CAKES (CLAM-Accelerated $K$-NN Entropy Scaling Search), a set of three novel, exact algorithms for $k$-NN search. 
+CAKES's algorithms' time complexity scales with the metric entropy and fractal dimension of datasets, and they perform best when data occupy a low dimensional manifold-- even when those data occupy a very high dimensional embedding space. 
+We demonstrate that CAKES exhibits sub-linear performance on large datasets, and that CAKES's performance is sometimes constant in the size of the dataset. 
+Unlike locality-sensitive hashing approaches, CAKES can be used with \emph{any} user-defined distance function, and we demonstrate this by showing CAKES's results on a genomic dataset with Levenshtein distance and a radio-frequency dataset with Dynamic Time Warping distance.
+When data occupy a metric space, CAKES exhibits perfect recall.
+Even when data do not occupy a metric space, CAKES exhibits significantly higher recall than state-of-the-art $k$-NN search algorithms, HNSW and ANNOY. 
+Additionally, we show that indexing and tuning time for CAKES is orders of magnitude faster than HNSW and ANNOY.
 
-
-
-%  Abstract—Both astronomy and biology are experiencing ex-
-% plosive growth of data, resulting in a “big data” problem
-% that stands in the way of a “big data” opportunity for dis-
-% covery. One common question asked of such data is that of
-% approximate search (ρ−nearest neighbors search). We present
-% a hierarchical search algorithm for such data sets that takes
-% advantage of particular geometric properties apparent in both
-% astronomical and biological data sets, namely the metric
-% entropy and fractal dimensionality of the data. We present
-% CHESS (Clustered Hierarchical Entropy-Scaling Search), a
-% search tool with virtually no loss in specificity or sensitivity,
-% demonstrating a 13.6× speedup over linear search on the Sloan
-% Digital Sky Survey’s APOGEE data set and a 68× speedup
-% on the GreenGenes 16S metagenomic data set, as well as
-% asymptotically fewer distance comparisons on APOGEE when
-% compared to the FALCONN locality-sensitive hashing library.
-% CHESS demonstrates an asymptotic complexity not directly
-% dependent on data set size, and is in practice at least an
-% order of magnitude faster than linear search by performing
-% fewer distance comparisons. Unlike locality-sensitive hashing
-% approaches, CHESS can work with any user-defined distance
-% function. CHESS also allows for implicit data compression,
-% which we demonstrate on the APOGEE data set. We also
-% discuss an extension allowing for efficient k-nearest neighbors
-% search.
-
-  Abstract is written last.
-
-  Abstract is written last.
-
-  Abstract is written last.
-
-  Abstract is written last.
 \end{abstract}
 
 \begin{CCSXML}
