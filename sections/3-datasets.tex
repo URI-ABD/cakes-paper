@@ -51,10 +51,10 @@ The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16
 \label{sec:datasets-and-benchmarks:random-datasets}
 
 In addition to benchmarks on datasets from the ANN-Benchmarks suite, we also benchmarked on synthetic augmentations of these real datasets, using the process described in \ref{sec:methods:synthetic-data}. 
-In particular, we use a noise tolerance $\epsilon = 0.01$ and explore the scaling behavior as the cardinality multiplier (referred to as ``Multiplier'' in Tables~\ref{tab:results:fashion-mnist},~\ref{tab:results:glove-25},~\ref{tab:results:sift},~and~\ref{tab:results:random} {\color{red} TODO: merge the tables into one and confirm this reference is still correct after the merge}) increases. 
+In particular, we use a noise tolerance $\epsilon = 0.01$ and explore the scaling behavior as the cardinality multiplier (referred to as ``Multiplier'' in Table~\ref{tab:results:qps-and-recall}) increases. 
 
-We also benchmarked on purely random, i.e., not an augmented version of a known dataset, datasets of various cardinalities. 
-For this Random dataset, we used a base cardinality of 1,000,000 and a dimensionality of 128 to match the Sift dataset.
+We also benchmarked on purely random (i.e., not an augmented version of a known dataset), datasets of various cardinalities.
+For this, we used a base cardinality of 1,000,000 and a dimensionality of 128 to match the Sift dataset; hereafter, we refer to the random dataset with cardinality 1,000,000 and dimensionality 128 as ``Random.'' 
 This benchmark allows us to isolate the effect of a manifold structure (which we expect to be absent in a purely random dataset) on the performance of the CAKES' algorithms. 
 
 
