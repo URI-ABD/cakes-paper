@@ -5,14 +5,14 @@ We have presented CAKES, a set of three algorithms for fast $k$-NN search that a
 CAKES's algorithms are exact when the distance function in use is a metric (i.e., when it obeys the triangle inequality).
 Even under Cosine distance, which is not a metric, CAKES's algorithms exhibit nearly perfect recall (i.e. always greater than $0.9995$).
 
-CAKES's algorithms are designed to be most effective when the dataset upholds the manifold hypothesis, i.e. when the dataset is constrained to a low-dimensional manifold even when embedded in a high-dimensional space.
-As a consequence, these algorithms do not perform well on datasets with random distributions, because such datasets do not exhibit a manifold structure.
+CAKES's algorithms are designed to be most effective when the data uphold the manifold hypothesis, i.e. when the data are constrained to a low-dimensional manifold even when embedded in a high-dimensional space.
+As a consequence, these algorithms do not perform well on data with random distributions, because of the absence of a manifold structure.
 In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each of the datasets we tested exhibits a manifold structure, as quantified by the percentiles of LFD.
 As expected, our results from Figure~\ref{fig:results:scaling-plots} indicate that CAKES's algorithms scale sub-linearly with cardinality on datasets with low LFD, and scale linearly on datasets with high LFD.
 
 As seen in Figures~\ref{fig:results:random-lfd}~and~\ref{fig:results:sift-lfd}, the LFD of the Random dataset is much higher than that of Sift.
 This is unsurprising, given that the Random dataset is, by definition, uniformly distributed, while Sift is not.
-On the Random dataset, CAKES's algorithms' throughputs decrease linearly as the multiplier increases, while with Sift, Depth-First Sieve and Breadth-First Sieve both exhibit nearly constant throughput.
+On the Random dataset, CAKES's algorithms' speed decreases linearly as the multiplier increases, while with Sift, Depth-First Sieve and Breadth-First Sieve both exhibit nearly constant throughput.
 While Repeated $\rho$-NN does not exhibit near-constant throughput with Sift, the throughput decreases much more slowly than it does with the Random dataset.
 Since these two datasets have the same cardinality and embedding dimension, the aforementioned discrepancies show the effect of a manifold structure on algorithm performance.
 We emphasize that even though CAKES's algorithms are slower on the Random dataset, their recalls remain perfect at all multipliers.
@@ -22,10 +22,10 @@ This, coupled with the prohibitively increasing cost (in terms of memory and tim
 CAKES's tree is orders of magnitude cheaper to build and CAKES's algorithms', while a little slower than HNSW and ANNOY, still show near constant scaling with cardinality in addition to having perfect recall.
 
 We also note that the CAKES algorithm with the best throughput varies by dataset.
-For example, on Glove-25, Repeated $\rho$-NN exhibits the highest throughput of any CAKES algorithm, despite having the lowest throughput of the three on Sift and Fashion-Mnist. 
-On Silva, Repeated $\rho$-NN is comparable to the other CAKES algorithms at low multipliers, but becomes the fastest at the higher multipliers. 
-When we view these results in light of the LFD plots in Section~\ref{sec:results:lfd-of-datasets}, we realize that Repeated $\rho$-NN appears to be the fastest CAKES algorithm on datasets where a large proportion of the dataset has a very low LFD (i.e., near $2$), such as Glove-25 and Silva. 
-This trend is unsurprising, given that Repeated $\rho$-NN relies on a low LFD around the query in order to quickly estimate the correct radius for $k$ hits. 
+For example, on Glove-25, Repeated $\rho$-NN exhibits the highest throughput of any CAKES algorithm, despite having the lowest throughput of the three on Sift and Fashion-Mnist.
+On Silva, Repeated $\rho$-NN is comparable to the other CAKES algorithms at low multipliers, but becomes the fastest at the higher multipliers.
+When we view these results in light of the LFD plots in Figure~\ref{fig:results:lfd-plots}, we realize that Repeated $\rho$-NN appears to be the fastest CAKES algorithm on datasets where a large proportion of the data have a very low LFD, such as Glove-25 and Silva.
+This trend is unsurprising, given that Repeated $\rho$-NN relies on a low LFD around the query in order to quickly estimate the correct radius for $k$ hits.
 These findings suggest that Repeated $\rho$-NN is the most ``sensitive'' to the manifold structure of the dataset.
 Exploring this sensitivity is a potential avenue for future investigation, as it remains to be determined at what LFD Repeated $\rho$-NN transitions away from being the fastest CAKES algorithm, and whether this transition is sharp.
 
@@ -44,14 +44,11 @@ These observations support our claim that CAKES performs well on datasets that a
 The questions raised by this study suggest several avenues for future work.
 A comparison across more (and larger) datasets is clearly in order, as is further analysis with distance functions that existing methods, such as FAISS, HNSW and ANNOY, do not support, such as Wasserstein distance~\cite{vallender1974calculation} for probability distributions (particularly for high dimensional distributions), and Tanimoto distance~\cite{bajusz2015tanimoto} for comparing molecular structures by their maximal common subgraphs.
 Incorporating these or other distance functions in CAKES requires only that a Rust implementation of the distance function be provided.
+
 We also plan to investigate hierarchical data compression by representing differences at each level of the binary tree, particularly for string or genomic data, where all differences are discrete.
-
-
-% When we descend some levels in the cluster tree, it takes fewer bits to encode each point in terms of the center because the radii decrease.
-% However, each descent of a level in the cluster tree increases the bit-cost of specifying a particular cluster. 
-% This presents the following tradeoff:
-% \emph{How do we algorithmically determine the depth to which we should cluster a dataset to achieve optimal compression?} 
-% In our future work, we will explore which properties of the dataset and of clusters can inform this optimal depth.
+Such an encoding would allow us to store the data in a compressed format, and to perform search on the compressed data without decompressing it.
+This would allow us to perform fast search on datasets that are too large to fit in memory.
+An exploration of compression and compressed search is an avenue for future work.
 
 Another avenue for future work is to explore the use of CAKES in a streaming environment.
 This would require the ability to perform ``online'' updates to the tree as points are added to or deleted from the dataset.
@@ -60,4 +57,4 @@ Such online updates would take advantage of the fast search algorithms provided 
 CAKES can also be used to extend anomaly detection in CHAODA~\cite{ishaq2021clustered}.
 We could add to CHAODA's ensemble of graph-based anomaly detection methods by using the distribution of distances among the $k$ nearest neighbors of cluster centers.
 
-CLAM and CAKES are implemented in Rust and their source code is available under an MIT license at https://github.com/URI-ABD/clam.
+CLAM and CAKES are implemented in Rust and the source code is available under an MIT license at https://github.com/URI-ABD/clam.
