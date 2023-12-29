@@ -114,6 +114,8 @@ Hereafter, when we refer to the ``indexing time'' of an algorithm, we are implic
 
 {\color{red} TODO: Figure out if we should remove all red TODOs or add more red TODOS}
 
+{\color{red} \sout{TODO: Eliminate all non-red TODOs.}}
+
 On all datasets, we observe that the indexing time for CAKES increases roughly linearly as cardinality increases.
 HNSW and ANNOY have the slowest indexing times across all the algorithms we benchmarked for each of the four datasets, at each cardinality. 
 On some datasets, HNSW and ANNOY exhibit indexing times which are orders of magnitude slower than that of CAKES.
@@ -202,7 +204,7 @@ In contrast, CAKES has perfect recall on Fashion-Mnist and Sift (because the dis
 In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, as seen in Figure~\ref{fig:results:random-scaling}, we observe that the three CAKES algorithms are the slowest out of all algorithms, at all cardinalities.
 As with the real datasets, HNSW and ANNOY are the fastest algorithms, and CAKES exhibits perfect recall at all cardinalities.
 HNSW and ANNOY exhibit \emph{much} lower recall on this random dataset than on any of the ANN benchmark datasets;
-in particular, with a multiplier of 1, HNSW and ANNOY have recall as low as 0.060 and 0.028 respectively, as reported in Table~\ref{tab:results:random}.
+in particular, with a multiplier of 1, HNSW and ANNOY have recall as low as 0.060 and 0.028 respectively, as reported in Table~\ref{tab:results:qps-and-recall}.
 
 For Silva and RadioML, we benchmarked only CAKES's algorithms because none HNSW, ANNOY or FAISS support neither the required distance functions nor, in the case of RadioML, complex-valued data.
 Due to the massive sizes of these datasets, we took random sub-samples of the dataset with lower cardinalities for our benchmarks, rather than augmented versions of the dataset.
@@ -247,7 +249,7 @@ In particular, throughput of CAKES algorithms is identical within three signific
         \label{fig:results:random-scaling}
     \end{subfigure}%
     \caption{Throughput across six datasets, including a randomly-generated dataset.
-    In each plot, the horizontal axis represents increasing cardinality of the dataset, while the vertical axis represents the throughput in queries per second (higher is better).
+    In each plot, the horizontal axis represents increasing cardinality of the dataset, while the vertical axis represents the throughput in queries per second (higher is better). Note that for RadioML, all three algorithms performed nearly identically, so distinct plotlines are not visible.
     For some algorithms, we were not able to take measurements for each cardinality because the index-building required more RAM than was available (i.e. more then 512GB).}
     \label{fig:results:scaling-plots}
 \end{figure}
