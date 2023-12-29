@@ -103,7 +103,7 @@ Thus, we show CAKES's indexing time only once.
 
 The plots in Figure~\ref{fig:results:indexing} show the results of these benchmarks.
 The horizontal axis in each subplot shows the cardinality of the dataset augmented with synthetic points (see Section \ref{sec:methods:synthetic-data}).
-The left-most point on each line is on the original dataset without any synthetic augmentation.
+The left-most point on each line is at the cardinality of the original dataset without any synthetic augmentation.
 The vertical axis denotes the sum of indexing and tuning time in seconds.
 Both axes are on a logarithmic scale.
 Hereafter, when we refer to the ``indexing time'' of an algorithm, we are implicitly referring to the sum of indexing and tuning time for said algorithm.
@@ -172,7 +172,7 @@ Figures~\ref{fig:results:silva-scaling} and ~\ref{fig:results:radioml-scaling} s
 For these datasets, we took random sub-samples of the full datasets instead of augmenting them to higher cardinalities.
 
 The horizontal axis in each figure shows the cardinality of the augmented dataset with synthetic points (see Section \ref{sec:methods:synthetic-data}).
-The left-most point on each line is on the original dataset without any synthetic augmentation.
+The left-most point on each line is at the cardinality of the original dataset without any synthetic augmentation..
 The vertical axis denotes throughput in queries per second.
 Both axes are on a logarithmic scale.
 In this section, we report results only for $k$-NN search with $k = 10$, but similar plots for $k = 100$ can be found in the Supplement.
@@ -186,16 +186,17 @@ When reporting recall, we use $1.000*$ to denote that the recall is imperfect, b
 
 
 Figure~\ref{fig:results:scaling-plots} shows that for Fashion-Mnist, Glove-25, and Sift, as cardinality increases, the CAKES algorithms (Depth-First Sieve in blue, Repeated $\rho$-NN in green, and Breadth-First Sieve in purple) become faster than our Rust implementation of na\"{i}ve linear search (in orange).
-Though we observe this trend in the algorithms' scaling behavior, we note that the exact cardinality at which CAKES's algorithms overtake linear search differs by dataset. For Fashion-Mnist, CAKES begins exhibiting sub-linear performance starting at a cardinality near $10^5$, while for Glove-25 and Sift, this happens near $10^6$ and $10^7$ respectively. 
-We also observe differences in which of the three CAKES algorithms is fastest for a given dataset.
+Though we observe this trend, we note that the exact cardinality at which CAKES's algorithms overtake linear search differs by dataset. For Fashion-Mnist, CAKES begins exhibiting sub-linear performance starting at a cardinality near $10^5$, while for Glove-25 and Sift, this happens near $10^6$ and $10^7$ respectively. 
+Which one of the three CAKES algorithms is fastest also differs by dataset.
 For Fashion-Mnist, Depth-First Sieve is consistently fastest, while for Glove-25, the fastest is Repeated $\rho$-NN, and for Sift, Breadth-First Sieve. 
 Additionally, on all three datasets, Depth-First Sieve and Breadth-First Sieve appear to have performance which is \emph{constant} in the cardinality of the dataset. 
 With Glove-25, Repeated $\rho$-NN exhibits similar constant scaling. 
-We also observe that on these three datasets, for nearly all cardinalities, all three of the CAKES algorithms are faster than FAISS-Flat (in brown), and that at some cardinality, one of CAKES's algorithms becomes faster than FAISS-IVF (in pink). 
+We also observe that on these three datasets, for nearly all cardinalities, all three of the CAKES algorithms are faster than FAISS-Flat (in brown), and that at some cardinality, CAKES's algorithms become faster than FAISS-IVF (in pink). 
 For Fashion-Mnist, CAKES becomes faster than FAISS-IVF near cardinality $10^5$, whereas for Glove-25 and Sift, this happens near cardinality $10^7$. 
 On all three of these datasets, HNSW (in gray) and ANNOY (in yellow) are faster than CAKES's algorithms for all cardinalities; however, CAKES exhibits perfect or near-perfect recall on each dataset, while HNSW and ANNOY exhibit much lower recall, as shown in Table~\ref{tab:datasets:summary}.
-While recall for CAKES's algorithms does not degrade with cardinality when used with distance functions which are metrics, recall for HNSW and ANNOY does degrade with cardinality. 
+While recall for CAKES's algorithms does not degrade with cardinality, recall for HNSW and ANNOY does degrade with cardinality. 
 At a cardinality multiplier as low as eight, HNSW and ANNOY have recall of $0.525$ and $0.857$ respectively for Fashion-Mnist, 0.607 and 0.832 for Glove-25, and 0.782 and 0.686 on Sift. 
+In contrast, CAKES has perfect recall on Fashion-Mnist and Sift (because the distance function used with these datasets is a metric), and near-perfect recall on Glove-25 (because the Cosine distance function is not a metric).
 
 
 In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, as seen in Figure~\ref{fig:results:random-scaling}, we observe that the three CAKES algorithms are the slowest out of all algorithms, at all cardinalities.
