@@ -192,17 +192,15 @@
 \renewcommand{\shortauthors}{Prior et al.}
 
 \begin{abstract}
-Many fields are experiencing a Big Data explosion, with data collection rates outpacing the rate of computing performance improvements predicted by Moore's Law. 
-Researchers are often interested in similarity search, including $k$-nearest neighbor ($k$-NN) search, on such data. 
-Though approximate $k$-NN search algorithms are sufficient for some applications, for many applications, \emph{exact} $k$-NN search is ideal.
-Thus, we present CAKES (CLAM-Accelerated $K$-NN Entropy Scaling Search), a set of three novel, exact algorithms for $k$-NN search. 
-The time complexity of CAKES's algorithms scales with the metric entropy and fractal dimension of datasets, and they perform best when data occupy a low dimensional manifold -- even when those data occupy a very high dimensional embedding space. 
-We demonstrate that on low-dimensional manifolds, CAKES exhibits sub-linear performance on large datasets, and that CAKES's performance is sometimes constant in the size of the dataset. 
-Unlike locality-sensitive hashing approaches, CAKES can be used with \emph{any} user-defined distance function, and we demonstrate this by showing CAKES's results on a genomic dataset with Levenshtein distance and a radio-frequency dataset with Dynamic Time Warping distance.
-When data occupy a metric space, CAKES exhibits perfect recall.
-Even when data do not occupy a metric space, CAKES exhibits significantly higher recall than state-of-the-art $k$-NN search algorithms. 
-Additionally, we show that indexing and tuning time for CAKES is orders of magnitude faster than those approaches.
-
+  The ongoing Big Data explosion has created a demand for efficient and scalable algorithms for similarity search.
+  Most recent work has focused on \emph{approximate} $k$-NN search, and while this may be sufficient for some applications, \emph{exact} $k$-NN search would be ideal for many applications.
+  We present CAKES, a set of three novel, exact algorithms for $k$-NN search.
+  CAKES's algorithms are generic over \emph{any} distance function, and they \emph{do not} scale with the cardinality or embedding dimension of the dataset, but rather with its metric entropy and fractal dimension.
+  We test these claims on a number of datasets from the commonly used ANN-Benchmarks suite under commonly used distance functions, as well as on a genomic dataset with Levenshtein distance and a radio-frequency dataset with Dynamic Time Warping distance.
+  We demonstrate that CAKES exhibits near-constant scaling with cardinality on data conforming to the manifold hypothesis, and has perfect recall on data in \emph{metric} spaces.
+  We also demonstrate that CAKES exhibits significantly higher recall than state-of-the-art $k$-NN search algorithms when the distance function is not a metric.
+  Additionally, we show that indexing and tuning time for CAKES is an order of magnitude, or more, faster than state-of-the-art approaches.
+  We conclude that CAKES is a highly efficient and scalable algorithm for exact $k$-NN search on Big Data.
 \end{abstract}
 
 \begin{CCSXML}
