@@ -34,11 +34,11 @@ This observation warrants further investigation, but it is especially promising 
 Finally, we emphasize that the variation in performance of our algorithms across different datasets and cardinalities supports our use of an auto-tuning function (as discussed in Section~\ref{sec:methods:auto-tuning}) to select the best algorithm for a given dataset.
 Given trends such as the performance of Repeated $\rho$-NN with low LFD, we suspect that a more sophisticated auto-tuning function could be developed to select the fastest algorithm based on the properties of the dataset.
 
-We also stress that CAKES's algorithms are designed to work well for \emph{big} data, and our results support this claim;
+We also stress that CAKES's algorithms are designed to work well for \textit{big} data, and our results support this claim;
 we observe that while linear search can outperform CAKES on datasets with small cardinality, CAKES always overtakes linear search at a large enough cardinality for each of the ANN-benchmarks' datasets we tested.
 Moreover, we observe that CAKES's algorithms outperform linear search at a lower cardinality when the dataset has a lower LFD.
 For example, Sift has much higher LFD than Fashion-Mnist and Glove-25, and we observe that CAKES overtakes linear search at a cardinality of $10^7$ for Sift, as opposed to about $10^5$ and $10^6$ for Fashion-Mnist and Glove-25, respectively.
-For the Random dataset, which has the highest LFD, CAKES's algorithms \emph{never} outperform linear search.
+For the Random dataset, which has the highest LFD, CAKES's algorithms \textit{never} outperform linear search.
 These observations support our claim that CAKES performs well on datasets that arise from constrained generating phenomena, even as the cardinalities of these datasets grow exponentially.
 
 The questions raised by this study suggest several avenues for future work.

@@ -10,7 +10,7 @@ Since the time complexity of CAKES algorithms scales with the LFD of the dataset
 Figure~\ref{fig:results:lfd-plots} the trends in LFD for (the non-augmented versions of) Fashion-Mnist, Glove-25, Sift, Random, Silva 18S, and RadioML.
 The horizontal axis denotes the depth in the cluster tree, and the vertical axis denotes the LFD (as calculated by Equation~\ref{eq:methods:lfd-simplified}) of clusters at that depth.
 We plot lines for the 5$^{th}$, 25$^{th}$, 50th, 75$^{th}$ and 95$^{th}$ percentiles of LFD, as well as the minimum and maximum LFD at each depth.
-In order to have the plots to best reflect the distribution of LFDs across the entire \emph{dataset}, we compute percentiles counting each cluster as many times as its cardinality.
+In order to have the plots to best reflect the distribution of LFDs across the entire \textit{dataset}, we compute percentiles counting each cluster as many times as its cardinality.
 In other words, if, for some dataset, the 95$^{th}$ percentile of LFD at depth 40 is 3, this means that 95\% of the total points in clusters at depth 40 belong to clusters whose LFD is at most 3.
 
 Figure~\ref{fig:results:fashion-mnist-lfd} shows the LFD by depth for Fashion-Mnist.
@@ -108,14 +108,6 @@ The vertical axis denotes the sum of indexing and tuning time in seconds.
 Both axes are on a logarithmic scale.
 Hereafter, when we refer to the ``indexing time'' of an algorithm, we are implicitly referring to the sum of indexing and tuning time for said algorithm.
 
-{\color{red} TODO: remove all red TODOs.}
-
-{\color{red} TODO: Add more red TODOs.}
-
-{\color{red} TODO: Figure out if we should remove all red TODOs or add more red TODOS}
-
-{\color{red} \sout{TODO: Eliminate all non-red TODOs.}}
-
 On all datasets, we observe that the indexing time for CAKES increases roughly linearly as cardinality increases.
 HNSW and ANNOY have the slowest indexing times across all the algorithms we benchmarked for each of the four datasets, at each cardinality. 
 On some datasets, HNSW and ANNOY exhibit indexing times which are orders of magnitude slower than that of CAKES.
@@ -191,7 +183,7 @@ Figure~\ref{fig:results:scaling-plots} shows that for Fashion-Mnist, Glove-25, a
 Though we observe this trend, we note that the exact cardinality at which CAKES's algorithms overtake linear search differs by dataset. For Fashion-Mnist, CAKES begins exhibiting sub-linear performance starting at a cardinality near $10^5$, while for Glove-25 and Sift, this happens near $10^6$ and $10^7$ respectively. 
 Which one of the three CAKES algorithms is fastest also differs by dataset.
 For Fashion-Mnist, Depth-First Sieve is consistently fastest, while for Glove-25, the fastest is Repeated $\rho$-NN, and for Sift, Breadth-First Sieve. 
-Additionally, on all three datasets, Depth-First Sieve and Breadth-First Sieve appear to have performance which is \emph{constant} in the cardinality of the dataset. 
+Additionally, on all three datasets, Depth-First Sieve and Breadth-First Sieve appear to have performance which is \textit{constant} in the cardinality of the dataset. 
 With Glove-25, Repeated $\rho$-NN exhibits similar constant scaling. 
 We also observe that on these three datasets, for nearly all cardinalities, all three of the CAKES algorithms are faster than FAISS-Flat (in brown), and that at some cardinality, CAKES's algorithms become faster than FAISS-IVF (in pink). 
 For Fashion-Mnist, CAKES becomes faster than FAISS-IVF near cardinality $10^5$, whereas for Glove-25 and Sift, this happens near cardinality $10^7$. 
@@ -203,7 +195,7 @@ In contrast, CAKES has perfect recall on Fashion-Mnist and Sift (because the dis
 
 In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, as seen in Figure~\ref{fig:results:random-scaling}, we observe that the three CAKES algorithms are the slowest out of all algorithms, at all cardinalities.
 As with the real datasets, HNSW and ANNOY are the fastest algorithms, and CAKES exhibits perfect recall at all cardinalities.
-HNSW and ANNOY exhibit \emph{much} lower recall on this random dataset than on any of the ANN benchmark datasets;
+HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets;
 in particular, with a multiplier of 1, HNSW and ANNOY have recall as low as 0.060 and 0.028 respectively, as reported in Table~\ref{tab:results:qps-and-recall}.
 
 For Silva and RadioML, we benchmarked only CAKES's algorithms because none HNSW, ANNOY or FAISS support neither the required distance functions nor, in the case of RadioML, complex-valued data.
