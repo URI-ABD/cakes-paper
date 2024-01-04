@@ -6,10 +6,10 @@ In many fields, the sizes of datasets are growing exponentially, and this increa
 This indicates that computer architecture will not ``catch up'' to computational needs in the near future.
 Often dubbed ``the Big Data explosion,'' this phenomenon has created a need for better algorithms for analyzing such datasets.
 
-Examples of large datasets include neural network embeddings, genomic databases and time-series data such as radio frequency signals.
+Examples of large datasets include genomic databases, time-series data such as radio frequency signals, and neural network embeddings.
 Large language models such as GPT~\cite{2020arXiv200514165B, OpenAI2023GPT4TR} and LLAMA-2~\cite{Touvron2023Llama2O}, and image embedding models~\cite{radford2021learning, dosovitskiy2020image} are a common source of neural network embeddings.
 These embeddings are often high-dimensional, and the sizes of training and inference datasets for such networks are growing exponentially.
-Among Biological datasets, the GreenGenes project~\cite{desantis2006greengenes} provides a multiple-sequence alignment of over one million bacterial 16S sequences, each 7,682 characters in length while Silva 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of approximately 2.25 million genomes with an aligned length of 50,000 letters.
+Among biological datasets, the GreenGenes project~\cite{desantis2006greengenes} provides a multiple-sequence alignment of over one million bacterial 16S sequences, each 7,682 characters in length while SILVA 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of approximately 2.25 million genomes with an aligned length of 50,000 letters.
 Among time-series datasets, the RadioML dataset~\cite{oshea2018radioml} contains approximately 2.55 million samples of synthetically generated signal captures of different modulation modes over a range of SNR levels.
 
 Many researchers are especially interested in similarity search on these datasets. 
@@ -30,26 +30,26 @@ Further, such algorithms are often approximate and while approximate search may 
 
 For example, for a majority voting classifier, approximate $k$-NN search may agree with exact $k$-NN search for large values of $k$, but may be sensitive to local perturbations for smaller values of $k$.
 This is especially true when classes are not well-separated~\cite{zhang2022imbalanced}.
-Further, there is some evidence that distance functions which do not obey the triangle inequality, such as cosine distance, perform poorly for $k$-NN search in biomedical settings~\cite{hu2016distance};
+Further, there is evidence that distance functions which do not obey the triangle inequality, such as cosine distance, perform poorly for $k$-NN search in biomedical settings~\cite{hu2016distance};
 this suggests that approximate $k$-NN search could exhibit suboptimal classification accuracy in such contexts.
 
 $\rho$-NN search also has a variety of applications.
 For example, one could search for all genomes within a maximum edit distance of a query genome to find evolutionarily-related organisms~\cite{budowski2010fragbag}.
 One could also search for all words within a maximum edit distance of a misspelled word to suggest corrections~\cite{ukkonen1985algorithms}.
-Given an advertisement and a database of user profiles, one could search for all users whose profiles are ``similar enough'' to serve the advertisement to~\cite{zhang2020privacy}.
+Given an advertisement and a database of user profiles, one could search for all users whose profiles are ``similar enough'' to target the advertisement~\cite{zhang2020privacy}.
 GPS and other location-based services use $\rho$-NN search to find nearby points of interest~\cite{zhang2020privacy} to a user's location.
 In all of these cases, approximate $\rho$-NN search may be sufficient, but exact $\rho$-NN search is preferable.
 
 This paper focuses on three novel algorithms for exact $k$-NN search.
 We also present some improvements to the clustering and $\rho$-NN search algorithms in CHESS~\cite{ishaq2019clustered}, as well as improved genericity across distance functions.
-We provide a comparison of CAKES to several state-of-the-art algorithms for similarity search, FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}, on several datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
-We also benchmark CAKES on a genomic dataset, the Silva 18S dataset~\cite{10.1093/nar/gks1219} using Levenshtein~\cite{levenshtein1966binary} distance on unaligned genomic sequences, and a radio frequency dataset, the RadioML dataset~\cite{oshea2018radioml} using Dynamic Time Warping (DTW)~\cite{gold2018dynamic} distance on complex-valued time-series.
+We provide a comparison of CAKES to several state-of-the-art algorithms for similarity search, FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}, on datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
+We also benchmark CAKES on a genomic dataset, the SILVA 18S dataset~\cite{10.1093/nar/gks1219} using Levenshtein~\cite{levenshtein1966binary} distance on unaligned genomic sequences, and a radio frequency dataset, the RadioML dataset~\cite{oshea2018radioml} using Dynamic Time Warping (DTW)~\cite{gold2018dynamic} distance on complex-valued time-series.
 
 
 \subsection{Related Works}
 \label{sec:intoduction:related-works}
 
-Recent search algorithms for tackling the exponential growth of data include Hierarchical Navigable Small World networks (HNSW)~\cite{Malkov2016EfficientAR}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}.
+Recent search algorithms designed to scale with the exponential growth of data include Hierarchical Navigable Small World networks (HNSW)~\cite{Malkov2016EfficientAR}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. However, some of these algorithms do not provide exact search.
 
 
 \subsubsection{HNSW}

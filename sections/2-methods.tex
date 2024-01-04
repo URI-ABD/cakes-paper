@@ -34,7 +34,7 @@ where $B_X(q, r)$ is the set of points contained in the metric ball of radius $r
 Intuitively, LFD measures the rate of change in the number of points in a ball of radius $r$ around a point $q$ as $r$ increases.
 
 We stress that this concept differs from the \textit{embedding dimension} of a dataset.
-To illustrate the difference, consider the Silva 18S rRNA dataset which contains which contains genomes with unaligned lengths of up to 3,718 base pairs and aligned length of 50,000 base pairs.
+To illustrate the difference, consider the SILVA 18S rRNA dataset which contains which contains genomes with unaligned lengths of up to 3,718 base pairs and aligned length of 50,000 base pairs.
 Hence, the \textit{embedding dimension} of this dataset is at least 3,718 and at most 50,000.
 However, due to physical constraints (namely, biological evolution and the chemistry of RNA replication and mutation processes), the data are constrained to a lower-dimensional manifold within this embedding space.
 LFD is an approximation of the dimensionality of that lower-dimensional manifold in the ``vicinity'' of a given point.
@@ -503,14 +503,14 @@ Thus,
     \sum_{C \in S} |C| \leq \gamma k \left( 1 + 2 \cdot \frac{\hat{r}}{\rho_k} \right)^d
 \end{equation*}
 
-It remains to provide an estimate for $\rho_k$. 
+An estimate for $\rho_k$ is still needed. 
 For this, we once again rely on the assumption that the query is drawn from the same distribution as the rest of the data, and thus the LFD at the query point is not significantly different from the LFD of nearby clusters.
 
 We let $\hat{d}$ be the (harmonic) mean LFD of the clusters in $Q$.
 While ordinarily we compute LFD by comparing cardinalities of two balls with two different radii centered at \textit{the same} point, in order to estimate $\rho_k$, we instead compare the cardinality of a ball \textit{around the query} of radius $\rho_k$ to the mean cardinality, $\hat{|C|}$, of clusters in $Q$ at a radius equal to the mean of their radii, $\hat{r}$.
 We justify this approach by noting that, since the query is from the same distribution as the rest of the data, we could move from the query to the center of one of the nearby clusters without significantly changing our estimate of the LFD.
 
-By Equation~\ref{eq:methods:lfd-original}, we then have that
+By Equation~\ref{eq:methods:lfd-original},
 
 \begin{equation*}
     \hat{d} = \frac{\log{}\frac{\hat{|C|}}{k}}{\log{}\frac{\hat{r}}{\rho_k}}
