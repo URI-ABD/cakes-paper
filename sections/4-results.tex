@@ -7,7 +7,7 @@
 
 Since the time complexity of CAKES algorithms scales with the LFD of the dataset, we examine the LFD of each dataset we used for benchmarks.
 
-Figure~\ref{fig:results:lfd-plots} the trends in LFD for (the non-augmented versions of) Fashion-Mnist, Glove-25, Sift, Random, Silva 18S, and RadioML.
+Figure~\ref{fig:results:lfd-plots} illustrates the trends in LFD for (the non-augmented versions of) Fashion-Mnist, Glove-25, Sift, Random, Silva 18S, and RadioML.
 The horizontal axis denotes the depth in the cluster tree, and the vertical axis denotes the LFD (as calculated by Equation~\ref{eq:methods:lfd-simplified}) of clusters at that depth.
 We plot lines for the 5$^{th}$, 25$^{th}$, 50th, 75$^{th}$ and 95$^{th}$ percentiles of LFD, as well as the minimum and maximum LFD at each depth.
 In order to have the plots to best reflect the distribution of LFDs across the entire \textit{dataset}, we compute percentiles counting each cluster as many times as its cardinality.
@@ -47,7 +47,7 @@ The 95$^{th}$ percentile is less than about 3 for all depths, hovering near 1 fo
 The median reaches its peak at 2 for about depth 10 and remains close to 0 for depths 40 through 128.
 
 Relative to the other datasets, RadioML, as displayed in Figure~\ref{fig:results:radioml-lfd}, exhibits high LFD.
-Notably however, for the first approximately 15 depths, the 95$^{th}$ percentile and median LFD are very close to 0.
+Notably, however, for the first approximately 15 depths, the 95$^{th}$ percentile and median LFD are very close to 0.
 Both percentiles increase sharply after depth 20, nearly reaching 16.
 LFD remains high even as depth increases, with the 95$^{th}$ percentile fluctuating between about 6 and 15 for depths about 20-40.
 It then spikes up again to about 10 at around depth 45 before decreasing linearly to 1 at depth 60.
@@ -166,7 +166,7 @@ Figures~\ref{fig:results:silva-scaling} and ~\ref{fig:results:radioml-scaling} s
 For these datasets, we took random sub-samples of the full datasets instead of augmenting them to higher cardinalities.
 
 The horizontal axis in each figure shows the cardinality of the augmented dataset with synthetic points (see Section \ref{sec:methods:synthetic-data}).
-The left-most point on each line is at the cardinality of the original dataset without any synthetic augmentation..
+The left-most point on each line is at the cardinality of the original dataset without any synthetic augmentation.
 The vertical axis denotes throughput in queries per second.
 Both axes are on a logarithmic scale.
 In this section, we report results only for $k$-NN search with $k = 10$, but similar plots for $k = 100$ can be found in the Supplement.

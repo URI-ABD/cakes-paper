@@ -67,7 +67,7 @@ To improve accuracy, the $efSearch$ hyperparameter can be changed to specify the
 \label{sec:introduction:related-works:faiss-ivf}
 
 InVerted File indexing (IVF)~\cite{faissivf, sacks1987multikey, kent1990signature} is a method for approximate $k$-NN search. 
-The data are clustered into high-dimensional Voronoi cells, and whichever cell the query point into is then searched exhaustively.
+The data are clustered into high-dimensional Voronoi cells, and whichever cell the query point falls into is then searched exhaustively.
 The number of cells used is governed by the $n_{list}$ parameter. 
 Increasing this parameter decreases the number of points being exhaustively searched, so it improves speed at the cost of accuracy.
 To mitigate accuracy issues caused by a query point falling near a cell boundary, the algorithm has a tunable parameter $n_{probe}$, which specifies the number of additional adjacent or nearby cells to search.
