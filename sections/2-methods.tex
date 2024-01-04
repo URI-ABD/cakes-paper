@@ -374,7 +374,7 @@ The asymptotic complexity of $\rho$-NN is the same as in~\cite{ishaq2019clustere
     \Bigg(
         \underbrace{
             \log~\overbrace{\mathcal{N}_{\hat{r}}(X)}^{\textrm{metric entropy}}
-        }_{\textrm{tree search}}
+        }_{\textrm{tree-search}}
         \ + \ 
         \underbrace{
             \overbrace{ \big| B_X(q, \rho) \big|}^{\textrm{output size}}
@@ -481,9 +481,9 @@ To adjust this bound for Repeated $\rho$-NN, we must estimate the number of iter
 
 Based on the assumption that the LFD near the query does not differ significantly from that of nearby clusters, Equation~\ref{eq:methods:repeated-rnn-factor} suggests that in the expected case, we need only two iterations of tree-search to find $k$ neighbors:
 one iteration to find at least one cluster, and the one more to find enough the $k$ neighbors.
-Since this is a constant factor, complexity of tree search for Repeated $\rho$-NN is the same as that of $\rho$-NN search, i.e. $\mathcal{O}\big(\log\mathcal{N}_{\hat{r}}(X)\big)$.
+Since this is a constant factor, complexity of tree-search for Repeated $\rho$-NN is the same as that of $\rho$-NN search, i.e. $\mathcal{O}\big(\log\mathcal{N}_{\hat{r}}(X)\big)$.
 
-To determine the asymptotic complexity of leaf-search, we must estimate $\sum_{C \in Q} |C|$, the total cardinality of the clusters returned by tree search.
+To determine the asymptotic complexity of leaf-search, we must estimate $\sum_{C \in Q} |C|$, the total cardinality of the clusters returned by tree-search.
 Since we must examine every point in each such clusters, time complexity of leaf-search is linear in $\sum_{C \in Q} |C|$. 
 Let $\rho_k$ be the distance from the query to the $k^{th}$ nearest neighbor.
 Then, we see that $Q$ is expected to be the set of clusters which overlap with a ball of radius $\rho_k$ around the query.
@@ -536,7 +536,7 @@ By combining the bounds for tree-search and leaf-search, we see that Repeated $\
     \Bigg(
         \underbrace{
             \log~\overbrace{\mathcal{N}_{\hat{r}}(X)}^{\textrm{metric entropy}}
-        }_{\textrm{tree search}}
+        }_{\textrm{tree-search}}
         \ + \ 
         \underbrace{
             \overbrace{k}^{\textrm{output size}}
@@ -678,7 +678,7 @@ Leaf-search exhaustively searches some of the clusters in $Q$ to find the $k$ ne
 We start with the assumption that the LFD near the query does not differ significantly from that of nearby clusters, and we consider leaf clusters with cardinalities near $k$.
 Let $d$ be the LFD in this region.
 Then the number of leaf-clusters in $Q$ is bounded above by $2d$, e.g. we could have a cluster overlapping the query ball at each end of each of $d$ mutually-orthogonal axes.
-In the worst case scenario for tree-search, these leaf clusters would all come from different branches of the tree, and so tree-search looks at $2 \cdot d \cdot \log \mathcal{N}_{\hat{r}}(X)$ clusters.
+In the worst-case scenario for tree-search, these leaf clusters would all come from different branches of the tree, and so tree-search looks at $2 \cdot d \cdot \log \mathcal{N}_{\hat{r}}(X)$ clusters.
 Thus, the asymptotic complexity is
 
 \begin{equation*}

@@ -21,7 +21,10 @@ Figure~\ref{fig:results:scaling-plots} also shows that HNSW and ANNOY have near 
 This, coupled with the prohibitively increasing cost (in terms of memory and time) of building the indices for HNSW and ANNOY, makes these algorithms unsuitable for real-world applications in which the dataset cardinalities are growing exponentially.
 CAKES's tree is orders of magnitude cheaper to build and CAKES's algorithms', while a little slower than HNSW and ANNOY, still show near constant scaling with cardinality in addition to having perfect recall.
 
-We also note that the CAKES algorithm with the best throughput varies by dataset.
+When written with the same notation as used in Section~\ref{sec:methods:knn-search:complexity-of-sieve-methods}, we see that the time complexity of Repeated $\rho$-NN is $\mathcal{O}(\mathcal{T} + \mathcal{L})$, where $\mathcal{T}$ is the time complexity of tree-search and $\mathcal{L}$ is the time complexity of leaf-search. 
+We note that even though, of the three CAKES algorithms, Repeated $\rho$-NN has the lowest time complexity (compare to $\mathcal{O}(\mathcal{T}\log{(\mathcal{T}+\mathcal{L})} + \mathcal{L}\log{(\mathcal{T}+\mathcal{L})})$ for Breadth-First Sieve and $\mathcal{O}(\mathcal{T}\log{\mathcal{T}} + \mathcal{L}\log{k})$ for Depth-First Sieve), it is not always the fastest algorithm. 
+In fact, the fastest algorithm varies by dataset.
+
 For example, on Glove-25, Repeated $\rho$-NN exhibits the highest throughput of any CAKES algorithm, despite having the lowest throughput of the three on Sift and Fashion-Mnist.
 On Silva, Repeated $\rho$-NN is comparable to the other CAKES algorithms at low multipliers, but becomes the fastest at the higher multipliers.
 When we view these results in light of the LFD plots in Figure~\ref{fig:results:lfd-plots}, we realize that Repeated $\rho$-NN appears to be the fastest CAKES algorithm on datasets where a large proportion of the data have a very low LFD, such as Glove-25 and Silva.
