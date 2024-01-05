@@ -117,7 +117,7 @@ This is not surprising, given that FAISS-Flat is a naive linear search algorithm
 We also highlight some differences in indexing time between different datasets.
 With Fashion-Mnist, as shown in Figure~\ref{fig:results:fashion-mnist-indexing}, we observe that the indexing time for CAKES is lower than that of FAISS-IVF for all cardinalities.
 With Glove-25 (see Figure~\ref{fig:results:glove-25-indexing}), however, at cardinalities greater than $10^7$, FAISS-IVF has lower indexing time than CAKES.
-With Sift, CAKEs's indexing time is faster than that of FAISS-IVF until a cardinality of nearly $10^8$, and with the Random dataset, we observe that CAKES has faster indexing time than FAISS-IVF until a cardinality of nearly $10^7$.
+With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardinality of nearly $10^8$, and with the Random dataset, we observe that CAKES has faster indexing time than FAISS-IVF until a cardinality of nearly $10^7$.
 
 
 \begin{figure}
@@ -198,12 +198,12 @@ As with the real datasets, HNSW and ANNOY are the fastest algorithms, and CAKES 
 HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets;
 in particular, with a multiplier of 1, HNSW and ANNOY have recall as low as 0.060 and 0.028 respectively, as reported in Table~\ref{tab:results:qps-and-recall}.
 
-For Silva and RadioML, we benchmarked only CAKES's algorithms because none HNSW, ANNOY or FAISS support neither the required distance functions nor, in the case of RadioML, complex-valued data.
+For Silva and RadioML, we benchmarked only CAKES's algorithms because HNSW, ANNOY and FAISS do not support neither the required distance functions nor, in the case of RadioML, complex-valued data.
 Due to the massive sizes of these datasets, we took random sub-samples of the dataset with lower cardinalities for our benchmarks, rather than augmented versions of the dataset.
 With Silva, as shown in Figure~\ref{fig:results:silva-scaling}, we observe that for all algorithms, throughput seems to linearly decrease as cardinality increases, but that it seems to begin levelling off near cardinality $10^5$.
 Until cardinality near $10^4$, Depth-First Sieve is the fastest CAKES algorithm, but for larger cardinalities, Repeated $\rho$-NN is the fastest CAKES algorithm.
 For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe that throughput declines nearly linearly the three CAKES algorithms exhibit nearly indistinguishable performance for all cardinalities.
-In particular, throughput of CAKES algorithms is identical within three significant figures for all cardinalities.
+In particular, throughput of CAKES's algorithms is identical within three significant figures for all cardinalities.
 
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}

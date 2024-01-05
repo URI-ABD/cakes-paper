@@ -379,7 +379,7 @@ The asymptotic complexity of $\rho$-NN is the same as in~\cite{ishaq2019clustere
         \underbrace{
             \overbrace{ \big| B_X(q, \rho) \big|}^{\textrm{output size}}
             \overbrace{ \left( \frac{\rho + 2 \cdot \hat{r}}{ \rho} \right) ^ d}^{\textrm{scaling factor}}
-        }_{\textrm{leaf search}}
+        }_{\textrm{leaf-search}}
     \Bigg)
     \label{eq:methods:rnn-search-complexity}
 \end{gather}
@@ -419,7 +419,7 @@ In particular, we increase the radius by a factor of
 
 where $\mu$ is the harmonic mean of the LFD of the clusters in $S$.
 We use the harmonic mean to ensure that $\mu$ is not dominated by outlier clusters with very high LFD.
-We allow a maximum increase of 2 to ensure that we do not increase the radius too quickly in any single iteration.
+We cap the radial increase at 2 to ensure that we do not increase the radius too quickly in any single iteration.
 
 Intuitively, the factor by which we increase the radius should be \textit{inversely} related to the number of points found so far. 
 When the LFD at the radius scale from the previous iteration is high, this suggests that the data are densely populated in that region.
@@ -522,7 +522,7 @@ We can rearrange this equation to get
     \frac{\hat{r}}{\rho_k} = \left( \frac{\hat{|C|}}{k} \right)^{\hat{d}^{-1}}
 \end{equation*}
 
-Using this to simplify the term for leaf search in Equation~\ref{eq:methods:rnn-search-complexity}, we get
+Using this to simplify the term for leaf-search in Equation~\ref{eq:methods:rnn-search-complexity}, we get
 
 \begin{equation*}
     k \left( 1 + 2 \cdot \left( \frac{\hat{|C|}}{k} \right) ^ {\hat{d}^{-1}} \right)^d.
@@ -541,7 +541,7 @@ By combining the bounds for tree-search and leaf-search, we see that Repeated $\
         \underbrace{
             \overbrace{k}^{\textrm{output size}}
             \overbrace{\bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d}^{\textrm{scaling factor}}
-        }_{\textrm{leaf search}}
+        }_{\textrm{leaf-search}}
     \Bigg)
     \label{eq:methods:repeated-rnn-complexity}
 \end{gather}
