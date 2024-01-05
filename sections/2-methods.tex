@@ -8,8 +8,8 @@ We define a \textit{distance function} $f : \textbf{X} \times \textbf{X} \mapsto
 A distance value of zero defines an identity among points (i.e. $f(x, y) = 0 \Leftrightarrow x = y$) and larger values indicate greater dissimilarity among the points.
 We also require that the distance function be symmetric (i.e., $f(x, y) = f(y, x) \ \forall \ x, y \in \textbf{X}$).
 In addition to these constraints, if the distance function obeys the triangle inequality (i.e. $f(x, y) \leq f(x, z) + f(z, y) \ \forall \ x, y, z \in \textbf{X}$), then it is also a \textit{distance metric}.
-Under distance metrics, all search algorithms in CAKES are exact.
-For example, Euclidean, Levenshtein~\cite{levenshtein1966binary} and Dynamic Time Warping (DTW)~\cite{muller2007dynamic} distances are all distance metrics while Cosine distance is not a metric because it does not obey the triangle inequality (e.g. consider the points $x = (1, 0)$, $y = (0, 1)$ and $z = (1, 1)$ on the Cartesian plane).
+Similar to~\cite{yu2015entropy}, when used with distance metrics, all search algorithms in CAKES are exact.
+For example, Euclidean, Levenshtein~\cite{levenshtein1966binary} and Dynamic Time Warping (DTW)~\cite{muller2007dynamic} distances are all distance metrics, while Cosine distance is not a metric because it violates the triangle inequality (e.g., consider the points $x = (1, 0)$, $y = (0, 1)$ and $z = (1, 1)$ on the Cartesian plane).
 
 The choice of distance function varies by dataset and domain.
 For example, with neural-network embeddings, one could use Euclidean (L2) or Cosine distance.
@@ -29,7 +29,6 @@ We define LFD at some length scale around a point in the dataset as:
     \frac{\text{log} \left( \frac{|B_X(q, r_1)|}{|B_X(q, r_2)|} \right) }{\text{log} \left( \frac{r_1}{r_2} \right) }
     \label{eq:methods:lfd-original}
 \end{equation}
-
 where $B_X(q, r)$ is the set of points contained in the metric ball of radius $r$ centered at a point $q$ in the dataset $\textbf{X}$.
 Intuitively, LFD measures the rate of change in the number of points in a ball of radius $r$ around a point $q$ as $r$ increases.
 
@@ -38,7 +37,7 @@ To illustrate the difference, consider the SILVA 18S rRNA dataset which contains
 Hence, the \textit{embedding dimension} of this dataset is at least 3,718 and at most 50,000.
 However, due to physical constraints (namely, biological evolution and the chemistry of RNA replication and mutation processes), the data are constrained to a lower-dimensional manifold within this embedding space.
 LFD is an approximation of the dimensionality of that lower-dimensional manifold in the ``vicinity'' of a given point.
-Figure~\ref{fig:results:lfd-plots} illustrates this concept on a variety of datasets, showing how real datasets obey the manifold hypothesis.
+Figure~\ref{fig:results:lfd-plots} illustrates this concept on a variety of datasets, showing how real datasets uphold the manifold hypothesis.
 
 
 \subsection{Clustering}
@@ -114,8 +113,7 @@ During the partitioning process, we also compute (and cache) the LFD of each clu
 \end{algorithm}
 
 Note that Algorithm~\ref{alg:methods:partition} does not necessarily produce a balanced tree.
-In fact, for real datasets, we would expect anything but a balanced tree.
-The imbalance in the tree would be due to the varying density of the sampling in different regions of the manifold and the low dimensional ``shape'' of the manifold itself.
+In fact, for real datasets, we expect anything but a balanced tree; the varying sampling density in different regions of the manifold and the low dimensional ``shape'' of the manifold itself will cause it to be unbalanced.
 The only case in which we would expect a balanced tree is if the dataset were uniformly distributed, e.g. in a $d$-dimensional hyper-cube.
 In this sense, the imbalance in the tree is a feature, not a bug, as it reflects the underlying structure of the data.
 
@@ -206,10 +204,9 @@ This is a significant improvement over exact partitioning and tree-building, whi
 
 Given Algorithm~\ref{alg:methods:partition}, we can now pose the $k$-NN and $\rho$-NN search problems.
 
-Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, we define the $k$-NN search problem which aims to find the $k$ closest points to $q$ in $\textbf{X}$;
-i.e. the set $H$ such that $|H| = k$ and $H = B_X(q, \rho_k)$ where $\rho_k = \max \left\{ f(q, p) \ \forall \ p \in H \right\}$ is the distance from $q$ to the $k^{th}$ nearest neighbor in $\textbf{X}$.
-We also have the $\rho$-NN search problem, which aims to find the all points in $\textbf{X}$ that are no more than a distance $\rho$ from $q$;
-i.e. the set $H = B_X(q, \rho) = \{x \in \textbf{X}: f(q, x) \leq \rho \}$.
+Given a query $q$, along with a distance function $f$ defined on a dataset $\textbf{X}$, we define the $k$-NN search problem, which aims to find the $k$ closest points to $q$ in $\textbf{X}$;
+in other words, $k$-NN search aims to find the set $H$ such that $|H| = k$ and $H = B_X(q, \rho_k)$ where $\rho_k = \max \left\{ f(q, p) \ \forall \ p \in H \right\}$ is the distance from $q$ to the $k^{th}$ nearest neighbor in $\textbf{X}$.
+We also have the $\rho$-NN search problem, which aims to find the all points in $\textbf{X}$ that are no more than a distance $\rho$ from $q$: the set $H = B_X(q, \rho) = \{x \in \textbf{X}: f(q, x) \leq \rho \}$.
 
 Given a cluster $C$, let $c$ be its center and $r$ be its radius.
 Our $\rho$-NN and $k$-NN search algorithms make use of the following properties, as illustrated in Figure~\ref{fig:methods:deltas}.
@@ -296,7 +293,7 @@ Thus,
 Note, in particular, that Equation~\ref{eq:methods:overlapping-children} only requires distances between real points, and so it can be used with any distance function, even when $q'$ and $m$ are not real points or cannot be imputed from the data.
 
 To perform $\rho$-NN search, we first perform a coarse \textit{tree-search}, as outlined in Algorithm~\ref{alg:methods:rnn-search:tree-search}, to find the leaf clusters which overlap with the query ball or any clusters which lie entirely within the query ball.
-Then, for all such clusters, we perform a finer-grained \textit{leaf-search}, as outlined in Algorithm~\ref{alg:methods:rnn-search:leaf-search}, to find all points in which are no more than a distance $\rho$ from the query.
+Then, for all such clusters, we perform a finer-grained \textit{leaf-search}, as outlined in Algorithm~\ref{alg:methods:rnn-search:leaf-search}, to find all points which are no more than a distance $\rho$ from the query.
 
 \begin{algorithm} 
     \caption{tree-search($C$, $q$, $\rho$)} 
@@ -383,7 +380,6 @@ The asymptotic complexity of $\rho$-NN is the same as in~\cite{ishaq2019clustere
     \Bigg)
     \label{eq:methods:rnn-search-complexity}
 \end{gather}
-
 where $\hat{r}$ is the \textit{mean} radius of leaf clusters, $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy at that radius, $B_X(q, \rho)$ is a ball of radius $\rho$ around the query $q$, and $d$ is the LFD around the query at the length scale of $\rho$ and $\rho + 2 \cdot \hat{r}$.
 
 From Algorithm~\ref{alg:methods:rnn-search}, we have that $H = B_X(q, \rho)$, and so $\rho$-NN search performance scales linearly with the size of the output set and exponentially with the LFD around the query.

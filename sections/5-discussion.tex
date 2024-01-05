@@ -21,13 +21,13 @@ Figure~\ref{fig:results:scaling-plots} also shows that HNSW and ANNOY have near 
 This, coupled with the prohibitively increasing cost (in terms of memory and time) of building the indices for HNSW and ANNOY, makes these algorithms unsuitable for real-world applications in which the dataset cardinalities are growing exponentially.
 CAKES's tree is orders of magnitude cheaper to build and CAKES's algorithms, while a little slower than HNSW and ANNOY, still show near constant scaling with cardinality in addition to having perfect recall.
 
-When written with the same notation as used in Section~\ref{sec:methods:knn-search:complexity-of-sieve-methods}, we see that the time complexity of Repeated $\rho$-NN is $\mathcal{O}(\mathcal{T} + \mathcal{L})$, where $\mathcal{T}$ is the time complexity of tree-search and $\mathcal{L}$ is the time complexity of leaf-search. 
+When written with the same notation as used in Section~\ref{sec:methods:knn-search:complexity-of-sieve-methods}, we see that the time complexity of Repeated $\rho$-NN is $\mathcal{O}(\tfrac{\mathcal{T}}{d} + \mathcal{L})$, where $\mathcal{T}$ is the time complexity of tree-search and $\mathcal{L}$ is the time complexity of leaf-search. 
 Even though Repeated $\rho$-NN has the lowest time complexity (compare to $\mathcal{O}(\mathcal{T}\log{(\mathcal{T}+\mathcal{L})} + \mathcal{L}\log{(\mathcal{T}+\mathcal{L})})$ for Breadth-First Sieve and $\mathcal{O}(\mathcal{T}\log{\mathcal{T}} + \mathcal{L}\log{k})$ for Depth-First Sieve) of the three CAKES algorithms, it is not always the fastest algorithm empirically. 
 We believe that some of this discrepancy can be explained by the fact that if Repeated $\rho$-NN significantly ``overshoots'' the correct radius for $k$ hits ($\rho_k$) during tree-search, leaf-search will require looking at more points, rendering the true scaling factor higher than that in~\ref{eq:methods:repeated-rnn-complexity}.
 This overshot can occur when the LFDs of clusters near the query are not concentrated around their expectation. 
 For example, if most clusters near the query have very low LFD except for one anomaly with very high LFD, 
 the harmonic mean LFD $\mu$ can still be low, so the factor of radial increase~\ref{eq:methods:repeated-rnn-factor} may be much larger than necessary for guaranteeing $k$ hits.  
-This suggests that rather than use the reciprocal of the \textit{harmonic} mean LFD in~\ref{eq:methods:repeated-rnn-factor}, we may see better results by using the reciprocal of a mean which is more sensitive to high outliers, such as the geometric mean.
+This suggests that rather than use the reciprocal of the \textit{harmonic} mean LFD in~\ref{eq:methods:repeated-rnn-factor}, we may actually want a mean which is more sensitive to high outliers, such as the geometric mean.
 We leave it as an avenue for future work to characterize when Repeated $\rho$-NN significantly ``overshoots'' $\rho_k$ and to improve upon the factor of radial increase in~\ref{eq:methods:repeated-rnn-factor} so that this overshooting occurs less frequently and with less severity.
 
 As the previous paragraph suggests, the fastest CAKES algorithm varies by dataset.
