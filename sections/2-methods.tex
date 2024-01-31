@@ -33,7 +33,7 @@ where $B_X(q, r)$ is the set of points contained in the metric ball of radius $r
 Intuitively, LFD measures the rate of change in the number of points in a ball of radius $r$ around a point $q$ as $r$ increases.
 
 We stress that this concept differs from the \textit{embedding dimension} of a dataset.
-To illustrate the difference, consider the SILVA 18S rRNA dataset which contains which contains genomes with unaligned lengths of up to 3,718 base pairs and aligned length of 50,000 base pairs.
+To illustrate the difference, consider the SILVA 18S rRNA dataset which contains genomes with unaligned lengths of up to 3,718 base pairs and aligned length of 50,000 base pairs.
 Hence, the \textit{embedding dimension} of this dataset is at least 3,718 and at most 50,000.
 However, due to physical constraints (namely, biological evolution and the chemistry of RNA replication and mutation processes), the data are constrained to a lower-dimensional manifold within this embedding space.
 LFD is an approximation of the dimensionality of that lower-dimensional manifold in the ``vicinity'' of a given point.
@@ -133,7 +133,7 @@ One may improve this memory overhead to $\mathcal{O}(n)$ by only storing indices
 This approach, however, introduces a time cost of $\mathcal{O}(n \log n)$ whenever we need to find the indices for a non-leaf cluster (because it requires a traversal of the subtree rooted at that cluster).
 
 In this work, we introduce a new approach wherein, after building the cluster tree, we reorder the dataset so that points are stored in a depth-first order.
-Then, within each cluster, we need only store its \textit{cardinality} and an \textit{offset} to access the its points from the dataset.
+Then, within each cluster, we need only store its \textit{cardinality} and an \textit{offset} to access its points from the dataset.
 The root cluster has an offset of zero and a cardinality equal to the number of points in the dataset.
 A left child has the same offset as that of its parent, and the corresponding right child has an offset equal to the left child's offset plus the left child's cardinality.
 
