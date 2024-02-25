@@ -1,71 +1,16 @@
-% \documentclass[acmsmall, review]{acmart}
+\documentclass[review,onefignum,onetabnum]{siamonline220329}
 % below is for arxiv
-\documentclass{article}
-\pdfoutput=1
-\usepackage{arxiv}
+% \documentclass{article}
+% \pdfoutput=1
+% \usepackage{arxiv}
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
-\AtBeginDocument{%
-  \providecommand\BibTeX{{%
-    Bib\TeX}}}
-
-%% Rights management information.  This information is sent to you
-%% when you complete the rights form.  These commands have SAMPLE
-%% values in them; it is your responsibility as an author to replace
-%% the commands and values with those provided to you when you
-%% complete the rights form.
-% \setcopyright{acmlicensed}
-% \copyrightyear{2023}
-% \acmYear{2023}
-% \acmDOI{XXXXXXX.XXXXXXX}
-
-
-%%
-%% These commands are for a JOURNAL article.
-% \acmJournal{TALG}
-% \acmVolume{37}
-% \acmNumber{4}
-% \acmArticle{111}
-% \acmMonth{8}
-
-%%
-%% Submission ID.
-%% Use this when submitting an article to a sponsored event. You'll
-%% receive a unique submission ID from the organizers
-%% of the event, and this ID should be used as the parameter to this command.
-%%\acmSubmissionID{123-A56-BU3}
-
-%%
-%% For managing citations, it is recommended to use bibliography
-%% files in BibTeX format.
-%%
-%% You can then either use BibTeX with the ACM-Reference-Format style,
-%% or BibLaTeX with the acmnumeric or acmauthoryear sytles, that include
-%% support for advanced citation of software artefact from the
-%% biblatex-software package, also separately available on CTAN.
-%%
-%% Look at the sample-*-biblatex.tex files for templates showcasing
-%% the biblatex styles.
-%%
-
-%%
-%% The majority of ACM publications use numbered citations and
-%% references.  The command \citestyle{authoryear} switches to the
-%% "author year" style.
-%%
-%% If you are preparing content for an event
-%% sponsored by ACM SIGGRAPH, you must use the "author year" style of
-%% citations and references.
-%% Uncommenting
-%% the next command will enable that style.
-%%\citestyle{acmauthoryear}
-
-
-%%
-%% end of the preamble, start of the body of the document source.
-
-
-% \usepackage{arxiv} # uncomment for preprint
+\ifpdf
+\hypersetup{
+  pdftitle={Let them have CAKES: A Cutting-Edge Algorithm for Scalable, Efficient, and Exact Search on Big Data},
+  pdfauthor={M. E. Prior, T. J. Howard III, O. McLaughlin, T. Ferguson, N. Ishaq, N. M. Daniels}
+}
+\fi
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
@@ -84,7 +29,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{mathtools}
-\usepackage{amsthm}
+% \usepackage{amsthm}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{hyperref}
@@ -118,18 +63,14 @@
 % http://www.ctan.org/pkg/amsmath
 
 \usepackage{placeins}
-% \usepackage{algpseudocode}
-
-% \algnewcommand\algorithmicforeach{\textbf{foreach}}
-% \algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
 
 \usepackage{hyperref}
 
-% Attempt to make hyperref and algorithmic work together better:
 
+\input{cakes_shared}
 \begin{document}
 % \title{CLAM-Accelerated K-Nearest Neighbors Entropy-Scaling Search of Large High-Dimensional Datasets via an Actualization of the Manifold Hypothesis}
-\title{Let them have CAKES: A Cutting-Edge Algorithm for Scalable, Efficient, and Exact Search on Big Data}
+% \title{Let them have CAKES: A Cutting-Edge Algorithm for Scalable, Efficient, and Exact Search on Big Data}
 % \author{Morgan E. Prior}
 % \email{meprior424@gmail.com}
 % \orcid{0009-0003-1553-1672}
@@ -198,43 +139,43 @@
 %   \postcode{02881}
 % }
 
-\author{
-    Morgan E. Prior \\
-    Department of Mathematics \\
-    University of Rhode Island \\
-    Kingston, RI \\
-    \texttt{meprior424@gmail.com} \\
-    \And
-    Thomas J. Howard III \\
-    Department of Computer Science and Statistics\\
-    University of Rhode Island\\
-    Kingston, RI\\
-    \texttt{thoward27@uri.edu} \\
-    \And
-    Oliver McLaughlin \\
-    Department of Computer Science and Statistics\\
-    University of Rhode Island\\
-    Kingston, RI\\
-    \texttt{olwmc@gmail.com} \\
-    \And
-    Terrence Ferguson \\
-    Department of Computer Science and Statistics\\
-    University of Rhode Island\\
-    Kingston, RI\\
-    \texttt{fergusontr@gmail.com} \\
-    \And
-    Najib Ishaq \\
-    Department of Computer Science and Statistics\\
-    University of Rhode Island\\
-    Kingston, RI\\
-    \texttt{najib\_ishaq@zoho.com} \\
-    \And
-    Noah M. Daniels \\
-    Department of Computer Science and Statistics\\
-    University of Rhode Island\\
-    Kingston, RI\\
-    \texttt{noah\_daniels@uri.edu} \\
-}
+% \author{
+%     Morgan E. Prior \\
+%     Department of Mathematics \\
+%     University of Rhode Island \\
+%     Kingston, RI \\
+%     \texttt{meprior424@gmail.com} \\
+%     \And
+%     Thomas J. Howard III \\
+%     Department of Computer Science and Statistics\\
+%     University of Rhode Island\\
+%     Kingston, RI\\
+%     \texttt{thoward27@uri.edu} \\
+%     \And
+%     Oliver McLaughlin \\
+%     Department of Computer Science and Statistics\\
+%     University of Rhode Island\\
+%     Kingston, RI\\
+%     \texttt{olwmc@gmail.com} \\
+%     \And
+%     Terrence Ferguson \\
+%     Department of Computer Science and Statistics\\
+%     University of Rhode Island\\
+%     Kingston, RI\\
+%     \texttt{fergusontr@gmail.com} \\
+%     \And
+%     Najib Ishaq \\
+%     Department of Computer Science and Statistics\\
+%     University of Rhode Island\\
+%     Kingston, RI\\
+%     \texttt{najib\_ishaq@zoho.com} \\
+%     \And
+%     Noah M. Daniels \\
+%     Department of Computer Science and Statistics\\
+%     University of Rhode Island\\
+%     Kingston, RI\\
+%     \texttt{noah\_daniels@uri.edu} \\
+% }
 
 \maketitle
 
@@ -260,22 +201,12 @@
   We provide a Rust implementation of CAKES.
 \end{abstract}
 
-% \begin{CCSXML}
-% <ccs2012>
-%    <concept>
-%        <concept_id>10003752.10003809</concept_id>
-%        <concept_desc>Theory of computation~Design and analysis of algorithms</concept_desc>
-%        <concept_significance>500</concept_significance>
-%        </concept>
-%  </ccs2012>
-% \end{CCSXML}
-% \ccsdesc[500]{Theory of computation~Design and analysis of algorithms}
-%%
-%% Keywords. The author(s) should pick words that accurately describe
-%% the work being presented. Separate the keywords with commas.
 \keywords{K-NN Search, Manifold Hypothesis, Sub-Linear Algorithms, Big Data}
 
-
+% REQUIRED
+\begin{MSCcodes}
+68P05, 68P10
+\end{MSCcodes}
 %%
 %% This command processes the author and affiliation and title
 %% information and builds the first part of the formatted document.
@@ -293,8 +224,8 @@
 
     % \afterpage{\clearpage}
     \FloatBarrier
-    \bibliographystyle{IEEEtran}
+    \bibliographystyle{siamplain}
     \bibliography{references}
-    \newpage
-    \input{supplement.tex}
+    % \newpage
+    % \input{supplement.tex}
 \end{document}
