@@ -91,24 +91,24 @@ During the partitioning process, we also compute (and cache) the LFD of each clu
 \begin{algorithm} % enter the algorithm environment
     \caption{Partition($C$, $criteria$)} % give the algorithm a caption
     \label{alg:methods:partition} % and a label for \ref{} commands later in the document
-    \begin{algorithmic} % enter the algorithmic environment
-        \REQUIRE $C$, a cluster
-        \REQUIRE $criteria$, user-specified stopping criteria
+    \begin{algorithmic}[0] % enter the algorithmic environment
+        \Require $C$, a cluster
+        \Require $criteria$, user-specified stopping criteria
 
-        \STATE $seeds \Leftarrow$ random sample of $\left\lceil \sqrt{|C|} \right\rceil$ points from $C$
-        \STATE $c \Leftarrow$ geometric median of $seeds$
-        \STATE $l \Leftarrow \argmax f(c, x) \ \forall \ x \in C$
-        \STATE $r \Leftarrow \argmax f(l, x) \ \forall \ x \in C$
-        \STATE $L \Leftarrow \{x \ | \ x \in C \land f(l, x) \le f(r, x)\}$
-        \STATE $R \Leftarrow \{x \ | \ x \in C \land f(r, x) < f(l, x)\}$
+        \State $seeds \Leftarrow$ random sample of $\left\lceil \sqrt{|C|} \right\rceil$ points from $C$
+        \State $c \Leftarrow$ geometric median of $seeds$
+        \State $l \Leftarrow \argmax f(c, x) \ \forall \ x \in C$
+        \State $r \Leftarrow \argmax f(l, x) \ \forall \ x \in C$
+        \State $L \Leftarrow \{x \ | \ x \in C \land f(l, x) \le f(r, x)\}$
+        \State $R \Leftarrow \{x \ | \ x \in C \land f(r, x) < f(l, x)\}$
         
-        \IF{$|L| > 1$ \textbf{and} $L$ satisfies $criteria$}
-            \STATE Partition($L$, $criteria$)
-        \ENDIF
+        \If{$|L| > 1$ \textbf{and} $L$ satisfies $criteria$}
+            \State Partition($L$, $criteria$)
+        \EndIf
         
-        \IF{$|R| > 1$ \textbf{and} $R$ satisfies $criteria$}
-            \STATE Partition($R$, $criteria$)
-        \ENDIF
+        \If{$|R| > 1$ \textbf{and} $R$ satisfies $criteria$}
+            \State Partition($R$, $criteria$)
+        \EndIf
     \end{algorithmic}
 \end{algorithm}
 
@@ -298,55 +298,55 @@ Then, for all such clusters, we perform a finer-grained \textit{leaf-search}, as
 \begin{algorithm} 
     \caption{tree-search($C$, $q$, $\rho$)} 
     \label{alg:methods:rnn-search:tree-search} 
-    \begin{algorithmic}
-        \REQUIRE $C$, a cluster
-        \REQUIRE $q$, a query
-        \REQUIRE $\rho$, a search radius
+    \begin{algorithmic}[0]
+        \Require $C$, a cluster
+        \Require $q$, a query
+        \Require $\rho$, a search radius
 
-        \IF{$C$ is a leaf \textbf{or} $\delta^+_C \leq \rho$}
-            \STATE \textbf{return} $\{C\}$
-        \ELSE
+        \If{$C$ is a leaf \textbf{or} $\delta^+_C \leq \rho$}
+            \State \textbf{return} $\{C\}$
+        \Else
 
-            \STATE $[l, r]$ $\Leftarrow$ \textit{pole}s of $C$
-            \STATE $[L, R]$ $\Leftarrow$ \textit{children} of $C$
+            \State $[l, r]$ $\Leftarrow$ \textit{pole}s of $C$
+            \State $[L, R]$ $\Leftarrow$ \textit{children} of $C$
 
-            \IF{$\overline{q l} < \overline{q r \vphantom{l}}$}
-                \STATE $[r, l] \Leftarrow [l, r]$
-                \STATE $[R, L] \Leftarrow [L, R]$
-            \ENDIF
+            \If{$\overline{q l} < \overline{q r \vphantom{l}}$}
+                \State $[r, l] \Leftarrow [l, r]$
+                \State $[R, L] \Leftarrow [L, R]$
+            \EndIf
 
-            \IF{$(\overline{q l} + \overline{q r \vphantom{l}})(\overline{q l} - \overline{q r \vphantom{l}}) \leq 2 \cdot \overline{l r} \cdot \rho$}
-                \STATE \textbf{return} tree-search($L, q, \rho$) $\cup$ tree-search($R, q, \rho$)
-            \ELSE
-                \STATE \textbf{return} tree-search($R, q, \rho$)
-            \ENDIF
-        \ENDIF
+            \If{$(\overline{q l} + \overline{q r \vphantom{l}})(\overline{q l} - \overline{q r \vphantom{l}}) \leq 2 \cdot \overline{l r} \cdot \rho$}
+                \State \textbf{return} tree-search($L, q, \rho$) $\cup$ tree-search($R, q, \rho$)
+            \Else
+                \State \textbf{return} tree-search($R, q, \rho$)
+            \EndIf
+        \EndIf
     \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm} 
     \caption{leaf-search($S$, $q$, $\rho$)} 
     \label{alg:methods:rnn-search:leaf-search} 
-    \begin{algorithmic}
-        \REQUIRE $S$, a set of clusters
-        \REQUIRE $q$, a query
-        \REQUIRE $\rho$, a search radius
+    \begin{algorithmic}[0]
+        \Require $S$, a set of clusters
+        \Require $q$, a query
+        \Require $\rho$, a search radius
 
-        \STATE $H \Leftarrow \emptyset$, a set of hits
+        \State $H \Leftarrow \emptyset$, a set of hits
 
-        \FOR{$C \in S$}
-            \IF{$\delta^+_C \leq \rho$}
-                \STATE $H$ $\Leftarrow$ $H \cup \{C\}$
-            \ELSE
-                \FOR{$p \in C$}
-                    \IF{$f(p, q) \leq \rho$}
-                        \STATE $H$ $\Leftarrow$ $H \cup \{p\}$
-                    \ENDIF
-                \ENDFOR
-            \ENDIF
-        \ENDFOR
+        \For{$C \in S$}
+            \If{$\delta^+_C \leq \rho$}
+                \State $H$ $\Leftarrow$ $H \cup \{C\}$
+            \Else
+                \For{$p \in C$}
+                    \If{$f(p, q) \leq \rho$}
+                        \State $H$ $\Leftarrow$ $H \cup \{p\}$
+                    \EndIf
+                \EndFor
+            \EndIf
+        \EndFor
 
-        \STATE \textbf{return} $H$
+        \State \textbf{return} $H$
     \end{algorithmic}
 \end{algorithm}
 
@@ -354,13 +354,13 @@ Then, for all such clusters, we perform a finer-grained \textit{leaf-search}, as
     \caption{$\rho$-NN-search($root$, $q$, $\rho$)} 
     \label{alg:methods:rnn-search} 
     \begin{algorithmic}
-        \REQUIRE $root$, the root cluster
-        \REQUIRE $q$, a query
-        \REQUIRE $\rho$, a search radius
+        \Require $root$, the root cluster
+        \Require $q$, a query
+        \Require $\rho$, a search radius
 
-        \STATE $S$ $\Leftarrow$ tree-search($root$, $q$, $\rho$)
-        \STATE $H$ $\Leftarrow$ leaf-search($S$, $q$, $\rho$)
-        \STATE \textbf{return} $H$
+        \State $S$ $\Leftarrow$ tree-search($root$, $q$, $\rho$)
+        \State $H$ $\Leftarrow$ leaf-search($S$, $q$, $\rho$)
+        \State \textbf{return} $H$
     \end{algorithmic}
 \end{algorithm}
 
@@ -430,33 +430,33 @@ We perform $\rho$-NN search with this radius and return the $k$ nearest neighbor
 \begin{algorithm} % enter the algorithm environment
     \caption{Repeated $\rho$-NN($root$, $q$, $k$)} % give the algorithm a caption
     \label{alg:methods:repeated-rnn} % and a label for \ref{} commands later in the document
-    \begin{algorithmic} % enter the algorithmic environment
-        \REQUIRE $root$, the root cluster
-        \REQUIRE $q$, a query
-        \REQUIRE $k$, the number of neighbors to find
+    \begin{algorithmic}[0] % enter the algorithmic environment
+        \Require $root$, the root cluster
+        \Require $q$, a query
+        \Require $k$, the number of neighbors to find
 
-        \STATE $r \Leftarrow radius$ of the $root$ cluster
-        \STATE $r \Leftarrow$ $\frac{r}{|root|}$
+        \State $r \Leftarrow radius$ of the $root$ cluster
+        \State $r \Leftarrow$ $\frac{r}{|root|}$
 
-        \ALOOP{}
-            \STATE $Q \Leftarrow$ tree-search($root$, $q$, $r$)
-            \IF{$Q \neq \emptyset$}
-                \STATE \textbf{break}
-            \ENDIF
-            \STATE $r \Leftarrow 2 \cdot r$
-        \ENDALOOP
+        \Loop
+            \State $Q \Leftarrow$ tree-search($root$, $q$, $r$)
+            \If{$Q \neq \emptyset$}
+                \State \textbf{break}
+            \EndIf
+            \State $r \Leftarrow 2 \cdot r$
+        \EndLoop
 
-        \ALOOP{}
-            \IF{$\sum_{C \in Q} |C| >= k$}
-                \STATE \textbf{break}
-            \ENDIF
-            \STATE $\mu \Leftarrow \frac{|S|}{\sum_{C \in Q} \frac{1}{LFD(C)}}$
-            \STATE $r \Leftarrow r \cdot \min \left( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu^{-1}} \right)$
-            \STATE $S \Leftarrow$ tree-search($root$, $q$, $r$)
-        \ENDLOOP
+        \Loop
+            \If{$\sum_{C \in Q} |C| >= k$}
+                \State \textbf{break}
+            \EndIf
+            \State $\mu \Leftarrow \frac{|S|}{\sum_{C \in Q} \frac{1}{LFD(C)}}$
+            \State $r \Leftarrow r \cdot \min \left( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu^{-1}} \right)$
+            \State $S \Leftarrow$ tree-search($root$, $q$, $r$)
+        \EndLoop
 
-        \STATE $H \Leftarrow$ sort($\rho$-NN-search($root$, $q$, $r$))
-        \STATE \textbf{return} $H[.. k]$
+        \State $H \Leftarrow$ sort($\rho$-NN-search($root$, $q$, $r$))
+        \State \textbf{return} $H[.. k]$
     \end{algorithmic}
 \end{algorithm}
 
@@ -570,41 +570,41 @@ This process is described in Algorithm~\ref{alg:methods:bredth-first-sieve}.
 \begin{algorithm} % enter the algorithm environment
     \caption{Breadth-First Sieve($root$, $q$, $k$)} % give the algorithm a caption
     \label{alg:methods:bredth-first-sieve} % and a label for \ref{} commands later in the document
-    \begin{algorithmic} % enter the algorithmic environment
-        \REQUIRE $root$, the root cluster
-        \REQUIRE $q$, a query
-        \REQUIRE $k$, the number of neighbors to find
+    \begin{algorithmic}[0] % enter the algorithmic environment
+        \Require $root$, the root cluster
+        \Require $q$, a query
+        \Require $k$, the number of neighbors to find
 
-        \STATE $c \Leftarrow$ \textit{center} of $root$
-        \STATE $Q \Leftarrow$ \{ ($root$, $\delta^{+}_{root}$, $|root| - 1$), ($c$, $\delta_{root}$, 1) \}
+        \State $c \Leftarrow$ \textit{center} of $root$
+        \State $Q \Leftarrow$ \{ ($root$, $\delta^{+}_{root}$, $|root| - 1$), ($c$, $\delta_{root}$, 1) \}
 
-        \ALOOP{}
-            \IF{$k = \sum_{(\_, \_, m) \in Q} m$}
-                \STATE \textbf{break}
-            \ENDIF
-            \STATE $\tau \Leftarrow$ QuickSelect($Q$, $k$)
-            \FOR{$(p, \delta^{+}_{p}, m) \in Q$}
-                \IF{$\delta^{-}_{p} > \tau$}
-                    \STATE $Q \Leftarrow Q \setminus \{ (p, \delta^{+}_{p}, m) \}$
-                \ENDIF
-            \ENDFOR
-            \FOR{$(p, \delta^{+}_{p}, m) \in Q$}
-                \STATE $Q \Leftarrow Q \setminus \{ (p, \delta^{+}_{p}, m) \}$
-                \IF{$p$ is a point}
-                    \STATE \textbf{continue}
-                \ELSIF{$p$ is a leaf}
-                    \FOR{$c \in p$}
-                        \STATE $Q \Leftarrow Q \cup \{ (c, \delta_{c}, 1) \}$
-                    \ENDFOR
-                \ELSE
-                    \STATE $[L, R] \Leftarrow$ children of $p$
-                    \STATE $Q \Leftarrow Q \cup \{ (L, \delta^{+}_{L}, |L| - 1), (L_c, \delta_{L}, 1) \}$
-                    \STATE $Q \Leftarrow Q \cup \{ (R, \delta^{+}_{R}, |R| - 1), (R_c, \delta_{R}, 1) \}$
-                \ENDIF
-            \ENDFOR
-        \ENDALOOP
+        \Loop
+            \If{$k = \sum_{(\_, \_, m) \in Q} m$}
+                \State \textbf{break}
+            \EndIf
+            \State $\tau \Leftarrow$ QuickSelect($Q$, $k$)
+            \For{$(p, \delta^{+}_{p}, m) \in Q$}
+                \If{$\delta^{-}_{p} > \tau$}
+                    \State $Q \Leftarrow Q \setminus \{ (p, \delta^{+}_{p}, m) \}$
+                \EndIf
+            \EndFor
+            \For{$(p, \delta^{+}_{p}, m) \in Q$}
+                \State $Q \Leftarrow Q \setminus \{ (p, \delta^{+}_{p}, m) \}$
+                \If{$p$ is a point}
+                    \State \textbf{continue}
+                \ElsIf{$p$ is a leaf}
+                    \For{$c \in p$}
+                        \State $Q \Leftarrow Q \cup \{ (c, \delta_{c}, 1) \}$
+                    \EndFor
+                \Else
+                    \State $[L, R] \Leftarrow$ children of $p$
+                    \State $Q \Leftarrow Q \cup \{ (L, \delta^{+}_{L}, |L| - 1), (L_c, \delta_{L}, 1) \}$
+                    \State $Q \Leftarrow Q \cup \{ (R, \delta^{+}_{R}, |R| - 1), (R_c, \delta_{R}, 1) \}$
+                \EndIf
+            \EndFor
+        \EndLoop
 
-        \STATE \textbf{return} $Q$
+        \State \textbf{return} $Q$
     \end{algorithmic}
 \end{algorithm}
 
@@ -632,30 +632,30 @@ This leaves $H$ containing exactly the $k$ nearest neighbors to the query.
 \begin{algorithm} 
     \caption{Depth-First Sieve($root$, $q$, $k$)} 
     \label{alg:methods:depth-first-sieve} 
-    \begin{algorithmic}
-        \REQUIRE $root$, the root cluster
-        \REQUIRE $q$, a query
-        \REQUIRE $k$, the number of neighbors to find
+    \begin{algorithmic}[0]
+        \Require $root$, the root cluster
+        \Require $q$, a query
+        \Require $k$, the number of neighbors to find
 
-        \STATE{$Q \Leftarrow [root]$, a min-priority queue by $\delta^{-}$}
-        \STATE{$H \Leftarrow []$, a max-priority queue by $\delta$}
+        \State{$Q \Leftarrow [root]$, a min-priority queue by $\delta^{-}$}
+        \State{$H \Leftarrow []$, a max-priority queue by $\delta$}
 
-        \WHILE{$|H| < k$ \textbf{or} $H.peek.\delta \geq Q.peek.\delta^{-}$}
-            \WHILE{$\neg (Q.peek$ is a leaf)}
-                \STATE{$C \Leftarrow Q.pop$, the closest cluster}
-                \STATE{$[L, R] \Leftarrow$ children of $C$}
-                \STATE{$Q.push(L)$}
-                \STATE{$Q.push(R)$}
-            \ENDWHILE
-            \STATE{$leaf \Leftarrow Q.pop$}
-            \FOR{$p \in leaf$}
-                \STATE{$H.push(p)$}
-            \ENDFOR
-            \WHILE{$|H| > k$}
-                \STATE{$H.pop$}
-            \ENDWHILE
-        \ENDWHILE
-        \STATE Return $H$
+        \While{$|H| < k$ \textbf{or} $H.peek.\delta \geq Q.peek.\delta^{-}$}
+            \While{$\neg (Q.peek$ is a leaf)}
+                \State{$C \Leftarrow Q.pop$, the closest cluster}
+                \State{$[L, R] \Leftarrow$ children of $C$}
+                \State{$Q.push(L)$}
+                \State{$Q.push(R)$}
+            \EndWhile
+            \State{$leaf \Leftarrow Q.pop$}
+            \For{$p \in leaf$}
+                \State{$H.push(p)$}
+            \EndFor
+            \While{$|H| > k$}
+                \State{$H.pop$}
+            \EndWhile
+        \EndWhile
+        \State Return $H$
     \end{algorithmic}
 \end{algorithm}
 

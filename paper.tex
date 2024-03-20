@@ -12,6 +12,8 @@
 }
 \fi
 
+
+
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
 % \usepackage{hyperref}       % hyperlinks
@@ -30,8 +32,28 @@
 \usepackage{amssymb}
 \usepackage{mathtools}
 % \usepackage{amsthm}
-\usepackage{algorithm}
-\usepackage{algorithmic}
+% \usepackage{algorithm}
+% \usepackage{algorithmicx}
+
+
+% \newcommand{\Break}{\State \textbf{break} }
+% \algblockdefx[Loop]{Loop}{EndLoop}[1][]{\textbf{Loop} #1}{\textbf{End Loop}}
+
+% \makeatletter
+% \newcommand{\ALOOP}[1]{
+% \ALC@it\algorithmicloop\ #1
+%   \begin{ALC@loop}
+% }
+% \newcommand{\ENDALOOP}
+% {\end{ALC@loop}\ALC@it\algorithmicendloop}
+% \renewcommand{\algorithmicrequire}{\textbf{Input:}}
+% \renewcommand{\algorithmicensure}{\textbf{Output:}}
+% \newcommand{\algorithmicbreak}{\textbf{break}}
+% \newcommand{\BREAK}{\STATE \algorithmicbreak}
+% \makeatother
+
+
+
 \usepackage{hyperref}
 \usepackage{xr}
 % \usepackage{subfig}
@@ -44,15 +66,7 @@
 \DeclareMathOperator{\score}{score}
 
 % Algorithmic modifications for loop and break
-\makeatletter
-\newcommand{\ALOOP}[1]{\ALC@it\algorithmicloop\ #1%
-  \begin{ALC@loop}}
-\newcommand{\ENDALOOP}{\end{ALC@loop}\ALC@it\algorithmicendloop}
-\renewcommand{\algorithmicrequire}{\textbf{Input:}}
-\renewcommand{\algorithmicensure}{\textbf{Output:}}
-\newcommand{\algorithmicbreak}{\textbf{break}}
-\newcommand{\BREAK}{\STATE \algorithmicbreak}
-\makeatother
+
 
 % Note that the amsmath package sets \interdisplaylinepenalty to 10000
 % thus preventing page breaks from occurring within multiline equations. Use:
@@ -200,8 +214,8 @@
   We conclude that CAKES is a highly efficient and scalable algorithm for exact $k$-NN search on Big Data.
   We provide a Rust implementation of CAKES.
 \end{abstract}
-
-\keywords{K-NN Search, Manifold Hypothesis, Sub-Linear Algorithms, Big Data}
+% 
+% \keywords{K-NN Search, Manifold Hypothesis, Sub-Linear Algorithms, Big Data}
 
 % REQUIRED
 \begin{MSCcodes}
