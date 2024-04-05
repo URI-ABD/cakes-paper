@@ -11,7 +11,7 @@ Figure~\ref{fig:results:lfd-plots} illustrates the trends in LFD for (the non-au
 The horizontal axis denotes the depth in the cluster tree, and the vertical axis denotes the LFD (as calculated by Equation~\ref{eq:methods:lfd-simplified}) of clusters at that depth.
 We plot lines for the 5$^{th}$, 25$^{th}$, 50th, 75$^{th}$ and 95$^{th}$ percentiles of LFD, as well as the minimum and maximum LFD at each depth.
 In order to have the plots to best reflect the distribution of LFDs across the entire \textit{dataset}, we compute percentiles counting each cluster as many times as its cardinality.
-In other words, if, for some dataset, the 95$^{th}$ percentile of LFD at depth 40 is 3, this means that 95\% of the total points in clusters at depth 40 belong to clusters whose LFD is at most 3.
+In other words, if, for some dataset, the 95$^{th}$ percentile of LFD at depth 40 is 3, this means that 95\% of the points in clusters at depth 40 belong to clusters whose LFD is at most 3.
 
 Figure~\ref{fig:results:fashion-mnist-lfd} shows the LFD by depth for Fashion-Mnist.
 We observe that until about depth 5, the LFD is low, as the 95$^{th}$ percentile (orange plotted line) is less than 4, and the median (red line) is just above 2.
@@ -38,7 +38,7 @@ All percentile lines seem to decrease linearly with depth.
 The LFD of approximately 20 at depth 0 (i.e. the root cluster) is what we expect for this random dataset.
 To elaborate, the distribution of points in such a dataset should reflect the curse of dimensionality, i.e. the fact that in high dimensional spaces, the minimum and maximum pairwise distances between any two points are approximately equal.
 As a result, the root cluster's radius $r$, which reflects the maximum distance between the center $c$ and any other point, should not differ significantly from the distance between the center and its closest point.
-A consequence of this is that, with high probability, every point in the root cluster is farther away from the center than half the radius of the root cluster;
+A consequence of this is that, with high probability, for every point in the root cluster, its distance from $c$ is greater $\tfrac{r}{2}$;
 $B_X(c, \tfrac{r}{2})$ contains only $c$ while $B_X(c, r)$ contains the entire dataset.
 Given our definition of LFD in Equation~\ref{eq:methods:lfd-original}, this means that the LFD of the root cluster is approximately $\log_2(\frac{|X|}{1}) = \log_2(1,000,000) \approx 20$, which is what we observe in Figure~\ref{fig:results:random-lfd}.
 
@@ -111,12 +111,12 @@ Hereafter, when we refer to the ``indexing time'' of an algorithm, we are implic
 On all datasets, we observe that the indexing time for CAKES increases roughly linearly as cardinality increases.
 HNSW and ANNOY have the slowest indexing times across all the algorithms we benchmarked for each of the four datasets, at each cardinality. 
 On some datasets, HNSW and ANNOY exhibit indexing times which are orders of magnitude slower than that of CAKES.
-FAISS-Flat also exhibits the fastest indexing time on each dataset. 
-This is not surprising, given that FAISS-Flat is a naive linear search algorithm and is not building an index.
+FAISS-Flat exhibits the fastest indexing time on each dataset. 
+This is not surprising, however, given that FAISS-Flat is a na\"{\i}ve linear search algorithm and is not building an index.
 
 We also highlight some differences in indexing time between different datasets.
-With Fashion-Mnist, as shown in Figure~\ref{fig:results:fashion-mnist-indexing}, we observe that the indexing time for CAKES is lower than that of FAISS-IVF for all cardinalities.
-With Glove-25 (see Figure~\ref{fig:results:glove-25-indexing}), however, at cardinalities greater than $10^7$, FAISS-IVF has lower indexing time than CAKES.
+With Fashion-Mnist, as shown in Figure~\ref{fig:results:fashion-mnist-indexing}, we observe that the indexing time for CAKES is faster than that of FAISS-IVF for all cardinalities.
+With Glove-25 (see Figure~\ref{fig:results:glove-25-indexing}), however, at cardinalities greater than $10^7$, FAISS-IVF has faster indexing time than CAKES.
 With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardinality of nearly $10^8$, and with the Random dataset, we observe that CAKES has faster indexing time than FAISS-IVF until a cardinality of nearly $10^7$.
 
 

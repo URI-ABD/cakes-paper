@@ -4,12 +4,12 @@
 Researchers are collecting data at an unprecedented scale.
 In many fields, the sizes of datasets are growing exponentially, and this increase in the rate of data collection outpaces the rate of improvements in computing performance as predicted by Moore's Law~\cite{kahn2011future}.
 This indicates that computer architecture will not ``catch up'' to computational needs in the near future.
-Often dubbed ``the Big Data explosion,'' this phenomenon has created a need for better algorithms for analyzing large datasets.
+Often dubbed ``the Big Data explosion,'' this phenomenon has created a need for better algorithms to analyze large datasets.
 
 Examples of large datasets include genomic databases, time-series data such as radio frequency signals, and neural network embeddings.
 Large language models such as GPT~\cite{2020arXiv200514165B, OpenAI2023GPT4TR} and LLAMA-2~\cite{Touvron2023Llama2O}, and image embedding models~\cite{radford2021learning, dosovitskiy2020image} are a common source of neural network embeddings.
 These embeddings are often high-dimensional, and the sizes of training and inference datasets for such networks are growing exponentially.
-Among biological datasets, the GreenGenes project~\cite{desantis2006greengenes} provides a multiple-sequence alignment of over one million bacterial 16S sequences, each 7,682 characters in length while SILVA 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of approximately 2.25 million genomes with an aligned length of 50,000 letters.
+Among biological datasets, the GreenGenes project~\cite{desantis2006greengenes} provides a multiple-sequence alignment of over one million bacterial 16S sequences, each 7,682 characters in length, while SILVA 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of approximately 2.25 million genomes with an aligned length of 50,000 letters.
 Among time-series datasets, the RadioML dataset~\cite{oshea2018radioml} contains approximately 2.55 million samples of synthetically generated signal captures of different modulation modes over a range of SNR levels.
 
 Many researchers are especially interested in similarity search on these datasets. 
@@ -26,7 +26,7 @@ In contrast, an \textit{exact} search algorithm exhibits perfect recall.
 $k$-NN search is one of the most ubiquitous classification and recommendation methods in use~\cite{fix1952discriminatory, cover1967nearest}.
 Na\"{i}ve implementations of $k$-NN search, whose time complexity is linear in the dataset's cardinality, prove prohibitively slow for large datasets because their cardinalities are growing exponentially.
 While fast algorithms for $k$-NN search on large datasets do exist, most do not exploit the geometric and topological structure inherent in these datasets.
-Further, such algorithms are often approximate and while approximate search may be sufficient for some applications, the need for efficient and \textit{exact} search remains.
+Further, such algorithms are often approximate, and while approximate search may be sufficient for some applications, the need for efficient and \textit{exact} search remains.
 
 For example, for a majority voting classifier, approximate $k$-NN search may agree with exact $k$-NN search for large values of $k$, but may be sensitive to local perturbations for smaller values of $k$.
 This is especially true when classes are not well-separated~\cite{zhang2022imbalanced}.
@@ -43,13 +43,13 @@ In all of these cases, approximate $\rho$-NN search may be sufficient, but exact
 This paper introduces CAKES (CLAM-Accelerated $K$-NN Entropy Scaling Search), a set of three novel algorithms for exact $k$-NN search.
 We also present some improvements to the clustering and $\rho$-NN search algorithms in CHESS~\cite{ishaq2019clustered}, as well as improved genericity across distance functions.
 We provide a comparison of CAKES's algorithms to several state-of-the-art algorithms for similarity search, FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}, on datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
-We also benchmark CAKES on a genomic dataset, the SILVA 18S dataset~\cite{10.1093/nar/gks1219} using Levenshtein~\cite{levenshtein1966binary} distance on unaligned genomic sequences, and a radio frequency dataset, the RadioML dataset~\cite{oshea2018radioml} using Dynamic Time Warping (DTW)~\cite{gold2018dynamic} distance on complex-valued time-series.
+We also benchmark CAKES on a genomic dataset, the SILVA 18S dataset~\cite{10.1093/nar/gks1219}, using Levenshtein~\cite{levenshtein1966binary} distance on unaligned genomic sequences, and a radio frequency dataset, the RadioML dataset~\cite{oshea2018radioml}, using Dynamic Time Warping (DTW)~\cite{gold2018dynamic} distance on complex-valued time-series.
 
 
 \subsection{Related Works}
 \label{sec:intoduction:related-works}
 
-Recent search algorithms designed to scale with the exponential growth of data include Hierarchical Navigable Small World networks (HNSW)~\cite{Malkov2016EfficientAR}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. However, some of these algorithms do not provide exact search.
+Recent search algorithms designed to scale with the exponential growth of data include Hierarchical Navigable Small World networks (HNSW)~\cite{Malkov2016EfficientAR}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. However, some of these algorithms do not provide exact search (as defined in Section \ref{sec:introduction} above).
 
 
 \subsubsection{HNSW}
@@ -88,5 +88,5 @@ This search paradigm exploits the geometric and topological structure inherent i
 Importantly, as suggested by their name, entropy-scaling search algorithms have asymptotic complexity that scales with topological properties (such as the \textit{metric entropy} and \textit{local fractal dimension}, as defined in Section~\ref{sec:methods}) of the dataset, instead of its cardinality.
 In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search)~\cite{ishaq2019clustered}, which extended entropy-scaling $\rho$-NN search from a flat clustering approach to a tree-based hierarchical clustering approach.
 CLAM (Clustering, Learning and Approximation with Manifolds), originally developed to allow ``manifold mapping'' for anomaly detection~\cite{ishaq2021clustered}, is a refinement of the clustering algorithm from CHESS.
-In this paper, we introduce CAKES, a set of three entropy-scaling algorithms for $k$-NN. 
-Using the cluster tree constructed by CLAM, CAKES extends CHESS to perform $k$-NN search and improves the performance of CHESS's $\rho$-NN search.
+In this paper, we introduce CAKES, a set of three entropy-scaling algorithms for $k$-NN search. 
+Using the cluster tree constructed by CLAM, CAKES extends CHESS to perform $k$-NN search. We also discuss improvements to the performance of CHESS's $\rho$-NN search.
