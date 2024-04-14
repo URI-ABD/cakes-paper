@@ -7,14 +7,14 @@ Even under Cosine distance, which is not a metric, CAKES's algorithms exhibit ne
 
 CAKES's algorithms are designed to be most effective when the data uphold the manifold hypothesis, or in other words, when the data are constrained to a low-dimensional manifold even when embedded in a high-dimensional space.
 As a consequence, these algorithms do not perform well on data with random distributions, because of the absence of a manifold structure.
-In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each of the datasets we tested exhibits a manifold structure, as quantified by the percentiles of LFD.
+In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each dataset we tested exhibits a manifold structure, as quantified by the percentiles of LFD.
 As expected, our results from Figure~\ref{fig:results:scaling-plots} indicate that CAKES's algorithms scale sub-linearly with cardinality on datasets with low LFD, and scale linearly on datasets with high LFD.
 
-As seen in Figures~\ref{fig:results:random-lfd}~and~\ref{fig:results:sift-lfd}, the LFD of the Random dataset is much higher than that of Sift, even though they have the same cardinality and embedding dimension. 
+As seen in Figures~\ref{fig:results:random-lfd}~and~\ref{fig:results:sift-lfd}, the LFD of the Random dataset is much higher than that of Sift, even though both datasets have the same cardinality and embedding dimension. 
 This is unsurprising, given that the Random dataset is, by definition, uniformly distributed, while Sift is not.
 On the Random dataset, CAKES's algorithms' speed decreases linearly as the multiplier increases, while with Sift, Depth-First Sieve and Breadth-First Sieve both exhibit nearly constant throughput.
 While Repeated $\rho$-NN does not exhibit near-constant throughput with Sift, the throughput decreases much more slowly than it does with the Random dataset.
-Since these two datasets have the same cardinality and embedding dimension, the aforementioned discrepancies show the effect of a manifold structure on algorithm performance.
+Since these two datasets have the same cardinality and embedding dimension, the aforementioned discrepancies highlight how manifold structure affects algorithm performance.
 We emphasize that even though CAKES's algorithms are slower on the Random dataset, their recalls remain perfect at all multipliers.
 
 Figure~\ref{fig:results:scaling-plots} also shows that HNSW and ANNOY have near constant throughput as the multiplier increases, however, their recall continues to decrease as the multiplier increases.
@@ -27,8 +27,8 @@ We believe that some of this discrepancy can be explained by the fact that if Re
 This overshot can occur when the LFDs of clusters near the query are not concentrated around their expectation. 
 For example, if most clusters near the query have very low LFD except for one anomaly with very high LFD, 
 the harmonic mean LFD $\mu$ can still be low, so the factor of radial increase~\ref{eq:methods:repeated-rnn-factor} may be much larger than necessary for guaranteeing $k$ hits.  
-This suggests that rather than use the reciprocal of the \textit{harmonic} mean LFD in~\ref{eq:methods:repeated-rnn-factor}, we may actually want a mean which is more sensitive to high outliers, such as the geometric mean.
-We leave it as an avenue for future work to characterize when Repeated $\rho$-NN significantly ``overshoots'' $\rho_k$ and to improve upon the factor of radial increase in~\ref{eq:methods:repeated-rnn-factor} so that this overshooting occurs less frequently and with less severity.
+This suggests that rather than using the reciprocal of the \textit{harmonic} mean LFD in~\ref{eq:methods:repeated-rnn-factor}, we may achieve better results with a mean that is more sensitive to high outliers, such as the geometric mean.
+We leave it as an avenue for future work to characterize when Repeated $\rho$-NN significantly ``overshoots'' $\rho_k$ and to improve upon the factor of radial increase in~\ref{eq:methods:repeated-rnn-factor} so that this occurs less frequently and with less severity.
 
 As the previous paragraph suggests, the fastest CAKES algorithm varies by dataset.
 For example, on Glove-25, Repeated $\rho$-NN exhibits the highest throughput of any CAKES algorithm, despite having the lowest throughput of the three on Sift and Fashion-Mnist.
@@ -57,9 +57,9 @@ Incorporating these or other distance functions in CAKES requires only that a Ru
 We also plan to investigate hierarchical data compression by representing differences at each level of the binary tree, particularly for string or genomic data, where all differences are discrete.
 Such an encoding would allow us to store the data in a compressed format, and to perform search on the compressed data without decompressing it.
 This would allow us to perform fast search on datasets that are too large to fit in memory.
-An exploration of compression and compressed search is an avenue for future work.
+An exploration of compression and compressed search is another avenue for future work.
 
-Another avenue for future work is to explore the use of CAKES in a streaming environment.
+We also would like to explore the use of CAKES in a streaming environment.
 This would require the ability to perform ``online'' updates to the tree as points are added to or deleted from the dataset.
 Such online updates would take advantage of the fast search algorithms provided by CAKES.  % and would allow us to have our cake and eat it, too.
 CAKES can also be used to extend anomaly detection in CHAODA~\cite{ishaq2021clustered}.
