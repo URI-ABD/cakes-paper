@@ -97,11 +97,11 @@ The median LFD follows a similar pattern of peaks and troughs, fluctuating betwe
 \subsection{Indexing and Tuning Time}
 \label{sec:results:indexing-and-tuning-time}
 
-For each of the ANN-benchmark datasets and the Random dataset, we report the time taken for each algorithm to build the index and to tune the hyper-parameters for these indices to achieve the highest possible recall.
+For each of the ANN-benchmark datasets and the Random dataset, we report the time taken for each algorithm to build the index and to tune the hyper-parameters for these indices to achieve the highest possible recall. For the sake of brevity, these results are reported in the supplement.
 Though CAKES has three different algorithms, they share the same tree and so they have the same indexing time.
 Thus, we show CAKES's indexing time only once.
 
-The plots in Figure~\ref{fig:results:indexing} show the results of these benchmarks.
+The plots in Figure~\ref{fig:supplement:indexing} show the results of these benchmarks.
 The horizontal axis in each subplot shows the cardinality of the dataset augmented with synthetic points (see Section \ref{sec:methods:synthetic-data}).
 The left-most point on each line is at the cardinality of the original dataset without any synthetic augmentation.
 The vertical axis denotes the sum of indexing and tuning time in seconds.
@@ -120,34 +120,7 @@ With Glove-25 (see Figure~\ref{fig:results:glove-25-indexing}), however, at card
 With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardinality of nearly $10^8$, and with the Random dataset, we observe that CAKES has faster indexing time than FAISS-IVF until a cardinality of nearly $10^7$.
 
 
-\begin{figure}
-    \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/fashion-mnist-indexing.png}\\
-        \subcaption{Fashion-mnist}
-        \label{fig:results:fashion-mnist-indexing}
-    \end{subfigure}%
-    \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/glove-25-indexing.png}\\
-        \subcaption{Glove-25}
-        \label{fig:results:glove-25-indexing}
-    \end{subfigure}
-    \vspace{1em}
-    \\
-    \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/sift-indexing.png}\\
-        \subcaption{Sift}
-        \label{fig:results:sift-indexing}
-    \end{subfigure}%
-    \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/random-indexing.png}\\
-        \subcaption{Random}
-        \label{fig:results:random-indexing}
-    \end{subfigure}%
-    \\
-    \vspace{1em}
-    \caption{Indexing and tuning time for each algorithm with each of the ANN benchmark datasets and the Random dataset.}
-    \label{fig:results:indexing}
-\end{figure}
+
 
 
 \subsection{Scaling Behavior and Recall}
