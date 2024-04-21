@@ -26,7 +26,7 @@ In contrast, an \textit{exact} search algorithm exhibits perfect recall.
 $k$-NN search is one of the most ubiquitous classification and recommendation methods in use~\cite{fix1952discriminatory, cover1967nearest}.
 Na\"{i}ve implementations of $k$-NN search, whose time complexity is linear in the dataset's cardinality, prove prohibitively slow for large datasets because their cardinalities are growing exponentially.
 While fast algorithms for $k$-NN search on large datasets do exist, most do not exploit the geometric and topological structure inherent in these datasets.
-Further, such algorithms are often approximate~\cite{taunk2019brief}, and while approximate search may be sufficient for some applications, the need for efficient and \textit{exact} search remains~\cite{ukey2023survey}.
+Further, such algorithms are often approximate~\cite{gao2023high}, and while approximate search may be sufficient for some applications, the need for efficient and \textit{exact} search remains~\cite{ukey2023survey}.
 
 For example, for a majority voting classifier, approximate $k$-NN search may agree with exact $k$-NN search for large values of $k$, but may be sensitive to local perturbations for smaller values of $k$.
 This is especially true when classes are not well-separated~\cite{zhang2022imbalanced}.
