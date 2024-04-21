@@ -217,12 +217,12 @@ Our $\rho$-NN and $k$-NN search algorithms make use of the following properties,
     \item $\delta^{-} = \text{max}(0, \delta - r)$, the distance from the query to the theoretically closest point in $C$.
 \end{itemize}
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[scale=0.8]{images/geometry/deltas.pdf}
-    \caption{{\color{blue}$\delta$}, {\color{red}$\delta^{+}$}, and {\color{green}$\delta^{-}$} for a cluster $C$ and a query $q$.}
-    \label{fig:methods:deltas}
-\end{figure}
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[scale=0.3]{images/geometry/deltas.pdf}
+%     \caption{{\color{blue}$\delta$}, {\color{red}$\delta^{+}$}, and {\color{green}$\delta^{-}$} for a cluster $C$ and a query $q$.}
+%     \label{fig:methods:deltas}
+% \end{figure}
 
 We define a \textit{singleton} as a cluster which either contains a single point (i.e., has cardinality 1) or which contains only duplicates of the same point (i.e., has cardinality greater than 1 but contains only one \textit{unique} point).
 A singleton clearly has zero radius, and so $\delta = \delta^{-} = \delta^{+}$.
@@ -234,12 +234,20 @@ Hence, we overload the above notation to also refer to the distance from a query
 
 We conduct $\rho$-NN search as described in~\cite{ishaq2019clustered}, but with the following improvement:
 when a cluster overlaps with the query ball, instead of always proceeding to search both of its children, we proceed only with those children which might contain points in the query ball.
-
+point
 \begin{figure}[ht!]
-    \centering
-    \includegraphics[scale=0.8]{images/geometry/overlapping-children-3.pdf}
-    \caption{The geometry of a query ball overlapping with a cluster and either one or both of its children.}
-    \label{fig:methods:overlapping-children}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[scale=0.3]{images/geometry/deltas.pdf}
+        \caption{{\color{blue}$\delta$}, {\color{red}$\delta^{+}$}, and {\color{green}$\delta^{-}$} for a cluster $C$ and a query $q$.}
+        \label{fig:methods:deltas}
+      \end{subfigure}%
+      \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[scale=0.3]{images/geometry/overlapping-children-3.pdf}
+        \caption{The geometry of a query ball overlapping with a cluster and either one or both of its children.}
+        \label{fig:methods:overlapping-children}
+      \end{subfigure}%
 \end{figure}
 
 To determine whether both children can contain points in the query ball, we consider Figure~\ref{fig:methods:overlapping-children}.

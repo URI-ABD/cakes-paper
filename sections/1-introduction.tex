@@ -2,8 +2,8 @@
 \label{sec:introduction}
 
 Researchers are collecting data at an unprecedented scale.
-In many fields, the sizes of datasets are growing exponentially, and this increase in the rate of data collection outpaces the rate of improvements in computing performance as predicted by Moore's Law~\cite{kahn2011future}.
-This indicates that computer architecture will not ``catch up'' to computational needs in the near future.
+In many fields, the sizes of datasets are growing exponentially, and this increase in the rate of data collection outpaces improvements in computing performance as predicted by Moore's Law~\cite{kahn2011future}.
+This indicates that the performance computer hardware will not ``catch up'' to computational needs in the near future.
 Often dubbed ``the Big Data explosion,'' this phenomenon has created a need for better algorithms to analyze large datasets.
 
 Examples of large datasets include genomic databases, time-series data such as radio frequency signals, and neural network embeddings.
@@ -18,7 +18,7 @@ As the cardinalities and dimensionalities of datasets have grown, however, effic
 even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{Malkov2016EfficientAR, johnson2019billion, annoy, aumuller2020ann}.
 
 Given some measure of similarity between data points, e.g. a distance function, there are two common definitions of similarity search: $k$-nearest neighbor search ($k$-NN) and $\rho$-nearest neighbor search ($\rho$-NN).
-$k$-NN search aims to find the $k$ most similar points to a query point, while $\rho$-NN search aims to find all points within a similarity threshold $\rho$ of a query point.
+$k$-NN search aims to find the $k$ most similar points to a query, while $\rho$-NN search aims to find all points within a similarity threshold $\rho$ of a query.
 
 Previous works have used the term \textit{approximate} search to refer to $\rho$-NN search, but in this paper, we reserve the term \textit{approximate} for search algorithms which do not exhibit perfect recall when compared to a na\"{i}ve linear search.
 In contrast, an \textit{exact} search algorithm exhibits perfect recall.
