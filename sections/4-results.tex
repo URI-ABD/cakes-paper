@@ -98,26 +98,8 @@ The median LFD follows a similar pattern of peaks and troughs, fluctuating betwe
 \label{sec:results:indexing-and-tuning-time}
 
 For each of the ANN-benchmark datasets and the Random dataset, we report the time taken for each algorithm to build the index and to tune the hyper-parameters for these indices to achieve the highest possible recall. For the sake of brevity, these results are reported in the supplement.
-Though CAKES has three different algorithms, they share the same tree and so they have the same indexing time.
-Thus, we show CAKES's indexing time only once.
 
-The plots in Figure~\ref{fig:supplement:indexing} show the results of these benchmarks.
-The horizontal axis in each subplot shows the cardinality of the dataset augmented with synthetic points (see Section \ref{sec:methods:synthetic-data}).
-The left-most point on each line is at the cardinality of the original dataset without any synthetic augmentation.
-The vertical axis denotes the sum of indexing and tuning time in seconds.
-Both axes are on a logarithmic scale.
-Hereafter, when we refer to the ``indexing time'' of an algorithm, we are implicitly referring to the sum of indexing and tuning time for said algorithm.
 
-On all datasets, we observe that the indexing time for CAKES increases roughly linearly as cardinality increases.
-HNSW and ANNOY have the slowest indexing times across all the algorithms we benchmarked for each of the four datasets, at each cardinality. 
-On some datasets, HNSW and ANNOY exhibit indexing times which are orders of magnitude slower than that of CAKES.
-FAISS-Flat exhibits the fastest indexing time on each dataset. 
-This is not surprising, however, given that FAISS-Flat is a na\"{\i}ve linear search algorithm and is not building an index.
-
-We also highlight some differences in indexing time between different datasets.
-With Fashion-Mnist, as shown in Figure~\ref{fig:results:fashion-mnist-indexing}, we observe that the indexing time for CAKES is faster than that of FAISS-IVF for all cardinalities.
-With Glove-25 (see Figure~\ref{fig:results:glove-25-indexing}), however, at cardinalities greater than $10^7$, FAISS-IVF has faster indexing time than CAKES.
-With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardinality of nearly $10^8$, and with the Random dataset, we observe that CAKES has faster indexing time than FAISS-IVF until a cardinality of nearly $10^7$.
 
 
 
@@ -126,13 +108,9 @@ With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardin
 \subsection{Scaling Behavior and Recall}
 \label{sec:results:scaling-behavior-and-recall}
 
-Figures~\ref{fig:results:fashion-mnist-scaling},~\ref{fig:results:glove-25-scaling},~and~\ref{fig:results:sift-scaling} show the scaling behavior of CAKES algorithms and existing algorithms on augmented versions of the following ANN-benchmark datasets:
-
-\begin{itemize}
-    \item Fashion-Mnist under Euclidean distance,
-    \item Glove-25 under Cosine distance, and
-    \item Sift under Euclidean distance.
-\end{itemize}
+Figures~\ref{fig:results:fashion-mnist-scaling},~\ref{fig:results:glove-25-scaling},~and~\ref{fig:results:sift-scaling} show the scaling behavior of CAKES algorithms and existing algorithms on augmented versions of Fashion-Mnist under Euclidean distance,
+Glove-25 under Cosine distance, and
+Sift under Euclidean distance.
 
 Figure~\ref{fig:results:random-scaling} shows the scaling behavior of CAKES algorithms and existing algorithms on a completely randomly generated dataset with same cardinality and dimensionality as Sift (1 million points in 128 dimensions).
 Figures~\ref{fig:results:silva-scaling} and ~\ref{fig:results:radioml-scaling} show the scaling behavior of CAKES on Silva and RadioML respectively.

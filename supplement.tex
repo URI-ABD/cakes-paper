@@ -20,6 +20,26 @@
 
 \section{Supplementary Results}
 
+\subsection{Indexing and Tuning}
+
+The plots in Figure~\ref{fig:supplement:indexing} show the results of these benchmarks.
+The horizontal axis in each subplot shows the cardinality of the dataset augmented with synthetic points (see Section \ref{sec:methods:synthetic-data}).
+The left-most point on each line is at the cardinality of the original dataset without any synthetic augmentation.
+The vertical axis denotes the sum of indexing and tuning time in seconds.
+Both axes are on a logarithmic scale.
+Hereafter, when we refer to the ``indexing time'' of an algorithm, we are implicitly referring to the sum of indexing and tuning time for said algorithm.
+
+On all datasets, we observe that the indexing time for CAKES increases roughly linearly as cardinality increases.
+HNSW and ANNOY have the slowest indexing times across all the algorithms we benchmarked for each of the four datasets, at each cardinality. 
+On some datasets, HNSW and ANNOY exhibit indexing times which are orders of magnitude slower than that of CAKES.
+FAISS-Flat exhibits the fastest indexing time on each dataset. 
+This is not surprising, however, given that FAISS-Flat is a na\"{\i}ve linear search algorithm and is not building an index.
+
+We also highlight some differences in indexing time between different datasets.
+With Fashion-Mnist, as shown in Figure~\ref{fig:results:fashion-mnist-indexing}, we observe that the indexing time for CAKES is faster than that of FAISS-IVF for all cardinalities.
+With Glove-25 (see Figure~\ref{fig:results:glove-25-indexing}), however, at cardinalities greater than $10^7$, FAISS-IVF has faster indexing time than CAKES.
+With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardinality of nearly $10^8$, and with the Random dataset, we observe that CAKES has faster indexing time than FAISS-IVF until a cardinality of nearly $10^7$.
+
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
         \includegraphics[width=0.95\textwidth]{plots/fashion-mnist-indexing.png}\\
@@ -84,6 +104,8 @@
     }
     \label{fig:supplement:random-k-100}
 \end{figure}
+
+\subsection{Clustering}
 
 \begin{figure}[ht!]
     \begin{subfigure}[b]{0.47\textwidth}
