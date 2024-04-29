@@ -61,11 +61,11 @@ This benchmark allows us to isolate the effect of a manifold structure (which we
 \subsection{SILVA 18S}
 \label{sec:datasets-and-benchmarks:silva-18s}
 
-To showcase the use of CAKES with a more exotic distance function, we also benchmarked on the SILVA 18S ribosomal DNA dataset~\cite{10.1093/nar/gks1219}.
-This dataset contains ribosomal DNA sequences of 2,224,640 genomes with an aligned length of 50,000 letters.
+To showcase the use of CAKES with a more exotic distance function, we also benchmarked on the SILVA 18S ribosomal RNA dataset~\cite{10.1093/nar/gks1219}.
+This dataset contains ribosomal RNA sequences of 2,224,640 genomes with an aligned length of 50,000 letters.
 We held out a set of 1,000 random sequences from the dataset to use as queries for benchmarking.
 We use Levenshtein~\cite{levenshtein1966binary} distance on the unaligned sequences to build the tree and to perform $k$-NN search.
-Since this dataset contains many \textit{redundant}, i.e. nearly identical, sequences, we used a maximum tree-depth of 128 as a partition \textit{criterion} in Algorithm~\ref{alg:methods:partition}.
+Since this dataset contains many redundant, i.e. nearly identical, sequences, we used a maximum tree-depth of 128 as a partition criterion in Algorithm~\ref{alg:methods:partition}.
 
 
 \subsection{Radio ML}
@@ -73,7 +73,7 @@ Since this dataset contains many \textit{redundant}, i.e. nearly identical, sequ
 
 To provide another example of use of CAKES with a more exotic distance function, we benchmarked on the RadioML dataset~\cite{oshea2018radioml}.
 The RadioML dataset contains samples of synthetically generated signal captures of different modulation modes over a range of SNR levels.
-Specifically, it is comprised of 24 modulation modes at 26 different SNR levels ranging from -20 dB to 30 dB, with 4,096 samples at each combination of modulation mode and SNR level.
+Specifically, it comprises 24 modulation modes at 26 different signal-to-noise ratio (SNR) levels ranging from -20 dB to 30 dB, with 4,096 samples at each combination of modulation mode and SNR level.
 Thus, it contains $24 \cdot 26 \cdot 4096 = 2,555,504$ samples in total.
 Each sample is a 1,024-dimensional complex-valued vector, representing a signal capture (a time-series of complex-valued numbers).
 We used a subset of this dataset, containing 97,920 samples at 10dB SNR and used the other 8,576 samples at 10dB SNR as a hold-out set of queries.

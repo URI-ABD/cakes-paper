@@ -9,14 +9,14 @@ A distance value of zero defines an identity among points (i.e. $f(x, y) = 0 \Le
 We also require that the distance function be symmetric (i.e., $f(x, y) = f(y, x) \ \forall \ x, y \in \textbf{X}$).
 In addition to these constraints, if the distance function obeys the triangle inequality (i.e. $f(x, y) \leq f(x, z) + f(z, y) \ \forall \ x, y, z \in \textbf{X}$), then it is also a \textit{distance metric}.
 Similar to~\cite{yu2015entropy}, when used with distance metrics, all search algorithms in CAKES are exact.
-For example, Euclidean, Levenshtein~\cite{levenshtein1966binary} and Dynamic Time Warping (DTW)~\cite{muller2007dynamic} distances are all distance metrics, while Cosine distance is not a metric because it violates the triangle inequality (e.g., consider the points $x = (1, 0)$, $y = (0, 1)$ and $z = (1, 1)$ on the Cartesian plane).
+For example, Euclidean, Levenshtein~\cite{levenshtein1966binary} and Dynamic Time Warping (DTW)~\cite{muller2007dynamic} distances are all distance metrics, while cosine distance is not a metric because it violates the triangle inequality (e.g., consider the points $x = (1, 0)$, $y = (0, 1)$ and $z = (1, 1)$ on the Cartesian plane).
 
 The choice of an appropriate distance function varies by dataset and domain.
-For example, with neural-network embeddings, one could use Euclidean (L2) or Cosine distance.
-With genomic or proteomic data, Levenshtein, Smith-Waterman, Needleman-Wunsch or Hamming distances are useful.
+For example, with neural-network embeddings, one could use Euclidean (L2) or cosine distance.
+With genomic or proteomic sequence data, Levenshtein, Smith-Waterman, Needleman-Wunsch or Hamming distances are useful.
 With time-series data, one could use Dynamic Time Warping (DTW) or Wasserstein distance.
 
-CAKES assumes the manifold hypothesis~\cite{fefferman2016testing}, the notion that high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold within their embedding space.
+CAKES derives its advantages from the manifold hypothesis~\cite{fefferman2016testing}, the notion that high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold within their embedding space.
 We say that such data are \textit{manifold-constrained} and have low \textit{local fractal dimension} (LFD).
 In other words, we assume that the dataset is embedded in a $D$-dimensional space, but that the data only occupy a $d$-dimensional manifold, where $d \ll D$.
 While we sometimes use Euclidean notions, such as voids, volumes and proximity to describe the geometric and topological properties of the clusters and manifold, CLAM and CAKES do not rely on such notions;
@@ -35,7 +35,7 @@ Intuitively, LFD measures the rate of change in the number of points in a ball o
 We stress that this concept differs from the \textit{embedding dimension} of a dataset.
 To illustrate the difference, consider the SILVA 18S rRNA dataset which contains genomes with unaligned lengths of up to 3,718 base pairs and aligned length of 50,000 base pairs.
 Hence, the \textit{embedding dimension} of this dataset is at least 3,718 and at most 50,000.
-However, due to physical constraints (namely, biological evolution and the chemistry of RNA replication and mutation processes), the data are constrained to a lower-dimensional manifold within this embedding space.
+However, due to physical constraints (namely, biological evolution and biochemistry), the data are constrained to a lower-dimensional manifold within this embedding space.
 LFD is an approximation of the dimensionality of that lower-dimensional manifold in the ``vicinity'' of a given point.
 Figure~\ref{fig:results:lfd-plots} illustrates this concept on a variety of datasets, showing how real datasets uphold the manifold hypothesis.
 
@@ -44,13 +44,13 @@ Figure~\ref{fig:results:lfd-plots} illustrates this concept on a variety of data
 \label{sec:methods:clustering}
 
 We define a \textit{cluster} as a set of points with a \textit{center} and a \textit{radius}.
-The \textit{center} is the geometric median of the points (or a smaller sample of the points) in the \textit{cluster}, and so it is a real data point.
-The \textit{radius} is the maximum distance from the \textit{center} to any point in the \textit{cluster}.
+The center is the geometric median of the points (or a smaller sample of the points) in the cluster, and so it is a real data point.
+The radius is the maximum distance from the center to any point in the cluster.
 Each non-leaf cluster has two child clusters in much the same way that a node in a binary tree has two child nodes.
 Note that clusters can have overlapping volumes and, in such cases, points in the overlapping volume are assigned to exactly one of the overlapping clusters.
 As a consequence, a cluster can be a proper subset of the metric ball at the same center and radius, i.e. $C(c, r) \subset B_X(c, r)$.
 
-Hereafter, when we refer to the LFD of a \textit{cluster}, it is estimated at the length scale of the cluster radius and half that radius.
+Hereafter, when we refer to the LFD of a cluster, it is estimated at the length scale of the cluster radius and half that radius.
 This allows us to rewrite Definition~\ref{eq:methods:lfd-original} as:
 
 \begin{equation}
@@ -64,18 +64,18 @@ The \textit{metric entropy} $\mathcal{N}_{r}(X)$ for some radius $r$ was defined
 In this paper, where the clustering is hierarchical rather than flat, we define the metric entropy $\mathcal{N}_{\hat{r}}(X)$ of a dataset $X$ as the number of leaf clusters in the tree where $\hat{r}$ is the mean radius of all leaf clusters.
 
 We start by performing a divisive hierarchical clustering on the dataset using CLAM.
-The procedure is similar to that outlined in CHESS, but with the following improvements:
+The procedure is similar to that outlined in CHESS~\cite{ishaq2019clustered}, but with
 better selection of poles for partitioning (see Algorithm~\ref{alg:methods:partition}) and depth-first reordering of the dataset (see Section~\ref{sec:methods:clustering:depth-first-reordering}).
 
 
 \subsubsection{Building the Tree}
 \label{sec:methods:clustering:building-the-tree}
 
-CLAM starts by building a binary tree of clusters using a divisive hierarchical clustering algorithm.
+CLAM builds a binary tree of clusters using a divisive hierarchical clustering algorithm.
 
 For a cluster $C$ with $|C|$ points, we begin by taking a random sample of $\sqrt{|C|}$ of its points, and computing pairwise distances between all points in this sample.
 Using these distances, we compute the \textit{geometric median} of this sample; in other words, we find the point which minimizes the sum of distances to all other points in the sample.
-This geometric median is the \textit{center} of $C$.
+This geometric median is the center of $C$.
 
 The \textit{radius} of $C$ is the maximum distance from the \textit{center} to any other point in $C$.
 The point which is responsible for that radius (i.e., the furthest point from the center) is designated the \textit{left pole} and the point which is furthest from the left pole is designated the \textit{right pole}.
@@ -137,7 +137,7 @@ Then, within each cluster, we need only store its \textit{cardinality} and an \t
 The root cluster has an offset of zero and a cardinality equal to the number of points in the dataset.
 A left child has the same offset as that of its parent, and the corresponding right child has an offset equal to the left child's offset plus the left child's cardinality.
 
-With no additional memory cost nor time cost for retrieving points during search, depth-first reordering offers significant improvements at search-time over the approach used in CHESS.
+With no additional memory cost nor time cost for retrieving points during search, depth-first reordering offers the same time complexity as CHESS with $\mathcal{O}(n)$ space.
 
 % % WE WILL USE THIS FOR COMPRESSION. DO NOT DELETE
 
@@ -234,7 +234,7 @@ Hence, we overload the above notation to also refer to the distance from a query
 
 We conduct $\rho$-NN search as described in~\cite{ishaq2019clustered}, but with the following improvement:
 when a cluster overlaps with the query ball, instead of always proceeding to search both of its children, we proceed only with those children which might contain points in the query ball.
-point
+
 \begin{figure}[ht!]
     \begin{subfigure}{.5\textwidth}
         \centering
@@ -245,7 +245,7 @@ point
       \begin{subfigure}{.5\textwidth}
         \centering
         \includegraphics[scale=0.4]{images/geometry/overlapping-children-3.pdf}
-        \caption{The geometry of a query ball overlapping with a cluster and either one or both of its children.}
+        \caption{The geometry of a query ball overlapping with a cluster and either one or both of its children. Here, $l$ is the left pole, $r$ is the right pole, and $q$ is the query. Other points and distances are described in the text.}
         \label{fig:methods:overlapping-children}
       \end{subfigure}%
     \caption{CAKES uses geometric properties of clusters.}
@@ -392,7 +392,7 @@ The asymptotic complexity of $\rho$-NN is the same as in~\cite{ishaq2019clustere
 where $\hat{r}$ is the \textit{mean} radius of leaf clusters, $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy at that radius, $B_X(q, \rho)$ is a ball of radius $\rho$ around the query $q$, and $d$ is the LFD around the query at the length scale of $\rho$ and $\rho + 2 \cdot \hat{r}$.
 
 From Algorithm~\ref{alg:methods:rnn-search}, we have that $H = B_X(q, \rho)$, and so $\rho$-NN search performance scales linearly with the size of the output set and exponentially with the LFD around the query.
-While one might worry that the exponential scaling factor would dominate, the manifold hypothesis suggests that the LFD of real-life datasets is typically very low, and so this algorithm actually scales sub-linearly with the cardinality of the dataset.
+While one might worry that the exponential scaling factor would dominate, the manifold hypothesis suggests that the LFD of real-world datasets is typically very low, and so this algorithm actually scales sub-linearly with the cardinality of the dataset.
 
 
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
@@ -716,7 +716,7 @@ Thus, the asymptotic complexity is
 \subsection{Auto-Tuning}
 \label{sec:methods:auto-tuning}
 
-We perform some na\"{i}ve auto-tuning to select the optimal $k$-NN algorithm to use with a given dataset.
+We perform some simple auto-tuning to select the optimal $k$-NN algorithm to use with a given dataset.
 We start by taking the center of every cluster at a low depth, (e.g. 10), in the cluster tree as a query.
 This gives us a small, representative sample of the dataset.
 Using these clusters' centers as queries, and a user-specified value of $k$, we record the time taken for $k$-NN search on the sample using each of the three algorithms described in Section~\ref{sec:methods:knn-search}.

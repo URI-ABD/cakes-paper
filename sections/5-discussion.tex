@@ -3,7 +3,7 @@
 
 We have presented CAKES, a set of three algorithms for fast $k$-NN search that are generic over a variety of distance functions.
 CAKES's algorithms are exact when the distance function in use is a metric (see definition in~\ref{sec:methods}).
-Even under Cosine distance, which is not a metric, CAKES's algorithms exhibit nearly perfect recall (i.e. always greater than $0.9995$).
+Even under cosine distance, which is not a metric, CAKES's algorithms exhibit nearly perfect recall (i.e. always greater than $0.9995$).
 
 CAKES's algorithms are designed to be most effective when the data uphold the manifold hypothesis, or in other words, when the data are constrained to a low-dimensional manifold even when embedded in a high-dimensional space.
 As a consequence, these algorithms do not perform well on data with random distributions, because of the absence of a manifold structure.
@@ -19,11 +19,11 @@ We emphasize that even though CAKES's algorithms are slower on the Random datase
 
 Figure~\ref{fig:results:scaling-plots} also shows that HNSW and ANNOY have near constant throughput as the multiplier increases, however, their recall continues to decrease as the multiplier increases.
 This, coupled with the prohibitively increasing cost (in terms of memory and time) of building the indices for HNSW and ANNOY, makes these algorithms unsuitable for real-world applications in which the dataset cardinalities are growing exponentially.
-CAKES's tree is orders of magnitude cheaper to build and CAKES's algorithms, while a little slower than HNSW and ANNOY, still show near constant scaling with cardinality in addition to having perfect recall.
+CAKES's tree is orders of magnitude faster and less memory-intensive to build and CAKES's algorithms, while a little slower than HNSW and ANNOY, still show near constant scaling with cardinality in addition to having perfect recall.
 
 When written with the same notation as used in Section~\ref{sec:methods:knn-search:complexity-of-sieve-methods}, we see that the time complexity of Repeated $\rho$-NN is $\mathcal{O}(\tfrac{\mathcal{T}}{d} + \mathcal{L})$, where $\mathcal{T}$ is the time complexity of tree-search and $\mathcal{L}$ is the time complexity of leaf-search. 
 Even though Repeated $\rho$-NN has the lowest time complexity (compare to $\mathcal{O}(\mathcal{T}\log{(\mathcal{T}+\mathcal{L})} + \mathcal{L}\log{(\mathcal{T}+\mathcal{L})})$ for Breadth-First Sieve and $\mathcal{O}(\mathcal{T}\log{\mathcal{T}} + \mathcal{L}\log{k})$ for Depth-First Sieve) of the three CAKES algorithms, it is not always the fastest algorithm empirically. 
-We believe that some of this discrepancy can be explained by the fact that if Repeated $\rho$-NN significantly ``overshoots'' the correct radius for $k$ hits ($\rho_k$) during tree-search, leaf-search will require looking at more points, rendering the true scaling factor higher than that in~\ref{eq:methods:repeated-rnn-complexity}.
+We believe that some of this discrepancy can be explained by the fact that if Repeated $\rho$-NN significantly ``overshoots'' the correct radius for $k$ hits ($\rho_k$) during tree-search, leaf-search will require looking at more points, rendering the true scaling factor higher than that in Equation~\ref{eq:methods:repeated-rnn-complexity}.
 This overshot can occur when the LFDs of clusters near the query are not concentrated around their expectation. 
 For example, if most clusters near the query have very low LFD except for one anomaly with very high LFD, 
 the harmonic mean LFD $\mu$ can still be low, so the factor of radial increase~\ref{eq:methods:repeated-rnn-factor} may be much larger than necessary for guaranteeing $k$ hits.  
