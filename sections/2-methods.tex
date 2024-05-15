@@ -682,12 +682,12 @@ Leaf-search exhaustively searches some of the clusters in $Q$ to find the $k$ ne
 
 We start with the assumption that the LFD near the query does not differ significantly from that of nearby clusters, and we consider leaf clusters with cardinalities near $k$.
 Let $d$ be the LFD in this region.
-Then the number of leaf-clusters in $Q$ is bounded above by $2d$, e.g. we could have a cluster overlapping the query ball at each end of each of $d$ mutually-orthogonal axes.
-In the worst-case scenario for tree-search, these leaf clusters would all come from different branches of the tree, and so tree-search looks at $2 \cdot d \cdot \log \mathcal{N}_{\hat{r}}(X)$ clusters.
+Then the number of leaf-clusters in $Q$ is bounded above by $2d$, e.g. we could have a cluster overlapping the query ball at each end of each of $\lceil d \rceil$ mutually-orthogonal axes.
+In the worst-case scenario for tree-search, these leaf clusters would all come from different branches of the tree, and so tree-search looks at $2 \cdot \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X)$ clusters.
 Thus, the asymptotic complexity is
 
 \begin{equation*}
-    \mathcal{T} \coloneqq \mathcal{O} \big( d \cdot \log \mathcal{N}_{\hat{r}}(X) \big).
+    \mathcal{T} \coloneqq \mathcal{O} \big( \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X) \big).
 \end{equation*}
 
 For leaf-search, the output size and scaling factor are the same as in Repeated $\rho$-NN, and so the asymptotic complexity is
