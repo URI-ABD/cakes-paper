@@ -4,14 +4,12 @@
 \subsection{ANN-Benchmark Datasets}
 \label{sec:datasets-and-benchmarks:ann-benchmark-datasets}
 
-We benchmark on a variety of datasets from the ANN-benchmarks suite~\cite{Aumller2018ANNBenchmarksAB}, using the associated distance function.
-Table~\ref{tab:datasets:summary} summarizes the properties of these datasets.
-
+We benchmark on a variety of datasets from the ANN-benchmarks suite~\cite{Aumller2018ANNBenchmarksAB}.
+Table~\ref{tab:datasets:summary} summarizes these datasets.
 The benchmarks for Fashion-Mnist, Glove-25, Sift, and Random (and for their synthetic augmentations) were conducted on an Amazon AWS (EC2) \texttt{r6i.16xlarge} instance, with a 64-core Intel Xeon Platinum 8375C CPU 2.90GHz processor, 512GB RAM.
 This is the same configuration used in~\cite{Aumller2018ANNBenchmarksAB}.
 The OS kernel was Ubuntu 22.04.3-Ubuntu SMP.
 The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16.
-
 The benchmarks for SILVA and RadioML were conducted on an Intel Xeon E5-2690 v4 CPU @ 2.60GHz with 512GB RAM.
 The OS kernel was Manjaro Linux 5.15.130-1-MANJARO.
 The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16.
@@ -50,18 +48,17 @@ The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16
 \subsection{Random Datasets and Synthetic Augmentations}
 \label{sec:datasets-and-benchmarks:random-datasets}
 
-In addition to benchmarks on datasets from the ANN-Benchmarks suite, we also benchmarked on synthetic augmentations of these real datasets, using the process described in \ref{sec:methods:synthetic-data}. 
-In particular, we use a noise tolerance $\epsilon = 0.01$ and explore the scaling behavior as the cardinality multiplier (referred to as ``Multiplier'' in Table~\ref{tab:results:qps-and-recall}) increases. 
-
-We also benchmarked on purely random (i.e., not an augmented version of a known dataset), datasets of various cardinalities.
-For this, we used a base cardinality of 1,000,000 and a dimensionality of 128 to match the Sift dataset; hereafter, we refer to the random dataset with cardinality 1,000,000 and dimensionality 128 as ``Random.'' 
-This benchmark allows us to isolate the effect of a manifold structure (which we expect to be absent in a purely random dataset) on the performance of the CAKES' algorithms. 
+In addition to benchmarks on datasets from the ANN-Benchmarks suite, we also benchmarked on synthetic augmentations of these real datasets, using the process described in \ref{sec:methods:synthetic-data}.
+In particular, we use a noise tolerance $\epsilon = 0.01$ and explore the scaling behavior as the cardinality multiplier (referred to as ``Multiplier'' in Table~\ref{tab:results:qps-and-recall}) increases.
+We also benchmarked on purely randomly-generated datasets of various cardinalities.
+For this, we used a base cardinality of 1,000,000 and a dimensionality of 128 to match the Sift dataset; hereafter, we refer to the random dataset with cardinality 1,000,000 and dimensionality 128 as ``Random.''
+This benchmark allows us to isolate the effect of a manifold structure (which we expect to be absent in a purely random dataset) on the performance of the CAKES' algorithms.
 
 
 \subsection{SILVA 18S}
 \label{sec:datasets-and-benchmarks:silva-18s}
 
-To showcase the use of CAKES with a more exotic distance function, we also benchmarked on the SILVA 18S ribosomal RNA dataset~\cite{10.1093/nar/gks1219}.
+To demonstrate CAKES with a more exotic distance function, we also benchmarked on the SILVA 18S ribosomal RNA dataset~\cite{10.1093/nar/gks1219}.
 This dataset contains ribosomal RNA sequences of 2,224,640 genomes with an aligned length of 50,000 letters.
 We held out a set of 1,000 random sequences from the dataset to use as queries for benchmarking.
 We use Levenshtein~\cite{levenshtein1966binary} distance on the unaligned sequences to build the tree and to perform $k$-NN search.
@@ -71,7 +68,7 @@ Since this dataset contains many redundant, i.e. nearly identical, sequences, we
 \subsection{Radio ML}
 \label{sec:datasets-and-benchmarks:radio-ml}
 
-To provide another example of use of CAKES with a more exotic distance function, we benchmarked on the RadioML dataset~\cite{oshea2018radioml}.
+As another example of an exotic distance function, we benchmarked CAKES on the RadioML dataset~\cite{oshea2018radioml}.
 The RadioML dataset contains samples of synthetically generated signal captures of different modulation modes over a range of SNR levels.
 Specifically, it comprises 24 modulation modes at 26 different signal-to-noise ratio (SNR) levels ranging from -20 dB to 30 dB, with 4,096 samples at each combination of modulation mode and SNR level.
 Thus, it contains $24 \cdot 26 \cdot 4096 = 2,555,504$ samples in total.

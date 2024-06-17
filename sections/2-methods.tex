@@ -5,7 +5,7 @@ In this manuscript, we are primarily concerned with $k$-NN search in a finite-di
 Given a dataset $\textbf{X} = \{x_1 \dots x_n\}$ of cardinality $|\textbf{X}| = n$, we define a \textit{point} or \textit{datum} $x_i \in \textbf{X}$ as a singular observation. Examples include the neural-network embedding of an image, the genome of an organism, and a measurement of a radio frequency signal.
 
 We define a \textit{distance function} $f : \textbf{X} \times \textbf{X} \mapsto \mathbb{R}^+ \ \cup \ \{0\}$ which, given two points, deterministically returns a finite and non-negative real number.
-A distance value of zero defines an identity among points (i.e. $f(x, y) = 0 \Leftrightarrow x = y$) and larger values indicate greater dissimilarity among the points.
+A distance of zero defines identity among points (i.e. $f(x, y) = 0 \Leftrightarrow x = y$) and larger values indicate greater dissimilarity among points.
 We also require that the distance function be symmetric (i.e., $f(x, y) = f(y, x) \ \forall \ x, y \in \textbf{X}$).
 In addition to these constraints, if the distance function obeys the triangle inequality (i.e. $f(x, y) \leq f(x, z) + f(z, y) \ \forall \ x, y, z \in \textbf{X}$), then it is also a \textit{distance metric}.
 Similar to~\cite{yu2015entropy}, when used with distance metrics, all search algorithms in CAKES are exact.
@@ -19,9 +19,8 @@ With time-series data, one could use Dynamic Time Warping (DTW) or Wasserstein d
 CAKES derives its advantages from the manifold hypothesis~\cite{fefferman2016testing}, the notion that high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold within their embedding space.
 We say that such data are \textit{manifold-constrained} and have low \textit{local fractal dimension} (LFD).
 In other words, we assume that the dataset is embedded in a $D$-dimensional space, but that the data only occupy a $d$-dimensional manifold, where $d \ll D$.
-While we sometimes use Euclidean notions, such as voids, volumes and proximity to describe the geometric and topological properties of the clusters and manifold, CLAM and CAKES do not rely on such notions;
+While we sometimes use Euclidean notions to describe the geometric and topological properties of the clusters and manifold, CLAM and CAKES do not rely on such notions;
 they serve merely as convenient and intuitive vocabulary to discuss the underlying mathematics.
-
 CAKES exploits the low LFD of such datasets to accelerate search.
 We define LFD at some length scale around a point in the dataset as:
 
@@ -30,12 +29,11 @@ We define LFD at some length scale around a point in the dataset as:
     \label{eq:methods:lfd-original}
 \end{equation}
 where $B_X(q, r)$ is the set of points contained in the metric ball of radius $r$ centered at a point $q$ in the dataset $\textbf{X}$.
-Intuitively, LFD measures the rate of change in the number of points in a ball of radius $r$ around a point $q$ as $r$ increases. When the vast majority of points in the dataset have low ($\ll D$) LFD, we can overload terminology to say that the dataset has low LFD.
-
+Intuitively, LFD measures the rate of change in the number of points in a ball of radius $r$ around a point $q$ as $r$ increases. When the vast majority of points in the dataset have low ($\ll D$) LFD, we can simply say that the dataset has low LFD.
 We stress that this concept differs from the \textit{embedding dimension} of a dataset.
-To illustrate the difference, consider the SILVA 18S rRNA dataset which contains genomes with unaligned lengths of up to 3,718 base pairs and aligned length of 50,000 base pairs.
+To illustrate the difference, consider the SILVA 18S rRNA dataset which contains genomic sequences with unaligned lengths of up to 3,718 base pairs and aligned length of 50,000 base pairs.
 Hence, the \textit{embedding dimension} of this dataset is at least 3,718 and at most 50,000.
-However, due to physical constraints (namely, biological evolution and biochemistry), the data are constrained to a lower-dimensional manifold within this embedding space.
+However, physical constraints (namely, biological evolution and biochemistry) constrain the data to a lower-dimensional manifold within this space.
 LFD is an approximation of the dimensionality of that lower-dimensional manifold in the ``vicinity'' of a given point.
 Figure~\ref{fig:results:lfd-plots} illustrates this concept on a variety of datasets, showing how real datasets uphold the manifold hypothesis.
 
@@ -70,20 +68,16 @@ better selection of poles for partitioning (see Algorithm~\ref{alg:methods:parti
 \label{sec:methods:clustering:building-the-tree}
 
 CLAM builds a binary tree of clusters using a divisive hierarchical clustering algorithm.
-
 For a cluster $C$ with $|C|$ points, we begin by taking a random sample of $\sqrt{|C|}$ of its points, and computing pairwise distances between all points in this sample.
 Using these distances, we compute the \textit{geometric median} of this sample; in other words, we find the point which minimizes the sum of distances to all other points in the sample.
 This geometric median is the center of $C$.
 
 The \textit{radius} of $C$ is the maximum distance from the \textit{center} to any other point in $C$.
 The point which is responsible for that radius (i.e., the furthest point from the center) is designated the \textit{left pole} and the point which is furthest from the left pole is designated the \textit{right pole}.
-
 We then partition the cluster into a \textit{left child} and a \textit{right child}, where the left child contains all points in the cluster which are closer to the left pole than to the right pole, and the right child contains all points in the cluster which are closer to the right pole than to the left pole.
 Without loss of generality, we assign to the left child those points which are equidistant from the two poles.
-
 Starting from a root cluster containing the entire dataset, we repeat this procedure until each leaf contains only one datum, or we meet some other user-specified stopping criteria, for example, minimum cluster radius, minimum cluster cardinality, maximum tree depth, etc.
 This process is described in Algorithm \ref{alg:methods:partition}.
-
 During the partitioning process, we also compute (and cache) the LFD of each cluster using Equation~\ref{eq:methods:lfd-simplified}.
 
 \begin{algorithm} % enter the algorithm environment
@@ -119,22 +113,17 @@ In this sense, the imbalance in the tree is a feature, not a bug, as it reflects
 \subsubsection{Depth-First Reordering}
 \label{sec:methods:clustering:depth-first-reordering}
 
-After building the tree, we reorder the dataset so that the points are stored in the order that they would be visited during a depth-first traversal of the tree.
+%After building the tree, we reorder the dataset so that the points are stored in the order that they would be visited during a depth-first traversal of the tree.
 
 In CHESS, each cluster stored a list of indices into the dataset.
 This list was used to retrieve the clusters' points during search.
 Although this approach allowed us to retrieve the points in constant time, its memory cost was prohibitively high.
 With a dataset of cardinality $n$ and each cluster storing a list of indices for its points, we stored a total of $n$ indices at each depth in the tree.
 Assuming a balanced tree, and thus $\mathcal{O}(\log n)$ depth, this approach had a memory overhead of $\mathcal{O}(n \log n)$.
-
-One may improve this memory overhead to $\mathcal{O}(n)$ by only storing indices at the leaf clusters.
-This approach, however, introduces a time cost of $\mathcal{O}(n \log n)$ whenever we need to find the indices for a non-leaf cluster (because it requires a traversal of the subtree rooted at that cluster).
-
 In this work, we introduce a new approach wherein, after building the cluster tree, we reorder the dataset so that points are stored in a depth-first order.
-Then, within each cluster, we need only store its \textit{cardinality} and an \textit{offset} to access its points from the dataset.
+Then, within each cluster, we need only store its \textit{cardinality} and an \textit{offset} to access its points from the dataset, based on a useful invariant.
 The root cluster has an offset of zero and a cardinality equal to the number of points in the dataset.
-A left child has the same offset as that of its parent, and the corresponding right child has an offset equal to the left child's offset plus the left child's cardinality.
-
+A left child has the same offset its parent, and the corresponding right child has an offset equal to the left child's offset plus the left child's cardinality.
 With no additional memory cost nor time cost for retrieving points during search, depth-first reordering offers the same time complexity as CHESS with $\mathcal{O}(n)$ space.
 
 % % WE WILL USE THIS FOR COMPRESSION. DO NOT DELETE
@@ -222,7 +211,7 @@ Our $\rho$-NN and $k$-NN search algorithms make use of the following properties,
 %     \label{fig:methods:deltas}
 % \end{figure}
 
-We define a \textit{singleton} as a cluster which either contains a single point (i.e., has cardinality 1) or which contains only duplicates of the same point (i.e., has cardinality greater than 1 but contains only one \textit{unique} point).
+We define a \textit{singleton} as a cluster which either contains a single point (i.e., has cardinality 1) or which contains only duplicates of the same point.
 A singleton clearly has zero radius, and so $\delta = \delta^{-} = \delta^{+}$.
 Hence, we overload the above notation to also refer to the distance from a query to an individual point.
 
@@ -260,7 +249,6 @@ In such a case we proceed to search only the right child.
 Otherwise, we proceed with both children.
 
 To check whether $d \leq \rho$, we note that $d = \overline{m q' \vphantom{l}} = \overline{m r \vphantom{l}} - \overline{q' r \vphantom{l}} = \frac{\overline{l r}}{2} - \overline{q' r \vphantom{l}}$.
-
 Let $\theta$ denote $\angle l r q$, as shown in Figure~\ref{fig:methods:overlapping-children}.
 By the Law of Cosines on $\triangle l r q$, we have that $\text{cos}(\theta) = \tfrac{\overline{l r}^2 + \ \overline{q r \vphantom{l}}^2 - \ \overline{q l}^2}{2 \cdot \overline{l r} \cdot \overline{q r \vphantom{l}}}$.
 Since $\triangle r q q'$ is a right triangle, we also have that $\text{cos}(\theta) = \tfrac{\overline{q' r \vphantom{l}}}{\overline{q r \vphantom{l}}}$.
@@ -618,8 +606,8 @@ $Q$ starts containing only the root cluster while $H$ starts empty.
 So long as $H$ is not full or the top priority element in $H$ has $\delta$ greater than or equal to the top priority element in $Q$, we take the following steps:
 
 \begin{itemize}
-    \item While the top priority element $Q$ is not a leaf, remove it from $Q$ and add its children to $Q$.
-    \item Remove the top priority element (a leaf) from $Q$ and add all its points to $H$.
+    \item While the top-priority element is not a leaf, remove it from $Q$ and add its children to $Q$.
+    \item Remove the top-priority element (a leaf) from $Q$ and add all its points to $H$.
     \item If $H$ has more than $k$ points, remove points from $H$ until $|H| = k$.
 \end{itemize}
 
@@ -637,8 +625,8 @@ Indeed, we expect this algorithm to often switch which branch of the tree is bei
 \subsubsection{Complexity of Sieve Methods}
 \label{sec:methods:knn-search:complexity-of-sieve-methods}
 
-Due to their similarity, we combine the complexity analyses of the two Sieve methods into one section.
-For these methods we, once again, use the terminology of tree-search and leaf-search.
+Due to their similarity, we combine the complexity analyses of both Sieve methods.
+For these methods we again use the terminology of tree-search and leaf-search.
 Tree-search navigates the cluster tree and adds clusters to $Q$.
 Leaf-search exhaustively searches some of the clusters in $Q$ to find the $k$ nearest neighbors.
 
@@ -650,15 +638,15 @@ Thus, the asymptotic complexity is $\mathcal{T} \coloneqq \mathcal{O} \big( \lce
 For leaf-search, the output size and scaling factor are the same as in Repeated $\rho$-NN, and so the asymptotic complexity is $\mathcal{L} \coloneqq \mathcal{O} \left( k \cdot \bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d \right)$.
 
 The asymptotic complexity of Breadth-First Sieve is dominated by the QuickSelect algorithm to calculate $\tau$.
-Since this method is log-linear in the length of $Q$, and $Q$ contains the clusters from tree-search and the points from leaf-search, we see that the asymptotic complexity is
+Since this method is log-linear in the length of $Q$, and $Q$ contains the clusters from tree-search and the points from leaf-search, we see that the asymptotic complexity is:
 
 \begin{equation}
     \mathcal{O} \Big( ( \mathcal{T} + \mathcal{L} ) \log ( \mathcal{T} + \mathcal{L} ) \Big).
     \label{eq:methods:breadth-first-sieve-complexity}
 \end{equation}
 
-For Depth-First Sieve, since we use two priority queues, the asymptotic complexity is dominated by the complexity of the priority queue operations.
-Thus, the asymptotic complexity is
+For Depth-First Sieve, since we use two priority queues, the asymptotic complexity is dominated by the priority queue operations.
+Thus, the complexity is:
 
 \begin{equation}
     \mathcal{O} \Big( \mathcal{T} \log \mathcal{T} + \mathcal{L} \log k \Big).
@@ -692,5 +680,4 @@ We construct a random vector $r$ of $d$ dimensions in the hyper-sphere of radius
 We then add $r$ to $x$ to get a new point $x'$.
 Since $||r|| \leq \epsilon$, we have that $||x - x'|| \leq \epsilon$ (i.e., $x'$ is within a distance $\epsilon$ of $x$).
 This produces a new dataset $X'$ with $|X'| = m \cdot |X|$.
-
 This augmentation process preserves the topological structure of the original dataset, but increases its cardinality by a factor of $m$, allowing us to isolate the effect of cardinality on search performance from that of other factors such as dimensionality, choice of metric, or the topological structure of the dataset.

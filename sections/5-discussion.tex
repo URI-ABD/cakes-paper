@@ -3,30 +3,28 @@
 
 We have presented CAKES, a set of three algorithms for fast $k$-NN search that are generic over a variety of distance functions.
 CAKES's algorithms are exact when the distance function in use is a metric (see definition in~\ref{sec:methods}).
-Even under cosine distance, which is not a metric, CAKES's algorithms exhibit nearly perfect recall (i.e. always greater than $0.9995$).
-
+Even under cosine distance, which is not a metric, CAKES's algorithms exhibit nearly perfect recall.
 CAKES's algorithms are designed to be most effective when the data uphold the manifold hypothesis, or in other words, when the data are constrained to a low-dimensional manifold even when embedded in a high-dimensional space.
 As a consequence, these algorithms do not perform well on data with random distributions, because of the absence of a manifold structure.
 In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each dataset we tested exhibits a manifold structure, as quantified by the percentiles of LFD.
 As expected, our results from Figure~\ref{fig:results:scaling-plots} indicate that CAKES's algorithms scale sub-linearly with cardinality on datasets with low LFD, and scale linearly on datasets with high LFD.
 
-As seen in Figures~\ref{fig:results:random-lfd}~and~\ref{fig:results:sift-lfd}, the LFD of the Random dataset is much higher than that of Sift, even though both datasets have the same cardinality and embedding dimension. 
-This is unsurprising, given that the Random dataset is, by definition, uniformly distributed, while Sift is not.
-On the Random dataset, CAKES's algorithms' speed decreases linearly as the multiplier increases, while with Sift, Depth-First Sieve and Breadth-First Sieve both exhibit nearly constant throughput.
-While Repeated $\rho$-NN does not exhibit near-constant throughput with Sift, the throughput decreases much more slowly than it does with the Random dataset.
+As seen in Figures~\ref{fig:results:random-lfd}~and~\ref{fig:results:sift-lfd}, the LFD of the Random dataset is much higher than that of Sift, even though both datasets have the same cardinality and dimensionality.
+This is unsurprising, given that the Random dataset is uniformly distributed, while Sift is not.
+On the Random dataset, CAKES's speed decreases linearly as the multiplier increases, while with Sift, Depth-First Sieve and Breadth-First Sieve both exhibit nearly constant throughput.
+While Repeated $\rho$-NN does not exhibit near-constant throughput with Sift, throughput decreases much more slowly than it does with the Random dataset.
 Since these two datasets have the same cardinality and embedding dimension, the aforementioned discrepancies highlight how manifold structure affects algorithm performance.
-We emphasize that even though CAKES's algorithms are slower on the Random dataset, their recalls remain perfect at all multipliers.
+We emphasize that although CAKES's algorithms are slower on the Random dataset, their recalls remain perfect.
+Figure~\ref{fig:results:scaling-plots} also shows that HNSW and ANNOY have near-constant throughput as the multiplier increases, but their recall continues to decrease as the multiplier increases.
+This, coupled with the increasing time and space cost of building the indices for HNSW and ANNOY, makes these algorithms unsuitable for real-world applications in which the datasets are growing exponentially.
+CAKES's tree is orders of magnitude faster and less memory-intensive to build, and CAKES's algorithms, while slower than HNSW and ANNOY, still show near-constant scaling as well as perfect recall.
 
-Figure~\ref{fig:results:scaling-plots} also shows that HNSW and ANNOY have near constant throughput as the multiplier increases, however, their recall continues to decrease as the multiplier increases.
-This, coupled with the prohibitively increasing cost (in terms of memory and time) of building the indices for HNSW and ANNOY, makes these algorithms unsuitable for real-world applications in which the dataset cardinalities are growing exponentially.
-CAKES's tree is orders of magnitude faster and less memory-intensive to build and CAKES's algorithms, while a little slower than HNSW and ANNOY, still show near constant scaling with cardinality in addition to having perfect recall.
-
-When written with the same notation as used in Section~\ref{sec:methods:knn-search:complexity-of-sieve-methods}, we see that the time complexity of Repeated $\rho$-NN is $\mathcal{O}(\tfrac{\mathcal{T}}{\lceil d \rceil} + \mathcal{L})$, where $\mathcal{T}$ is the time complexity of tree-search and $\mathcal{L}$ is the time complexity of leaf-search. 
-Even though Repeated $\rho$-NN has the lowest time complexity (compare to $\mathcal{O}(\mathcal{T}\log{(\mathcal{T}+\mathcal{L})} + \mathcal{L}\log{(\mathcal{T}+\mathcal{L})})$ for Breadth-First Sieve and $\mathcal{O}(\mathcal{T}\log{\mathcal{T}} + \mathcal{L}\log{k})$ for Depth-First Sieve) of the three CAKES algorithms, it is not always the fastest algorithm empirically. 
+When written with the same notation as used in Section~\ref{sec:methods:knn-search:complexity-of-sieve-methods}, we see that the time complexity of Repeated $\rho$-NN is $\mathcal{O}(\tfrac{\mathcal{T}}{\lceil d \rceil} + \mathcal{L})$, where $\mathcal{T}$ is the time complexity of tree-search and $\mathcal{L}$ is the time complexity of leaf-search.
+Even though Repeated $\rho$-NN has the lowest time complexity (compare to $\mathcal{O}(\mathcal{T}\log{(\mathcal{T}+\mathcal{L})} + \mathcal{L}\log{(\mathcal{T}+\mathcal{L})})$ for Breadth-First Sieve and $\mathcal{O}(\mathcal{T}\log{\mathcal{T}} + \mathcal{L}\log{k})$ for Depth-First Sieve) of the three CAKES algorithms, it is not always the fastest algorithm empirically.
 We believe that some of this discrepancy can be explained by the fact that if Repeated $\rho$-NN significantly ``overshoots'' the correct radius for $k$ hits ($\rho_k$) during tree-search, leaf-search will require looking at more points, rendering the true scaling factor higher than that in Equation~\ref{eq:methods:repeated-rnn-complexity}.
-This overshot can occur when the LFDs of clusters near the query are not concentrated around their expectation. 
-For example, if most clusters near the query have very low LFD except for one anomaly with very high LFD, 
-the harmonic mean LFD $\mu$ can still be low, so the factor of radial increase~\ref{eq:methods:repeated-rnn-factor} may be much larger than necessary for guaranteeing $k$ hits.  
+This overshot can occur when the LFDs of clusters near the query are not concentrated around their expectation.
+For example, if most clusters near the query have very low LFD except for one anomaly with very high LFD,
+the harmonic mean LFD $\mu$ can still be low, so the factor of radial increase~\ref{eq:methods:repeated-rnn-factor} may be much larger than necessary for guaranteeing $k$ hits.
 This suggests that rather than using the reciprocal of the \textit{harmonic} mean LFD in~\ref{eq:methods:repeated-rnn-factor}, we may achieve better results with a mean that is more sensitive to high outliers, such as the geometric mean.
 We leave it as an avenue for future work to characterize when Repeated $\rho$-NN significantly ``overshoots'' $\rho_k$ and to improve upon the factor of radial increase in~\ref{eq:methods:repeated-rnn-factor} so that this occurs less frequently and with less severity.
 
@@ -36,10 +34,10 @@ On Silva, Repeated $\rho$-NN is comparable to the other CAKES algorithms at low 
 When we view these results in light of the LFD plots in Figure~\ref{fig:results:lfd-plots}, we realize that Repeated $\rho$-NN appears to be the fastest CAKES algorithm on datasets where a large proportion of the data have a very low LFD, such as Glove-25 and Silva.
 This trend is unsurprising, given that Repeated $\rho$-NN relies on a low LFD around the query in order to quickly estimate the correct radius for $k$ hits.
 These findings suggest that Repeated $\rho$-NN is the most ``sensitive'' to the manifold structure of the dataset.
-Exploring this sensitivity is a potential avenue for future investigation, as it remains to be determined at what LFD Repeated $\rho$-NN transitions away from being the fastest CAKES algorithm, and whether this transition is sharp.
+Exploring this sensitivity is a potential avenue for future study, as it remains to be seen at what LFD Repeated $\rho$-NN transitions away from being the fastest CAKES algorithm, and whether this transition is sharp.
 
-While the fastest CAKES algorithm varies by dataset, we observe that on all three ANN-benchmark datasets (Fashion-Mnist, Glove-25, and Sift), Depth-First Sieve and Breadth-First Sieve show nearly constant throughput as the cardinality increases.
-This observation warrants further investigation, but it is especially promising given that Depth-First Sieve and Breadth-First Sieve consistently outperform linear search for high cardinalities.
+While the fastest CAKES algorithm varies by dataset, we note that on all three ANN-benchmark datasets (Fashion-Mnist, Glove-25, and Sift), Depth-First Sieve and Breadth-First Sieve show nearly constant throughput as the cardinality increases.
+This observation warrants further investigation, but it is especially promising given that both algorithms consistently outperform linear search for high cardinalities.
 Finally, we emphasize that the variation in performance of our algorithms across different datasets and cardinalities supports our use of an auto-tuning function (as discussed in Section~\ref{sec:methods:auto-tuning}) to select the best algorithm for a given dataset.
 Future work is needed to better characterize those datasets for which each algorithm performs best, but our results suggest that a more sophisticated auto-tuning function could be developed to select the fastest algorithm based on the properties of the dataset.
 

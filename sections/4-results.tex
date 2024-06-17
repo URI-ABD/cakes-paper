@@ -6,21 +6,19 @@
 \label{sec:results:lfd-of-datasets}
 
 Since the time complexity of CAKES algorithms scales with the LFD of the dataset, we examine the LFD of each dataset we used for benchmarks.
-
-Figure~\ref{fig:results:lfd-plots} illustrates the trends in LFD for (the non-augmented versions of) Fashion-Mnist, Glove-25, Sift, Random, Silva 18S, and RadioML.
-The horizontal axis denotes the depth in the cluster tree, and the vertical axis denotes the LFD (as calculated by Equation~\ref{eq:methods:lfd-simplified}) of clusters at that depth.
+Figure~\ref{fig:results:lfd-plots} illustrates the trends in LFD for Fashion-Mnist, Glove-25, Sift, Random, Silva 18S, and RadioML.
+The horizontal axis denotes depth in the cluster tree, and the vertical axis denotes the LFD of clusters at that depth.
 We plot lines for the 5$^{th}$, 25$^{th}$, 50th, 75$^{th}$ and 95$^{th}$ percentiles of LFD, as well as the minimum and maximum LFD at each depth.
-In order to have the plots best reflect the distribution of LFDs across the entire \textit{dataset}, in computing percentiles, we count each cluster as many times as its cardinality.
+In order to have the plots best reflect the distribution of LFDs across the entire \textit{dataset}, we count each cluster as many times as its cardinality.
 In other words, if, for some dataset, the 95$^{th}$ percentile of LFD at depth 40 is 3, this means that 95\% of the points in clusters at depth 40 belong to a cluster whose LFD is at most 3.
-
 Figure~\ref{fig:results:fashion-mnist-lfd} shows the LFD by depth for Fashion-Mnist.
-We observe that until about depth 5, the LFD is low, as the 95$^{th}$ percentile (orange plotted line) is less than 4, and the median (red line) is just above 2.
-For depths 15 through 25, we observe that the LFD increases, with the 95$^{th}$ percentile (orange plotted line) slightly less than 6, and the median near 3.
+We observe that until about depth 5, LFD is low, as the 95$^{th}$ percentile (orange plotted line) is less than 4, and the median (red line) is just above 2.
+For depths 15 through 25, we observe that LFD increases, with the 95$^{th}$ percentile (orange plotted line) slightly less than 6, and the median near 3.
 Finally, for depths 25 through the maximum depth, we observe that the LFD decreases again, as the 95$^{th}$ percentile is between 3 and 4, and the median is less than 2.
 
 Relative to Fashion-Mnist, Glove-25 has low LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}.
 Percentile lines for Glove-25 are flatter and lower, indicating that the LFD is lower across the entire dataset, and that the LFD does not vary as much by depth.
-The 95$^{th}$ percentile of LFD is less than 3 for all depths, and the median is less than 2 for all depths. 
+The 95$^{th}$ percentile of LFD is less than 3 for all depths, and the median is less than 2 for all depths.
 Before depth 25, the 95$^{th}$ percentile hovers near 2, and from depth 20 onward, it hovers near 3.5 before dipping sharply at the maximum depths.
 The median hovers near 1.5 for all depths.
 
@@ -47,11 +45,11 @@ The 95$^{th}$ percentile is less than about 3 for all depths, hovering near 1 fo
 The median reaches its peak at 2 for about depth 10 and remains close to 0 for depths 40 through 128.
 
 Relative to the other datasets, RadioML, as displayed in Figure~\ref{fig:results:radioml-lfd}, exhibits high LFD.
-Notably, however, for the first approximately 15 depths, the 95$^{th}$ percentile and median LFD are very close to 0. 
+Notably, however, for the first approximately 15 depths, the 95$^{th}$ percentile and median LFD are very close to 0.
 Both percentiles increase sharply after depth 20, nearly reaching 16.
 LFD remains high even as depth increases, with the 95$^{th}$ percentile fluctuating between about 6 and 15 for depths about 20-40.
 It then spikes up again to about 10 at around depth 45 before decreasing linearly to 1 at depth 60.
-The median LFD follows a similar pattern of peaks and troughs, fluctuating between about 3 and 15 for depths 20-40, spiking at about depth 50 to 5, and then decreasing approximately linearly to 1 at depth 60. The inconsistency of LFD in the RadioML dataset suggests that it obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth; this could be due to dense sampling or -- as this is still a synthetic dataset -- nonuniform generation of data. Silva, in contrast, appears to obey the manifold hypothesis at all scales. 
+The median LFD follows a similar pattern of peaks and troughs, fluctuating between about 3 and 15 for depths 20-40, spiking at about depth 50 to 5, and then decreasing approximately linearly to 1 at depth 60. The inconsistency of LFD in the RadioML dataset suggests that it obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth; this could be due to dense sampling or -- as this is still a synthetic dataset -- nonuniform generation of data. Silva, in contrast, appears to obey the manifold hypothesis at all scales.
 
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
@@ -81,7 +79,7 @@ The median LFD follows a similar pattern of peaks and troughs, fluctuating betwe
         \includegraphics[width=0.95\textwidth]{images/lfd/silva-2224640.png}\\
         \subcaption{Silva 18S}
         \label{fig:results:silva-lfd}
-    \end{subfigure}%  
+    \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
         \includegraphics[width=0.95\textwidth]{images/lfd/random-1000000.png}\\
         \subcaption{A random dataset}
@@ -111,40 +109,38 @@ For each of the ANN-benchmark datasets and the Random dataset, we report the tim
 Figures~\ref{fig:results:fashion-mnist-scaling},~\ref{fig:results:glove-25-scaling},~and~\ref{fig:results:sift-scaling} show the scaling behavior of CAKES algorithms and existing algorithms on augmented versions of Fashion-Mnist under Euclidean distance,
 Glove-25 under cosine distance, and
 Sift under Euclidean distance.
-
 Figure~\ref{fig:results:random-scaling} shows the scaling behavior of CAKES algorithms and existing algorithms on a completely randomly generated dataset with the same cardinality and dimensionality as Sift (1 million points in 128 dimensions).
 Figures~\ref{fig:results:silva-scaling} and ~\ref{fig:results:radioml-scaling} show the scaling behavior of CAKES on Silva and RadioML respectively.
 For these datasets, we took random sub-samples of the full datasets instead of augmenting them to higher cardinalities.
-
 The horizontal axis in each figure shows the cardinality of the dataset augmented with synthetic points (see Section \ref{sec:methods:synthetic-data}).
-The left-most point on each line is at the cardinality of the original dataset without any synthetic augmentation.
-The vertical axis denotes throughput in queries per second (higher is better).
+The left-most point on each line is at the cardinality of the original dataset.
+The vertical axis denotes throughput in queries per second.
 Both axes are on a logarithmic scale.
 In this section, we report results only for $k$-NN search with $k = 10$, but similar plots for $k = 100$ can be found in the Supplement.
 For HNSW and ANNOY, we report the recall for each measurement in the plots. For algorithms which exhibit recall greater than $0.9995$, we do not report the recall in the plots, but we do report it in the tables below.
 
-Table~\ref{tab:results:qps-and-recall} show the throughput and recall of CAKES's algorithms at each augmented cardinality for Fashion-Mnist, Glove-25, Sift, and Random. 
+Table~\ref{tab:results:qps-and-recall} show the throughput and recall of CAKES's algorithms at each augmented cardinality for Fashion-Mnist, Glove-25, Sift, and Random.
 Though the plots in Figure~\ref{fig:results:scaling-plots} present results for each of CAKES's three algorithms separately, the results in the CAKES column in these tables represent the fastest CAKES algorithm at that dataset and cardinality only.
 We used our auto-tuning approach (see Section~\ref{sec:methods:auto-tuning}) for each new tree (i.e. at each cardinality), and this approach was always able to select the fastest algorithm for each dataset at each cardinality.
 Since we also allow for tuning hyper-parameters for the other algorithms, and we allow for different sets of hyper-parameters at each cardinality, it is a fair comparison for these tables to only list the performance of the tuned CAKES algorithm.
-When reporting recall, we use $1.000*$ to denote that the recall is imperfect, but rounds to $1.000$ when we consider only three decimal places.
+When reporting recall, we use $1.000*$ to denote that the recall is imperfect, but rounds to $1.000$.
 
 
 Figure~\ref{fig:results:scaling-plots} shows that for Fashion-Mnist, Glove-25, and Sift, as cardinality increases, the CAKES algorithms (Depth-First Sieve in blue, Repeated $\rho$-NN in green, and Breadth-First Sieve in purple) become faster than our Rust implementation of na\"{i}ve linear search (in orange).
-Though we observe this trend, we note that the exact cardinality at which CAKES's algorithms overtake linear search differs by dataset. For Fashion-Mnist, CAKES begins outperforming linear search starting at a cardinality near $10^5$, while for Glove-25 and Sift, this happens near $10^6$ and $10^7$ respectively. 
+Though we observe this trend, we note that the exact cardinality at which CAKES's algorithms overtake linear search differs by dataset. For Fashion-Mnist, CAKES begins outperforming linear search starting at a cardinality near $10^5$, while for Glove-25 and Sift, this happens near $10^6$ and $10^7$ respectively.
 Which one of the three CAKES algorithms is fastest also differs by dataset.
-For Fashion-Mnist, Depth-First Sieve is consistently fastest, while for Glove-25, the fastest is Repeated $\rho$-NN, and for Sift, Breadth-First Sieve. 
-Additionally, on all three datasets, Depth-First Sieve and Breadth-First Sieve appear to have performance which is \textit{constant} in the cardinality of the dataset. 
-With Glove-25, Repeated $\rho$-NN exhibits similar constant scaling. 
-We also observe that on these three datasets, for nearly all cardinalities, all three of the CAKES algorithms are faster than FAISS-Flat (in brown), and that at some cardinality, CAKES's algorithms become faster than FAISS-IVF (in pink). 
-For Fashion-Mnist, CAKES becomes faster than FAISS-IVF near cardinality $10^5$, whereas for Glove-25 and Sift, this happens near cardinality $10^7$. 
+For Fashion-Mnist, Depth-First Sieve is consistently fastest, while for Glove-25, the fastest is Repeated $\rho$-NN, and for Sift, Breadth-First Sieve.
+On all three datasets, Depth-First Sieve and Breadth-First Sieve appear to have performance which is \textit{constant} in the cardinality of the dataset.
+With Glove-25, Repeated $\rho$-NN exhibits similar constant scaling.
+We also observe that on these three datasets, for nearly all cardinalities, all three of the CAKES algorithms are faster than FAISS-Flat (in brown), and that at some cardinality, CAKES's algorithms become faster than FAISS-IVF (in pink).
+For Fashion-Mnist, CAKES becomes faster than FAISS-IVF near cardinality $10^5$, whereas for Glove-25 and Sift, this happens near cardinality $10^7$.
 On all three of these datasets, HNSW (in gray) and ANNOY (in yellow) are faster than CAKES's algorithms for all cardinalities; however, CAKES exhibits perfect or near-perfect recall on each dataset, while HNSW and ANNOY exhibit much lower recall, as shown in Table~\ref{tab:datasets:summary}.
-While recall for CAKES's does \emph{not} degrade with cardinality, recall for HNSW and ANNOY does degrade with cardinality. 
-At a cardinality multiplier as low as eight, HNSW and ANNOY have recall of $0.525$ and $0.857$ respectively for Fashion-Mnist, 0.607 and 0.832 for Glove-25, and 0.782 and 0.686 on Sift. 
-In contrast, CAKES has perfect recall on Fashion-Mnist and Sift (because the distance function used with these datasets is a metric), and near-perfect recall on Glove-25 (because the cosine distance function is not a metric).
+While recall for CAKES's does \emph{not} degrade with cardinality, recall for HNSW and ANNOY degrades with cardinality.
+At a cardinality multiplier as low as eight, HNSW and ANNOY have recall of $0.525$ and $0.857$ respectively for Fashion-Mnist, 0.607 and 0.832 for Glove-25, and 0.782 and 0.686 on Sift.
+In contrast, CAKES has perfect recall on Fashion-Mnist and Sift (where the distance function is a metric), and near-perfect recall on Glove-25 (cosine distance is not a metric).
 
 
-In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, as seen in Figure~\ref{fig:results:random-scaling}, we observe that the three CAKES algorithms are the slowest out of all algorithms, at all cardinalities.
+In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, as seen in Figure~\ref{fig:results:random-scaling}, we observe performs quite slowly.
 As with the real datasets, HNSW and ANNOY are the fastest algorithms, and CAKES exhibits perfect recall at all cardinalities.
 HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets;
 in particular, with a multiplier of 1, HNSW and ANNOY have recall as low as 0.060 and 0.028 respectively, as reported in Table~\ref{tab:results:qps-and-recall}.
@@ -153,8 +149,8 @@ For Silva and RadioML, we benchmarked only CAKES's algorithms because HNSW, ANNO
 Due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset--rather than augmented versions of the dataset--to examine how performance scales with cardinality.
 With Silva, as shown in Figure~\ref{fig:results:silva-scaling}, we observe that for all algorithms, throughput initially seems to linearly decrease as cardinality increases, but that it seems to begin levelling off near cardinality $10^5$.
 Until cardinality near $10^4$, Depth-First Sieve is the fastest CAKES algorithm, but for larger cardinalities, Repeated $\rho$-NN is the fastest CAKES algorithm.
-For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe that throughput declines nearly linearly, and that the three CAKES algorithms exhibit virtually indistinguishable performance for all cardinalities.
-In particular, throughput of CAKES's algorithms is identical within three significant figures for all cardinalities.
+For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe that throughput declines nearly linearly, and that the three CAKES algorithms exhibit virtually indistinguishable performance.
+In particular, throughput of CAKES's algorithms is identical within three significant figures.
 
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
