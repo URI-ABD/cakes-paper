@@ -453,7 +453,7 @@ In ~\cite{ishaq2019clustered}, we showed that the complexity of tree-search is $
 To adjust this bound for Repeated $\rho$-NN, we must estimate the number of iterations of tree-search (Algorithm~\ref{alg:methods:rnn-search:tree-search}) needed to find a radius that guarantees at least $k$ neighbors.
 
 Based on the assumption that the LFD near the query does not differ significantly from that of nearby clusters, Equation~\ref{eq:methods:repeated-rnn-factor} suggests that in the expected case, we need only two iterations of tree-search to find $k$ neighbors:
-one iteration to find at least one cluster, and the one more to find enough the $k$ neighbors.
+one iteration to find at least one cluster, and one more to find enough of the $k$ neighbors.
 Since this is a constant factor, complexity of tree-search for Repeated $\rho$-NN is the same as that of $\rho$-NN search, i.e. $\mathcal{O}\big(\log\mathcal{N}_{\hat{r}}(X)\big)$.
 
 To determine the asymptotic complexity of leaf-search, we must estimate $\sum_{C \in Q} |C|$, the total cardinality of the clusters returned by tree-search.

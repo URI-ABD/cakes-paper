@@ -26,33 +26,47 @@ characteristics (e.g., low fractal dimension, the tree is balanced). These
 assumptions should be made clear in the intro and when giving the run time
 expressions.
 
+*this is easy to address, and we will do so*
+
 For example, line 215, does the cost of partitioning of O(n log(n)) depend on
 the tree being balanced? It is an important hypothesis because line 197 states
 that "the imbalance in the tree is a feature, not a bug, as it reflects the
 underlying structure of the data". That may look like a contradiction.
 
+*we can address this with the plots that include a balanced tree -- expand 2.1.3, balanced vs unbalanced, dropping off points faster with an unbalanced tree?*
+
 The cost on line 260 uses \hat{r}, which is a mean radius. Now that cost is in
 expectation (in addition to the balanced tree hypothesis).
+
+*this is restating the complexity from the CHESS paper, but it's correct that it's an expected cost. Worst-case analysis isn't really useful here.*
 
 Another example, line 326, comes from the minimum with value 2 on line 284. If
 the assumption on the LFD is not satisfied, then an extra log factor would
 appear in the cost.
+
+*write in plain english right after eq 2.3, explaining in plain english the rationale for the min(2,x) expansion: namely, we don't think the very low LFD would be representative of what we'd see if we massively increased the radius*
 
 * The discussion on LFD after its definition line 141 is hard to understand:
 there are 2 parameters in the definition of LFD (r_1 and r_2), but the
 discussion seems to imply there is only 1 (a radius r). That discussion only
 seems to make sense after line 163 and the rewrite of the definition 2.1.
 
+*Right after or in eq 2.1, immediately follow up with the simplified form where r_1 = 2r_2. Also drop subscript X, since we're dealing with only one dataset. Explain.*
+
 * Smith-Waterman and Needleman-Wunsch are not distances (unlike Levenshtein and
 Hamming distances). They are dynamic programming algorithms to compute
 distances like the Levenshtein distance (and others depending on the exact
 parameters of the algorithms).
+
+*Correct; fix in language.*
 
 * The explanation that the augmentation process (starting at line 418) preserves
 the topological structure of the underlying data is not very convincing. This
 process adds small clouds of points extending in every dimension around
 existing points. That is not quite the same as generating new points that
 belong to a small dimension manifold in the sample space.
+
+*We should acknowledge this limitation, and suggest that in future work we would do something like favor augmentation along the first few PCs of the local manifold, but not in scope here. This goes in discussion.*
 
 * Line 467-473: Why are there multiple linear search implementations used as
 ground truth? These different implementation are apparently used to evaluate
@@ -63,34 +77,51 @@ is written in?
 Do these 2 tools return the same result? If so, why use multiple tools? If
 not, then the evaluation is flawed.
 
+*We don't have a python wrapper for cakes, and the other tools were in python. There is only one ground truth. Fix language starting in Results.*
+
 # Minor comments
 
 * Line 421: The points are created with distance \epsilon of x, not \epsilon
 ||x||. r is chosen in the sphere of radius \epsilon and added to x, and, as
 stated correctly line 424, x' is within \epsilon of x.
 
+*x is a vector, and epsilon is a scalar. We can clarify that x is a vector. Be sure to boldface all vectors*
+
 * There are many small LaTeX issues: wrong space after "i.e." and "e.g." (add a
 backslash), large spaces around formulas (e.g., line 342), em-dashes that look
 too short (e.g., line 594).
+
+*easy to fix (NMD)*
 
 * The figures should not be shrank so much: the labels on the axis and the keys
 are not readable. Regenerate the pictures at the correct size to avoid
 scaling.
 
+*fix some font sizes and aspect ratios*
+
 * Put the keys outside of the figures, not over the data lines.
+
+*need to fix this*
 
 * Many horizontal and vertical lines in Table~2 should be removed to help with
 readability.
 
+*investigate this, or break up table 2 into 2a-2d (NMD)*
+
 * Line 585: "we observe performs quite slowly". The sentence seems incomplete.
+
+*will fix -> 'we observe that CAKES performes quite slowly'*
 
 * Many of the explicit algorithms do not serve any real purpose: they are not
 more readable in pseudo-code form and are just fine in explained in the text.
 (E.g., Algorithm 2.4).
 
+*get rid of alg 2.4*
+
 * The Github repository gives very little instructions on how to compile the
 code, run it or reproduce the results from this manuscript.
 
+*will fix (NI)*
 
 
 
@@ -117,6 +148,8 @@ the tree.  The authors should review the requirements for defining proper
 terminology and notation for a data structure and apply it consistently to
 their data structure.
 
+*we fixed this in pancakes, just backport it*
+
 The authors appear to use the terms similarity and distance
 interchangeably, though they are certainly different.  In particular, a
 similarity is a measure (nominally, non-negative) that is (ideally) larger
@@ -129,6 +162,8 @@ there is no obvious median for a set of biological sequences.  The authors
 must identify the actual spaces from which data sets can be extracted for
 CAKES to work.
 
+*add def in paper for geometric median, extended from continues vector spaces into any metric space. line 43, use distance, not similarity*
+
 On line 141, there is a function defined for the local fractal dimension
 (LFD), but it is not expressed in functional notation.  In other words, it
 should start with $LFD(X,r_1,r_2)$, since it is clearly a function of all
@@ -137,11 +172,16 @@ the manuscript.  Much the same is true on line 142, where it should read
 $B(X,q,r)$, not $B_X(q,r)$.  If makes little sense to put $X$ as a
 subscript in this context.
 
+*similar to complaint from reviewer 2*
+
 In the algorithms, starting with Algorithm 2.1, the pseudocode style is
 ugly.  Much better would be the pseudocode style from the fourth edition
 of Introduction to Algorithms, CLRS.  Also, the description of $criteria$
 is as a "stopping criteria", while the logic of the code has it as a
 continuing criteria.  Please fix the pseudocode throughout.
+
+*make this pseudocode style change (NMD)*
+*call it continuation criteria (NI)*
 
 Section 2.2 is meant to be the definition of the search problem(s), but
 that is really only contained in the paragraph from lines 218 to 223. In
@@ -153,11 +193,15 @@ full detail into a separate paragraph.  Finally, one assumes that the
 integer $k$ or the number $\rho$ is a parameter to the corresponding
 problem and should be mentioned as such.
 
+*move introduction of the three deltas to later, to start of 2.4.3, and expand definition of rnn. (NI)*
+
 There are no theorems in the manuscript, yet there are arguments for
 quantities like the quality of the results or the time complexity that are
 given without much precision.  It is better to give precise theorems or
 propositions for each thing to be proved, with appropriate assumptions,
 and to give precise proofs of same.
+
+*state theorem, which is the time complexity, and formalize the argument into a proof*
 
 The manuscript makes too much use of unfamiliar terminology taken from
 earlier papers without defining terms.  For example, see line 233 and
@@ -165,9 +209,13 @@ Reference [18].  See also the paragraph at lines 306 to 310. All terms
 used must be precisely defined in the manuscript to allow proper
 assessment of the manuscript.
 
+*remind the reader what rnn search is, and in 306-310 reword to refer to previous section rather than external refs*
+
 The Results section is a slog to read and parts of the Discussion seem
 redundant.  Take lines 651 to 668 as an example.  Tightening up the
 Results and the Discussion can only help the exposition.
+
+*offload to figure captions where possible, don't spell out everything*
 
 I led a bioinformatics project that used an entropy scaling approach to
 search a database of protein sequences.  See Reference [1].  As a result,
@@ -178,6 +226,7 @@ set of protein sequences.  In any case, I would like the authors to
 reference [1] and discuss in more depth how they address the challenges of
 the various real world examples.
 
+*fine, cite 1, and discuss (NI)*
 
 
 
@@ -186,56 +235,90 @@ MINOR ISSUES =============================================================
 "Data set" is pronounced as two words and should be written as such
 throughout the manuscript.
 
+*disagree, this appears as a term of art in existing literature, and is in the Merriam-Webster Dictionary (cite)*
+
 In line 22, use "rate" instead of "scale".
+
+*ok, will fix*
 
 Throughout, the word "which" is used when "that" is the correct word.  If
 "which" is used, then it is not defining and is preceded by a comma.
 Change all "which"'s to "that"'s.
 
+*no. maybe change some selected ones, but this is too rigid a grammatical rule.*
+
 On line 75, there is a Subsection 1.1, but there is no Subsection 1.2.
 This is not a good practice.  Just refactor the text without Section 1.1
 or add a Subsection 1.2.
 
+*make the last paragraph (entropy scaling) into 1.2*
+
 The use of $\forall$, $\exists$, $\Leftrightarrow$, and other similar
 logical operators is not appropriate in a manuscript that is not about
 logic.  Spell out the meaning in English, and be creative.
+
+*disagree, these operators are standard in mathematics and theoretical computer science*
 
 Near line 154, it is important to give an overview of your solution
 strategy and, in particular, why clustering is used first.  Clustering is
 a heavily overloaded word.  I would have chosen a more neutral term
 instead of "cluster".
 
+*we define it, and are building on prior work that relies on clustering. wontfix.*
+
 On line 155, there is the parenthetical comment about "a smaller sample of
 the points".  What does that mean precisely and where does it occur later
 in the manuscript?
 
+*we take a root-n sample of the points (NI), justified in CHESS paper*
+
 On line 156, there is the claim "so it is a real data point".  What is a
 real data point?  Please explain.
 
+*deal with by defining geometric median*
+
 On line 161 and elsewhere, "i.e." is always preceded and followed by
 commas.
+
+*fixed here*
 
 On line 178, there is the phrase "find the point ... in the sample".  Can
 you make the entire paragraph more precise by giving notation for the
 sample?
 
+*deal with by defining geometric median*
+
 Section 2.1.1 overall is lacking in mathematical rigor.
+
+*we will refactor 2.1.1 to be more rigorous (NI)*
 
 In Section 2.1.3, the cost of assessing "criteria' is not counted in the
 time complexity, but it must be.
 
+*add some explanation: these can be as complex as a user wants, but for us it is a constant-time check (NI)*
+
 In line 252, there is again mention of "real points" without any
 indication of the meaning of "real".
+
+*replace with 'actual points from the dataset'*
 
 The fonts in Algorithms 2.2 through 2.7 are simply too small.  Make them
 the font size of the remainder of the text.
 
+*we will make this more legible (NMD)*
+
 The numbers in Table 2 are too small.  Refactor into multiple tables
 perhaps.
 
+*we are refactoring into multiple tables (NMD)*
+
 In line 641, what is "radial increase 2.3"?
 
+*missing word 'equation' and also put in parentheses*
+
 In line 642, why is "harmonic" italicized?
+
+*no need*
 
 The References section needs a through going over for proper formatting
 and capitalization.  For example, check the title capitalization in [2],
@@ -248,7 +331,7 @@ References [2] and [3] appear to be duplicates.
 
 Reference [39] is incomplete and inadequate.
 
-
+*Will go over this carefully (NMD)*
 
 
 REFERENCE ================================================================
