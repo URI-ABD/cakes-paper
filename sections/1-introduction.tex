@@ -65,6 +65,10 @@ At each intermediate node of the tree, two points are randomly sampled from the 
 This process iterates to create a forest of trees, and the number of iterations is a tunable parameter.
 At search time, one can increase the number of trees to be searched to improve recall at the cost of speed.
 
+
+\subsection{Entropy Scaling Search}
+\label{sec:intoduction:entropy-scaling-search}
+
 The entropy-scaling search paradigm exploits the geometric and topological structure inherent in large datasets.
 Importantly, as suggested by their name, entropy-scaling search algorithms exhibit asymptotic complexity that scales with topological properties of the dataset, instead of its cardinality.
 In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search)~\cite{ishaq2019clustered}, which extended entropy-scaling $\rho$-NN search from a flat clustering approach to a hierarchical clustering approach.
