@@ -70,21 +70,21 @@ The median LFD follows a similar pattern of peaks and troughs, fluctuating betwe
         \label{fig:results:sift-lfd}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.95\textwidth]{images/lfd/random-1000000.png}\\
+        \subcaption{A random dataset}
+        \label{fig:results:random-lfd}
+    \end{subfigure}
+    \\
+    \begin{subfigure}[b]{0.47\textwidth}
         \includegraphics[width=0.95\textwidth]{images/lfd/radio-ml-97920.png}\\
         \subcaption{RadioML}
         \label{fig:results:radioml-lfd}
     \end{subfigure}%
-    \\
     \begin{subfigure}[b]{0.47\textwidth}
         \includegraphics[width=0.95\textwidth]{images/lfd/silva-2224640.png}\\
         \subcaption{Silva 18S}
         \label{fig:results:silva-lfd}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{images/lfd/random-1000000.png}\\
-        \subcaption{A random dataset}
-        \label{fig:results:random-lfd}
-    \end{subfigure}
     \vspace{1em}
     \caption{Local fractal dimension vs. cluster depth across six datasets, grouped by decile of local fractal dimension and weighted by the cardinalities of the clusters.
     The last dataset is randomly generated.}
@@ -96,11 +96,6 @@ The median LFD follows a similar pattern of peaks and troughs, fluctuating betwe
 \label{sec:results:indexing-and-tuning-time}
 
 For each of the ANN-benchmark datasets and the Random dataset, we report the time taken for each algorithm to build the index and to tune the hyper-parameters for these indices to achieve the highest possible recall. For the sake of brevity, these results are reported in the supplement.
-
-
-
-
-
 
 
 \subsection{Scaling Behavior and Recall}
@@ -154,43 +149,44 @@ In particular, throughput of CAKES's algorithms is identical within three signif
 
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/fashion-mnist-knn-10.png}
+        \includegraphics[width=0.95\textwidth]{plots/fashion-mnist_PermutedBall_10_throughput.png}
         \subcaption{Fashion-Mnist for $k=10$.}
         \label{fig:results:fashion-mnist-scaling}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/glove-25-knn-10.png}
+        \includegraphics[width=0.95\textwidth]{plots/glove-25_PermutedBall_10_throughput.png}
         \subcaption{Glove-25 for $k=10$.}
         \label{fig:results:glove-25-scaling}
     \end{subfigure}%
     \vspace{1em}
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/sift-knn-10.png}
+        \includegraphics[width=0.95\textwidth]{plots/sift_PermutedBall_10_throughput.png}
         \subcaption{Sift for $k=10$.}
         \label{fig:results:sift-scaling}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/radio-ml-knn-10.png}
+        \includegraphics[width=0.95\textwidth]{plots/sift_PermutedBall_10_throughput.png}
+        \subcaption{A random dataset for $k=10$.}
+        \label{fig:results:random-scaling}
+    \end{subfigure}%
+    \\
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.95\textwidth]{plots/sift_PermutedBall_10_throughput.png}
         \subcaption{RadioML for $k=10$ at SnR = 10dB.}
         \label{fig:results:radioml-scaling}
     \end{subfigure}%
     \vspace{1em}
-    \\
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/silva-knn-10.png}
+        \includegraphics[width=0.95\textwidth]{plots/sift_PermutedBall_10_throughput.png}
         \subcaption{Silva for $k=10$.}
         \label{fig:results:silva-scaling}
-    \end{subfigure}%
-    \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/random-knn-10.png}
-        \subcaption{A random dataset for $k=10$.}
-        \label{fig:results:random-scaling}
     \end{subfigure}%
     \caption{Throughput across six datasets, including a randomly-generated dataset.
     In each plot, the horizontal axis represents increasing cardinality of the dataset, while the vertical axis represents the throughput in queries per second (higher is better).
     Note that for RadioML, all three algorithms performed nearly identically, so distinct lines are not visible.
-    For some algorithms, we were not able to take measurements for each cardinality because the index-building required more RAM than was available (i.e. more then 512GB).}
+    For some algorithms, we were not able to take measurements for each cardinality because the index-building required more RAM than was available (i.e. more then 512GB).
+    For linear search with CAKES, we only report the throughput for a few of the initial multipliers because the trend is clear.}
     \label{fig:results:scaling-plots}
 \end{figure}
 
@@ -202,61 +198,59 @@ In particular, throughput of CAKES's algorithms is identical within three signif
     \label{tab:results:qps-and-recall}
     \vskip 0.15in
     \begin{center}
-        \begin{tiny}
-            \begin{sc}
-                \begin{tabular}{|c|l|p{1.2cm}|p{0.9cm}|p{1.2cm}|p{0.9cm}|p{1.2cm}|p{0.9cm}|p{1.2cm}|p{0.9cm}|}
-                    \hline
-                    & \multirow{2}{*}{\textbf{Multiplier}} & \multicolumn{2}{|c}{\textbf{hnsw}} & \multicolumn{2}{|c}{\textbf{annoy}} & \multicolumn{2}{|c}{\textbf{faiss-ivf}}  & \multicolumn{2}{|c|}{\textbf{cakes}} \\\cline{3-10}
-                    & & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\\cline{2-10}
-                    \hline
-                    \hline
-                    \multirow{10}{*}{\rotatebox[origin=c]{90}{\textbf{Fashion-Mnist}}}
-                    & 1   & 1.33~$\times10^{4}$ & 0.954  & 2.19~$\times10^{3}$ & 0.950  & 2.01~$\times10^{3}$ & 1.000* & 2.17~$\times10^{3}$ & 1.000  \\\cline{2-10}
-                    & 2   & 1.38~$\times10^{4}$ & 0.803  & 2.12~$\times10^{3}$ & 0.927  & 9.39~$\times10^{2}$ & 1.000* & 1.14~$\times10^{3}$ & 1.000  \\\cline{2-10}
-                    & 4   & 1.66~$\times10^{4}$ & 0.681  & 2.04~$\times10^{3}$ & 0.898  & 4.61~$\times10^{2}$ & 0.997  & 9.82~$\times10^{2}$ & 1.000  \\\cline{2-10}
-                    & 8   & 1.68~$\times10^{4}$ & 0.525  & 1.93~$\times10^{3}$ & 0.857  & 2.26~$\times10^{2}$ & 0.995  & 1.18~$\times10^{3}$ & 1.000  \\\cline{2-10}
-                    & 16  & 1.87~$\times10^{4}$ & 0.494  & 1.84~$\times10^{3}$ & 0.862  & 1.17~$\times10^{2}$ & 0.991  & 1.20~$\times10^{3}$ & 1.000  \\\cline{2-10}
-                    & 32  & 1.56~$\times10^{4}$ & 0.542  & 1.85~$\times10^{3}$ & 0.775  & 5.91~$\times10^{1}$ & 0.985  & 1.16~$\times10^{3}$ & 1.000  \\\cline{2-10}
-                    & 64  & 1.50~$\times10^{4}$ & 0.378  & 1.78~$\times10^{3}$ & 0.677  & 2.61~$\times10^{1}$ & 0.968  & 1.10~$\times10^{3}$ & 1.000  \\\cline{2-10}
-                    & 128 & 1.49~$\times10^{4}$ & 0.357  & 1.66~$\times10^{3}$ & 0.538  & 1.33~$\times10^{1}$ & 0.964  & 1.04~$\times10^{3}$ & 1.000  \\\cline{2-10}
-                    & 256 & --                  & --     & 1.60~$\times10^{3}$ & 0.592  & 6.65~$\times10^{0}$ & 0.962  & 1.06~$\times10^{3}$ & 1.000  \\\cline{2-10}
-                    & 512 & --                  & --     & 1.83~$\times10^{3}$ & 0.581  & 3.56~$\times10^{0}$ & 0.949  & 1.04~$\times10^{3}$ & 1.000  \\
-                    \hline
-                    \hline
-                    \multirow{9}{*}{\rotatebox[origin=c]{90}{\textbf{Glove-25}}}
-                    & 1   & 2.28~$\times10^{4}$ & 0.801 & 2.83~$\times10^{3}$ & 0.835 & 2.38~$\times10^{3}$ & 1.000* & 7.22~$\times10^{2}$ & 1.000* \\\cline{2-10}
-                    & 2   & 2.38~$\times10^{4}$ & 0.607 & 2.70~$\times10^{3}$ & 0.832 & 1.19~$\times10^{3}$ & 1.000* & 5.75~$\times10^{2}$ & 1.000* \\\cline{2-10}
-                    & 4   & 2.50~$\times10^{4}$ & 0.443 & 2.61~$\times10^{3}$ & 0.839 & 6.19~$\times10^{2}$ & 1.000* & 6.25~$\times10^{2}$ & 1.000* \\\cline{2-10}
-                    & 8   & 2.78~$\times10^{4}$ & 0.294 & 2.51~$\times10^{3}$ & 0.834 & 3.03~$\times10^{2}$ & 1.000* & 5.93~$\times10^{2}$ & 1.000* \\\cline{2-10}
-                    & 16  & 3.11~$\times10^{4}$ & 0.213 & 2.23~$\times10^{3}$ & 0.885 & 1.51~$\times10^{2}$ & 1.000* & 5.49~$\times10^{2}$ & 1.000* \\\cline{2-10}
-                    & 32  & 3.24~$\times10^{4}$ & 0.178 & 2.01~$\times10^{3}$ & 0.764 & 7.40~$\times10^{1}$ & 0.999  & 4.75~$\times10^{2}$ & 1.000* \\\cline{2-10}
-                    & 64  & --                  & --    & 1.99~$\times10^{3}$ & 0.631 & 3.77~$\times10^{1}$ & 0.997  & 4.61~$\times10^{2}$ & 1.000* \\\cline{2-10}
-                    & 128 & --                  & --    & --                  & --    & 1.90~$\times10^{1}$ & 0.998  & 4.41~$\times10^{2}$ & 1.000* \\\cline{2-10}
-                    & 256 & --                  & --    & --                  & --    & 9.47~$\times10^{0}$ & 0.998  & 4.23~$\times10^{2}$ & 1.000* \\
-                    \hline
-                    \hline
-                    \multirow{8}{*}{\rotatebox[origin=c]{90}{\textbf{Sift}}}
-                    & 1   & 1.93~$\times10^{4}$ & 0.782 & 3.98~$\times10^{3}$ & 0.686 & 6.98~$\times10^{2}$ & 1.000* & 5.52~$\times10^{2}$ & 1.000 \\\cline{2-10}
-                    & 2   & 2.03~$\times10^{4}$ & 0.552 & 3.80~$\times10^{3}$ & 0.614 & 3.30~$\times10^{2}$ & 1.000* & 2.66~$\times10^{2}$ & 1.000 \\\cline{2-10}
-                    & 4   & 2.18~$\times10^{4}$ & 0.394 & 3.69~$\times10^{3}$ & 0.637 & 1.65~$\times10^{2}$ & 1.000* & 1.43~$\times10^{2}$ & 1.000 \\\cline{2-10}
-                    & 8   & 2.48~$\times10^{4}$ & 0.298 & 3.58~$\times10^{3}$ & 0.710 & 7.72~$\times10^{1}$ & 1.000* & 7.94~$\times10^{1}$ & 1.000 \\\cline{2-10}
-                    & 16  & 2.68~$\times10^{4}$ & 0.210 & 3.50~$\times10^{3}$ & 0.690 & 3.98~$\times10^{1}$ & 1.000* & 8.12~$\times10^{1}$ & 1.000 \\\cline{2-10}
-                    & 32  & 2.75~$\times10^{4}$ & 0.193 & 3.44~$\times10^{3}$ & 0.639 & 2.09~$\times10^{1}$ & 0.999  & 7.81~$\times10^{1}$ & 1.000 \\\cline{2-10}
-                    & 64  & --                  & --    & 3.39~$\times10^{3}$ & 0.678 & 8.87~$\times10^{0}$ & 0.997  & 7.43~$\times10^{1}$ & 1.000 \\\cline{2-10}
-                    & 128 & --                  & --    & 3.36~$\times10^{3}$ & 0.643 & 4.78~$\times10^{0}$ & 0.993  & 6.80~$\times10^{1}$ & 1.000 \\
-                    \hline
-                    \hline
-                    \multirow{6}{*}{\rotatebox[origin=c]{90}{\textbf{Random}}}
-                    & 1  & 1.17~$\times10^{4}$ & 0.060 & 4.28~$\times10^{3}$ & 0.028 & 7.34~$\times10^{2}$ & 1.000* & 5.54~$\times10^{2}$ & 1.000 \\\cline{2-10}
-                    & 2  & 1.01~$\times10^{4}$ & 0.048 & 4.04~$\times10^{3}$ & 0.021 & 3.58~$\times10^{2}$ & 1.000* & 2.69~$\times10^{2}$ & 1.000 \\\cline{2-10}
-                    & 4  & 9.12~$\times10^{3}$ & 0.031 & 3.64~$\times10^{3}$ & 0.014 & 1.90~$\times10^{2}$ & 1.000* & 1.37~$\times10^{2}$ & 1.000 \\\cline{2-10}
-                    & 8  & 8.35~$\times10^{3}$ & 0.022 & 3.37~$\times10^{3}$ & 0.013 & 8.84~$\times10^{1}$ & 1.000* & 5.69~$\times10^{1}$ & 1.000 \\\cline{2-10}
-                    & 16 & 8.25~$\times10^{3}$ & 0.008 & 3.17~$\times10^{3}$ & 0.006 & 4.36~$\times10^{1}$ & 1.000* & 2.61~$\times10^{1}$ & 1.000 \\\cline{2-10}
-                    & 32 & --                  & --    & 3.01~$\times10^{3}$ & 0.007 & 1.72~$\times10^{1}$ & 1.000* & 1.35~$\times10^{1}$ & 1.000 \\
-                    \hline
-                \end{tabular}
-            \end{sc}
-        \end{tiny}
+        \begin{small}
+            \begin{tabular}{|c|l|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|}
+                \hline
+                & \multirow{2}{*}{\textbf{Mult.}} & \multicolumn{2}{|c}{\textbf{hnsw}} & \multicolumn{2}{|c}{\textbf{annoy}} & \multicolumn{2}{|c}{\textbf{faiss-ivf}}  & \multicolumn{2}{|c|}{\textbf{cakes}} \\\cline{3-10}
+                & & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\\cline{2-10}
+                \hline
+                \hline
+                \multirow{10}{*}{\rotatebox[origin=c]{90}{\textbf{Fashion-Mnist}}}
+                & 1   & \num{1.33e4} & 0.954  & \num{2.19e3} & 0.950  & \num{2.01e3} & 1.000* & \num{3.46e3} & 1.000  \\\cline{2-10}
+                & 2   & \num{1.38e4} & 0.803  & \num{2.12e3} & 0.927  & \num{9.39e2} & 1.000* & \num{3.68e3} & 1.000  \\\cline{2-10}
+                & 4   & \num{1.66e4} & 0.681  & \num{2.04e3} & 0.898  & \num{4.61e2} & 0.997  & \num{3.44e3} & 1.000  \\\cline{2-10}
+                & 8   & \num{1.68e4} & 0.525  & \num{1.93e3} & 0.857  & \num{2.26e2} & 0.995  & \num{3.30e3} & 1.000  \\\cline{2-10}
+                & 16  & \num{1.87e4} & 0.494  & \num{1.84e3} & 0.862  & \num{1.17e2} & 0.991  & \num{3.34e3} & 1.000  \\\cline{2-10}
+                & 32  & \num{1.56e4} & 0.542  & \num{1.85e3} & 0.775  & \num{5.91e1} & 0.985  & \num{2.96e3} & 1.000  \\\cline{2-10}
+                & 64  & \num{1.50e4} & 0.378  & \num{1.78e3} & 0.677  & \num{2.61e1} & 0.968  & \num{3.25e3} & 1.000  \\\cline{2-10}
+                & 128 & \num{1.49e4} & 0.357  & \num{1.66e3} & 0.538  & \num{1.33e1} & 0.964  & \num{2.96e3} & 1.000  \\\cline{2-10}
+                & 256 & --           & --     & \num{1.60e3} & 0.592  & \num{6.65e0} & 0.962  & \num{2.79e3} & 1.000  \\\cline{2-10}
+                & 512 & --           & --     & \num{1.83e3} & 0.581  & \num{3.56e0} & 0.949  & \num{2.84e3} & 1.000  \\
+                \hline
+                \hline
+                \multirow{9}{*}{\rotatebox[origin=c]{90}{\textbf{Glove-25}}}
+                & 1   & \num{2.28e4} & 0.801 & \num{2.83e3} & 0.835 & \num{2.38e3} & 1.000* & \num{1.54e3} & 1.000* \\\cline{2-10}
+                & 2   & \num{2.38e4} & 0.607 & \num{2.70e3} & 0.832 & \num{1.19e3} & 1.000* & \num{1.49e3} & 1.000* \\\cline{2-10}
+                & 4   & \num{2.50e4} & 0.443 & \num{2.61e3} & 0.839 & \num{6.19e2} & 1.000* & \num{1.28e3} & 1.000* \\\cline{2-10}
+                & 8   & \num{2.78e4} & 0.294 & \num{2.51e3} & 0.834 & \num{3.03e2} & 1.000* & \num{1.30e3} & 1.000* \\\cline{2-10}
+                & 16  & \num{3.11e4} & 0.213 & \num{2.23e3} & 0.885 & \num{1.51e2} & 1.000* & \num{1.14e3} & 1.000* \\\cline{2-10}
+                & 32  & \num{3.24e4} & 0.178 & \num{2.01e3} & 0.764 & \num{7.40e1} & 0.999  & \num{1.05e3} & 1.000* \\\cline{2-10}
+                & 64  & --           & --    & \num{1.99e3} & 0.631 & \num{3.77e1} & 0.997  & \num{1.07e3} & 1.000* \\\cline{2-10}
+                & 128 & --           & --    & --           & --    & \num{1.90e1} & 0.998  & \num{8.92e2} & 1.000* \\\cline{2-10}
+                & 256 & --           & --    & --           & --    & \num{9.47e0} & 0.998  & \num{8.91e2} & 1.000* \\
+                \hline
+                \hline
+                \multirow{8}{*}{\rotatebox[origin=c]{90}{\textbf{Sift}}}
+                & 1   & \num{1.93e4} & 0.782 & \num{3.98e3} & 0.686 & \num{6.98e2} & 1.000* & \num{6.20e2} & 1.000 \\\cline{2-10}
+                & 2   & \num{2.03e4} & 0.552 & \num{3.80e3} & 0.614 & \num{3.30e2} & 1.000* & \num{2.95e2} & 1.000 \\\cline{2-10}
+                & 4   & \num{2.18e4} & 0.394 & \num{3.69e3} & 0.637 & \num{1.65e2} & 1.000* & \num{1.76e2} & 1.000 \\\cline{2-10}
+                & 8   & \num{2.48e4} & 0.298 & \num{3.58e3} & 0.710 & \num{7.72e1} & 1.000* & \num{1.27e2} & 1.000 \\\cline{2-10}
+                & 16  & \num{2.68e4} & 0.210 & \num{3.50e3} & 0.690 & \num{3.98e1} & 1.000* & \num{1.47e2} & 1.000 \\\cline{2-10}
+                & 32  & \num{2.75e4} & 0.193 & \num{3.44e3} & 0.639 & \num{2.09e1} & 0.999  & \num{1.24e2} & 1.000 \\\cline{2-10}
+                & 64  & --           & --    & \num{3.39e3} & 0.678 & \num{8.87e0} & 0.997  & \num{1.34e2} & 1.000 \\\cline{2-10}
+                & 128 & --           & --    & \num{3.36e3} & 0.643 & \num{4.78e0} & 0.993  & \num{1.31e2} & 1.000 \\
+                \hline
+                \hline
+                \multirow{6}{*}{\rotatebox[origin=c]{90}{\textbf{Random}}}
+                & 1  & \num{1.17e4} & 0.060 & \num{4.28e3} & 0.028 & \num{7.342} & 1.000* & \num{5.54e2} & 1.000 \\\cline{2-10}
+                & 2  & \num{1.01e4} & 0.048 & \num{4.04e3} & 0.021 & \num{3.582} & 1.000* & \num{2.69e2} & 1.000 \\\cline{2-10}
+                & 4  & \num{9.12e3} & 0.031 & \num{3.64e3} & 0.014 & \num{1.902} & 1.000* & \num{1.37e2} & 1.000 \\\cline{2-10}
+                & 8  & \num{8.35e3} & 0.022 & \num{3.37e3} & 0.013 & \num{8.841} & 1.000* & \num{5.69e1} & 1.000 \\\cline{2-10}
+                & 16 & \num{8.25e3} & 0.008 & \num{3.17e3} & 0.006 & \num{4.361} & 1.000* & \num{2.61e1} & 1.000 \\\cline{2-10}
+                & 32 & --           & --    & \num{3.01e3} & 0.007 & \num{1.721} & 1.000* & \num{1.35e1} & 1.000 \\
+                \hline
+            \end{tabular}
+        \end{small}
     \end{center}
     \vskip -0.1in
 \end{table*}
