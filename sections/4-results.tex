@@ -198,27 +198,24 @@ In particular, throughput of CAKES's algorithms is identical within three signif
     \label{tab:results:qps-and-recall-fmn}
     \vskip 0.15in
     \begin{center}
-        \begin{small}
-            \begin{tabular}{|c|l|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|}
+            \begin{tabular}{|l|p{1.55cm}|p{1.0cm}|p{1.6cm}|p{1.0cm}|p{1.6cm}|p{1.1cm}|p{1.6cm}|p{1.0cm}|}
                 \hline
-                & \multirow{2}{*}{\textbf{Mult.}} & \multicolumn{2}{|c}{\textbf{hnsw}} & \multicolumn{2}{|c}{\textbf{annoy}} & \multicolumn{2}{|c}{\textbf{faiss-ivf}}  & \multicolumn{2}{|c|}{\textbf{cakes}} \\\cline{3-10}
-                & & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
-                \cline{2-10}
+                \multirow{2}{*}{\textbf{Mult.}} & \multicolumn{2}{c|}{\textbf{HNSW}} & \multicolumn{2}{c|}{\textbf{ANNOY}} & \multicolumn{2}{c|}{\textbf{FAISS-IVF}}  & \multicolumn{2}{c|}{\textbf{CAKES}} \\\cline{2-9}
+                & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
+                \cline{1-9}
                 \hline
-                \multirow{10}{*}{\rotatebox[origin=c]{90}{\textbf{Fashion-Mnist}}}
-                & 1   & \num{1.33e4} & 0.954  & \num{2.19e3} & 0.950  & \num{2.01e3} & 1.000* & \num{3.46e3} & 1.000  \\\cline{2-10}
-                & 2   & \num{1.38e4} & 0.803  & \num{2.12e3} & 0.927  & \num{9.39e2} & 1.000* & \num{3.68e3} & 1.000  \\\cline{2-10}
-                & 4   & \num{1.66e4} & 0.681  & \num{2.04e3} & 0.898  & \num{4.61e2} & 0.997  & \num{3.44e3} & 1.000  \\\cline{2-10}
-                & 8   & \num{1.68e4} & 0.525  & \num{1.93e3} & 0.857  & \num{2.26e2} & 0.995  & \num{3.30e3} & 1.000  \\\cline{2-10}
-                & 16  & \num{1.87e4} & 0.494  & \num{1.84e3} & 0.862  & \num{1.17e2} & 0.991  & \num{3.34e3} & 1.000  \\\cline{2-10}
-                & 32  & \num{1.56e4} & 0.542  & \num{1.85e3} & 0.775  & \num{5.91e1} & 0.985  & \num{2.96e3} & 1.000  \\\cline{2-10}
-                & 64  & \num{1.50e4} & 0.378  & \num{1.78e3} & 0.677  & \num{2.61e1} & 0.968  & \num{3.25e3} & 1.000  \\\cline{2-10}
-                & 128 & \num{1.49e4} & 0.357  & \num{1.66e3} & 0.538  & \num{1.33e1} & 0.964  & \num{2.96e3} & 1.000  \\\cline{2-10}
-                & 256 & --           & --     & \num{1.60e3} & 0.592  & \num{6.65e0} & 0.962  & \num{2.79e3} & 1.000  \\\cline{2-10}
-                & 512 & --           & --     & \num{1.83e3} & 0.581  & \num{3.56e0} & 0.949 & \num{2.84e3} & 1.000 \\
+                1   & \num{1.33e4} & 0.954  & \num{2.19e3} & 0.950  & \num{2.01e3} & 1.000* & \num{3.46e3} & 1.000  \\\cline{1-9}
+                2   & \num{1.38e4} & 0.803  & \num{2.12e3} & 0.927  & \num{9.39e2} & 1.000* & \num{3.68e3} & 1.000  \\\cline{1-9}
+                4   & \num{1.66e4} & 0.681  & \num{2.04e3} & 0.898  & \num{4.61e2} & 0.997  & \num{3.44e3} & 1.000  \\\cline{1-9}
+                8   & \num{1.68e4} & 0.525  & \num{1.93e3} & 0.857  & \num{2.26e2} & 0.995  & \num{3.30e3} & 1.000  \\\cline{1-9}
+                16  & \num{1.87e4} & 0.494  & \num{1.84e3} & 0.862  & \num{1.17e2} & 0.991  & \num{3.34e3} & 1.000  \\\cline{1-9}
+                32  & \num{1.56e4} & 0.542  & \num{1.85e3} & 0.775  & \num{5.91e1} & 0.985  & \num{2.96e3} & 1.000  \\\cline{1-9}
+                64  & \num{1.50e4} & 0.378  & \num{1.78e3} & 0.677  & \num{2.61e1} & 0.968  & \num{3.25e3} & 1.000  \\\cline{1-9}
+                128 & \num{1.49e4} & 0.357  & \num{1.66e3} & 0.538  & \num{1.33e1} & 0.964  & \num{2.96e3} & 1.000  \\\cline{1-9}
+                256 & --           & --     & \num{1.60e3} & 0.592  & \num{6.65e0} & 0.962  & \num{2.79e3} & 1.000  \\\cline{1-9}
+                512 & --           & --     & \num{1.83e3} & 0.581  & \num{3.56e0} & 0.949 & \num{2.84e3} & 1.000 \\
                 \hline
             \end{tabular}
-        \end{small}
     \end{center}
     \vskip -0.1in
 \end{table*}
