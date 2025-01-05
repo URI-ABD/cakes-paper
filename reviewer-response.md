@@ -91,7 +91,7 @@ x is a vector, and epsilon is a scalar. We can clarify that x is a vector. Be su
 backslash), large spaces around formulas (e.g., line 342), em-dashes that look
 too short (e.g., line 594).*
 
-easy to fix (NMD)
+We have addressed much of this, including replacing en-dashes with em-dashes where appropriate. The space around formulas seems to be something that, if accepted, the production team could address.
 
 *The figures should not be shrank so much: the labels on the axis and the keys
 are not readable. Regenerate the pictures at the correct size to avoid

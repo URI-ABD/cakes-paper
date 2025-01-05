@@ -33,8 +33,8 @@ We observe that the LFD starts as high as 20 (for all data) at depth 0.
 As shown by the needlepoint shape of the plot, the LFD for all clusters has a very narrow spread from depth 0 through depth 5.
 After depth 5, we begin to see a wider spread between the maximum and minimum LFD at each depth.
 All percentile lines seem to decrease linearly with depth.
-The LFD of approximately 20 at depth 0 (i.e. the root cluster) is what we expect for this random dataset.
-To elaborate, the distribution of points in such a dataset should reflect the curse of dimensionality, i.e. the fact that in high dimensional spaces, the minimum and maximum pairwise distances between any two points are approximately equal.
+The LFD of approximately 20 at depth 0 (i.e.,\,the root cluster) is what we expect for this random dataset.
+To elaborate, the distribution of points in such a dataset should reflect the curse of dimensionality, i.e.,\,the fact that in high dimensional spaces, the minimum and maximum pairwise distances between any two points are approximately equal.
 As a result, the root cluster's radius $r$, which reflects the maximum distance between the center $c$ and any other point, should not differ significantly from the distance between the center and its closest point.
 A consequence of this is that, with high probability, for every point in the root cluster, its distance from $c$ is greater than $\tfrac{r}{2}$;
 in other words, $B_X(c, \tfrac{r}{2})$ contains only $c$ while $B_X(c, r)$ contains the entire dataset.
@@ -49,7 +49,7 @@ Notably, however, for the first approximately 15 depths, the 95$^{th}$ percentil
 Both percentiles increase sharply after depth 20, nearly reaching 16.
 LFD remains high even as depth increases, with the 95$^{th}$ percentile fluctuating between about 6 and 15 for depths about 20-40.
 It then spikes up again to about 10 at around depth 45 before decreasing linearly to 1 at depth 60.
-The median LFD follows a similar pattern of peaks and troughs, fluctuating between about 3 and 15 for depths 20-40, spiking at about depth 50 to 5, and then decreasing approximately linearly to 1 at depth 60. The inconsistency of LFD in the RadioML dataset suggests that it obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth; this could be due to dense sampling or -- as this is still a synthetic dataset -- nonuniform generation of data. Silva, in contrast, appears to obey the manifold hypothesis at all scales.
+The median LFD follows a similar pattern of peaks and troughs, fluctuating between about 3 and 15 for depths 20-40, spiking at about depth 50 to 5, and then decreasing approximately linearly to 1 at depth 60. The inconsistency of LFD in the RadioML dataset suggests that it obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth; this could be due to dense sampling or---as this is still a synthetic dataset---nonuniform generation of data. Silva, in contrast, appears to obey the manifold hypothesis at all scales.
 
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
@@ -116,7 +116,7 @@ For HNSW and ANNOY, we report the recall for each measurement in the plots. For 
 
 Table~\ref{tab:results:qps-and-recall} show the throughput and recall of CAKES's algorithms at each augmented cardinality for Fashion-Mnist, Glove-25, Sift, and Random.
 Though the plots in Figure~\ref{fig:results:scaling-plots} present results for each of CAKES's three algorithms separately, the results in the CAKES column in these tables represent the fastest CAKES algorithm at that dataset and cardinality only.
-We used our auto-tuning approach (see Section~\ref{sec:methods:auto-tuning}) for each new tree (i.e. at each cardinality), and this approach was always able to select the fastest algorithm for each dataset at each cardinality.
+We used our auto-tuning approach (see Section~\ref{sec:methods:auto-tuning}) for each new tree (i.e.,\,at each cardinality), and this approach was always able to select the fastest algorithm for each dataset at each cardinality.
 Since we also allow for tuning hyper-parameters for the other algorithms, and we allow for different sets of hyper-parameters at each cardinality, it is a fair comparison for these tables to only list the performance of the tuned CAKES algorithm.
 When reporting recall, we use $1.000*$ to denote that the recall is imperfect, but rounds to $1.000$.
 
@@ -141,7 +141,7 @@ HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on
 in particular, with a multiplier of 1, HNSW and ANNOY have recall as low as 0.060 and 0.028 respectively, as reported in Table~\ref{tab:results:qps-and-recall}.
 
 For Silva and RadioML, we benchmarked only CAKES's algorithms because HNSW, ANNOY and FAISS support neither the required distance functions nor, in the case of RadioML, complex-valued data.
-Due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset--rather than augmented versions of the dataset--to examine how performance scales with cardinality.
+Due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset---rather than augmented versions of the dataset---to examine how performance scales with cardinality.
 With Silva, as shown in Figure~\ref{fig:results:silva-scaling}, we observe that for all algorithms, throughput initially seems to linearly decrease as cardinality increases, but that it seems to begin levelling off near cardinality $10^5$.
 Until cardinality near $10^4$, Depth-First Sieve is the fastest CAKES algorithm, but for larger cardinalities, Repeated $\rho$-NN is the fastest CAKES algorithm.
 For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe that throughput declines nearly linearly, and that the three CAKES algorithms exhibit virtually indistinguishable performance.
@@ -185,7 +185,7 @@ In particular, throughput of CAKES's algorithms is identical within three signif
     \caption{Throughput across six datasets, including a randomly-generated dataset.
     In each plot, the horizontal axis represents increasing cardinality of the dataset, while the vertical axis represents the throughput in queries per second (higher is better).
     Note that for RadioML, all three algorithms performed nearly identically, so distinct lines are not visible.
-    For some algorithms, we were not able to take measurements for each cardinality because the index-building required more RAM than was available (i.e. more then 512GB).
+    For some algorithms, we were not able to take measurements for each cardinality because the index-building required more RAM than was available (i.e.,\,more then 512GB).
     For linear search with CAKES, we only report the throughput for a few of the initial multipliers because the trend is clear.}
     \label{fig:results:scaling-plots}
 \end{figure}

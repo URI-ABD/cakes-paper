@@ -5,11 +5,11 @@ In this manuscript, we are primarily concerned with $k$-NN search in a finite-di
 Given a dataset $\textbf{X} = \{x_1 \dots x_n\}$ of cardinality $|\textbf{X}| = n$, we define a \textit{point} or \textit{datum} $x_i \in \textbf{X}$ as a singular observation. Examples include the neural-network embedding of an image, the genome of an organism, and a measurement of a radio frequency signal.
 
 We define a \textit{distance function} $f : \textbf{X} \times \textbf{X} \mapsto \mathbb{R}^+ \ \cup \ \{0\}$ which, given two points, deterministically returns a finite and non-negative real number.
-A distance of zero defines identity among points (i.e. $f(x, y) = 0 \Leftrightarrow x = y$) and larger values indicate greater dissimilarity among points.
-We also require that the distance function be symmetric (i.e., $f(x, y) = f(y, x) \ \forall \ x, y \in \textbf{X}$).
-In addition to these constraints, if the distance function obeys the triangle inequality (i.e. $f(x, y) \leq f(x, z) + f(z, y) \ \forall \ x, y, z \in \textbf{X}$), then it is also a \textit{distance metric}.
+A distance of zero defines identity among points (i.e.,\,$f(x, y) = 0 \Leftrightarrow x = y$) and larger values indicate greater dissimilarity among points.
+We also require that the distance function be symmetric (i.e.,\,$f(x, y) = f(y, x) \ \forall \ x, y \in \textbf{X}$).
+In addition to these constraints, if the distance function obeys the triangle inequality (i.e.,\,$f(x, y) \leq f(x, z) + f(z, y) \ \forall \ x, y, z \in \textbf{X}$), then it is also a \textit{distance metric}.
 Similar to~\cite{yu2015entropy}, when used with distance metrics, all search algorithms in CAKES are exact.
-For example, Euclidean, Levenshtein~\cite{levenshtein1966binary} and Dynamic Time Warping (DTW)~\cite{muller2007dynamic} distances are all distance metrics, while cosine distance is not a metric because it violates the triangle inequality (e.g., consider the points $x = (1, 0)$, $y = (0, 1)$ and $z = (1, 1)$ on the Cartesian plane).
+For example, Euclidean, Levenshtein~\cite{levenshtein1966binary} and Dynamic Time Warping (DTW)~\cite{muller2007dynamic} distances are all distance metrics, while cosine distance is not a metric because it violates the triangle inequality (e.g.,\,consider the points $x = (1, 0)$, $y = (0, 1)$ and $z = (1, 1)$ on the Cartesian plane).
 
 The choice of an appropriate distance function varies by dataset and domain.
 For example, with neural-network embeddings, one could use Euclidean (L2) or cosine distance.
@@ -45,22 +45,22 @@ Hence, the \textit{embedding dimension} of this dataset is at least 3,718 and at
 However, physical constraints (namely, biological evolution and biochemistry) constrain the data to a lower-dimensional manifold within this space.
 LFD is an approximation of the dimensionality of that lower-dimensional manifold in the ``vicinity'' of a given point.
 Figure~\ref{fig:results:lfd-plots} illustrates this concept on a variety of datasets, showing how real datasets uphold the manifold hypothesis.
-For real-world datasets, we expect the LFD to be locally uniform, i.e., when $r$ is small, but potentially highly variable at larger length scales, i.e., when $r$ is large.
+For real-world datasets, we expect the LFD to be locally uniform, i.e.,\,when $r$ is small, but potentially highly variable at larger length scales, i.e.,\,when $r$ is large.
 
 
 \subsection{Clustering}
 \label{sec:methods:clustering}
 
 We define a \textit{cluster} as a set of points with a \textit{center} and a \textit{radius}.
-The center is the geometric median of the points in the cluster, i.e., it is the point which minimizes the sum of distances to all other points in the cluster.
+The center is the geometric median of the points in the cluster, i.e.,\,it is the point which minimizes the sum of distances to all other points in the cluster.
 In cases where the cardinality of the cluster is large, we take a random subsample of $\sqrt{|C|}$ points and compute the geometric median of that subsample~\cite{ishaq2019clustered}.
 The center, therefore, is one of the points in the cluster and is used as a representative of the cluster.
 The radius is the maximum distance from the center to any point in the cluster.
 Each non-leaf cluster has two child clusters in much the same way that a node in a binary tree has two child nodes.
 Note that clusters can have overlapping volumes and, in such cases, points in the overlapping volume are assigned to exactly one of the overlapping clusters.
-As a consequence, a cluster can be a proper subset of the metric ball at the same center and radius, i.e. $C(c, r) \subset B(c, r)$.
+As a consequence, a cluster can be a proper subset of the metric ball at the same center and radius, i.e.,\,$C(c, r) \subset B(c, r)$.
 
-Hereafter, when we refer to the LFD of a cluster, it is estimated at the length scale of the cluster radius and half that radius, i.e. using Equation~\ref{eq:methods:lfd-half}.
+Hereafter, when we refer to the LFD of a cluster, it is estimated at the length scale of the cluster radius and half that radius, i.e.,\,using Equation~\ref{eq:methods:lfd-half}.
 We also only use points that are in $C(c, r)$ instead of all those in $B(c, r)$.
 
 The \textit{metric entropy} $\mathcal{N}_{r}(X)$ for some radius $r$ is the minimum number of clusters of a uniform radius $r$ needed to cover the data~\cite{yu2015entropy} for a flat clustering with clusters of radius $r$.
@@ -79,7 +79,7 @@ Using these distances, we compute the \textit{geometric median} of this sample; 
 This geometric median is the center of $C$.
 
 The \textit{radius} of $C$ is the maximum distance from the \textit{center} to any other point in $C$.
-The point which is responsible for that radius (i.e., the furthest point from the center) is designated the \textit{left pole} and the point which is furthest from the left pole is designated the \textit{right pole}.
+The point which is responsible for that radius (i.e.,\,the furthest point from the center) is designated the \textit{left pole} and the point which is furthest from the left pole is designated the \textit{right pole}.
 We then partition the cluster into a \textit{left child} and a \textit{right child}, where the left child contains all points in the cluster which are closer to the left pole than to the right pole, and the right child contains all points in the cluster which are closer to the right pole than to the left pole.
 Without loss of generality, we assign to the left child those points which are equidistant from the two poles.
 Starting from a root cluster containing the entire dataset, we repeat this procedure until each leaf contains only one datum, or we meet some other user-specified stopping criteria, for example, minimum cluster radius, minimum cluster cardinality, maximum tree depth, etc.
@@ -112,7 +112,7 @@ During the partitioning process, we also compute (and cache) the LFD of each clu
 
 Note that Algorithm~\ref{alg:methods:partition} does not necessarily produce a balanced tree.
 In fact, for real datasets, we expect anything but a balanced tree; the varying sampling density in different regions of the manifold and the low dimensional ``shape'' of the manifold itself will cause it to be unbalanced.
-The only case in which we would expect a balanced tree is if the dataset were uniformly distributed, e.g. in a $d$-dimensional hyper-cube.
+The only case in which we would expect a balanced tree is if the dataset were uniformly distributed, e.g.,\,in a $d$-dimensional hyper-cube.
 In this sense, the imbalance in the tree is a feature, not a bug, as it reflects the underlying structure of the data.
 
 
@@ -141,7 +141,7 @@ By using an approximate partitioning with a $\sqrt{n}$ sample, we achieve $\math
 This is a significant improvement over exact partitioning and tree-building, which cost $\mathcal{O}(n^2)$ and $\mathcal{O}(n^2 \log n)$ respectively.
 
 This complexity analysis ignores the cost of checking the continuation criteria.
-While a user could specify criteria of any complexity (our implementation allows for this), for this paper we continue clustering until each cluster is a singleton, i.e., it contains only one point or duplicates of the same point and has a radius of zero.
+While a user could specify criteria of any complexity (our implementation allows for this), for this paper we continue clustering until each cluster is a singleton, i.e.,\,it contains only one point or duplicates of the same point and has a radius of zero.
 This criterion costs $\mathcal{O}(1)$ to check per cluster, and so does it not affect the overall complexity of the algorithm as used in this paper.
 
 We also note here that this $\mathcal{O}(n \log n)$ complexity assumes that the tree is balanced.
@@ -256,8 +256,8 @@ We reproduce the algorithms here for completeness.
             \Else
                 \State $[l, r]$ $\Leftarrow$ \textit{pole}s of $C$
                 \State $[L, R]$ $\Leftarrow$ \textit{children} of $C$
-                \State \textbf{return} tree-search($L, q, r$) 
-                
+                \State \textbf{return} tree-search($L, q, r$)
+
                 \ \ \ \ \ \ \ \ \ $\cup$ tree-search($R, q, r$)
             \EndIf
 
@@ -389,7 +389,7 @@ To build on this and determine the complexity of Repeated $\rho$-NN, we must fir
 
 Based on the assumption that the LFD near the query does not differ significantly from that of the clusters near the query (the set $Q$), Equation~\ref{eq:methods:repeated-rnn-factor} suggests that in the expected case, we need only two iterations of tree-search to find $k$ neighbors:
 one iteration to find at least one cluster, and one more to find enough of the $k$ neighbors.
-Since this is a constant factor, complexity of tree-search for Repeated $\rho$-NN is the same as that of $\rho$-NN search, i.e. $\mathcal{O}\big(\log\mathcal{N}_{\hat{r}}(X)\big)$.
+Since this is a constant factor, complexity of tree-search for Repeated $\rho$-NN is the same as that of $\rho$-NN search, i.e.,\,$\mathcal{O}\big(\log\mathcal{N}_{\hat{r}}(X)\big)$.
 
 To determine the asymptotic complexity of leaf-search, we must estimate $\sum_{C \in Q} |C|$, the total cardinality of the clusters returned by tree-search.
 Since we must examine every point in each such cluster, time complexity of leaf-search is linear in $\sum_{C \in Q} |C|$.
@@ -426,7 +426,7 @@ By combining the bounds for tree-search and leaf-search, we see that Repeated $\
     \label{eq:methods:repeated-rnn-complexity}
 \end{gather}
 where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of the dataset, $d$ is the LFD of the dataset, and $k$ is the number of nearest neighbors.
-We note that the scaling factor should be close to 1 unless fractal dimension is highly variable in the region around the query (i.e. if $\hat{d}$ differs significantly from $d$).
+We note that the scaling factor should be close to 1 unless fractal dimension is highly variable in the region around the query (i.e.,\,if $\hat{d}$ differs significantly from $d$).
 
 
 \subsubsection{Breadth-First Sieve}
@@ -466,7 +466,7 @@ So long as $H$ is not full or the top priority element in $H$ has $\delta$ great
 \end{itemize}
 
 This process is described in Algorithm~\ref{alg:methods:depth-first-sieve}.
-It terminates when $H$ is full and the top priority element in $H$ has $\delta$ less than the top priority element in $Q$, i.e., the theoretically closest point left to be considered in $Q$ is farther from the query than the $k^{th}$ nearest neighbor in $H$.
+It terminates when $H$ is full and the top priority element in $H$ has $\delta$ less than the top priority element in $Q$, i.e.,\,the theoretically closest point left to be considered in $Q$ is farther from the query than the $k^{th}$ nearest neighbor in $H$.
 This leaves $H$ containing exactly the $k$ nearest neighbors to the query.
 
 Note that this algorithm is not truly a depth-first traversal of the tree in the classical sense, because we use $Q$ to prioritize which branch of the tree we descend into.
@@ -558,7 +558,7 @@ Leaf-search exhaustively searches some of the clusters in $Q$ to find the $k$ ne
 
 We start with the assumption that the LFD near the query does not differ significantly from that of nearby clusters, and we consider leaf clusters with cardinalities near $k$.
 Let $d$ be the LFD in this region.
-Then the number of leaf-clusters in $Q$ is bounded above by $2d$, e.g. we could have a cluster overlapping the query ball at each end of each of $\lceil d \rceil$ mutually-orthogonal axes.
+Then the number of leaf-clusters in $Q$ is bounded above by $2d$, e.g.,\,we could have a cluster overlapping the query ball at each end of each of $\lceil d \rceil$ mutually-orthogonal axes.
 In the worst-case scenario for tree-search, these leaf clusters would all come from different branches of the tree, and so tree-search looks at $2 \cdot \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X)$ clusters.
 Thus, the asymptotic complexity is $\mathcal{T} \coloneqq \mathcal{O} \big( \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X) \big)$.
 For leaf-search, the output size and scaling factor are the same as in Repeated $\rho$-NN, and so the asymptotic complexity is $\mathcal{L} \coloneqq \mathcal{O} \left( k \cdot \bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d \right)$.
@@ -584,7 +584,7 @@ Thus, the complexity is:
 \label{sec:methods:auto-tuning}
 
 We perform some simple auto-tuning to select the optimal $k$-NN algorithm to use with a given dataset.
-We start by taking the center of every cluster at a low depth, (e.g. 10), in the cluster tree as a query.
+We start by taking the center of every cluster at a low depth, (e.g.,\,10), in the cluster tree as a query.
 This gives us a small, representative sample of the dataset.
 Using these clusters' centers as queries, and a user-specified value of $k$, we record the time taken for $k$-NN search on the sample using each of the three algorithms described in Section~\ref{sec:methods:knn-search}.
 We select the fastest algorithm over all the queries as the optimal algorithm for that dataset and value of $k$.
@@ -604,7 +604,7 @@ Let $X$ be the dataset, $d$ be its dimensionality, $\epsilon$ be a user-specifie
 For each datum $x \in X$, we create $m - 1$ new data points within a distance $\epsilon \cdot ||x||$ of $x$ where $||x||$ is the Euclidean distance from $x$ to the origin.
 We construct a random vector $r$ of $d$ dimensions in the hyper-sphere of radius $\epsilon$ centered at the origin.
 We then add $r$ to $x$ to get a new point $x'$.
-Since $||r|| \leq \epsilon$, we have that $||x - x'|| \leq \epsilon$ (i.e., $x'$ is within a distance $\epsilon$ of $x$).
+Since $||r|| \leq \epsilon$, we have that $||x - x'|| \leq \epsilon$ (i.e.,\,$x'$ is within a distance $\epsilon$ of $x$).
 This produces a new dataset $X'$ with $|X'| = m \cdot |X|$.
 This augmentation process does not add to the overall topological structure of the dataset, but it does increase its cardinality by a factor of $m$.
 This allows us to isolate the effect of cardinality on search performance from that of other factors such as dimensionality, choice of metric, or the topological structure of the dataset.
