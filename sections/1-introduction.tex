@@ -46,9 +46,9 @@ Finally, we compare real-world datasets to an artificially-generated dataset obe
 \subsection{Related Works}
 \label{sec:intoduction:related-works}
 
-Recent $k$-nearest neighbor search algorithms designed to scale with the exponential growth of data include Hierarchical Navigable Small World networks (HNSW)~\cite{Malkov2016EfficientAR}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. However, some of these algorithms do not provide exact search (as defined in Section \ref{sec:introduction} above).
+Recent $k$-nearest neighbor search algorithms designed to scale with the exponential growth of data include Hierarchical Navigable Small World networks (HNSW)~\cite{malkov2016hnsw}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. However, some of these algorithms do not provide exact search (as defined in Section \ref{sec:introduction} above).
 
-Hierarchical Navigable Small World networks~\cite{Malkov2016EfficientAR} relies on navigable small world (NSW) networks~\cite{kleinberg2000navigation, boguna2009navigability} and skip lists.
+Hierarchical Navigable Small World networks~\cite{malkov2016hnsw} relies on navigable small world (NSW) networks~\cite{kleinberg2000navigation, boguna2009navigability} and skip lists.
 HNSW builds a multi-layered graph of the dataset.
 A query point and each data point are inserted into the graph and joined by an edge to the $M$ nearest nodes in the in the graph, where $M$ is a tunable parameter.
 The highest layer in which an element can be placed is determined randomly with an exponentially-decaying probability distribution.
