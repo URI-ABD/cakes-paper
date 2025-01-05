@@ -324,13 +324,19 @@ and capitalization.  For example, check the title capitalization in [2],
 [4], and [8].  Check the journal name capitalization in [9] and [21],
 among others.*
 
+We have capitalized titles as published (confirmed for all of the references mentioned). We have corrected the journal capitalization where appropriate.
+
 *Several references have repeated URLs.  Trim these up.*
+
+We believe these are now fixed.
 
 *References [2] and [3] appear to be duplicates.*
 
+This has been fixed.
+
 *Reference [39] is incomplete and inadequate.*
 
-Will go over this carefully (NMD)
+This has been fixed.
 
 
 REFERENCE ================================================================

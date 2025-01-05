@@ -14,7 +14,7 @@ Among time-series datasets, the RadioML dataset~\cite{oshea2018radioml} contains
 Many researchers are interested in similarity search on these datasets.
 Similarity search enables a variety of applications, including recommendation~\cite{annoy} and classification systems~\cite{suyanto2022knnclassifier}.
 As the cardinalities and dimensionalities of datasets have grown, however, efficient and accurate similarity search has become challenging;
-even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{Malkov2016EfficientAR, johnson2019billion, annoy, aumuller2020ann}.
+even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{malkov2016hnsw, johnson2019billion, annoy, aumuller2020ann}.
 
 Given some measure of similarity between data points, there are two common definitions of similarity search: $k$-nearest neighbor search ($k$-NN) and $\rho$-nearest neighbor search ($\rho$-NN).
 $k$-NN search aims to find the $k$ most similar points to a query, while $\rho$-NN search aims to find all points within a similarity threshold $\rho$ of a query.
