@@ -106,7 +106,7 @@ need to fix this (NI)
 *Many horizontal and vertical lines in Table~2 should be removed to help with
 readability.*
 
-investigate this, or break up table 2 into 2a-2d (NMD)
+Per the suggestion of reviewer 2, we have broken this table up into four tables (one per dataset) which we helieve helps readability.
 
 *Line 585: "we observe performs quite slowly". The sentence seems incomplete.*
 
@@ -309,7 +309,7 @@ we will make this more legible (NMD)
 *The numbers in Table 2 are too small.  Refactor into multiple tables
 perhaps.*
 
-we are refactoring into multiple tables (NMD)
+We have broken this table up into four tables (one per dataset) which we helieve helps readability.
 
 *In line 641, what is "radial increase 2.3"?*
 

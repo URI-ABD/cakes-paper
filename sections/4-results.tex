@@ -138,7 +138,7 @@ In contrast, CAKES has perfect recall on Fashion-Mnist and Sift (where the dista
 In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, as seen in Figure~\ref{fig:results:random-scaling}, we observe performs quite slowly.
 As with the real datasets, HNSW and ANNOY are the fastest algorithms, and CAKES exhibits perfect recall at all cardinalities.
 HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets;
-in particular, with a multiplier of 1, HNSW and ANNOY have recall as low as 0.060 and 0.028 respectively, as reported in Table~\ref{tab:results:qps-and-recall}.
+in particular, with a multiplier of 1, HNSW and ANNOY have recall as low as 0.060 and 0.028 respectively, as reported in Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift}, and~\ref{tab:results:qps-and-recall-random}.
 
 For Silva and RadioML, we benchmarked only CAKES's algorithms because HNSW, ANNOY and FAISS support neither the required distance functions nor, in the case of RadioML, complex-valued data.
 Due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset---rather than augmented versions of the dataset---to examine how performance scales with cardinality.
@@ -193,17 +193,17 @@ In particular, throughput of CAKES's algorithms is identical within three signif
 
 \begin{table*}[h]
     % \renewcommand{\arraystretch}{1.15}
-    \caption{Queries per second (QPS) and Recall vs naive linear search on the Fashion-Mnist, Glove-25, Sift and Random datasets.
+    \caption{Queries per second (QPS) and Recall vs naive linear search on the Fashion-Mnist dataset.
     A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
-    \label{tab:results:qps-and-recall}
+    \label{tab:results:qps-and-recall-fmn}
     \vskip 0.15in
     \begin{center}
-        \begin{small}
+        %\begin{small}
             \begin{tabular}{|c|l|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|}
                 \hline
                 & \multirow{2}{*}{\textbf{Mult.}} & \multicolumn{2}{|c}{\textbf{hnsw}} & \multicolumn{2}{|c}{\textbf{annoy}} & \multicolumn{2}{|c}{\textbf{faiss-ivf}}  & \multicolumn{2}{|c|}{\textbf{cakes}} \\\cline{3-10}
-                & & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\\cline{2-10}
-                \hline
+                & & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
+                \cline{2-10}
                 \hline
                 \multirow{10}{*}{\rotatebox[origin=c]{90}{\textbf{Fashion-Mnist}}}
                 & 1   & \num{1.33e4} & 0.954  & \num{2.19e3} & 0.950  & \num{2.01e3} & 1.000* & \num{3.46e3} & 1.000  \\\cline{2-10}
@@ -215,8 +215,29 @@ In particular, throughput of CAKES's algorithms is identical within three signif
                 & 64  & \num{1.50e4} & 0.378  & \num{1.78e3} & 0.677  & \num{2.61e1} & 0.968  & \num{3.25e3} & 1.000  \\\cline{2-10}
                 & 128 & \num{1.49e4} & 0.357  & \num{1.66e3} & 0.538  & \num{1.33e1} & 0.964  & \num{2.96e3} & 1.000  \\\cline{2-10}
                 & 256 & --           & --     & \num{1.60e3} & 0.592  & \num{6.65e0} & 0.962  & \num{2.79e3} & 1.000  \\\cline{2-10}
-                & 512 & --           & --     & \num{1.83e3} & 0.581  & \num{3.56e0} & 0.949  & \num{2.84e3} & 1.000  \\
+                & 512 & --           & --     & \num{1.83e3} & 0.581  & \num{3.56e0} & 0.949 & \num{2.84e3} & 1.000 \\
                 \hline
+            \end{tabular}
+        %\end{small}
+    \end{center}
+    \vskip -0.1in
+\end{table*}
+
+
+\begin{table*}[h]
+    % \renewcommand{\arraystretch}{1.15}
+    \caption{Queries per second (QPS) and Recall vs naive linear search on the Glove-25 dataset.
+    A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
+    \label{tab:results:qps-and-recall-glove}
+    \vskip 0.15in
+    \begin{center}
+        \begin{small}
+            \begin{tabular}{|c|l|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|}
+                \hline
+                & \multirow{2}{*}{\textbf{Mult.}} & \multicolumn{2}{|c}{\textbf{hnsw}} & \multicolumn{2}{|c}{\textbf{annoy}} & \multicolumn{2}{|c}{\textbf{faiss-ivf}}  & \multicolumn{2}{|c|}{\textbf{cakes}} \\\cline{3-10}
+                & & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
+                \cline{2-10}
+
                 \hline
                 \multirow{9}{*}{\rotatebox[origin=c]{90}{\textbf{Glove-25}}}
                 & 1   & \num{2.28e4} & 0.801 & \num{2.83e3} & 0.835 & \num{2.38e3} & 1.000* & \num{1.54e3} & 1.000* \\\cline{2-10}
@@ -229,6 +250,28 @@ In particular, throughput of CAKES's algorithms is identical within three signif
                 & 128 & --           & --    & --           & --    & \num{1.90e1} & 0.998  & \num{8.92e2} & 1.000* \\\cline{2-10}
                 & 256 & --           & --    & --           & --    & \num{9.47e0} & 0.998  & \num{8.91e2} & 1.000* \\
                 \hline
+
+            \end{tabular}
+        \end{small}
+    \end{center}
+    \vskip -0.1in
+\end{table*}
+
+
+\begin{table*}[h]
+    % \renewcommand{\arraystretch}{1.15}
+    \caption{Queries per second (QPS) and Recall vs naive linear search on the Sift dataset.
+    A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
+    \label{tab:results:qps-and-recall-sift}
+    \vskip 0.15in
+    \begin{center}
+        \begin{small}
+            \begin{tabular}{|c|l|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|}
+                \hline
+                & \multirow{2}{*}{\textbf{Mult.}} & \multicolumn{2}{|c}{\textbf{hnsw}} & \multicolumn{2}{|c}{\textbf{annoy}} & \multicolumn{2}{|c}{\textbf{faiss-ivf}}  & \multicolumn{2}{|c|}{\textbf{cakes}} \\\cline{3-10}
+                & & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
+                \cline{2-10}
+
                 \hline
                 \multirow{8}{*}{\rotatebox[origin=c]{90}{\textbf{Sift}}}
                 & 1   & \num{1.93e4} & 0.782 & \num{3.98e3} & 0.686 & \num{6.98e2} & 1.000* & \num{6.20e2} & 1.000 \\\cline{2-10}
@@ -240,6 +283,27 @@ In particular, throughput of CAKES's algorithms is identical within three signif
                 & 64  & --           & --    & \num{3.39e3} & 0.678 & \num{8.87e0} & 0.997  & \num{1.34e2} & 1.000 \\\cline{2-10}
                 & 128 & --           & --    & \num{3.36e3} & 0.643 & \num{4.78e0} & 0.993  & \num{1.31e2} & 1.000 \\
                 \hline
+
+            \end{tabular}
+        \end{small}
+    \end{center}
+    \vskip -0.1in
+\end{table*}
+
+\begin{table*}[h]
+    % \renewcommand{\arraystretch}{1.15}
+    \caption{Queries per second (QPS) and Recall vs naive linear search on the Random dataset.
+    A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
+    \label{tab:results:qps-and-recall-random}
+    \vskip 0.15in
+    \begin{center}
+        \begin{small}
+            \begin{tabular}{|c|l|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|p{1.4cm}|p{1.0cm}|}
+                \hline
+                & \multirow{2}{*}{\textbf{Mult.}} & \multicolumn{2}{|c}{\textbf{hnsw}} & \multicolumn{2}{|c}{\textbf{annoy}} & \multicolumn{2}{|c}{\textbf{faiss-ivf}}  & \multicolumn{2}{|c|}{\textbf{cakes}} \\\cline{3-10}
+                & & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
+                \cline{2-10}
+
                 \hline
                 \multirow{6}{*}{\rotatebox[origin=c]{90}{\textbf{Random}}}
                 & 1  & \num{1.17e4} & 0.060 & \num{4.28e3} & 0.028 & \num{7.342} & 1.000* & \num{5.54e2} & 1.000 \\\cline{2-10}
