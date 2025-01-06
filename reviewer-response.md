@@ -179,7 +179,7 @@ of Introduction to Algorithms, CLRS.  Also, the description of $criteria$
 is as a "stopping criteria", while the logic of the code has it as a
 continuing criteria.  Please fix the pseudocode throughout.*
 
-make this pseudocode style change (NMD)
+We evaluated the CLRS package, but did not see any aesthetic differences. We have, however, increased the font size for the algorithm environments, so that it should be more legible.
 call it continuation criteria (NI)
 
 *Section 2.2 is meant to be the definition of the search problem(s), but
@@ -304,7 +304,7 @@ replace with 'actual points from the dataset'
 *The fonts in Algorithms 2.2 through 2.7 are simply too small.  Make them
 the font size of the remainder of the text.*
 
-we will make this more legible (NMD)
+We have made this larger to improve readability.
 
 *The numbers in Table 2 are too small.  Refactor into multiple tables
 perhaps.*
