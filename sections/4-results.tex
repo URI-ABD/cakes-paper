@@ -114,10 +114,10 @@ Both axes are on a logarithmic scale.
 In this section, we report results only for $k$-NN search with $k = 10$, but similar plots for $k = 100$ can be found in the Supplement.
 For HNSW and ANNOY, we report the recall for each measurement in the plots. For algorithms that exhibit recall greater than $0.9995$, we do not report the recall in the plots, but we do report it in the tables below.
 
-Table~\ref{tab:results:qps-and-recall} show the throughput and recall of CAKES's algorithms at each augmented cardinality for Fashion-Mnist, Glove-25, Sift, and Random.
+Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift} and~\ref{tab:results:qps-and-recall-random} show the throughput and recall of CAKES's algorithms at each augmented cardinality for Fashion-Mnist, Glove-25, Sift, and Random respectively.
 Though the plots in Figure~\ref{fig:results:scaling-plots} present results for each of CAKES's three algorithms separately, the results in the CAKES column in these tables represent the fastest CAKES algorithm at that dataset and cardinality only.
 We used our auto-tuning approach (see Section~\ref{sec:methods:auto-tuning}) for each new tree (i.e.,\,at each cardinality), and this approach was always able to select the fastest algorithm for each dataset at each cardinality.
-Since we also allow for tuning hyper-parameters for the other algorithms, and we allow for different sets of hyper-parameters at each cardinality, it is a fair comparison for these tables to only list the performance of the tuned CAKES algorithm.
+Since we also allow for tuning hyper-parameters for the other algorithms, and we allow for different sets of hyper-parameters at each cardinality, it is a fair comparison for these tables to only list the performance of the fastest CAKES algorithm.
 When reporting recall, we use $1.000*$ to denote that the recall is imperfect, but rounds to $1.000$.
 
 
@@ -192,7 +192,7 @@ In particular, throughput of CAKES's algorithms is identical within three signif
 
 
 \begin{table*}
-    \caption{Queries per second (QPS) and Recall vs naive linear search on the Fashion-Mnist dataset.
+    \caption{Throughput (QPS) and Recall on the Fashion-Mnist dataset.
     A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
     \label{tab:results:qps-and-recall-fmn}
     \begin{center}
@@ -220,7 +220,7 @@ In particular, throughput of CAKES's algorithms is identical within three signif
 
 
 \begin{table*}
-    \caption{Queries per second (QPS) and Recall vs naive linear search on the Glove-25 dataset.
+    \caption{Throughput (QPS) and Recall on the Glove-25 dataset.
     A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
     \label{tab:results:qps-and-recall-glove}
     \begin{center}
@@ -247,7 +247,7 @@ In particular, throughput of CAKES's algorithms is identical within three signif
 
 
 \begin{table*}
-    \caption{Queries per second (QPS) and Recall vs naive linear search on the Sift dataset.
+    \caption{Throughput (QPS) and Recall on the Sift dataset.
     A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
     \label{tab:results:qps-and-recall-sift}
     \begin{center}
@@ -272,7 +272,7 @@ In particular, throughput of CAKES's algorithms is identical within three signif
 \end{table*}
 
 \begin{table*}
-    \caption{Queries per second (QPS) and Recall vs naive linear search on the Random dataset.
+    \caption{Throughput (QPS) and Recall on the Random dataset.
     A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
     \label{tab:results:qps-and-recall-random}
     \begin{center}

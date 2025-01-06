@@ -6,13 +6,9 @@
 
 We benchmark on a variety of datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
 Table~\ref{tab:datasets:summary} summarizes these datasets.
-The benchmarks for Fashion-Mnist, Glove-25, Sift, and Random (and for their synthetic augmentations) were conducted on an Amazon AWS (EC2) \texttt{r6i.16xlarge} instance, with a 64-core Intel Xeon Platinum 8375C CPU 2.90GHz processor, 512GB RAM.
-This is the same configuration used in~\cite{aumuller2020ann}.
-The OS kernel was Ubuntu 22.04.3-Ubuntu SMP.
-The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16.
-The benchmarks for SILVA and RadioML were conducted on an Intel Xeon E5-2690 v4 CPU @ 2.60GHz with 512GB RAM.
-The OS kernel was Manjaro Linux 5.15.130-1-MANJARO.
-The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16.
+All benchmarks were conducted on an Intel Xeon E5-2690 v4 CPU @ 2.60GHz with 512GB RAM.
+The OS kernel was Manjaro Linux 5.15.164-1-MANJARO.
+The Rust compiler was Rust 1.83.0, and the Python interpreter version was 3.9.18.
 
 \begin{table}
     \caption{Datasets used in benchmarks.}
@@ -41,11 +37,11 @@ The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16
     \vskip -0.1in
 \end{table}
 
-\subsection{Random Datasets and Synthetic Augmentations}
+\subsection{Random Datasets and Synthetic Augmentation}
 \label{sec:datasets-and-benchmarks:random-datasets}
 
 In addition to benchmarks on datasets from the ANN-Benchmarks suite, we also benchmarked on synthetic augmentations of these real datasets, using the process described in \ref{sec:methods:synthetic-data}.
-In particular, we use a noise tolerance $\epsilon = 0.01$ and explore the scaling behavior as the cardinality multiplier (referred to as ``Multiplier'' in Table~\ref{tab:results:qps-and-recall}) increases.
+In particular, we use a noise tolerance $\epsilon = 0.01$ and explore the scaling behavior as the cardinality multiplier (referred to as ``Mult.'' in Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift} and~\ref{tab:results:qps-and-recall-random}) increases.
 We also benchmarked on purely randomly-generated datasets of various cardinalities.
 For this, we used a base cardinality of 1,000,000 and a dimensionality of 128 to match the Sift dataset; hereafter, we refer to the random dataset with cardinality 1,000,000 and dimensionality 128 as ``Random.''
 This benchmark allows us to isolate the effect of a manifold structure (which we expect to be absent in a purely random dataset) on the performance of the CAKES' algorithms.

@@ -212,13 +212,11 @@ In any case, the tree is built only once, so this cost is amortized over all sea
 \label{sec:methods:knn-search}
 
 Given a dataset $\textbf{X}$, a distance function $f$ and the root cluster of the tree built using Algorithm~\ref{alg:methods:partition}, we can now formally pose the $k$-NN search problem.
-
-The $k$-NN search problem, given a user specified integer $k$ and query $q$, aims to find the $k$ closest points to $q$ in $\textbf{X}$.
+Given a user specified integer $k$ and query $q$, $k$-NN search aims to find the $k$ closest points to $q$ in $\textbf{X}$.
 In other words, $k$-NN search aims to find the set $H$ such that $|H| = k$ and $H = B_X(q, \rho_k)$ where $\rho_k = \max \left\{ f(q, p) \ \forall \ p \in H \right\}$ is the distance from $q$ to the $k^{th}$ nearest neighbor in $\textbf{X}$.
 
 In this section, we present three novel algorithms for exact $k$-NN search:
 Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
-
 In these algorithms, we use $H$, for \textit{hits}, to refer to the data structure that stores the closest points to the query found so far, and $Q$ to refer to the data structure that stores the clusters and points that are still in contention for being one of the $k$ nearest neighbors.
 The two Sieve algorithms also use some terminology defined and illustrated in Figure~\ref{fig:methods:deltas}.
 
@@ -228,7 +226,7 @@ The two Sieve algorithms also use some terminology defined and illustrated in Fi
 
 This algorithm relies on the \textit{tree-search} (Algorithm~\ref{alg:methods:rnn-search:tree-search}) and \textit{leaf-search} (Algorithm~\ref{alg:methods:rnn-search:leaf-search}) as described in~\cite{ishaq2019clustered} and reproduced here for completeness.
 
-For Repeated $\rho$-NN search, we begin by performing \textit{tree-search} with a search radius $r$ equal to the radius of the root cluster divided by the cardinality of the dataset.
+For Repeated $\rho$-NN search (Algorithm~\ref{alg:methods:repeated-rnn}), we begin by performing \textit{tree-search} with a search radius $r$ equal to the radius of the root cluster divided by the cardinality of the dataset.
 If no clusters are found, then we double $r$ and perform tree-search again, repeating until we find at least one cluster.
 
 Now, so long as $\sum_{C \in Q} |C| < k$, we continue to perform tree-search, but instead of doubling $r$ on each iteration, we multiply it by a factor determined by the LFD in the vicinity of the query ball.
@@ -250,8 +248,7 @@ Thus, the factor of radius increase should also be \textit{inversely} related to
 However, we should not increase the radius too drastically with any one iteration because we assume that the LFD is only \textit{locally} uniform.
 A large increase in the radius would likely break out of the local region and potentially encounter too many new clusters, which would make the subsequent step computationally expensive.
 
-Once $\sum_{C \in Q} |C| \geq k$, we have found at least $k$ neighbors, and so we can stop increasing the radius.
-We now perform \textit{leaf-search} to find the $k$ nearest neighbors among the points in the clusters found during the previous steps.
+Once $\sum_{C \in Q} |C| \geq k$, we are guaranteed to have found at least $k$ neighbors, and so we perform \textit{leaf-search} to find the $k$ nearest neighbors among the points in the clusters found after the last tree-search.
 
 \begin{algorithm} % enter the algorithm environment
     \caption{Repeated $\rho$-NN($root$, $q$, $k$)} % give the algorithm a caption
@@ -260,10 +257,8 @@ We now perform \textit{leaf-search} to find the $k$ nearest neighbors among the 
         \Require $root$, the root cluster
         \Require $q$, a query
         \Require $k$, the number of neighbors to find
-
         \State $r \Leftarrow radius$ of the $root$ cluster
         \State $r \Leftarrow$ $\frac{r}{|root|}$
-
         \Loop
             \State $Q \Leftarrow$ tree-search($root$, $q$, $r$)
             \If{$Q \neq \emptyset$}
@@ -271,7 +266,6 @@ We now perform \textit{leaf-search} to find the $k$ nearest neighbors among the 
             \EndIf
             \State $r \Leftarrow 2 \cdot r$
         \EndLoop
-
         \Loop
             \If{$\sum_{C \in Q} |C| >= k$}
                 \State \textbf{break}
@@ -280,7 +274,6 @@ We now perform \textit{leaf-search} to find the $k$ nearest neighbors among the 
             \State $r \Leftarrow r \cdot \min \left( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu^{-1}} \right)$
             \State $Q \Leftarrow$ tree-search($root$, $q$, $r$)
         \EndLoop
-
         \State $H \Leftarrow \text{leaf-search}(Q, q, r)$
         \State \textbf{sort} $H$ by non-decreasing distance to $q$
         \State \textbf{return} The first $k$ points in $H$
@@ -319,7 +312,7 @@ where $\hat{r}$ is the \textit{mean} radius of leaf clusters, $\mathcal{N}_{\hat
 To build on this and determine the complexity of Repeated $\rho$-NN, we must first estimate the number of iterations of tree-search (Algorithm~\ref{alg:methods:rnn-search:tree-search}) needed to find a radius that guarantees at least $k$ neighbors.
 
 Based on the assumption that the LFD near the query does not differ significantly from that of the clusters near the query (the set $Q$), Equation~\ref{eq:methods:repeated-rnn-factor} suggests that in the expected case, we need only two iterations of tree-search to find $k$ neighbors:
-one iteration to find at least one cluster, and one more to find enough of the $k$ neighbors.
+one iteration to find at least one cluster, and one more to find enough clusters to guarantee $k$ neighbors.
 Since this is a constant factor, complexity of tree-search for Repeated $\rho$-NN is the same as that of $\rho$-NN search, i.e.,\,$\mathcal{O}\big(\log\mathcal{N}_{\hat{r}}(X)\big)$.
 
 To determine the asymptotic complexity of leaf-search, we must estimate $\sum_{C \in Q} |C|$, the total cardinality of the clusters returned by tree-search.
@@ -367,10 +360,8 @@ Note that the scaling factor should be close to 1 unless LFD is highly variable 
             \Require $root$, the root cluster
             \Require $q$, a query
             \Require $k$, the number of neighbors to find
-
             \State $c \Leftarrow$ \textit{center} of $root$
             \State $Q \Leftarrow$ \{ ($root$, $\delta^{+}_{root}$, $|root| - 1$), ($c$, $\delta_{root}$, 1) \}
-
             \Loop
                 \If{$k = \sum_{(\_, \_, m) \in Q} m$}
                     \State \textbf{break}
@@ -391,13 +382,14 @@ Note that the scaling factor should be close to 1 unless LFD is highly variable 
                         \EndFor
                     \Else
                         \State $[L, R] \Leftarrow$ children of $p$
-                        \State $Q \Leftarrow Q \cup \{ (L, \delta^{+}_{L}, |L| - 1), (L_c, \delta_{L}, 1) \}$
-                        \State $Q \Leftarrow Q \cup \{ (R, \delta^{+}_{R}, |R| - 1), (R_c, \delta_{R}, 1) \}$
+                        \State $l, r \Leftarrow$ centers of $L, R$
+                        \State $Q \Leftarrow Q \cup \{ (L, \delta^{+}_{L}, |L| - 1), (l, \delta_{L}, 1) \}$
+                        \State $Q \Leftarrow Q \cup \{ (R, \delta^{+}_{R}, |R| - 1), (l, \delta_{R}, 1) \}$
                     \EndIf
                 \EndFor
             \EndLoop
-
-            \State \textbf{return} $Q$
+            \State QuickSelect($Q$, $k$)
+            \State \textbf{return} The first $k$ points in $Q$
         \end{algorithmic}
     \end{algorithm}
 \end{minipage}
@@ -429,7 +421,7 @@ Note that the scaling factor should be close to 1 unless LFD is highly variable 
                     \State{$H.pop$}
                 \EndWhile
             \EndWhile
-            \State Return $H$
+            \State \textbf{return} $H$
         \end{algorithmic}
     \end{algorithm}
 \end{minipage}
@@ -438,28 +430,26 @@ Note that the scaling factor should be close to 1 unless LFD is highly variable 
 \subsubsection{Breadth-First Sieve}
 \label{sec:methods:knn-search:bredth-first-sieve}
 
-This algorithm performs a breadth-first traversal of the tree, pruning clusters by using a modified version of the QuickSelect algorithm~\cite{hoare1961algorithm} at each level.
+This algorithm (described in Algorithm~\ref{alg:methods:bredth-first-sieve}) performs a breadth-first traversal of the tree, pruning clusters by using a modified version of the QuickSelect algorithm~\cite{hoare1961algorithm} at each level.
 
 We begin by letting $Q$ be a set of 3-tuples $(p, \delta^{+}_{p}, m)$, where $p$ is either a cluster or a point, $\delta^{+}_{p}$ is the $\delta^{+}$ of $p$ as illustrated in Figure~\ref{fig:methods:deltas}, and $m$ is the multiplicity of $p$ in $Q$.
 During the breadth-first traversal, for every cluster $C$ we encounter, we add $(C, \delta^{+}_{C}, |C| - 1)$ and $(c, \delta_{c}, 1)$ to $Q$, where $c$ is the center of $C$.
 Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\ref{sec:methods:knn-search}, since $c$ is a point, $\delta_{C} = \delta_{c} = \delta^{+}_{c} = \delta^{-}_{c}$.
 
-We then use the QuickSelect algorithm, modified to account for multiplicities and to reorder $Q$ in-place, to find the element in $Q$ with the $k^{th}$ smallest $\delta^{+}$; in other words, we find $\tau$, the smallest $\delta^{+}$ in $Q$ such that $\left| B_X(q, \tau) \right| \geq k$.
-Since this step may require a binary search for the correct pivot element to find $\tau$ and reordering with a new pivot takes linear time in the size of the input list, this version of QuickSelect has $\mathcal{O}(|Q| \log |Q|)$ time complexity.
+We then use the QuickSelect algorithm, modified to account for multiplicities and to reorder $Q$ in-place, to find the element in $Q$ with the $k^{th}$ smallest $\delta^{+}$; in other words, we find $\tau$, the smallest $\delta^{+}$ in $Q$ such that $\left| B(q, \tau) \right| \geq k$.
+Since this step may require a binary search for the correct pivot element to find $\tau$ and reordering with a new pivot takes linear time in the size of the input list, this version of QuickSelect has $\mathcal{O}\left(|Q| \log |Q|\right)$ time complexity.
 
 We then remove from $Q$ any element for which $\delta^{-} > \tau$ because such elements cannot contain (or be) one of the $k$ nearest neighbors.
 Next, we remove all leaf clusters from $Q$ and add their points to $Q$ instead.
 Finally, we replace all remaining clusters in $Q$ with the pairs of 3-tuples corresponding to their child clusters.
 
 We continue this process until $Q$ no longer contains any clusters.
-We then use the QuickSelect algorithm one last time to reorder $Q$, find $\tau$, and return the $k$ nearest neighbors.
-
-This process is described in Algorithm~\ref{alg:methods:bredth-first-sieve}.
+We then use the QuickSelect algorithm one last time to reorder $Q$ and return the $k$ nearest neighbors.
 
 \subsubsection{Depth-First Sieve}
 \label{sec:methods:knn-search:depth-first-sieve}
 
-This algorithm performs a depth-first traversal of the tree and uses two priority queues to track clusters and hits.
+This algorithm (described in Algorithm~\ref{alg:methods:depth-first-sieve}) is quite similar to a depth-first traversal of the tree, using two priority queues to track clusters and hits, and to prioritize which branch of the tree to explore next.
 
 Let $Q$ be a min-queue of clusters prioritized by $\delta^{-}$ and $H$ be a max-queue (with capacity $k$) of points prioritized by $\delta$.
 $Q$ starts containing only the root cluster while $H$ starts empty.
@@ -471,8 +461,7 @@ So long as $H$ is not full or the top priority element in $H$ has $\delta$ great
     \item If $H$ has more than $k$ points, remove points from $H$ until $|H| = k$.
 \end{itemize}
 
-This process is described in Algorithm~\ref{alg:methods:depth-first-sieve}.
-It terminates when $H$ is full and the top priority element in $H$ has $\delta$ less than the top priority element in $Q$, i.e.,\,the theoretically closest point left to be considered in $Q$ is farther from the query than the $k^{th}$ nearest neighbor in $H$.
+This process terminates when $H$ is full and the top priority element in $H$ has $\delta$ less than the top priority element in $Q$, i.e.,\,the theoretically closest point left to be considered in $Q$ is farther from the query than the $k^{th}$ nearest neighbor in $H$.
 This leaves $H$ containing exactly the $k$ nearest neighbors to the query.
 
 Note that this algorithm is not truly a depth-first traversal of the tree in the classical sense, because we use $Q$ to prioritize which branch of the tree we descend into.
@@ -485,7 +474,7 @@ Indeed, we expect this algorithm to often switch which branch of the tree is bei
 Due to their similarity, we combine the complexity analyses of both Sieve methods.
 For these methods we again use the terminology of tree-search and leaf-search.
 Tree-search navigates the cluster tree and adds clusters to $Q$.
-Leaf-search exhaustively searches some of the clusters in $Q$ to find the $k$ nearest neighbors.
+Leaf-search exhaustively searches \textit{some} of the clusters in $Q$ to find the $k$ nearest neighbors.
 
 We start with the assumption that the LFD near the query does not differ significantly from that of nearby clusters, and we consider leaf clusters with cardinalities near $k$.
 Let $d$ be the LFD in this region.
