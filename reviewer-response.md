@@ -85,7 +85,7 @@ We don't have a python wrapper for cakes, and the other tools were in python. Th
 ||x||$. $r$ is chosen in the sphere of radius $\epsilon$ and added to $x$, and, as
 stated correctly line 424, $x'$ is within $\epsilon$ of $x$.*
 
-x is a vector, and epsilon is a scalar. We can clarify that x is a vector. Be sure to boldface all vectors
+Fixed and made all vectors boldfaced. 
 
 *There are many small LaTeX issues: wrong space after "i.e." and "e.g." (add a
 backslash), large spaces around formulas (e.g., line 342), em-dashes that look
@@ -110,7 +110,7 @@ Per the suggestion of reviewer 2, we have broken this table up into four tables 
 
 *Line 585: "we observe performs quite slowly". The sentence seems incomplete.*
 
-will fix -> 'we observe that CAKES performes quite slowly'
+This has been fixed.
 
 *Many of the explicit algorithms do not serve any real purpose: they are not
 more readable in pseudo-code form and are just fine in explained in the text.
@@ -238,7 +238,7 @@ We respectfully disagree; this appears as a term of art in existing literature, 
 
 *In line 22, use "rate" instead of "scale".*
 
-ok, will fix
+This has been fixed.
 
 *Throughout, the word "which" is used when "that" is the correct word.  If
 "which" is used, then it is not defining and is preceded by a comma.
@@ -250,7 +250,7 @@ We somewhat agree, but disagree that *all* instances should be changed. We have 
 This is not a good practice.  Just refactor the text without Section 1.1
 or add a Subsection 1.2.*
 
-make the last paragraph (entropy scaling) into 1.2
+We added Subsection 1.2 (Entropy-Scaling Search).
 
 *The use of $\forall$, $\exists$, $\Leftrightarrow$, and other similar
 logical operators is not appropriate in a manuscript that is not about
@@ -269,23 +269,23 @@ We do define our clustering approach, and moreover, we build on prior work (some
 the points".  What does that mean precisely and where does it occur later
 in the manuscript?*
 
-we take a root-n sample of the points (NI), justified in CHESS paper. Make this clear.
+We clarified this by changing the language about "a smaller sample of the points" to "a random subsample of $\sqrt{|C|}$ points." 
 
 *On line 156, there is the claim "so it is a real data point".  What is a
 real data point?  Please explain.*
 
-deal with by defining geometric median
+We removed the language "real data point" and clarified that the center of a cluster is the point which is its geometric median.  
 
 *On line 161 and elsewhere, "i.e." is always preceded and followed by
 commas.*
 
-fixed here
+Fixed-- "i.e." is now always followed by a comma. 
 
 *On line 178, there is the phrase "find the point ... in the sample".  Can
 you make the entire paragraph more precise by giving notation for the
 sample?*
 
-deal with by defining geometric median
+We now refer to the sample as $S$. 
 
 *Section 2.1.1 overall is lacking in mathematical rigor.*
 
@@ -299,7 +299,7 @@ add some explanation: these can be as complex as a user wants, but for us it is 
 *In line 252, there is again mention of "real points" without any
 indication of the meaning of "real".*
 
-replace with 'actual points from the dataset'
+We removed the section which contained this from the paper. 
 
 *The fonts in Algorithms 2.2 through 2.7 are simply too small.  Make them
 the font size of the remainder of the text.*
@@ -309,15 +309,15 @@ we will make this more legible (NMD)
 *The numbers in Table 2 are too small.  Refactor into multiple tables
 perhaps.*
 
-We have broken this table up into four tables (one per dataset) which we helieve helps readability.
+We have broken this table up into four tables (one per dataset) which we believe helps readability.
 
 *In line 641, what is "radial increase 2.3"?*
 
-missing word 'equation' and also put in parentheses
+We added that 2.3 is an equation. 
 
 *In line 642, why is "harmonic" italicized?*
 
-no need
+This has been fixed.
 
 *The References section needs a through going over for proper formatting
 and capitalization.  For example, check the title capitalization in [2],

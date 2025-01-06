@@ -40,7 +40,7 @@ We use a simplified version of this definition by calculating the LFD at a lengt
 
 Intuitively, LFD measures the rate of change in the number of points in a ball of radius $r$ around a point $q$ as $r$ increases. When the vast majority of points in the dataset have low ($\ll D$) LFD, we can simply say that the dataset has low LFD.
 We stress that this concept differs from the \textit{embedding dimension} of a dataset.
-To illustrate the difference, consider the SILVA 18S rRNA dataset which contains genomic sequences with unaligned lengths of up to 3,718 base pairs and aligned length of 50,000 base pairs.
+To illustrate the difference, consider the SILVA 18S rRNA dataset that contains genomic sequences with unaligned lengths of up to 3,718 base pairs and aligned length of 50,000 base pairs.
 Hence, the \textit{embedding dimension} of this dataset is at least 3,718 and at most 50,000.
 However, physical constraints (namely, biological evolution and biochemistry) constrain the data to a lower-dimensional manifold within this space.
 LFD is an approximation of the dimensionality of that lower-dimensional manifold in the ``vicinity'' of a given point.
@@ -52,7 +52,7 @@ For real-world datasets, we expect the LFD to be locally uniform, i.e.,\,when $r
 \label{sec:methods:clustering}
 
 We define a \textit{cluster} as a set of points with a \textit{center} and a \textit{radius}.
-The center is the geometric median of the points in the cluster, i.e.,\,it is the point which minimizes the sum of distances to all other points in the cluster.
+The center is the geometric median of the points in the cluster, i.e.,\,it is the point that minimizes the sum of distances to all other points in the cluster.
 In cases where the cardinality of the cluster is large, we take a random subsample of $\sqrt{|C|}$ points and compute the geometric median of that subsample~\cite{ishaq2019clustered}.
 The center, therefore, is one of the points in the cluster and is used as a representative of the cluster.
 The radius is the maximum distance from the center to any point in the cluster.
@@ -74,14 +74,14 @@ We start by performing a divisive hierarchical clustering on the dataset using C
 The procedure is almost identical to that outlined in CHESS~\cite{ishaq2019clustered}, but with better selection of poles for partitioning (see Algorithm~\ref{alg:methods:partition}).
 After building the tree, we also perform a depth-first reordering of the dataset (see Section~\ref{sec:methods:clustering:depth-first-reordering}).
 
-For a cluster $C$ with $|C|$ points, we begin by taking a random sample of $\sqrt{|C|}$ of its points, and computing pairwise distances between all points in this sample.
-Using these distances, we compute the \textit{geometric median} of this sample; in other words, we find the point which minimizes the sum of distances to all other points in the sample.
-This geometric median is the center of $C$.
+For a cluster $C$ with $|C|$ points, we begin by taking a random subsample $S$ of $\sqrt{|C|}$ of its points, and computing pairwise distances between all points in $S$.
+Using these distances, we compute the \textit{geometric median} of $S$; in other words, we find the point that minimizes the sum of distances to all other points in $S$.
+We define the \textit{center} of $C$ to be this geometric median.
 
-The \textit{radius} of $C$ is the maximum distance from the \textit{center} to any other point in $C$.
-The point which is responsible for that radius (i.e.,\,the furthest point from the center) is designated the \textit{left pole} and the point which is furthest from the left pole is designated the \textit{right pole}.
-We then partition the cluster into a \textit{left child} and a \textit{right child}, where the left child contains all points in the cluster which are closer to the left pole than to the right pole, and the right child contains all points in the cluster which are closer to the right pole than to the left pole.
-Without loss of generality, we assign to the left child those points which are equidistant from the two poles.
+The \textit{radius} of $C$ is the maximum distance from the center to any other point in $C$.
+The point that is responsible for that radius (i.e.,\,the furthest point from the center) is designated the \textit{left pole} and the point that is furthest from the left pole is designated the \textit{right pole}.
+We then partition the cluster into a \textit{left child} and a \textit{right child}, where the left child contains all points in the cluster that are closer to the left pole than to the right pole, and the right child contains all points in the cluster that are closer to the right pole than to the left pole.
+Without loss of generality, we assign to the left child those points that are equidistant from the two poles.
 Starting from a root cluster containing the entire dataset, we repeat this procedure until each leaf contains only one datum, or we meet some other user-specified stopping criteria, for example, minimum cluster radius, minimum cluster cardinality, maximum tree depth, etc.
 This process is described in Algorithm \ref{alg:methods:partition}.
 During the partitioning process, we also compute (and cache) the LFD of each cluster using Equation~\ref{eq:methods:lfd-half}.
@@ -148,7 +148,7 @@ We also note here that this $\mathcal{O}(n \log n)$ complexity assumes that the 
 This can realistically only happen when the data are uniformly distributed in the embedding space.
 This represents the worst-case scenario for subsequent search algorithms because the LFD of the dataset will approach or equal the embedding dimension.
 For real-world datasets with low LFD, we expect the tree to be highly unbalanced, reflecting the topological structure of the data.
-When building trees for such datasets, their depths would be larger than $\log n$, which would seem to increase the cost of building
+When building trees for such datasets, their depths would be larger than $\log n$, which would seem to increase the cost of tree-building.
 However, because of the large numbers of leaf clusters at shallow depths, each subsequent level of the tree would also have fewer points, and so the cost of building each subsequent level would be lower.
 Any analysis of unbalanced trees would be highly dependent on the specific dataset, and so we do not provide one here.
 In any case, the tree is built only once, so this cost is amortized over all search queries and other applications.
@@ -158,7 +158,7 @@ In any case, the tree is built only once, so this cost is amortized over all sea
 % \label{sec:methods:rnn-search}
 
 % We conduct $\rho$-NN search as described in~\cite{ishaq2019clustered}, but with the following improvement:
-% when a cluster overlaps with the query ball, instead of always proceeding to search both of its children, we proceed only with those children which might contain points in the query ball.
+% when a cluster overlaps with the query ball, instead of always proceeding to search both of its children, we proceed only with those children that might contain points in the query ball.
 
 % \begin{figure}[ht!]
 %     \centering
@@ -188,8 +188,8 @@ In any case, the tree is built only once, so this cost is amortized over all sea
 
 % Thus, $d \leq \rho \iff (\overline{q l} + \overline{q r \vphantom{l}})(\overline{q l} - \overline{q r \vphantom{l}}) \leq 2 \cdot \overline{l r} \cdot \rho$. Note, in particular, that this only requires distances between actual points from the dataset, and so it can be used with any distance function, even when $q'$ and $m$ are not actual points or cannot be imputed from the data.
 
-% To perform $\rho$-NN search, we first perform a coarse \textit{tree-search}, as outlined in Algorithm~\ref{alg:methods:rnn-search:tree-search}, to find the leaf clusters which overlap with the query ball or any clusters which lie entirely within the query ball.
-% Then, for all such clusters, we perform a finer-grained \textit{leaf-search}, as outlined in Algorithm~\ref{alg:methods:rnn-search:leaf-search}, to find all points which are no more than a distance $\rho$ from the query.
+% To perform $\rho$-NN search, we first perform a coarse \textit{tree-search}, as outlined in Algorithm~\ref{alg:methods:rnn-search:tree-search}, to find the leaf clusters that overlap with the query ball or any clusters which lie entirely within the query ball.
+% Then, for all such clusters, we perform a finer-grained \textit{leaf-search}, as outlined in Algorithm~\ref{alg:methods:rnn-search:leaf-search}, to find all points that are no more than a distance $\rho$ from the query.
 % The asymptotic complexity of $\rho$-NN is the same as in~\cite{ishaq2019clustered} and shown in Equation~\ref{eq:methods:rnn-search-complexity}.
 
 % \begin{gather}
@@ -220,7 +220,7 @@ In other words, $k$-NN search aims to find the set $H$ such that $|H| = k$ and $
 In this section, we present three novel algorithms for exact $k$-NN search:
 Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
 
-In these algorithms, we use $H$, for \textit{hits}, to refer to the data structure which stores the closest points to the query found so far, and $Q$ to refer to the data structure which stores the clusters and points which are still in contention for being one of the $k$ nearest neighbors.
+In these algorithms, we use $H$, for \textit{hits}, to refer to the data structure that stores the closest points to the query found so far, and $Q$ to refer to the data structure that stores the clusters and points that are still in contention for being one of the $k$ nearest neighbors.
 The two Sieve algorithms also use some terminology defined and illustrated in Figure~\ref{fig:methods:deltas}.
 
 \begin{figure}
@@ -364,7 +364,7 @@ Given the uses of $k$-NN search in practice, this assumption is reasonable.
 From this assumption, we can infer that the LFD near the query does not differ significantly from the (harmonic) mean of the LFDs of clusters near the query at the scale of the distance from the query to the $k^{th}$ nearest neighbor.
 
 We find it useful to start by discussing the \textit{tree-search} and \textit{leaf-search} stages separately.
-Tree-search refers to the process of identifying clusters which have overlap with the query ball, or in other words, clusters which might contain one of the $k$ nearest neighbors.
+Tree-search refers to the process of identifying clusters that overlap with the query ball, or in other words, clusters that might contain one of the $k$ nearest neighbors.
 Leaf-search refers to the process of identifying the $k$ nearest neighbors among the points in the clusters identified by tree-search.
 
 In ~\cite{ishaq2019clustered}, we showed that the complexity of $\rho$-NN search is
@@ -394,7 +394,7 @@ Since this is a constant factor, complexity of tree-search for Repeated $\rho$-N
 To determine the asymptotic complexity of leaf-search, we must estimate $\sum_{C \in Q} |C|$, the total cardinality of the clusters returned by tree-search.
 Since we must examine every point in each such cluster, time complexity of leaf-search is linear in $\sum_{C \in Q} |C|$.
 Let $\rho_k$ be the distance from the query to the $k^{th}$ nearest neighbor.
-Then, we see that $Q$ is expected to be the set of clusters which overlap with a ball of radius $\rho_k$ around the query.
+Then, we see that $Q$ is expected to be the set of clusters that overlap with a ball of radius $\rho_k$ around the query.
 We can estimate this region as a ball of radius $\rho_k + 2\hat{r}$, where $\hat{r}$ is the mean radius of the clusters in $Q$.
 
 The work in~\cite{yu2015entropy} showed that $\sum_{C \in S} |C| \leq \gamma  \left| B(q, \rho_k) \right| \left(\frac{\rho_k + 2 \cdot \hat{r}}{\rho_k} \right)^d$, where $\gamma$ is a constant.
@@ -601,10 +601,10 @@ We then compare the performance of CAKES to that of other algorithms on the orig
 
 To elaborate on the augmentation process, we start with an original dataset from the ANN-benchmarks suite.
 Let $X$ be the dataset, $d$ be its dimensionality, $\epsilon$ be a user-specified noise level, and $m$ be a user-specified integer multiplier.
-For each datum $x \in X$, we create $m - 1$ new data points within a distance $\epsilon \cdot ||x||$ of $x$ where $||x||$ is the Euclidean distance from $x$ to the origin.
-We construct a random vector $r$ of $d$ dimensions in the hyper-sphere of radius $\epsilon$ centered at the origin.
-We then add $r$ to $x$ to get a new point $x'$.
-Since $||r|| \leq \epsilon$, we have that $||x - x'|| \leq \epsilon$ (i.e.,\,$x'$ is within a distance $\epsilon$ of $x$).
+For each datum $\mathbf{x} \in X$, we create $m - 1$ new data points within a distance $\epsilon$ of $\mathbf{x}$.
+We construct a random vector $\mathbf{r}$ of $d$ dimensions in the hyper-sphere of radius $\epsilon$ centered at the origin.
+We then add $\mathbf{r}$ to $\mathbf{x}$ to get a new point $\mathbf{x}'$.
+Since $||\mathbf{r}|| \leq \epsilon$, we have that $||\mathbf{x} - \mathbf{x}'|| \leq \epsilon$ (i.e.,\,$\mathbf{x}'$ is within a distance $\epsilon$ of $\mathbf{x}$).
 This produces a new dataset $X'$ with $|X'| = m \cdot |X|$.
 This augmentation process does not add to the overall topological structure of the dataset, but it does increase its cardinality by a factor of $m$.
 This allows us to isolate the effect of cardinality on search performance from that of other factors such as dimensionality, choice of metric, or the topological structure of the dataset.
