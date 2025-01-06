@@ -24,8 +24,8 @@ Even though Repeated $\rho$-NN has the lowest time complexity (compare to $\math
 We believe that some of this discrepancy can be explained by the fact that if Repeated $\rho$-NN significantly ``overshoots'' the correct radius for $k$ hits ($\rho_k$) during tree-search, leaf-search will require looking at more points, rendering the true scaling factor higher than that in Equation~\ref{eq:methods:repeated-rnn-complexity}.
 This overshot can occur when the LFDs of clusters near the query are not concentrated around their expectation.
 For example, if most clusters near the query have very low LFD except for one anomaly with very high LFD,
-the harmonic mean LFD $\mu$ can still be low, so the factor of radial increase~\ref{eq:methods:repeated-rnn-factor} may be much larger than necessary for guaranteeing $k$ hits.
-This suggests that rather than using the reciprocal of the \textit{harmonic} mean LFD in~\ref{eq:methods:repeated-rnn-factor}, we may achieve better results with a mean that is more sensitive to high outliers, such as the geometric mean.
+the harmonic mean LFD $\mu$ can still be low, so the factor of radial increase in (Equation)~\ref{eq:methods:repeated-rnn-factor} may be much larger than necessary for guaranteeing $k$ hits.
+This suggests that rather than using the reciprocal of the harmonic mean LFD in~\ref{eq:methods:repeated-rnn-factor}, we may achieve better results with a mean that is more sensitive to high outliers, such as the geometric mean.
 We leave it as an avenue for future work to characterize when Repeated $\rho$-NN significantly ``overshoots'' $\rho_k$ and to improve upon the factor of radial increase in~\ref{eq:methods:repeated-rnn-factor} so that this occurs less frequently and with less severity.
 
 As the previous paragraph suggests, the fastest CAKES algorithm varies by dataset.
