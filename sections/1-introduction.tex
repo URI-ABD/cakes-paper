@@ -29,16 +29,8 @@ This is especially true when classes are not well-separated~\cite{zhang2022imbal
 Further, there is evidence that distance functions that do not obey the triangle inequality, such as cosine distance, perform poorly for $k$-NN search in biomedical settings~\cite{hu2016distance};
 this suggests that approximate $k$-NN search could perform poorly in such contexts.
 
-$\rho$-NN search also has a variety of applications.
-For example, one could search for all genomes within a maximum edit distance of a query genome to find evolutionarily-related organisms~\cite{budowski2010fragbag}.
-One could also search for all words within a maximum edit distance of a misspelled word to suggest corrections~\cite{ukkonen1985algorithms}.
-Given an advertisement and a database of user profiles, one could search for all users whose profiles are ``similar enough'' to target the advertisement~\cite{zhang2020privacy}.
-GPS and other location-based services use $\rho$-NN search to find nearby points of interest~\cite{zhang2020privacy} to a user's location.
-%In all of these cases, approximate $\rho$-NN search may be sufficient, but exact $\rho$-NN search is preferable.
-
 This paper introduces CAKES (CLAM-Accelerated $K$-NN Entropy-Scaling Search), a set of three novel algorithms for exact $k$-NN search.
-We also present improvements to the clustering and $\rho$-NN search algorithms in CHESS~\cite{ishaq2019clustered}, as well as improved genericity across distance functions.
-We provide a comparison to several current algorithms for similarity search; namely, FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}, on datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
+We also compare CAKES against several current algorithms; namely, FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}, on datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
 We further benchmark CAKES on a large genomic dataset, the SILVA 18S dataset~\cite{10.1093/nar/gks1219}, using Levenshtein~\cite{levenshtein1966binary} distance on unaligned genomic sequences, and a radio frequency dataset, RadioML~\cite{oshea2018radioml}, using Dynamic Time Warping (DTW)~\cite{gold2018dynamic} distance on complex-valued time-series.
 Finally, we compare real-world datasets to an artificially-generated dataset obeying simple statistical properties.
 

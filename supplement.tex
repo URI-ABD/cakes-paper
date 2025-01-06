@@ -15,6 +15,62 @@
 \maketitle
 
 
+\section{Supplementary Methods}
+
+% \subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
+
+% We conduct $\rho$-NN search as described in~\cite{ishaq2019clustered}, but with the following improvement:
+% when a cluster overlaps with the query ball, instead of always proceeding to search both of its children, we proceed only with those children that might contain points in the query ball.
+
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[scale=0.75]{images/geometry/overlapping-children-3.pdf}
+%     \caption{The geometry of a query ball overlapping with a cluster and either one or both of its children. Here, $l$ is the left pole, $r$ is the right pole, and $q$ is the query. Other points and distances are described in the text.}
+%     \label{fig:methods:overlapping-children}
+%     \caption{CAKES uses geometric properties of clusters.}
+% \end{figure}
+
+% To determine whether both children can contain points in the query ball, we consider Figure~\ref{fig:methods:overlapping-children}.
+% Here, we overload the notation for $\overline{x y}$ to refer both to the line segment joining points $x$ and $y$ as well as to the length of that line segment.
+
+% Let $q$ denote the query, $\rho$ denote the search radius, and $l$ and $r$ denote the cluster's left and right poles respectively (see Section~\ref{sec:methods:clustering:building-the-tree}).
+% Without loss of generality, we assume that $\overline{q r \vphantom{l}} \leq \overline{q l}$.
+% Now let $q'$ be the projection of $q$ onto $\overline{l r}$, $m$ be the midpoint of $\overline{l r}$, and $d$ be the distance from $q'$ to $m$.
+% As a consequence of how we assign a point in the parent cluster to the left child in Algorithm~\ref{alg:methods:partition}, if $\rho < d$, then the left child cannot contain points inside the query ball.
+% In such a case we proceed to search only the right child.
+% Otherwise, we proceed with both children.
+
+% To check whether $d \leq \rho$, we note that $d = \overline{m q' \vphantom{l}} = \overline{m r \vphantom{l}} - \overline{q' r \vphantom{l}} = \frac{\overline{l r}}{2} - \overline{q' r \vphantom{l}}$.
+% Let $\theta$ denote $\angle l r q$, as shown in Figure~\ref{fig:methods:overlapping-children}.
+% By the Law of Cosines on $\triangle l r q$, we have that $\text{cos}(\theta) = \tfrac{\overline{l r}^2 + \ \overline{q r \vphantom{l}}^2 - \ \overline{q l}^2}{2 \cdot \overline{l r} \cdot \overline{q r \vphantom{l}}}$.
+% Since $\triangle r q q'$ is a right triangle, we also have that $\text{cos}(\theta) = \tfrac{\overline{q' r \vphantom{l}}}{\overline{q r \vphantom{l}}}$.
+% Combining the previous two equations and solving for $\overline{q' r \vphantom{l}}$, we have that $\overline{q' r \vphantom{l}} = \tfrac{\overline{q r \vphantom{l}}^2 + \ \overline{l r}^2 - \ \overline{q l}^2}{2 \cdot \overline{l r}}$.
+% Substituting for $\overline{q' r \vphantom{l}}$ in the equation for $d$, we have that $d = \tfrac{\overline{l r}}{2} - \tfrac{\overline{q r \vphantom{l}}^2 + \ \overline{l r}^2 - \ \overline{q l}^2}{2 \cdot \overline{l r}} = \tfrac{\overline{q l}^2 - \overline{q r \vphantom{l}}^2}{2 \cdot \overline{l r}}$.
+
+
+% Thus, $d \leq \rho \iff (\overline{q l} + \overline{q r \vphantom{l}})(\overline{q l} - \overline{q r \vphantom{l}}) \leq 2 \cdot \overline{l r} \cdot \rho$. Note, in particular, that this only requires distances between actual points from the dataset, and so it can be used with any distance function, even when $q'$ and $m$ are not actual points or cannot be imputed from the data.
+
+% To perform $\rho$-NN search, we first perform a coarse \textit{tree-search}, as outlined in Algorithm~\ref{alg:methods:rnn-search:tree-search}, to find the leaf clusters that overlap with the query ball or any clusters which lie entirely within the query ball.
+% Then, for all such clusters, we perform a finer-grained \textit{leaf-search}, as outlined in Algorithm~\ref{alg:methods:rnn-search:leaf-search}, to find all points that are no more than a distance $\rho$ from the query.
+% The asymptotic complexity of $\rho$-NN is the same as in~\cite{ishaq2019clustered} and shown in Equation~\ref{eq:methods:rnn-search-complexity}.
+
+% \begin{gather}
+%     \mathcal{O}
+%     \Bigg(
+%         \underbrace{
+%             \log~\overbrace{\mathcal{N}_{\hat{r}}(X)}^{\textrm{metric entropy}}
+%         }_{\textrm{tree-search}}
+%         \ + \
+%         \underbrace{
+%             \overbrace{ \big| B_X(q, \rho) \big|}^{\textrm{output size}}
+%             \overbrace{ \left( \frac{\rho + 2 \cdot \hat{r}}{ \rho} \right) ^ d}^{\textrm{scaling factor}}
+%         }_{\textrm{leaf-search}}
+%     \Bigg)
+%     \label{eq:methods:rnn-search-complexity}
+% \end{gather}
+% where $\hat{r}$ is the \textit{mean} radius of leaf clusters, $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy at that radius, $B_X(q, \rho)$ is a ball of radius $\rho$ around the query $q$, and $d$ is the LFD around the query at the length scale of $\rho$ and $\rho + 2 \cdot \hat{r}$.
+
+
 \section{Supplementary Results}
 
 \subsection{Indexing and Tuning}

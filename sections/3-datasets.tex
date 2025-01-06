@@ -14,33 +14,29 @@ The benchmarks for SILVA and RadioML were conducted on an Intel Xeon E5-2690 v4 
 The OS kernel was Manjaro Linux 5.15.130-1-MANJARO.
 The Rust compiler was Rust 1.72.0, and the Python interpreter version was 3.9.16.
 
-\begin{table}[!t]
-    % \renewcommand{\arraystretch}{1.15}
+\begin{table}
     \caption{Datasets used in benchmarks.}
     \label{tab:datasets:summary}
-    \vskip 0.15in
     \begin{center}
-        \begin{small}
-            \begin{sc}
-                \begin{tabular}{|l|l|l|l|}
-                    \hline
-                    \textbf{Dataset} & \textbf{Distance}  &\textbf{Cardinality}  & \textbf{Dimensionality}  \\
-                    \hline
-                    Fashion-Mnist    & Euclidean              & 60,000             & 784                    \\
-                    \hline
-                    Glove-25         & Cosine                 & 1,183,514          & 25                     \\
-                    \hline
-                    Sift             & Euclidean              & 1,000,000          & 128                    \\
-                    \hline
-                    Random           & Euclidean              & 1,000,000          & 128                    \\
-                    \hline
-                    SILVA            & Levenshtein            & 2,224,640          & 3,712 - 50,000         \\
-                    \hline
-                    RadioML          & Dynamic Time Warping   & 97,920             & 1,024                  \\
-                    \hline
-                \end{tabular}
-            \end{sc}
-        \end{small}
+        \begin{sc}
+            \begin{tabular}{|l|l|l|l|}
+                \hline
+                \textbf{Dataset} & \textbf{Distance Function}  &\textbf{Cardinality}  & \textbf{Dimensionality}  \\
+                \hline
+                Fashion-Mnist    & Euclidean                   & 60,000             & 784                    \\
+                \hline
+                Glove-25         & Cosine                      & 1,183,514          & 25                     \\
+                \hline
+                Sift             & Euclidean                   & 1,000,000          & 128                    \\
+                \hline
+                Random           & Euclidean                   & 1,000,000          & 128                    \\
+                \hline
+                SILVA            & Levenshtein                 & 2,224,640          & 3,712 - 50,000         \\
+                \hline
+                RadioML          & Dynamic Time Warping        & 97,920             & 1,024                  \\
+                \hline
+            \end{tabular}
+        \end{sc}
     \end{center}
     \vskip -0.1in
 \end{table}
