@@ -77,7 +77,7 @@ is written in?*
 *Do these 2 tools return the same result? If so, why use multiple tools? If
 not, then the evaluation is flawed.*
 
-We don't have a python wrapper for cakes, and the other tools were in python. There is only one ground truth. Fix language starting in Results. **Najib, can you handle this one?** 
+We don't have a python wrapper for cakes, and the other tools were in python. There is only one ground truth. Fix language starting in Results. **Najib, can you handle this one?**
 
 # Minor comments
 
@@ -85,7 +85,7 @@ We don't have a python wrapper for cakes, and the other tools were in python. Th
 ||x||$. $r$ is chosen in the sphere of radius $\epsilon$ and added to $x$, and, as
 stated correctly line 424, $x'$ is within $\epsilon$ of $x$.*
 
-Fixed and made all vectors boldfaced. 
+We have addressed this, by clarifying in notation, particularly by making all vectors boldfaced.
 
 *There are many small LaTeX issues: wrong space after "i.e." and "e.g." (add a
 backslash), large spaces around formulas (e.g., line 342), em-dashes that look
@@ -269,23 +269,23 @@ We do define our clustering approach, and moreover, we build on prior work (some
 the points".  What does that mean precisely and where does it occur later
 in the manuscript?*
 
-We clarified this by changing the language about "a smaller sample of the points" to "a random subsample of $\sqrt{|C|}$ points." 
+We clarified this by changing the language about "a smaller sample of the points" to "a random subsample of $\sqrt{|C|}$ points."
 
 *On line 156, there is the claim "so it is a real data point".  What is a
 real data point?  Please explain.*
 
-We removed the language "real data point" and clarified that the center of a cluster is the point which is its geometric median.  
+We removed the language "real data point" and clarified that the center of a cluster is the point which is its geometric median.
 
 *On line 161 and elsewhere, "i.e." is always preceded and followed by
 commas.*
 
-Fixed-- "i.e." is now always followed by a comma. 
+Fixed-- "i.e." is now always followed by a comma.
 
 *On line 178, there is the phrase "find the point ... in the sample".  Can
 you make the entire paragraph more precise by giving notation for the
 sample?*
 
-We now refer to the sample as $S$. 
+We now refer to the sample as $S$.
 
 *Section 2.1.1 overall is lacking in mathematical rigor.*
 
@@ -299,7 +299,7 @@ add some explanation: these can be as complex as a user wants, but for us it is 
 *In line 252, there is again mention of "real points" without any
 indication of the meaning of "real".*
 
-We removed the section which contained this from the paper. 
+We removed the section which contained this from the paper.
 
 *The fonts in Algorithms 2.2 through 2.7 are simply too small.  Make them
 the font size of the remainder of the text.*
@@ -313,7 +313,7 @@ We have broken this table up into four tables (one per dataset) which we believe
 
 *In line 641, what is "radial increase 2.3"?*
 
-We added that 2.3 is an equation. 
+We added that 2.3 is an equation.
 
 *In line 642, why is "harmonic" italicized?*
 
