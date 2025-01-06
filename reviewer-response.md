@@ -77,7 +77,7 @@ is written in?*
 *Do these 2 tools return the same result? If so, why use multiple tools? If
 not, then the evaluation is flawed.*
 
-We don't have a python wrapper for cakes, and the other tools were in python. There is only one ground truth. Fix language starting in Results.
+We don't have a python wrapper for cakes, and the other tools were in python. There is only one ground truth. Fix language starting in Results. **Najib, can you handle this one?** 
 
 # Minor comments
 
