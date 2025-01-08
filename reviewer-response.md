@@ -35,7 +35,7 @@ underlying structure of the data". That may look like a contradiction.*
 
 we can address this with the plots that include a balanced tree -- expand 2.1.3, balanced vs unbalanced, dropping off points faster with an unbalanced tree?
 
-*The cost on line 260 uses \hat{r}, which is a mean radius. Now that cost is in
+*The cost on line 260 uses $\hat{r}$, which is a mean radius. Now that cost is in
 expectation (in addition to the balanced tree hypothesis).*
 
 this is restating the complexity from the CHESS paper, but it's correct that it's an expected cost. Worst-case analysis isn't really useful here.
@@ -135,7 +135,7 @@ MAJOR ISSUES =============================================================
 
 *The CAKES manuscript proposes an entropy scaling approach to the search
 problems of $k$ Nearest Neighbors ($k$-NN) and $rho$ Nearest Neighbors
-($\rho-NN) in a data set $X$.  The general approach is to construct a
+($\rho-NN$) in a data set $X$.  The general approach is to construct a
 hierarchical data structure of clusters to assist in the searching.
 While there are interesting ideas in the manuscript, there are major
 issues both technically and expositionally, as well as some minor issues,
