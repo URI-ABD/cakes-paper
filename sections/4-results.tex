@@ -52,40 +52,39 @@ It then spikes up again to about 10 at around depth 45 before decreasing linearl
 The median LFD follows a similar pattern of peaks and troughs, fluctuating between about 3 and 15 for depths 20-40, spiking at about depth 50 to 5, and then decreasing approximately linearly to 1 at depth 60. The inconsistency of LFD in the RadioML dataset suggests that it obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth; this could be due to dense sampling or---as this is still a synthetic dataset---nonuniform generation of data. Silva, in contrast, appears to obey the manifold hypothesis at all scales.
 
 \begin{figure}
+    \captionsetup[subfigure]{aboveskip=-15pt,belowskip=-3pt}
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{images/lfd/fashion-mnist-60000.png}\\
+        \includegraphics[width=0.95\textwidth]{images/lfd/fashion-mnist.png}\\
         \subcaption{Fashion-mnist}
         \label{fig:results:fashion-mnist-lfd}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{images/lfd/glove-25-1183514.png}\\
+        \includegraphics[width=0.95\textwidth]{images/lfd/glove-25.png}\\
         \subcaption{Glove-25}
         \label{fig:results:glove-25-lfd}
     \end{subfigure}
-    \vspace{1em}
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{images/lfd/sift-1000000.png}\\
+        \includegraphics[width=0.95\textwidth]{images/lfd/sift.png}\\
         \subcaption{Sift}
         \label{fig:results:sift-lfd}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{images/lfd/random-1000000.png}\\
+        \includegraphics[width=0.95\textwidth]{images/lfd/random.png}\\
         \subcaption{A random dataset}
         \label{fig:results:random-lfd}
     \end{subfigure}
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{images/lfd/radio-ml-97920.png}\\
-        \subcaption{RadioML}
-        \label{fig:results:radioml-lfd}
-    \end{subfigure}%
-    \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{images/lfd/silva-2224640.png}\\
+        \includegraphics[width=0.95\textwidth]{images/lfd/silva-SSU-Ref.png}\\
         \subcaption{Silva 18S}
         \label{fig:results:silva-lfd}
     \end{subfigure}%
-    \vspace{1em}
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.95\textwidth]{images/lfd/silva-SSU-Ref.png}\\
+        \subcaption{RadioML}
+        \label{fig:results:radioml-lfd}
+    \end{subfigure}%
     \caption{Local fractal dimension vs. cluster depth across six datasets, grouped by decile of local fractal dimension and weighted by the cardinalities of the clusters.
     The last dataset is randomly generated.}
     \label{fig:results:lfd-plots}
@@ -158,7 +157,6 @@ In particular, throughput of CAKES's algorithms is identical within three signif
         \subcaption{Glove-25 for $k=10$.}
         \label{fig:results:glove-25-scaling}
     \end{subfigure}%
-    \vspace{1em}
     \\
     \begin{subfigure}[b]{0.47\textwidth}
         \includegraphics[width=0.95\textwidth]{plots/sift_PermutedBall_10_throughput.png}
@@ -172,15 +170,14 @@ In particular, throughput of CAKES's algorithms is identical within three signif
     \end{subfigure}%
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/sift_PermutedBall_10_throughput.png}
-        \subcaption{RadioML for $k=10$ at SnR = 10dB.}
-        \label{fig:results:radioml-scaling}
-    \end{subfigure}%
-    \vspace{1em}
-    \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/sift_PermutedBall_10_throughput.png}
+        \includegraphics[width=0.95\textwidth]{plots/silva-SSU-Ref_PermutedBall_10_throughput.png}
         \subcaption{Silva for $k=10$.}
         \label{fig:results:silva-scaling}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.95\textwidth]{plots/silva-SSU-Ref_PermutedBall_10_throughput.png}
+        \subcaption{RadioML for $k=10$ at SnR = 10dB.}
+        \label{fig:results:radioml-scaling}
     \end{subfigure}%
     \caption{Throughput across six datasets, including a randomly-generated dataset.
     In each plot, the horizontal axis represents increasing cardinality of the dataset, while the vertical axis represents the throughput in queries per second (higher is better).
