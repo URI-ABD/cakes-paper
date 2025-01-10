@@ -33,12 +33,12 @@ We observe that the LFD starts as high as 20 (for all data) at depth 0.
 As shown by the needlepoint shape of the plot, the LFD for all clusters has a very narrow spread from depth 0 through depth 5.
 After depth 5, we begin to see a wider spread between the maximum and minimum LFD at each depth.
 All percentile lines seem to decrease linearly with depth.
-The LFD of approximately 20 at depth 0 (i.e.,\,the root cluster) is what we expect for this random dataset.
+The LFD of approximately 20 at depth 0 (i.e.,\,the root cluster $\mathcal{R}$) is what we expect for this random dataset.
 To elaborate, the distribution of points in such a dataset should reflect the curse of dimensionality, i.e.,\,the fact that in high dimensional spaces, the minimum and maximum pairwise distances between any two points are approximately equal.
-As a result, the root cluster's radius $r$, which reflects the maximum distance between the center $c$ and any other point, should not differ significantly from the distance between the center and its closest point.
-A consequence of this is that, with high probability, for every point in the root cluster, its distance from $c$ is greater than $\tfrac{r}{2}$;
+As a result, $\mathcal{R}$'s radius $r$, which reflects the maximum distance between the center $c$ and any other point, should not differ significantly from the distance between the center and its closest point.
+A consequence of this is that, with high probability, for every point in $\mathcal{R}$, its distance from $c$ is greater than $\tfrac{r}{2}$;
 in other words, $B_X(c, \tfrac{r}{2})$ contains only $c$ while $B_X(c, r)$ contains the entire dataset.
-Given our definition of LFD in Equation~\ref{eq:methods:lfd-original}, this means that the LFD of the root cluster is approximately $\log_2(\frac{|X|}{1}) = \log_2(1,000,000) \approx 20$, which is what we observe in Figure~\ref{fig:results:random-lfd}.
+Given our definition of LFD in Equation~\ref{eq:methods:lfd-original}, this means that the LFD of $\mathcal{R}$ is approximately $\log_2(\frac{|X|}{1}) = \log_2(1,000,000) \approx 20$, which is what we observe in Figure~\ref{fig:results:random-lfd}.
 
 Silva, as shown in Figure~\ref{fig:results:silva-lfd}, exhibits consistently low LFD.
 The 95$^{th}$ percentile is less than about 3 for all depths, hovering near 1 for depths 40 through 128.

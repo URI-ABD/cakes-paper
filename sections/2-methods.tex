@@ -55,7 +55,7 @@ The center, therefore, is one of the points in the cluster and is used as a repr
 The radius is the maximum distance from the center to any point in the cluster.
 Each non-leaf cluster has two child clusters in much the same way that a node in a binary tree has two child nodes.
 Note that clusters can have overlapping volumes and, in such cases, points in the overlapping volume are assigned to exactly one of the overlapping clusters.
-As a consequence, a cluster can be a proper subset of the metric ball at the same center and radius, i.e.,\,$C(c, r) \subset B(c, r)$.
+As a consequence, a cluster can be a proper subset of the metric ball at the same center and radius, i.e.,\,$C(c, r) \subset B(c, r)$. We denote the cluster tree by $\mathcal{T}$ and the root by $\mathcal{R}$ (see Section~\ref{sec:methods:clustering:building-the-tree}). 
 
 Hereafter, when we refer to the LFD of a cluster, it is estimated at the length scale of the cluster radius and half that radius, i.e.,\,using Equation~\ref{eq:methods:lfd-half}.
 We also only use points that are in $C(c, r)$ instead of all those in $B(c, r)$.
@@ -67,11 +67,11 @@ In this paper, where the clustering is hierarchical rather than flat, we define 
 \subsubsection{Building the Tree}
 \label{sec:methods:clustering:building-the-tree}
 
-We start by performing a divisive hierarchical clustering on the dataset using CLAM.
+We start by performing a divisive hierarchical clustering on the dataset using CLAM to obtain a cluster tree $\mathcal{T}$.
 The procedure is almost identical to that outlined in CHESS~\cite{ishaq2019clustered}, but with better selection of poles for partitioning (see Algorithm~\ref{alg:methods:partition}).
-After building the tree, we also perform a depth-first reordering of the dataset (see Section~\ref{sec:methods:clustering:depth-first-reordering}).
+After building $\mathcal{T}$ with CLAM, we also perform a depth-first reordering of the dataset (see Section~\ref{sec:methods:clustering:depth-first-reordering}).
 
-For a cluster $C$ with $|C|$ points, we begin by taking a random subsample $S$ of $\sqrt{|C|}$ of its points, and computing pairwise distances between all points in $S$.
+Given a cluster $C$ with $|C|$ points, we define its two children by the following process. We take a random subsample $S$ of $\sqrt{|C|}$ of $C$'s points, and compute pairwise distances between all points in $S$.
 Using these distances, we compute the \textit{geometric median} of $S$; in other words, we find the point that minimizes the sum of distances to all other points in $S$.
 We define the \textit{center} of $C$ to be this geometric median.
 
@@ -79,7 +79,7 @@ The \textit{radius} of $C$ is the maximum distance from the center to any other 
 The point that is responsible for that radius (i.e.,\,the furthest point from the center) is designated the \textit{left pole} and the point that is furthest from the left pole is designated the \textit{right pole}.
 We then partition the cluster into a \textit{left child} and a \textit{right child}, where the left child contains all points in the cluster that are closer to the left pole than to the right pole, and the right child contains all points in the cluster that are closer to the right pole than to the left pole.
 Without loss of generality, we assign to the left child those points that are equidistant from the two poles.
-Starting from a root cluster containing the entire dataset, we repeat this procedure until each leaf contains only one datum, or we meet some other user-specified stopping criteria, for example, minimum cluster radius, minimum cluster cardinality, maximum tree depth, etc.
+Starting from a root cluster $\mathcal{R}$ containing the entire dataset, we repeat this procedure until each leaf contains only one datum, or we meet some other user-specified stopping criteria (e.g., minimum cluster radius, minimum cluster cardinality, maximum tree depth, etc).
 This process is described in Algorithm \ref{alg:methods:partition}.
 During the partitioning process, we also compute (and cache) the LFD of each cluster using Equation~\ref{eq:methods:lfd-half}.
 
@@ -107,7 +107,7 @@ During the partitioning process, we also compute (and cache) the LFD of each clu
     \end{algorithmic}
 \end{algorithm}
 
-Note that Algorithm~\ref{alg:methods:partition} does not necessarily produce a balanced tree.
+Note that the tree $\mathcal{T}$ produced by Algorithm~\ref{alg:methods:partition} is not necessarily balanced.
 In fact, for real datasets, we expect anything but a balanced tree; the varying sampling density in different regions of the manifold and the low dimensional ``shape'' of the manifold itself will cause it to be unbalanced.
 The only case in which we would expect a balanced tree is if the dataset were uniformly distributed, e.g.,\,in a $d$-dimensional hyper-cube.
 In this sense, the imbalance in the tree is a feature, not a bug, as it reflects the underlying structure of the data.
@@ -118,14 +118,14 @@ In this sense, the imbalance in the tree is a feature, not a bug, as it reflects
 
 %After building the tree, we reorder the dataset so that the points are stored in the order that they would be visited during a depth-first traversal of the tree.
 
-In CHESS, each cluster stored a list of indices into the dataset.
+In CHESS~\cite{ishaq2019clustered}, each cluster stored a list of indices into the dataset.
 This list was used to retrieve the clusters' points during search.
 Although this approach allowed us to retrieve the points in constant time, its memory cost was prohibitively high.
-With a dataset of cardinality $n$ and each cluster storing a list of indices for its points, we stored a total of $n$ indices at each depth in the tree.
-Assuming a balanced tree, and thus $\mathcal{O}(\log n)$ depth, this approach had a memory overhead of $\mathcal{O}(n \log n)$.
-In this work, we introduce a new approach wherein, after building the cluster tree, we reorder the dataset so that points are stored in a depth-first order.
+With a dataset of cardinality $n$ and each cluster storing a list of indices for its points, we stored a total of $n$ indices at each depth in the tree $\mathcal{T}$.
+Assuming $\mathcal{T}$ is balanced, and thus $\mathcal{O}(\log n)$ depth, this approach had a memory overhead of $\mathcal{O}(n \log n)$.
+In this work, we introduce a new approach wherein, after building $\mathcal{T}$, we reorder the dataset so that points are stored in a depth-first order.
 Then, within each cluster, we need only store its \textit{cardinality} and an \textit{offset} to access its points from the dataset, based on a useful invariant.
-The root cluster has an offset of zero and a cardinality equal to the number of points in the dataset.
+The root cluster $\mathcal{R}$ has an offset of zero and a cardinality equal to the number of points in the dataset.
 A left child has the same offset its parent, and the corresponding right child has an offset equal to the left child's offset plus the left child's cardinality.
 With no additional memory cost nor time cost for retrieving points during search, depth-first reordering offers the same time complexity as CHESS with $\mathcal{O}(n)$ space.
 
@@ -134,19 +134,19 @@ With no additional memory cost nor time cost for retrieving points during search
 \label{sec:methods:clustering:complexity}
 
 The asymptotic complexity of Partition is the same as described in~\cite{ishaq2019clustered}.
-By using an approximate partitioning with a $\sqrt{n}$ sample, we achieve $\mathcal{O}(n)$ cost of partitioning and $\mathcal{O}(n \log n)$ cost of building the tree.
+By using an approximate partitioning with a $\sqrt{n}$ sample, we achieve $\mathcal{O}(n)$ cost of partitioning and $\mathcal{O}(n \log n)$ cost of building $\mathcal{T}$.
 This is a significant improvement over exact partitioning and tree-building, which cost $\mathcal{O}(n^2)$ and $\mathcal{O}(n^2 \log n)$ respectively.
 
 This complexity analysis ignores the cost of checking the continuation criteria.
 While a user could specify criteria of any complexity (our implementation allows for this), for this paper we continue clustering until each cluster is a singleton, i.e.,\,it contains only one point or duplicates of the same point and has a radius of zero.
 This criterion costs $\mathcal{O}(1)$ to check per cluster, and so does it not affect the overall complexity of the algorithm as used in this paper.
 
-We also note here that this $\mathcal{O}(n \log n)$ complexity assumes that the tree is balanced.
+We also note here that this $\mathcal{O}(n \log n)$ complexity assumes that $\mathcal{T}$ is balanced.
 This can realistically only happen when the data are uniformly distributed in the embedding space.
 This represents the worst-case scenario for subsequent search algorithms because the LFD of the dataset will approach or equal the embedding dimension.
-For real-world datasets with low LFD, we expect the tree to be highly unbalanced, reflecting the topological structure of the data.
+For real-world datasets with low LFD, we expect $\mathcal{T}$ to be highly unbalanced, reflecting the topological structure of the data.
 When building trees for such datasets, their depths would be larger than $\log n$, which would seem to increase the cost of tree-building.
-However, because of the large numbers of leaf clusters at shallow depths, each subsequent level of the tree would also have fewer points, and so the cost of building each subsequent level would be lower.
+However, because of the large numbers of leaf clusters at shallow depths, each subsequent level of $\mathcal{T}$ would also have fewer points, and so the cost of building each subsequent level would be lower.
 Any analysis of unbalanced trees would be highly dependent on the specific dataset, and so we do not provide one here.
 In any case, the tree is built only once, so this cost is amortized over all search queries and other applications.
 
@@ -211,7 +211,7 @@ In any case, the tree is built only once, so this cost is amortized over all sea
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
 \label{sec:methods:knn-search}
 
-Given a dataset $\textbf{X}$, a distance function $f$ and the root cluster of the tree built using Algorithm~\ref{alg:methods:partition}, we can now formally pose the $k$-NN search problem.
+Given a dataset $\textbf{X}$, a distance function $f$ and the root cluster $\mathcal{R}$ of the tree $\mathcal{T}$ (constructed by Algorithm~\ref{alg:methods:partition}), we can now formally pose the $k$-NN search problem.
 Given a user specified integer $k$ and query $q$, $k$-NN search aims to find the $k$ closest points to $q$ in $\textbf{X}$.
 In other words, $k$-NN search aims to find the set $H$ such that $|H| = k$ and $H = B_X(q, \rho_k)$ where $\rho_k = \max \left\{ f(q, p) \ \forall \ p \in H \right\}$ is the distance from $q$ to the $k^{th}$ nearest neighbor in $\textbf{X}$.
 
@@ -226,7 +226,7 @@ The two Sieve algorithms also use some terminology defined and illustrated in Fi
 
 This algorithm relies on the \textit{tree-search} (Algorithm~\ref{alg:methods:rnn-search:tree-search}) and \textit{leaf-search} (Algorithm~\ref{alg:methods:rnn-search:leaf-search}) as described in~\cite{ishaq2019clustered} and reproduced here for completeness.
 
-For Repeated $\rho$-NN search (Algorithm~\ref{alg:methods:repeated-rnn}), we begin by performing \textit{tree-search} with a search radius $r$ equal to the radius of the root cluster divided by the cardinality of the dataset.
+For Repeated $\rho$-NN search (Algorithm~\ref{alg:methods:repeated-rnn}), we begin by performing \textit{tree-search} with a search radius $r$ equal to the radius of the root $\mathcal{R}$ divided by the cardinality of the dataset.
 If no clusters are found, then we double $r$ and perform tree-search again, repeating until we find at least one cluster.
 
 Now, so long as $\sum_{C \in Q} |C| < k$, we continue to perform tree-search, but instead of doubling $r$ on each iteration, we multiply it by a factor determined by the LFD in the vicinity of the query ball.
@@ -251,16 +251,16 @@ A large increase in the radius would likely break out of the local region and po
 Once $\sum_{C \in Q} |C| \geq k$, we are guaranteed to have found at least $k$ neighbors, and so we perform \textit{leaf-search} to find the $k$ nearest neighbors among the points in the clusters found after the last tree-search.
 
 \begin{algorithm} % enter the algorithm environment
-    \caption{Repeated $\rho$-NN($root$, $q$, $k$)} % give the algorithm a caption
+    \caption{Repeated $\rho$-NN($\mathcal{R}$, $q$, $k$)} % give the algorithm a caption
     \label{alg:methods:repeated-rnn} % and a label for \ref{} commands later in the document
     \begin{algorithmic} % enter the algorithmic environment
-        \Require $root$, the root cluster
+        \Require $\mathcal{R}$, the root cluster
         \Require $q$, a query
         \Require $k$, the number of neighbors to find
-        \State $r \Leftarrow radius$ of the $root$ cluster
-        \State $r \Leftarrow$ $\frac{r}{|root|}$
+        \State $r \Leftarrow radius$ of $\mathcal{R}$
+        \State $r \Leftarrow$ $\frac{r}{|\mathcal{R}|}$
         \Loop
-            \State $Q \Leftarrow$ tree-search($root$, $q$, $r$)
+            \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
             \If{$Q \neq \emptyset$}
                 \State \textbf{break}
             \EndIf
@@ -272,7 +272,7 @@ Once $\sum_{C \in Q} |C| \geq k$, we are guaranteed to have found at least $k$ n
             \EndIf
             \State $\mu \Leftarrow |Q| \cdot \left( \sum_{C \in Q} LFD(C)^{-1} \right)^{-1}$
             \State $r \Leftarrow r \cdot \min \left( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu^{-1}} \right)$
-            \State $Q \Leftarrow$ tree-search($root$, $q$, $r$)
+            \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
         \EndLoop
         \State $H \Leftarrow \text{leaf-search}(Q, q, r)$
         \State \textbf{sort} $H$ by non-decreasing distance to $q$
@@ -354,14 +354,14 @@ Note that the scaling factor should be close to 1 unless LFD is highly variable 
 
 \begin{minipage}{0.5125\textwidth}
     \begin{algorithm}[H]\small
-        \caption{Breadth-First Sieve($root$, $q$, $k$)} % give the algorithm a caption
+        \caption{Breadth-First Sieve($\mathcal{R}$, $q$, $k$)} % give the algorithm a caption
         \label{alg:methods:bredth-first-sieve} % and a label for \ref{} commands later in the document
         \begin{algorithmic} % enter the algorithmic environment
-            \Require $root$, the root cluster
+            \Require $\mathcal{R}$, the root cluster
             \Require $q$, a query
             \Require $k$, the number of neighbors to find
-            \State $c \Leftarrow$ \textit{center} of $root$
-            \State $Q \Leftarrow$ \{ ($root$, $\delta^{+}_{root}$, $|root| - 1$), ($c$, $\delta_{root}$, 1) \}
+            \State $c \Leftarrow$ \textit{center} of $\mathcal{R}$
+            \State $Q \Leftarrow$ \{ ($\mathcal{R}$, $\delta^{+}_{\mathcal{R}}$, $|\mathcal{R}| - 1$), ($c$, $\delta_{\mathcal{R}}$, 1) \}
             \Loop
                 \If{$k = \sum_{(\_, \_, m) \in Q} m$}
                     \State \textbf{break}
@@ -396,14 +396,14 @@ Note that the scaling factor should be close to 1 unless LFD is highly variable 
 \hfill
 \begin{minipage}{0.425\textwidth}
     \begin{algorithm}[H]\small
-        \caption{Depth-First Sieve($root$, $q$, $k$)}
+        \caption{Depth-First Sieve($\mathcal{R}$, $q$, $k$)}
         \label{alg:methods:depth-first-sieve}
         \begin{algorithmic}
-            \Require $root$, the root cluster
+            \Require $\mathcal{R}$, the root cluster
             \Require $q$, a query
             \Require $k$, the number of neighbors to find
 
-            \State{$Q \Leftarrow [root]$, a min-priority queue by $\delta^{-}$}
+            \State{$Q \Leftarrow [\mathcal{R}]$, a min-priority queue by $\delta^{-}$}
             \State{$H \Leftarrow []$, a max-priority queue by $\delta$}
 
             \While{$|H| < k$ \textbf{or} $H.peek.\delta \geq Q.peek.\delta^{-}$}
@@ -430,7 +430,7 @@ Note that the scaling factor should be close to 1 unless LFD is highly variable 
 \subsubsection{Breadth-First Sieve}
 \label{sec:methods:knn-search:bredth-first-sieve}
 
-This algorithm (described in Algorithm~\ref{alg:methods:bredth-first-sieve}) performs a breadth-first traversal of the tree, pruning clusters by using a modified version of the QuickSelect algorithm~\cite{hoare1961algorithm} at each level.
+This algorithm (described in Algorithm~\ref{alg:methods:bredth-first-sieve}) performs a breadth-first traversal of the tree $\mathcal{T}$, pruning clusters by using a modified version of the QuickSelect algorithm~\cite{hoare1961algorithm} at each level.
 
 We begin by letting $Q$ be a set of 3-tuples $(p, \delta^{+}_{p}, m)$, where $p$ is either a cluster or a point, $\delta^{+}_{p}$ is the $\delta^{+}$ of $p$ as illustrated in Figure~\ref{fig:methods:deltas}, and $m$ is the multiplicity of $p$ in $Q$.
 During the breadth-first traversal, for every cluster $C$ we encounter, we add $(C, \delta^{+}_{C}, |C| - 1)$ and $(c, \delta_{c}, 1)$ to $Q$, where $c$ is the center of $C$.
@@ -449,10 +449,10 @@ We then use the QuickSelect algorithm one last time to reorder $Q$ and return th
 \subsubsection{Depth-First Sieve}
 \label{sec:methods:knn-search:depth-first-sieve}
 
-This algorithm (described in Algorithm~\ref{alg:methods:depth-first-sieve}) is quite similar to a depth-first traversal of the tree, using two priority queues to track clusters and hits, and to prioritize which branch of the tree to explore next.
+This algorithm (described in Algorithm~\ref{alg:methods:depth-first-sieve}) is quite similar to a depth-first traversal of the tree $\mathcal{T}$, using two priority queues to track clusters and hits, and to prioritize which branch of $\mathcal{T}$ to explore next.
 
 Let $Q$ be a min-queue of clusters prioritized by $\delta^{-}$ and $H$ be a max-queue (with capacity $k$) of points prioritized by $\delta$.
-$Q$ starts containing only the root cluster while $H$ starts empty.
+$Q$ starts containing only the root cluster $\mathcal{R}$ while $H$ starts empty.
 So long as $H$ is not full or the top priority element in $H$ has $\delta$ greater than or equal to the top priority element in $Q$, we take the following steps:
 
 \begin{itemize}
@@ -464,8 +464,8 @@ So long as $H$ is not full or the top priority element in $H$ has $\delta$ great
 This process terminates when $H$ is full and the top priority element in $H$ has $\delta$ less than the top priority element in $Q$, i.e.,\,the theoretically closest point left to be considered in $Q$ is farther from the query than the $k^{th}$ nearest neighbor in $H$.
 This leaves $H$ containing exactly the $k$ nearest neighbors to the query.
 
-Note that this algorithm is not truly a depth-first traversal of the tree in the classical sense, because we use $Q$ to prioritize which branch of the tree we descend into.
-Indeed, we expect this algorithm to often switch which branch of the tree is being explored at greater depth.
+Note that this algorithm is not truly a depth-first traversal of $\mathcal{T}$ in the classical sense, because we use $Q$ to prioritize which branch of $\mathcal{T}$ we descend into.
+Indeed, we expect this algorithm to often switch which branch of $\mathcal{T}$ is being explored at greater depth.
 
 
 \subsubsection{Complexity of Sieve Methods}
@@ -480,20 +480,20 @@ We start with the assumption that the LFD near the query does not differ signifi
 Let $d$ be the LFD in this region.
 Then the number of leaf-clusters in $Q$ is bounded above by $2d$, e.g.,\,we could have a cluster overlapping the query ball at each end of each of $\lceil d \rceil$ mutually-orthogonal axes.
 In the worst-case scenario for tree-search, these leaf clusters would all come from different branches of the tree, and so tree-search looks at $2 \cdot \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X)$ clusters.
-Thus, the asymptotic complexity is $\mathcal{T} \coloneqq \mathcal{O} \big( \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X) \big)$.
-For leaf-search, the output size and scaling factor are the same as in Repeated $\rho$-NN, and so the asymptotic complexity is $\mathcal{L} \coloneqq \mathcal{O} \left( k \cdot \bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d \right)$.
+Thus, the asymptotic complexity is $T \coloneqq \mathcal{O} \big( \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X) \big)$.
+For leaf-search, the output size and scaling factor are the same as in Repeated $\rho$-NN, and so the asymptotic complexity is $L \coloneqq \mathcal{O} \left( k \cdot \bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d \right)$.
 
 The asymptotic complexity of Breadth-First Sieve is dominated by the QuickSelect algorithm to calculate $\tau$.
 Since this method is log-linear in the length of $Q$, and $Q$ contains the clusters from tree-search and the points from leaf-search, we see that the asymptotic complexity is
 \begin{equation}
-    \mathcal{O} \Big( ( \mathcal{T} + \mathcal{L} ) \log ( \mathcal{T} + \mathcal{L} ) \Big)
+    \mathcal{O} \Big( (T + L ) \log (T + L ) \Big).
     \label{eq:methods:breadth-first-sieve-complexity}
 \end{equation}
 
 For Depth-First Sieve, since we use two priority queues, the asymptotic complexity is dominated by the priority queue operations.
 Thus, the complexity is
 \begin{equation}
-    \mathcal{O} \Big( \mathcal{T} \log \mathcal{T} + \mathcal{L} \log k \Big)
+    \mathcal{O} \Big( T \log T + L \log k \Big).
     \label{eq:methods:depth-first-sieve-complexity}
 \end{equation}
 
@@ -502,7 +502,7 @@ Thus, the complexity is
 \label{sec:methods:auto-tuning}
 
 We perform some simple auto-tuning to select the optimal $k$-NN algorithm to use with a given dataset.
-We start by taking the center of every cluster at a low depth, (e.g.,\,10), in the cluster tree as a query.
+We start by taking the center of every cluster at a low depth (e.g.,\,10) in $\mathcal{T}$ as a query.
 This gives us a small, representative sample of the dataset.
 Using these clusters' centers as queries, and a user-specified value of $k$, we record the time taken for $k$-NN search on the sample using each of the three algorithms described in Section~\ref{sec:methods:knn-search}.
 We select the fastest algorithm over all the queries as the optimal algorithm for that dataset and value of $k$.
