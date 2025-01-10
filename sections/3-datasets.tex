@@ -65,7 +65,7 @@ The RadioML dataset contains samples of synthetically generated signal captures 
 Specifically, it comprises 24 modulation modes at 26 different signal-to-noise ratio (SNR) levels ranging from -20 dB to 30 dB, with 4,096 samples at each combination of modulation mode and SNR level.
 Thus, it contains $24 \cdot 26 \cdot 4096 = 2,555,504$ samples in total.
 Each sample is a 1,024-dimensional complex-valued vector, representing a signal capture (a time-series of complex-valued numbers).
-We used a subset of this dataset, containing 97,920 samples at 10dB SNR and used the other 8,576 samples at 10dB SNR as a hold-out set of queries.
+We used a subset of this dataset, containing $97,304$ samples at 10dB SNR and used another $1,000$ samples at the same SNR as a hold-out set of queries.
 We use Dynamic Time Warping~\cite{muller2007dynamic} as the distance function for this dataset.
 
 

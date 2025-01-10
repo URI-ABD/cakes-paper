@@ -81,7 +81,7 @@ The median LFD follows a similar pattern of peaks and troughs, fluctuating betwe
         \label{fig:results:silva-lfd}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{images/lfd/silva-SSU-Ref.png}\\
+        \includegraphics[width=0.95\textwidth]{images/lfd/radio-ml.png}\\
         \subcaption{RadioML}
         \label{fig:results:radioml-lfd}
     \end{subfigure}%
@@ -175,14 +175,13 @@ In particular, throughput of CAKES's algorithms is identical within three signif
         \label{fig:results:silva-scaling}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/silva-SSU-Ref_PermutedBall_10_throughput.png}
+        \includegraphics[width=0.95\textwidth]{plots/radio-ml_Ball_10_throughput.png}
         \subcaption{RadioML for $k=10$ at SnR = 10dB.}
         \label{fig:results:radioml-scaling}
     \end{subfigure}%
     \caption{Throughput across six datasets, including a randomly-generated dataset.
     In each plot, the horizontal axis represents increasing cardinality of the dataset, while the vertical axis represents the throughput in queries per second (higher is better).
-    Note that for RadioML, all three algorithms performed nearly identically, so distinct lines are not visible.
-    For some algorithms, we were not able to take measurements for each cardinality because the index-building required more RAM than was available (i.e.,\,more then 512GB).
+    For HNSW and ANNOY, we were not able to take measurements for each cardinality because the index-building required more RAM than was available (i.e.,\,more then 512GB).
     For linear search with CAKES, we only report the throughput for a few of the initial multipliers because the trend is clear.}
     \label{fig:results:scaling-plots}
 \end{figure}
