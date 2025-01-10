@@ -85,8 +85,7 @@ The median LFD follows a similar pattern of peaks and troughs, fluctuating betwe
         \subcaption{RadioML}
         \label{fig:results:radioml-lfd}
     \end{subfigure}%
-    \caption{Local fractal dimension vs. cluster depth across six datasets, grouped by decile of local fractal dimension and weighted by the cardinalities of the clusters.
-    The last dataset is randomly generated.}
+    \caption{Local fractal dimension vs. cluster depth across six datasets, grouped by percentiles of local fractal dimension and weighted by the cardinalities of the clusters.}
     \label{fig:results:lfd-plots}
 \end{figure}
 
@@ -181,7 +180,7 @@ In particular, throughput of CAKES's algorithms is identical within three signif
     \end{subfigure}%
     \caption{Throughput across six datasets, including a randomly-generated dataset.
     In each plot, the horizontal axis represents increasing cardinality of the dataset, while the vertical axis represents the throughput in queries per second (higher is better).
-    For HNSW and ANNOY, we were not able to take measurements for each cardinality because the index-building required more RAM than was available (i.e.,\,more then 512GB).
+    For HNSW and ANNOY, we were not able to take measurements for each cardinality because building the index required more RAM than was available (i.e.,\,more then 512GB).
     For linear search with CAKES, we only report the throughput for a few of the initial multipliers because the trend is clear.}
     \label{fig:results:scaling-plots}
 \end{figure}
