@@ -6,8 +6,8 @@
 % Optional PDF information
 \ifpdf
 \hypersetup{
-  pdftitle={Supplementary Materials: An Example Article},
-  pdfauthor={D. Doe, P. T. Frank, and J. E. Smith}
+  pdftitle={Supplementary Materials: Let them have CAKES: A Cutting-Edge Algorithm for Scalable, Efficient, and Exact Search on Big DataAn Example Article},
+  pdfauthor={M. E. Prior, T. J. Howard III, O. McLaughlin, T. Ferguson, N. Ishaq, N. M. Daniels}
 }
 \fi
 
@@ -83,9 +83,9 @@ Both axes are on a logarithmic scale.
 Hereafter, when we refer to the ``indexing time'' of an algorithm, we are implicitly referring to the sum of indexing and tuning time for said algorithm.
 
 On all datasets, we observe that the indexing time for CAKES increases roughly linearly as cardinality increases.
-HNSW and ANNOY have the slowest indexing times across all the algorithms we benchmarked for each of the four datasets, at each cardinality. 
+HNSW and ANNOY have the slowest indexing times across all the algorithms we benchmarked for each of the four datasets, at each cardinality.
 On some datasets, HNSW and ANNOY exhibit indexing times which are orders of magnitude slower than that of CAKES.
-FAISS-Flat exhibits the fastest indexing time on each dataset. 
+FAISS-Flat exhibits the fastest indexing time on each dataset.
 This is not surprising, however, given that FAISS-Flat is a na\"{\i}ve linear search algorithm and is not building an index.
 
 We also highlight some differences in indexing time between different datasets.
@@ -126,7 +126,7 @@ With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardin
     \centering
     \includegraphics[width=3.4in]{plots/fashion-mnist_PermutedBall_100_throughput.png}
     \caption{
-        Scaling behavior of algorithms on fashion-mnist with $k=100$. 
+        Scaling behavior of algorithms on fashion-mnist with $k=100$.
     }
     \label{fig:supplement:fashion-mnist-k-100}
 \end{figure}
@@ -135,7 +135,7 @@ With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardin
     \centering
     \includegraphics[width=3.4in]{plots/sift_PermutedBall_100_throughput.png}
     \caption{
-        Scaling behavior of algorithms on sift with $k=100$. 
+        Scaling behavior of algorithms on sift with $k=100$.
     }
     \label{fig:supplement:sift-k-100}
 \end{figure}
@@ -144,7 +144,7 @@ With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardin
     \centering
     \includegraphics[width=3.4in]{plots/glove-25_PermutedBall_100_throughput.png}
     \caption{
-        Scaling behavior of algorithms on glove-25 with $k=100$. 
+        Scaling behavior of algorithms on glove-25 with $k=100$.
     }
     \label{fig:supplement:glove-25-k-100}
 \end{figure}
@@ -153,7 +153,7 @@ With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardin
     \centering
     \includegraphics[width=3.4in]{plots/sift_PermutedBall_100_throughput.png}
     \caption{
-        Scaling behavior of algorithms on random with $k=100$. 
+        Scaling behavior of algorithms on random with $k=100$.
     }
     \label{fig:supplement:random-k-100}
 \end{figure}
@@ -188,7 +188,7 @@ With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardin
     \includegraphics[width=0.95\textwidth]{images/radius/silva-2224640.png}\\
     \subcaption{Silva 18S}
     \label{fig:results:silva-radius}
-    \end{subfigure}%  
+    \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[width=0.95\textwidth]{images/radius/random-1000000.png}\\
     \subcaption{A random dataset}
@@ -228,7 +228,7 @@ With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardin
     \includegraphics[width=0.95\textwidth]{images/fractal_density/silva-2224640.png}\\
     \subcaption{Silva 18S}
     \label{fig:results:silva-fractal_density}
-    \end{subfigure}%  
+    \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[width=0.95\textwidth]{images/fractal_density/random-1000000.png}\\
     \subcaption{A random dataset}
