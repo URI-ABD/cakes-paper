@@ -186,6 +186,47 @@ In particular, throughput of CAKES's algorithms is identical within three signif
 \end{figure}
 
 
+\begin{figure}
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.95\textwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_throughput.png}
+        \subcaption{Repeated $\rho$-NN}
+        \label{fig:results:fashion-mnist-counts-throughput}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.95\textwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_counts.png}
+        \subcaption{Repeated $\rho$-NN}
+        \label{fig:results:glove-25-counts-counts}
+    \end{subfigure}%
+    \\
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.95\textwidth]{images/distance_counts/fashion-mnist_KnnBreadthFirst_10_throughput.png}
+        \subcaption{Breadth First Sieve}
+        \label{fig:results:sift-counts-throughput}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.95\textwidth]{images/distance_counts/fashion-mnist_KnnBreadthFirst_10_counts.png}
+        \subcaption{Breadth First Sieve}
+        \label{fig:results:random-counts-counts}
+    \end{subfigure}%
+    \\
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.95\textwidth]{images/distance_counts/fashion-mnist_KnnDepthFirst_10_throughput.png}
+        \subcaption{Depth First Sieve}
+        \label{fig:results:silva-counts-throughput}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.95\textwidth]{images/distance_counts/fashion-mnist_KnnDepthFirst_10_counts.png}
+        \subcaption{Depth First Sieve}
+        \label{fig:results:radioml-counts-counts}
+    \end{subfigure}%
+    \caption{Number of distance computations across four clustering strategies and three search algorithms on the Fashion-Mnist dataset.
+    Adding the instrumentation to count the number of distance computations had the side-effect of significantly slowing down the search algorithms compared to those reported in Figure~\ref{fig:results:scaling-plots}.
+    The left column shows the throughput in queries per second, while the right column shows the mean number of distance computations per query.
+    The x-axis represents increasing cardinality of the dataset.}
+    \label{fig:results:distance-counts}
+\end{figure}
+
+
 \begin{table*}
     \caption{Throughput (QPS) and Recall on the Fashion-Mnist dataset.
     A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
