@@ -15,60 +15,61 @@
 \maketitle
 
 
-%\section{Supplementary Methods}
+\section{Supplementary Methods}
 
-% \subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
+\subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
 
-% We conduct $\rho$-NN search as described in~\cite{ishaq2019clustered}, but with the following improvement:
-% when a cluster overlaps with the query ball, instead of always proceeding to search both of its children, we proceed only with those children that might contain points in the query ball.
+We conduct $\rho$-NN search as described in~\cite{ishaq2019clustered}, but with the following improvement:
+when a cluster overlaps with the query ball, instead of always proceeding to search both of its children, we proceed only with those children that might contain points in the query ball.
 
-% \begin{figure}[ht!]
-%     \centering
-%     \includegraphics[scale=0.75]{images/geometry/overlapping-children-3.pdf}
-%     \caption{The geometry of a query ball overlapping with a cluster and either one or both of its children. Here, $l$ is the left pole, $r$ is the right pole, and $q$ is the query. Other points and distances are described in the text.}
-%     \label{fig:methods:overlapping-children}
-%     \caption{CAKES uses geometric properties of clusters.}
-% \end{figure}
+To determine whether both children can contain points in the query ball, we consider Figure~\ref{fig:supplement:overlapping-children}.
+Here, we overload the notation for $\overline{x y}$ to refer both to the line segment joining points $x$ and $y$ as well as to the length of that line segment.
 
-% To determine whether both children can contain points in the query ball, we consider Figure~\ref{fig:methods:overlapping-children}.
-% Here, we overload the notation for $\overline{x y}$ to refer both to the line segment joining points $x$ and $y$ as well as to the length of that line segment.
+Let $q$ denote the query, $\rho$ denote the search radius, and $l$ and $r$ denote the cluster's left and right poles respectively.
+Without loss of generality, we assume that $\overline{q r \vphantom{l}} \leq \overline{q l}$.
+Now let $q'$ be the projection of $q$ onto $\overline{l r}$, $m$ be the midpoint of $\overline{l r}$, and $d$ be the distance from $q'$ to $m$.
+As a consequence of how we assign a point in the parent cluster to the left child in the Partition algorithm, if $\rho < d$, then the left child cannot contain points inside the query ball.
+In such a case we proceed to search only the right child.
+Otherwise, we proceed with both children.
 
-% Let $q$ denote the query, $\rho$ denote the search radius, and $l$ and $r$ denote the cluster's left and right poles respectively (see Section~\ref{sec:methods:clustering:building-the-tree}).
-% Without loss of generality, we assume that $\overline{q r \vphantom{l}} \leq \overline{q l}$.
-% Now let $q'$ be the projection of $q$ onto $\overline{l r}$, $m$ be the midpoint of $\overline{l r}$, and $d$ be the distance from $q'$ to $m$.
-% As a consequence of how we assign a point in the parent cluster to the left child in Algorithm~\ref{alg:methods:partition}, if $\rho < d$, then the left child cannot contain points inside the query ball.
-% In such a case we proceed to search only the right child.
-% Otherwise, we proceed with both children.
-
-% To check whether $d \leq \rho$, we note that $d = \overline{m q' \vphantom{l}} = \overline{m r \vphantom{l}} - \overline{q' r \vphantom{l}} = \frac{\overline{l r}}{2} - \overline{q' r \vphantom{l}}$.
-% Let $\theta$ denote $\angle l r q$, as shown in Figure~\ref{fig:methods:overlapping-children}.
-% By the Law of Cosines on $\triangle l r q$, we have that $\text{cos}(\theta) = \tfrac{\overline{l r}^2 + \ \overline{q r \vphantom{l}}^2 - \ \overline{q l}^2}{2 \cdot \overline{l r} \cdot \overline{q r \vphantom{l}}}$.
-% Since $\triangle r q q'$ is a right triangle, we also have that $\text{cos}(\theta) = \tfrac{\overline{q' r \vphantom{l}}}{\overline{q r \vphantom{l}}}$.
-% Combining the previous two equations and solving for $\overline{q' r \vphantom{l}}$, we have that $\overline{q' r \vphantom{l}} = \tfrac{\overline{q r \vphantom{l}}^2 + \ \overline{l r}^2 - \ \overline{q l}^2}{2 \cdot \overline{l r}}$.
-% Substituting for $\overline{q' r \vphantom{l}}$ in the equation for $d$, we have that $d = \tfrac{\overline{l r}}{2} - \tfrac{\overline{q r \vphantom{l}}^2 + \ \overline{l r}^2 - \ \overline{q l}^2}{2 \cdot \overline{l r}} = \tfrac{\overline{q l}^2 - \overline{q r \vphantom{l}}^2}{2 \cdot \overline{l r}}$.
+To check whether $d \leq \rho$, we note that $d = \overline{m q' \vphantom{l}} = \overline{m r \vphantom{l}} - \overline{q' r \vphantom{l}} = \frac{\overline{l r}}{2} - \overline{q' r \vphantom{l}}$.
+Let $\theta$ denote $\angle l r q$, as shown in Figure~\ref{fig:supplement:overlapping-children}.
+By the Law of Cosines on $\triangle l r q$, we have that $\text{cos}(\theta) = \tfrac{\overline{l r}^2 + \ \overline{q r \vphantom{l}}^2 - \ \overline{q l}^2}{2 \cdot \overline{l r} \cdot \overline{q r \vphantom{l}}}$.
+Since $\triangle r q q'$ is a right triangle, we also have that $\text{cos}(\theta) = \tfrac{\overline{q' r \vphantom{l}}}{\overline{q r \vphantom{l}}}$.
+Combining the previous two equations and solving for $\overline{q' r \vphantom{l}}$, we have that $\overline{q' r \vphantom{l}} = \tfrac{\overline{q r \vphantom{l}}^2 + \ \overline{l r}^2 - \ \overline{q l}^2}{2 \cdot \overline{l r}}$.
+Substituting for $\overline{q' r \vphantom{l}}$ in the equation for $d$, we have that $d = \tfrac{\overline{l r}}{2} - \tfrac{\overline{q r \vphantom{l}}^2 + \ \overline{l r}^2 - \ \overline{q l}^2}{2 \cdot \overline{l r}} = \tfrac{\overline{q l}^2 - \overline{q r \vphantom{l}}^2}{2 \cdot \overline{l r}}$.
 
 
-% Thus, $d \leq \rho \iff (\overline{q l} + \overline{q r \vphantom{l}})(\overline{q l} - \overline{q r \vphantom{l}}) \leq 2 \cdot \overline{l r} \cdot \rho$. Note, in particular, that this only requires distances between actual points from the dataset, and so it can be used with any distance function, even when $q'$ and $m$ are not actual points or cannot be imputed from the data.
+Thus, $d \leq \rho \iff (\overline{q l} + \overline{q r \vphantom{l}})(\overline{q l} - \overline{q r \vphantom{l}}) \leq 2 \cdot \overline{l r} \cdot \rho$. Note, in particular, that this only requires distances between actual points from the dataset, and so it can be used with any distance function, even when $q'$ and $m$ are not actual points or cannot be imputed from the data.
 
-% To perform $\rho$-NN search, we first perform a coarse \textit{tree-search}, as outlined in Algorithm~\ref{alg:methods:rnn-search:tree-search}, to find the leaf clusters that overlap with the query ball or any clusters which lie entirely within the query ball.
-% Then, for all such clusters, we perform a finer-grained \textit{leaf-search}, as outlined in Algorithm~\ref{alg:methods:rnn-search:leaf-search}, to find all points that are no more than a distance $\rho$ from the query.
-% The asymptotic complexity of $\rho$-NN is the same as in~\cite{ishaq2019clustered} and shown in Equation~\ref{eq:methods:rnn-search-complexity}.
+To perform $\rho$-NN search, we first perform a coarse \textit{tree-search}, to find the leaf clusters that overlap with the query ball or any clusters which lie entirely within the query ball.
+Then, for all such clusters, we perform a finer-grained \textit{leaf-search}, to find all points that are no more than a distance $\rho$ from the query.
+The asymptotic complexity of $\rho$-NN is the same as in~\cite{ishaq2019clustered} and shown in Equation~\ref{eq:supplement:rnn-search-complexity}.
 
-% \begin{gather}
-%     \mathcal{O}
-%     \Bigg(
-%         \underbrace{
-%             \log~\overbrace{\mathcal{N}_{\hat{r}}(X)}^{\textrm{metric entropy}}
-%         }_{\textrm{tree-search}}
-%         \ + \
-%         \underbrace{
-%             \overbrace{ \big| B_X(q, \rho) \big|}^{\textrm{output size}}
-%             \overbrace{ \left( \frac{\rho + 2 \cdot \hat{r}}{ \rho} \right) ^ d}^{\textrm{scaling factor}}
-%         }_{\textrm{leaf-search}}
-%     \Bigg)
-%     \label{eq:methods:rnn-search-complexity}
-% \end{gather}
-% where $\hat{r}$ is the \textit{mean} radius of leaf clusters, $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy at that radius, $B_X(q, \rho)$ is a ball of radius $\rho$ around the query $q$, and $d$ is the LFD around the query at the length scale of $\rho$ and $\rho + 2 \cdot \hat{r}$.
+\begin{gather}
+    \mathcal{O}
+    \Bigg(
+        \underbrace{
+            \log~\overbrace{\mathcal{N}_{\hat{r}}(X)}^{\textrm{metric entropy}}
+        }_{\textrm{tree-search}}
+        \ + \
+        \underbrace{
+            \overbrace{ \big| B_X(q, \rho) \big|}^{\textrm{output size}}
+            \overbrace{ \left( \frac{\rho + 2 \cdot \hat{r}}{ \rho} \right) ^ d}^{\textrm{scaling factor}}
+        }_{\textrm{leaf-search}}
+    \Bigg)
+    \label{eq:supplement:rnn-search-complexity}
+\end{gather}
+where $\hat{r}$ is the \textit{mean} radius of leaf clusters, $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy at that radius, $B_X(q, \rho)$ is a ball of radius $\rho$ around the query $q$, and $d$ is the LFD around the query at the length scale of $\rho$ and $\rho + 2 \cdot \hat{r}$.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.75]{images/geometry/overlapping-children-3.pdf}
+    \caption{The geometry of a query ball overlapping with a cluster and either one or both of its children. Here, $l$ is the left pole, $r$ is the right pole, and $q$ is the query. Other points and distances are described in the text.}
+    \label{fig:supplement:overlapping-children}
+    \caption{CAKES uses geometric properties of clusters.}
+\end{figure}
 
 
 \section{Supplementary Results}
@@ -94,151 +95,174 @@ With Glove-25 (see Figure~\ref{fig:supplement:glove-25-indexing}), however, at c
 With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardinality of nearly $10^8$, and with the Random dataset, we observe that CAKES has faster indexing time than FAISS-IVF until a cardinality of nearly $10^7$.
 
 \begin{figure}
+    \captionsetup[subfigure]{aboveskip=-15pt,belowskip=-3pt}
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/fashion-mnist-indexing.png}\\
+        \includegraphics[width=0.9\textwidth]{images/indexing/fashion-mnist-indexing.png}\\
         \subcaption{Fashion-mnist}
         \label{fig:supplement:fashion-mnist-indexing}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/glove-25-indexing.png}\\
+        \includegraphics[width=0.9\textwidth]{images/indexing/glove-25-indexing.png}\\
         \subcaption{Glove-25}
         \label{fig:supplement:glove-25-indexing}
     \end{subfigure}
-    \vspace{1em}
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/sift-indexing.png}\\
+        \includegraphics[width=0.9\textwidth]{images/indexing/sift-indexing.png}\\
         \subcaption{Sift}
         \label{fig:supplement:sift-indexing}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=0.95\textwidth]{plots/random-indexing.png}\\
+        \includegraphics[width=0.9\textwidth]{images/indexing/random-indexing.png}\\
         \subcaption{Random}
         \label{fig:supplement:random-indexing}
     \end{subfigure}%
     \\
-    \vspace{1em}
     \caption{Indexing and tuning time for each algorithm with each of the ANN benchmark datasets and the Random dataset.}
     \label{fig:supplement:indexing}
 \end{figure}
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=3.4in]{plots/fashion-mnist_PermutedBall_100_throughput.png}
-    \caption{
-        Scaling behavior of algorithms on fashion-mnist with $k=100$.
-    }
-    \label{fig:supplement:fashion-mnist-k-100}
+\begin{figure}
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=1.0\textwidth]{plots/fashion-mnist_PermutedBall_100_throughput.png}
+        \subcaption{Fashion-Mnist for $k=100$.}
+        \label{fig:supplement:fashion-mnist-scaling}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=1.0\textwidth]{plots/glove-25_PermutedBall_100_throughput.png}
+        \subcaption{Glove-25 for $k=100$.}
+        \label{fig:supplement:glove-25-scaling}
+    \end{subfigure}%
+    \\
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=1.0\textwidth]{plots/sift_PermutedBall_100_throughput.png}
+        \subcaption{Sift for $k=100$.}
+        \label{fig:supplement:sift-scaling}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=1.0\textwidth]{plots/random_PermutedBall_100_throughput.png}
+        \subcaption{A random dataset for $k=100$.}
+        \label{fig:supplement:random-scaling}
+    \end{subfigure}%
+    \\
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=1.0\textwidth]{plots/silva-SSU-Ref_PermutedBall_100_throughput.png}
+        \subcaption{Silva for $k=100$.}
+        \label{fig:supplement:silva-scaling}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=1.0\textwidth]{plots/radio-ml_Ball_100_throughput.png}
+        \subcaption{RadioML for $k=100$ at SnR = 10dB.}
+        \label{fig:supplement:radioml-scaling}
+    \end{subfigure}%
+    \\
+    \begin{subfigure}[b]{0.94\textwidth}
+        \centering
+        \includegraphics[width=0.7\textwidth]{plots/legend.png}
+        \label{fig:supplement:scaling-legend}
+    \end{subfigure}%
+    \caption{Throughput (with $k$=100) across six datasets, including a randomly-generated dataset.
+    In each plot, the horizontal axis represents increasing cardinality of the dataset, while the vertical axis represents the throughput in queries per second (higher is better).
+    For linear search with CAKES, we only report the throughput for a few of the initial multipliers because the trend is clear.}
+    \label{fig:supplement:scaling-plots}
 \end{figure}
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=3.4in]{plots/sift_PermutedBall_100_throughput.png}
-    \caption{
-        Scaling behavior of algorithms on sift with $k=100$.
-    }
-    \label{fig:supplement:sift-k-100}
-\end{figure}
-
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=3.4in]{plots/glove-25_PermutedBall_100_throughput.png}
-    \caption{
-        Scaling behavior of algorithms on glove-25 with $k=100$.
-    }
-    \label{fig:supplement:glove-25-k-100}
-\end{figure}
-
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=3.4in]{plots/sift_PermutedBall_100_throughput.png}
-    \caption{
-        Scaling behavior of algorithms on random with $k=100$.
-    }
-    \label{fig:supplement:random-k-100}
-\end{figure}
 
 \subsection{Clustering}
 
-\begin{figure}[ht!]
+\begin{figure}
+    \captionsetup[subfigure]{aboveskip=-15pt,belowskip=-3pt}
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/radius/fashion-mnist-60000.png}\\
-    \subcaption{Fashion-mnist}
-    \label{fig:results:fashion-mnist-radius}
+        \includegraphics[width=0.9\textwidth]{images/radius/fashion-mnist.png}\\
+        \subcaption{Fashion-mnist}
+        \label{fig:supplement:fashion-mnist-radius}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/radius/glove-25-1183514.png}\\
-    \subcaption{Glove-25}
-    \label{fig:results:glove-25-radius}
+        \includegraphics[width=0.9\textwidth]{images/radius/glove-25.png}\\
+        \subcaption{Glove-25}
+        \label{fig:supplement:glove-25-radius}
     \end{subfigure}
-    \vspace{1em}
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/radius/sift-1000000.png}\\
-    \subcaption{Sift}
-    \label{fig:results:sift-radius}
+        \includegraphics[width=0.9\textwidth]{images/radius/sift.png}\\
+        \subcaption{Sift}
+        \label{fig:supplement:sift-radius}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/radius/radio-ml-97920.png}\\
-    \subcaption{RadioML}
-    \label{fig:results:radioml-radius}
-    \end{subfigure}%
+        \includegraphics[width=0.9\textwidth]{images/radius/random.png}\\
+        \subcaption{A random dataset}
+        \label{fig:supplement:random-radius}
+    \end{subfigure}
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/radius/silva-2224640.png}\\
-    \subcaption{Silva 18S}
-    \label{fig:results:silva-radius}
+        \includegraphics[width=0.9\textwidth]{images/radius/silva-SSU-Ref.png}\\
+        \subcaption{Silva 18S}
+        \label{fig:supplement:silva-radius}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/radius/random-1000000.png}\\
-    \subcaption{A random dataset}
-    \label{fig:results:random-radius}
-    \end{subfigure}
-    \vspace{1em}
-    \caption{Radius vs. cluster depth across six datasets, grouped by decile of radius and weighted by the cardinalities of the clusters.
-    The last dataset is randomly generated.}
-    \label{fig:results:radius-plots}
+        \includegraphics[width=0.9\textwidth]{images/radius/radio-ml.png}\\
+        \subcaption{RadioML}
+        \label{fig:supplement:radioml-radius}
+    \end{subfigure}%
+    \\
+    \vskip 0.005in
+    \begin{subfigure}[b]{0.94\textwidth}
+        \centering
+        \includegraphics[width=0.7\textwidth]{images/radius/legend.png}
+        \label{fig:supplement:radius-legend}
+    \end{subfigure}%
+    \caption{Radius vs. cluster depth across six datasets, grouped by percentile of radius and weighted by the cardinalities of the clusters.
+    In order to use the same y-axis for all plots, we divided the radii of all clusters by the maximum radius of any cluster in the dataset.
+    Note that for the Silva 18S and the RadioML datasets, we use a logarithmic scale for the y-axis.}
+    \label{fig:supplement:radius-plots}
 \end{figure}
 
-\begin{figure}[ht!]
+\begin{figure}
+    \captionsetup[subfigure]{aboveskip=-15pt,belowskip=-3pt}
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/fractal_density/fashion-mnist-60000.png}\\
-    \subcaption{Fashion-mnist}
-    \label{fig:results:fashion-mnist-fractal_density}
+        \includegraphics[width=0.9\textwidth]{images/fractal_density/fashion-mnist.png}\\
+        \subcaption{Fashion-mnist}
+        \label{fig:supplement:fashion-mnist-fractal_density}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/fractal_density/glove-25-1183514.png}\\
-    \subcaption{Glove-25}
-    \label{fig:results:glove-25-fractal_density}
+            \includegraphics[width=0.9\textwidth]{images/fractal_density/glove-25.png}\\
+            \subcaption{Glove-25}
+            \label{fig:supplement:glove-25-fractal_density}
     \end{subfigure}
-    \vspace{1em}
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/fractal_density/sift-1000000.png}\\
-    \subcaption{Sift}
-    \label{fig:results:sift-fractal_density}
+        \includegraphics[width=0.9\textwidth]{images/fractal_density/sift.png}\\
+        \subcaption{Sift}
+        \label{fig:supplement:sift-fractal_density}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/fractal_density/radio-ml-97920.png}\\
-    \subcaption{RadioML}
-    \label{fig:results:radioml-fractal_density}
-    \end{subfigure}%
+        \includegraphics[width=0.9\textwidth]{images/fractal_density/random.png}\\
+        \subcaption{A random dataset}
+        \label{fig:supplement:random-fractal_density}
+    \end{subfigure}
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/fractal_density/silva-2224640.png}\\
-    \subcaption{Silva 18S}
-    \label{fig:results:silva-fractal_density}
+        \includegraphics[width=0.9\textwidth]{images/fractal_density/silva-SSU-Ref.png}\\
+        \subcaption{Silva 18S}
+        \label{fig:supplement:silva-fractal_density}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/fractal_density/random-1000000.png}\\
-    \subcaption{A random dataset}
-    \label{fig:results:random-fractal_density}
-    \end{subfigure}
-    \vspace{1em}
-    \caption{Fractal Density vs. cluster depth across six datasets, grouped by decile of fractal density and weighted by the cardinalities of the clusters.
-    The last dataset is randomly generated.
-    Fractal Density is defined as $\frac{cardinality}{radius^{LFD}}$}
-    \label{fig:results:fractal_density-plots}
+        \includegraphics[width=0.9\textwidth]{images/fractal_density/radio-ml.png}\\
+        \subcaption{RadioML}
+        \label{fig:supplement:radioml-fractal_density}
+    \end{subfigure}%
+    \\
+    \vskip 0.005in
+    \begin{subfigure}[b]{0.94\textwidth}
+        \centering
+        \includegraphics[width=0.7\textwidth]{images/fractal_density/legend.png}
+        \label{fig:supplement:fractal_density-legend}
+    \end{subfigure}%
+    \caption{Fractal Density vs. cluster depth across six datasets, grouped by percentile of fractal density and weighted by the cardinalities of the clusters.
+    Fractal Density is defined as $\frac{cardinality}{radius^{LFD}}$.
+    As with the radius plots, we normalized the cluster radii before calculating the Fractal Density.
+    We also excluded all clusters with normalized radii smaller than $10^{-6}$, as they distort the scale of the plots.}
+    \label{fig:supplement:fractal_density-plots}
 \end{figure}
 
 
