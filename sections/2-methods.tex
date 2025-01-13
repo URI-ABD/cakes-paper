@@ -160,8 +160,8 @@ In any case, the tree is built only once, so this cost is amortized over all sea
         ${\color{green}\delta^{-}} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest point in $C$.
     }
     \label{fig:methods:deltas}
+    \vskip -0.5in
 \end{figure}
-
 
 \begin{minipage}{.425\textwidth}
     \begin{algorithm}[H]
@@ -218,7 +218,7 @@ In other words, $k$-NN search aims to find the set $H$ such that $|H| = k$ and $
 In this section, we present three novel algorithms for exact $k$-NN search:
 Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
 In these algorithms, we use $H$, for \textit{hits}, to refer to the data structure that stores the closest points to the query found so far, and $Q$ to refer to the data structure that stores the clusters and points that are still in contention for being one of the $k$ nearest neighbors.
-The two Sieve algorithms also use some terminology defined and illustrated in Figure~\ref{fig:methods:deltas}.
+These algorithms also use some terminology defined and illustrated in Figure~\ref{fig:methods:deltas}.
 
 
 \subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
@@ -232,10 +232,10 @@ If no clusters are found, then we double $r$ and perform tree-search again, repe
 Now, so long as $\sum_{C \in Q} |C| < k$, we continue to perform tree-search, but instead of doubling $r$ on each iteration, we multiply it by a factor determined by the LFD in the vicinity of the query ball.
 In particular, we increase the radius by a factor of
 \begin{equation}
-    \min \left(2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu^{-1}} \right)
+    \min \left(2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu} \right)
     \label{eq:methods:repeated-rnn-factor}
 \end{equation}
-where $\mu$ is the harmonic mean of the LFD of the clusters in $Q$.
+where $\mu$ is the multiplicative inverse of the harmonic mean of the LFD of the clusters in $Q$, i.e.,\,$\mu = |Q| \cdot \sum_{C \in Q} \big( LFD(C)^{-1} \big)$.
 We use the harmonic mean to ensure that $\mu$ is not dominated by outlier clusters with very high LFD.
 We cap the radial increase at 2 to ensure that we do not increase the radius too quickly in any single iteration.
 
@@ -257,26 +257,21 @@ Once $\sum_{C \in Q} |C| \geq k$, we are guaranteed to have found at least $k$ n
         \Require $\mathcal{R}$, the root cluster
         \Require $q$, a query
         \Require $k$, the number of neighbors to find
+        \State $H \Leftarrow [\ ]$, a max-heap of size $k$ to contain neighbors prioritized by distance to the query
         \State $r \Leftarrow radius$ of $\mathcal{R}$
         \State $r \Leftarrow$ $\frac{r}{|\mathcal{R}|}$
-        \Loop
-            \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
-            \If{$Q \neq \emptyset$}
-                \State \textbf{break}
+        \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
+        \While{$\sum_{C \in Q} |C| < k$}
+            \If{$Q = \emptyset$}
+                \State $r \Leftarrow 2 \cdot r$
+            \ElsIf{$\sum_{C \in Q} |C| >= k$}
+                \State $\mu \Leftarrow |Q| \cdot \sum_{C \in Q} \big( LFD(C)^{-1} \big)$
+                \State $r \Leftarrow r \cdot \min \bigg( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu} \bigg)$
             \EndIf
-            \State $r \Leftarrow 2 \cdot r$
-        \EndLoop
-        \Loop
-            \If{$\sum_{C \in Q} |C| >= k$}
-                \State \textbf{break}
-            \EndIf
-            \State $\mu \Leftarrow |Q| \cdot \left( \sum_{C \in Q} LFD(C)^{-1} \right)^{-1}$
-            \State $r \Leftarrow r \cdot \min \left( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu^{-1}} \right)$
             \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
-        \EndLoop
+        \EndWhile
         \State $H \Leftarrow \text{leaf-search}(Q, q, r)$
-        \State \textbf{sort} $H$ by non-decreasing distance to $q$
-        \State \textbf{return} The first $k$ points in $H$
+        \State \textbf{return} $H$ as a list
     \end{algorithmic}
 \end{algorithm}
 
@@ -352,6 +347,16 @@ By combining the bounds for tree-search and leaf-search, we see that Repeated $\
 where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of the dataset, $d$ is the LFD of the dataset, and $k$ is the number of nearest neighbors.
 Note that the scaling factor should be close to 1 unless LFD is highly variable in the region around the query (i.e.,\,if $\hat{d}$ differs significantly from $d$).
 
+
+\subsubsection{Breadth-First Sieve}
+\label{sec:methods:knn-search:bredth-first-sieve}
+
+This algorithm (described in Algorithm~\ref{alg:methods:bredth-first-sieve}) performs a breadth-first traversal of the tree $\mathcal{T}$, pruning clusters by using a modified version of the QuickSelect algorithm~\cite{hoare1961algorithm} at each level.
+
+We begin by letting $Q$ be a set of 3-tuples $(p, \delta^{+}_{p}, m)$, where $p$ is either a cluster or a point, $\delta^{+}_{p}$ is the $\delta^{+}$ of $p$ as illustrated in Figure~\ref{fig:methods:deltas}, and $m$ is the multiplicity of $p$ in $Q$.
+During the breadth-first traversal, for every cluster $C$ we encounter, we add $(C, \delta^{+}_{C}, |C| - 1)$ and $(c, \delta_{c}, 1)$ to $Q$, where $c$ is the center of $C$.
+Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\ref{sec:methods:knn-search}, since $c$ is a point, $\delta_{C} = \delta_{c} = \delta^{+}_{c} = \delta^{-}_{c}$.
+
 \begin{minipage}{0.5125\textwidth}
     \begin{algorithm}[H]\small
         \caption{Breadth-First Sieve($\mathcal{R}$, $q$, $k$)} % give the algorithm a caption
@@ -426,15 +431,7 @@ Note that the scaling factor should be close to 1 unless LFD is highly variable 
     \end{algorithm}
 \end{minipage}
 
-
-\subsubsection{Breadth-First Sieve}
-\label{sec:methods:knn-search:bredth-first-sieve}
-
-This algorithm (described in Algorithm~\ref{alg:methods:bredth-first-sieve}) performs a breadth-first traversal of the tree $\mathcal{T}$, pruning clusters by using a modified version of the QuickSelect algorithm~\cite{hoare1961algorithm} at each level.
-
-We begin by letting $Q$ be a set of 3-tuples $(p, \delta^{+}_{p}, m)$, where $p$ is either a cluster or a point, $\delta^{+}_{p}$ is the $\delta^{+}$ of $p$ as illustrated in Figure~\ref{fig:methods:deltas}, and $m$ is the multiplicity of $p$ in $Q$.
-During the breadth-first traversal, for every cluster $C$ we encounter, we add $(C, \delta^{+}_{C}, |C| - 1)$ and $(c, \delta_{c}, 1)$ to $Q$, where $c$ is the center of $C$.
-Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\ref{sec:methods:knn-search}, since $c$ is a point, $\delta_{C} = \delta_{c} = \delta^{+}_{c} = \delta^{-}_{c}$.
+\vskip 0.1in
 
 We then use the QuickSelect algorithm, modified to account for multiplicities and to reorder $Q$ in-place, to find the element in $Q$ with the $k^{th}$ smallest $\delta^{+}$; in other words, we find $\tau$, the smallest $\delta^{+}$ in $Q$ such that $\left| B(q, \tau) \right| \geq k$.
 Since this step may require a binary search for the correct pivot element to find $\tau$ and reordering with a new pivot takes linear time in the size of the input list, this version of QuickSelect has $\mathcal{O}\left(|Q| \log |Q|\right)$ time complexity.

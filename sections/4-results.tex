@@ -86,15 +86,17 @@ The median LFD follows a similar pattern of peaks and troughs, fluctuating betwe
         \label{fig:results:radioml-lfd}
     \end{subfigure}%
     \\
-    \vskip 0.005in
+    \vskip -0.1in
     \begin{subfigure}[b]{0.94\textwidth}
         \centering
         \includegraphics[width=0.7\textwidth]{images/lfd/legend.png}
         \label{fig:results:lfd-legend}
     \end{subfigure}%
+    \vskip -0.1in
     \caption{Local fractal dimension vs. cluster depth across six datasets, grouped by percentiles of local fractal dimension and weighted by the cardinalities of the clusters.
     Note that the y-axis is different for the random dataset.}
     \label{fig:results:lfd-plots}
+    \vskip -0.4in
 \end{figure}
 
 
@@ -155,34 +157,34 @@ In particular, throughput of CAKES's algorithms is identical within three signif
 
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=1.0\textwidth]{plots/fashion-mnist_PermutedBall_10_throughput.png}
+        \includegraphics[width=0.9\textwidth]{plots/fashion-mnist_PermutedBall_10_throughput.png}
         \subcaption{Fashion-Mnist for $k=10$.}
         \label{fig:results:fashion-mnist-scaling}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=1.0\textwidth]{plots/glove-25_PermutedBall_10_throughput.png}
+        \includegraphics[width=0.9\textwidth]{plots/glove-25_PermutedBall_10_throughput.png}
         \subcaption{Glove-25 for $k=10$.}
         \label{fig:results:glove-25-scaling}
     \end{subfigure}%
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=1.0\textwidth]{plots/sift_PermutedBall_10_throughput.png}
+        \includegraphics[width=0.9\textwidth]{plots/sift_PermutedBall_10_throughput.png}
         \subcaption{Sift for $k=10$.}
         \label{fig:results:sift-scaling}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=1.0\textwidth]{plots/random_PermutedBall_10_throughput.png}
+        \includegraphics[width=0.9\textwidth]{plots/random_PermutedBall_10_throughput.png}
         \subcaption{A random dataset for $k=10$.}
         \label{fig:results:random-scaling}
     \end{subfigure}%
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=1.0\textwidth]{plots/silva-SSU-Ref_PermutedBall_10_throughput.png}
+        \includegraphics[width=0.9\textwidth]{plots/silva-SSU-Ref_PermutedBall_10_throughput.png}
         \subcaption{Silva for $k=10$.}
         \label{fig:results:silva-scaling}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=1.0\textwidth]{plots/radio-ml_Ball_10_throughput.png}
+        \includegraphics[width=0.9\textwidth]{plots/radio-ml_Ball_10_throughput.png}
         \subcaption{RadioML for $k=10$ at SnR = 10dB.}
         \label{fig:results:radioml-scaling}
     \end{subfigure}%
@@ -202,34 +204,34 @@ In particular, throughput of CAKES's algorithms is identical within three signif
 
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=1.0\textwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_throughput.png}
+        \includegraphics[width=0.9\textwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_throughput.png}
         \subcaption{Repeated $\rho$-NN}
         \label{fig:results:fashion-mnist-counts-throughput}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=1.0\textwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_counts.png}
+        \includegraphics[width=0.9\textwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_counts.png}
         \subcaption{Repeated $\rho$-NN}
         \label{fig:results:glove-25-counts-counts}
     \end{subfigure}%
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=1.0\textwidth]{images/distance_counts/fashion-mnist_KnnBreadthFirst_10_throughput.png}
+        \includegraphics[width=0.9\textwidth]{images/distance_counts/fashion-mnist_KnnBreadthFirst_10_throughput.png}
         \subcaption{Breadth First Sieve}
         \label{fig:results:sift-counts-throughput}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=1.0\textwidth]{images/distance_counts/fashion-mnist_KnnBreadthFirst_10_counts.png}
+        \includegraphics[width=0.9\textwidth]{images/distance_counts/fashion-mnist_KnnBreadthFirst_10_counts.png}
         \subcaption{Breadth First Sieve}
         \label{fig:results:random-counts-counts}
     \end{subfigure}%
     \\
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=1.0\textwidth]{images/distance_counts/fashion-mnist_KnnDepthFirst_10_throughput.png}
+        \includegraphics[width=0.9\textwidth]{images/distance_counts/fashion-mnist_KnnDepthFirst_10_throughput.png}
         \subcaption{Depth First Sieve}
         \label{fig:results:silva-counts-throughput}
     \end{subfigure}%
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=1.0\textwidth]{images/distance_counts/fashion-mnist_KnnDepthFirst_10_counts.png}
+        \includegraphics[width=0.9\textwidth]{images/distance_counts/fashion-mnist_KnnDepthFirst_10_counts.png}
         \subcaption{Depth First Sieve}
         \label{fig:results:radioml-counts-counts}
     \end{subfigure}%
