@@ -220,6 +220,31 @@ Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
 In these algorithms, we use $H$, for \textit{hits}, to refer to the data structure that stores the closest points to the query found so far, and $Q$ to refer to the data structure that stores the clusters and points that are still in contention for being one of the $k$ nearest neighbors.
 These algorithms also use some terminology defined and illustrated in Figure~\ref{fig:methods:deltas}.
 
+\begin{algorithm} % enter the algorithm environment
+    \caption{Repeated $\rho$-NN($\mathcal{R}$, $q$, $k$)} % give the algorithm a caption
+    \label{alg:methods:repeated-rnn} % and a label for \ref{} commands later in the document
+    \begin{algorithmic} % enter the algorithmic environment
+        \Require $\mathcal{R}$, the root cluster
+        \Require $q$, a query
+        \Require $k$, the number of neighbors to find
+        \State $H \Leftarrow [\ ]$, a max-heap of size $k$ to contain neighbors prioritized by distance to the query
+        \State $r \Leftarrow radius$ of $\mathcal{R}$
+        \State $r \Leftarrow$ $\frac{r}{|\mathcal{R}|}$
+        \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
+        \While{$\sum_{C \in Q} |C| < k$}
+            \If{$Q = \emptyset$}
+                \State $r \Leftarrow 2 \cdot r$
+            \ElsIf{$\sum_{C \in Q} |C| >= k$}
+                \State $\mu \Leftarrow |Q| \cdot \sum_{C \in Q} \big( LFD(C)^{-1} \big)$
+                \State $r \Leftarrow r \cdot \min \bigg( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu} \bigg)$
+            \EndIf
+            \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
+        \EndWhile
+        \State $H \Leftarrow \text{leaf-search}(Q, q, r)$
+        \State \textbf{return} $H$ as a list
+    \end{algorithmic}
+\end{algorithm}
+
 
 \subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
 \label{sec:methods:knn-search:repeated-rnn}
@@ -249,31 +274,6 @@ However, we should not increase the radius too drastically with any one iteratio
 A large increase in the radius would likely break out of the local region and potentially encounter too many new clusters, which would make the subsequent step computationally expensive.
 
 Once $\sum_{C \in Q} |C| \geq k$, we are guaranteed to have found at least $k$ neighbors, and so we perform \textit{leaf-search} to find the $k$ nearest neighbors among the points in the clusters found after the last tree-search.
-
-\begin{algorithm} % enter the algorithm environment
-    \caption{Repeated $\rho$-NN($\mathcal{R}$, $q$, $k$)} % give the algorithm a caption
-    \label{alg:methods:repeated-rnn} % and a label for \ref{} commands later in the document
-    \begin{algorithmic} % enter the algorithmic environment
-        \Require $\mathcal{R}$, the root cluster
-        \Require $q$, a query
-        \Require $k$, the number of neighbors to find
-        \State $H \Leftarrow [\ ]$, a max-heap of size $k$ to contain neighbors prioritized by distance to the query
-        \State $r \Leftarrow radius$ of $\mathcal{R}$
-        \State $r \Leftarrow$ $\frac{r}{|\mathcal{R}|}$
-        \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
-        \While{$\sum_{C \in Q} |C| < k$}
-            \If{$Q = \emptyset$}
-                \State $r \Leftarrow 2 \cdot r$
-            \ElsIf{$\sum_{C \in Q} |C| >= k$}
-                \State $\mu \Leftarrow |Q| \cdot \sum_{C \in Q} \big( LFD(C)^{-1} \big)$
-                \State $r \Leftarrow r \cdot \min \bigg( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu} \bigg)$
-            \EndIf
-            \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
-        \EndWhile
-        \State $H \Leftarrow \text{leaf-search}(Q, q, r)$
-        \State \textbf{return} $H$ as a list
-    \end{algorithmic}
-\end{algorithm}
 
 
 \subsubsection{Complexity of Repeated \texorpdfstring{$\rho$}{p}-NN}
