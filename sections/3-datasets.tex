@@ -46,6 +46,10 @@ We also benchmarked on purely randomly-generated datasets of various cardinaliti
 For this, we used a base cardinality of 1,000,000 and a dimensionality of 128 to match the Sift dataset; hereafter, we refer to the random dataset with cardinality 1,000,000 and dimensionality 128 as ``Random.''
 This benchmark allows us to isolate the effect of a manifold structure (which we expect to be absent in a purely random dataset) on the performance of the CAKES' algorithms.
 
+In order to calculate recall on the augmented datasets, we perform linear search in Rust and save the results to disk.
+We verified that linear search on the original dataset produced neighbors with perfect recall compared to those provided by the ANN-Benchmarks suite.
+We then use the results of linear search on the augmented datasets as ground truth for calculating recall of CAKES's algorithms in Rust and read them in Python for calculating recall of HNSW, ANNOY, and FAISS-IVF.
+
 
 \subsection{SILVA 18S}
 \label{sec:datasets-and-benchmarks:silva-18s}
