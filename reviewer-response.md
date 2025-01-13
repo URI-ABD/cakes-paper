@@ -97,16 +97,16 @@ We have addressed much of this, including replacing en-dashes with em-dashes whe
 are not readable. Regenerate the pictures at the correct size to avoid
 scaling.*
 
-fix some font sizes and aspect ratios
+The figures have all been updated.
 
 *Put the keys outside of the figures, not over the data lines.*
 
-need to fix this (NI)
+The figures have all been updated.
 
 *Many horizontal and vertical lines in Table~2 should be removed to help with
 readability.*
 
-Per the suggestion of reviewer 2, we have broken this table up into four tables (one per dataset) which we helieve helps readability.
+The table has been broken up and former sub-tables have been enlarged.
 
 *Line 585: "we observe performs quite slowly". The sentence seems incomplete.*
 
@@ -161,7 +161,8 @@ there is no obvious median for a set of biological sequences.  The authors
 must identify the actual spaces from which data sets can be extracted for
 CAKES to work.*
 
-add def in paper for geometric median, extended from continues vector spaces into any metric space. line 43, use distance, not similarity
+We have added a definition of the geometric median in the paper, and have clarified how we interpret it for any metric space.
+We have also fixed the language around similarity and distance, and have made sure to use the correct term in each context.
 
 *On line 141, there is a function defined for the local fractal dimension
 (LFD), but it is not expressed in functional notation.  In other words, it
@@ -171,7 +172,7 @@ the manuscript.  Much the same is true on line 142, where it should read
 $B(X,q,r)$, not $B_X(q,r)$.  If makes little sense to put $X$ as a
 subscript in this context.*
 
-similar to complaint from reviewer 2, address with same language
+We have dropped the X since we are only dealing with one dataset.
 
 *In the algorithms, starting with Algorithm 2.1, the pseudocode style is
 ugly.  Much better would be the pseudocode style from the fourth edition
@@ -179,8 +180,9 @@ of Introduction to Algorithms, CLRS.  Also, the description of $criteria$
 is as a "stopping criteria", while the logic of the code has it as a
 continuing criteria.  Please fix the pseudocode throughout.*
 
-We evaluated the CLRS package, but did not see any aesthetic differences. We have, however, increased the font size for the algorithm environments, so that it should be more legible.
-call it continuation criteria (NI)
+We evaluated the CLRS package, but did not see any aesthetic differences.
+We have, however, increased the font size for the algorithm environments, so that it should be more legible.
+We have also fixed the name for the criteria.
 
 *Section 2.2 is meant to be the definition of the search problem(s), but
 that is really only contained in the paragraph from lines 218 to 223. In
@@ -192,7 +194,9 @@ full detail into a separate paragraph.  Finally, one assumes that the
 integer $k$ or the number $\rho$ is a parameter to the corresponding
 problem and should be mentioned as such.*
 
-move introduction of the three deltas to later, to start of 2.4.3, and expand definition of rnn. (NI)
+We have refactored the methods section to have a better flow, and have defined several terms in their proper place.
+We have also removed $\rho$-NN search from the main body of the paper in order to focus exclusively on $k$-NN search.
+The supplement now contains a section on the improvements to $\rho$-NN search.
 
 *There are no theorems in the manuscript, yet there are arguments for
 quantities like the quality of the results or the time complexity that are
@@ -208,7 +212,7 @@ Reference [18].  See also the paragraph at lines 306 to 310. All terms
 used must be precisely defined in the manuscript to allow proper
 assessment of the manuscript.*
 
-remind the reader what rnn search is, and in 306-310 reword to refer to previous section rather than external refs
+We have addressed this by making the paper more self-contained.
 
 *The Results section is a slog to read and parts of the Discussion seem
 redundant.  Take lines 651 to 668 as an example.  Tightening up the
@@ -263,7 +267,7 @@ strategy and, in particular, why clustering is used first.  Clustering is
 a heavily overloaded word.  I would have chosen a more neutral term
 instead of "cluster".*
 
-We do define our clustering approach, and moreover, we build on prior work (some ours, some others) that relies on clustering. We respectfully would prefer to stay with the language we have here.
+We clearly define our clustering approach, and moreover, we build on prior work (some ours, some others) that relies on clustering. We respectfully would prefer to stay with the language we have here.
 
 *On line 155, there is the parenthetical comment about "a smaller sample of
 the points".  What does that mean precisely and where does it occur later
@@ -289,17 +293,18 @@ We now refer to the sample as $S$.
 
 *Section 2.1.1 overall is lacking in mathematical rigor.*
 
-we will refactor 2.1.1 to be more rigorous (NI)
+We have updated some language in this section.
+This, combined with Algorithm 2.1, should provide a reasonable level of rigor.
 
 *In Section 2.1.3, the cost of assessing "criteria' is not counted in the
 time complexity, but it must be.*
 
-add some explanation: these can be as complex as a user wants, but for us it is a constant-time check (NI)
+We have added a discussion of this in the corresponding complexity analysis.
 
 *In line 252, there is again mention of "real points" without any
 indication of the meaning of "real".*
 
-We removed the section which contained this from the paper.
+We have fixed language around "real points" and have clarified that the points are actual data points.
 
 *The fonts in Algorithms 2.2 through 2.7 are simply too small.  Make them
 the font size of the remainder of the text.*
