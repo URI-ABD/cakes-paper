@@ -227,7 +227,7 @@ These algorithms also use some terminology defined and illustrated in Figure~\re
         \Require $\mathcal{R}$, the root cluster
         \Require $q$, a query
         \Require $k$, the number of neighbors to find
-        \State $H \Leftarrow [\ ]$, a max-heap of size $k$ to contain neighbors prioritized by distance to the query
+        \State{$H \Leftarrow [\ ]$, a max-heap by $\delta$ of size $k$}
         \State $r \Leftarrow radius$ of $\mathcal{R}$
         \State $r \Leftarrow$ $\frac{r}{|\mathcal{R}|}$
         \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
@@ -367,32 +367,25 @@ Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\re
             \Require $k$, the number of neighbors to find
             \State $c \Leftarrow$ \textit{center} of $\mathcal{R}$
             \State $Q \Leftarrow$ \{ ($\mathcal{R}$, $\delta^{+}_{\mathcal{R}}$, $|\mathcal{R}| - 1$), ($c$, $\delta_{\mathcal{R}}$, 1) \}
-            \Loop
-                \If{$k = \sum_{(\_, \_, m) \in Q} m$}
-                    \State \textbf{break}
-                \EndIf
+            \While{$\sum_{(\_, \_, m) \in Q} m \neq k$}
                 \State $\tau \Leftarrow$ QuickSelect($Q$, $k$)
-                \For{$(p, \delta^{+}_{p}, m) \in Q$}
-                    \If{$\delta^{-}_{p} > \tau$}
-                        \State $Q \Leftarrow Q \setminus \{ (p, \delta^{+}_{p}, m) \}$
+                \State $Q^{'} \Leftarrow \emptyset$
+                \For{$(C, \_, \_) \in Q$}
+                    \If{$\delta^{-}_{C} \leq \tau$}
+                        \If{$C$ is a point}
+                            \State $Q^{'} \Leftarrow Q^{'} \cup \{ (C, \delta_{C}, 1) \}$
+                        \ElsIf{$C$ is a leaf}
+                            \State $Q^{'} \Leftarrow Q^{'} \cup \{ (p, \delta_{p}, 1)$ for $p \in C \}$
+                        \Else
+                            \State $[L, R] \Leftarrow$ children of $C$
+                            \State $l, r \Leftarrow$ centers of $L, R$
+                            \State $Q^{'} \Leftarrow Q^{'} \cup \{ (L, \delta^{+}_{L}, |L| - 1), (l, \delta_{L}, 1) \}$
+                            \State $Q^{'} \Leftarrow Q^{'} \cup \{ (R, \delta^{+}_{R}, |R| - 1), (l, \delta_{R}, 1) \}$
+                        \EndIf
                     \EndIf
                 \EndFor
-                \For{$(p, \delta^{+}_{p}, m) \in Q$}
-                    \State $Q \Leftarrow Q \setminus \{ (p, \delta^{+}_{p}, m) \}$
-                    \If{$p$ is a point}
-                        \State \textbf{continue}
-                    \ElsIf{$p$ is a leaf}
-                        \For{$c \in p$}
-                            \State $Q \Leftarrow Q \cup \{ (c, \delta_{c}, 1) \}$
-                        \EndFor
-                    \Else
-                        \State $[L, R] \Leftarrow$ children of $p$
-                        \State $l, r \Leftarrow$ centers of $L, R$
-                        \State $Q \Leftarrow Q \cup \{ (L, \delta^{+}_{L}, |L| - 1), (l, \delta_{L}, 1) \}$
-                        \State $Q \Leftarrow Q \cup \{ (R, \delta^{+}_{R}, |R| - 1), (l, \delta_{R}, 1) \}$
-                    \EndIf
-                \EndFor
-            \EndLoop
+                \State $Q \Leftarrow Q^{'}$
+            \EndWhile
             \State QuickSelect($Q$, $k$)
             \State \textbf{return} The first $k$ points in $Q$
         \end{algorithmic}
@@ -407,12 +400,10 @@ Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\re
             \Require $\mathcal{R}$, the root cluster
             \Require $q$, a query
             \Require $k$, the number of neighbors to find
-
-            \State{$Q \Leftarrow [\mathcal{R}]$, a min-priority queue by $\delta^{-}$}
-            \State{$H \Leftarrow []$, a max-priority queue by $\delta$}
-
+            \State{$Q \Leftarrow [\mathcal{R}]$, a min-heap by $\delta^{-}$}
+            \State{$H \Leftarrow [\ ]$, a max-heap by $\delta$ of size $k$}
             \While{$|H| < k$ \textbf{or} $H.peek.\delta \geq Q.peek.\delta^{-}$}
-                \While{$\neg (Q.peek$ is a leaf)}
+                \While{$Q.peek$ is not a leaf}
                     \State{$C \Leftarrow Q.pop$, the closest cluster}
                     \State{$[L, R] \Leftarrow$ children of $C$}
                     \State{$Q.push(L)$}
@@ -422,9 +413,6 @@ Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\re
                 \For{$p \in leaf$}
                     \State{$H.push(p)$}
                 \EndFor
-                \While{$|H| > k$}
-                    \State{$H.pop$}
-                \EndWhile
             \EndWhile
             \State \textbf{return} $H$
         \end{algorithmic}
@@ -436,11 +424,11 @@ Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\re
 We then use the QuickSelect algorithm, modified to account for multiplicities and to reorder $Q$ in-place, to find the element in $Q$ with the $k^{th}$ smallest $\delta^{+}$; in other words, we find $\tau$, the smallest $\delta^{+}$ in $Q$ such that $\left| B(q, \tau) \right| \geq k$.
 Since this step may require a binary search for the correct pivot element to find $\tau$ and reordering with a new pivot takes linear time in the size of the input list, this version of QuickSelect has $\mathcal{O}\left(|Q| \log |Q|\right)$ time complexity.
 
-We then remove from $Q$ any element for which $\delta^{-} > \tau$ because such elements cannot contain (or be) one of the $k$ nearest neighbors.
-Next, we remove all leaf clusters from $Q$ and add their points to $Q$ instead.
-Finally, we replace all remaining clusters in $Q$ with the pairs of 3-tuples corresponding to their child clusters.
-
-We continue this process until $Q$ no longer contains any clusters.
+Next, we go over all items in $Q$, skipping over any for which $\delta^{-} > \tau$ because such elements cannot contain (or be) one of the $k$ nearest neighbors.
+If the item corresponds to a point, we keep it.
+If the item corresponds to a leaf cluster, we add all its points to $Q$ with a multiplicity of 1 each.
+If the item corresponds to a non-leaf cluster, we to $Q$ the pairs of 3-tuples corresponding to its child clusters.
+We continue this process until the sum of multiplicities in $Q$ is exactly $k$.
 We then use the QuickSelect algorithm one last time to reorder $Q$ and return the $k$ nearest neighbors.
 
 \subsubsection{Depth-First Sieve}
@@ -448,17 +436,16 @@ We then use the QuickSelect algorithm one last time to reorder $Q$ and return th
 
 This algorithm (described in Algorithm~\ref{alg:methods:depth-first-sieve}) is quite similar to a depth-first traversal of the tree $\mathcal{T}$, using two priority queues to track clusters and hits, and to prioritize which branch of $\mathcal{T}$ to explore next.
 
-Let $Q$ be a min-queue of clusters prioritized by $\delta^{-}$ and $H$ be a max-queue (with capacity $k$) of points prioritized by $\delta$.
+Let $Q$ be a min-queue of clusters prioritized by $\delta^{-}$ and $H$ be a max-queue (with capacity $k$ and the ability to maintain its maximum size) of points prioritized by $\delta$.
 $Q$ starts containing only the root cluster $\mathcal{R}$ while $H$ starts empty.
-So long as $H$ is not full or the top priority element in $H$ has $\delta$ greater than or equal to the top priority element in $Q$, we take the following steps:
+So long as $H$ is not full or the top element in $H$ has $\delta$ greater than or equal to the top element in $Q$, we take the following steps:
 
 \begin{itemize}
     \item While the top-priority element is not a leaf, remove it from $Q$ and add its children to $Q$.
     \item Remove the top-priority element (a leaf) from $Q$ and add all its points to $H$.
-    \item If $H$ has more than $k$ points, remove points from $H$ until $|H| = k$.
 \end{itemize}
 
-This process terminates when $H$ is full and the top priority element in $H$ has $\delta$ less than the top priority element in $Q$, i.e.,\,the theoretically closest point left to be considered in $Q$ is farther from the query than the $k^{th}$ nearest neighbor in $H$.
+This process terminates when $H$ is full and the top element in $H$ has $\delta$ less than the top element in $Q$, i.e.,\,the theoretically closest point left to be considered in $Q$ is farther from the query than the $k^{th}$ nearest neighbor in $H$.
 This leaves $H$ containing exactly the $k$ nearest neighbors to the query.
 
 Note that this algorithm is not truly a depth-first traversal of $\mathcal{T}$ in the classical sense, because we use $Q$ to prioritize which branch of $\mathcal{T}$ we descend into.
