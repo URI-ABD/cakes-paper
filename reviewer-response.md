@@ -147,7 +147,7 @@ the tree.  The authors should review the requirements for defining proper
 terminology and notation for a data structure and apply it consistently to
 their data structure.*
 
-This has been fixed. 
+We have addressed this by adjusting the notation.
 
 *The authors appear to use the terms similarity and distance
 interchangeably, though they are certainly different.  In particular, a
