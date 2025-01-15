@@ -496,27 +496,38 @@ For these methods we again use the terminology of tree-search and leaf-search.
 Tree-search navigates the cluster tree and adds clusters to $Q$.
 Leaf-search exhaustively searches \textit{some} of the clusters in $Q$ to find the $k$ nearest neighbors.
 
-We start with the assumption that the LFD near the query does not differ significantly from that of nearby clusters, and we consider leaf clusters with cardinalities near $k$.
-Let $d$ be the LFD in this region.
-Then the number of leaf-clusters in $Q$ is bounded above by $2d$, e.g.,\,we could have a cluster overlapping the query ball at each end of each of $\lceil d \rceil$ mutually-orthogonal axes.
+
+\begin{theorem} 
+    Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Then, for dataset $X$ and query $q$, the time complexity of performing Breadth-First Sieve search is \begin{equation}
+        \mathcal{O} \Big( (T + L ) \log (T + L ) \Big)
+        \label{eq:methods:breadth-first-sieve-complexity}
+    \end{equation} and the the time complexity of performing Depth-First Sieve search is \begin{equation}
+        \mathcal{O} \Big( T \log T + L \log k \Big).
+        \label{eq:methods:depth-first-sieve-complexity}
+    \end{equation}
+\end{theorem}
+
+\begin{proof}
+Since $q$ is sampled from the same distribution as $X$, the LFD near $q$ should not differ significantly from the LFDs of clusters near $q$ at the scale of the distance from the query to the $k^{th}$ nearest neighbor.
+
+Consider leaf clusters with cardinalities near $k$. Let $d$ be the LFD in this region, and $Q$ denote the set of candidate points and clusters.
+Then the number of leaf-clusters in $Q$ is bounded above by $2d$, where the bound is achieved if we have a cluster overlapping the query ball at each end of each of $\lceil d \rceil$ mutually-orthogonal axes.
 In the worst-case scenario for tree-search, these leaf clusters would all come from different branches of the tree, and so tree-search looks at $2 \cdot \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X)$ clusters.
 Thus, the asymptotic complexity is $T \coloneqq \mathcal{O} \big( \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X) \big)$.
 For leaf-search, the output size and scaling factor are the same as in Repeated $\rho$-NN, and so the asymptotic complexity is $L \coloneqq \mathcal{O} \left( k \cdot \bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d \right)$.
 
 The asymptotic complexity of Breadth-First Sieve is dominated by the QuickSelect algorithm to calculate $\tau$.
 Since this method is log-linear in the length of $Q$, and $Q$ contains the clusters from tree-search and the points from leaf-search, we see that the asymptotic complexity is
-\begin{equation}
-    \mathcal{O} \Big( (T + L ) \log (T + L ) \Big).
-    \label{eq:methods:breadth-first-sieve-complexity}
-\end{equation}
+\begin{equation*}
+    \mathcal{O} \Big( (T + L ) \log (T + L ) \Big),
+\end{equation*} as claimed. 
 
 For Depth-First Sieve, since we use two priority queues, the asymptotic complexity is dominated by the priority queue operations.
 Thus, the complexity is
-\begin{equation}
-    \mathcal{O} \Big( T \log T + L \log k \Big).
-    \label{eq:methods:depth-first-sieve-complexity}
-\end{equation}
-
+\begin{equation*}
+    \mathcal{O} \Big( T \log T + L \log k \Big), 
+\end{equation*} as claimed. 
+\end{proof}
 
 \subsection{Auto-Tuning}
 \label{sec:methods:auto-tuning}
