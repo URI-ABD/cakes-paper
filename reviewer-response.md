@@ -38,7 +38,7 @@ We have attempted to address this by including additional computational experime
 *The cost on line 260 uses $\hat{r}$, which is a mean radius. Now that cost is in
 expectation (in addition to the balanced tree hypothesis).*
 
-this is restating the complexity from the CHESS paper, but it's correct that it's an expected cost. Worst-case analysis isn't really useful here.
+This is restating the complexity from the CHESS paper, but it's correct that it's an expected cost. Worst-case analysis isn't really useful here.
 
 *Another example, line 326, comes from the minimum with value 2 on line 284. If
 the assumption on the LFD is not satisfied, then an extra log factor would
@@ -51,14 +51,14 @@ there are 2 parameters in the definition of LFD (r_1 and r_2), but the
 discussion seems to imply there is only 1 (a radius r). That discussion only
 seems to make sense after line 163 and the rewrite of the definition 2.1.*
 
-Right after or in eq 2.1, immediately follow up with the simplified form where $r_1 = 2r_2$. Also drop subscript $X$, since we're dealing with only one dataset. Explain.
+We have revised the LFD definitions in this section for clarity. 
 
 *Smith-Waterman and Needleman-Wunsch are not distances (unlike Levenshtein and
 Hamming distances). They are dynamic programming algorithms to compute
 distances like the Levenshtein distance (and others depending on the exact
 parameters of the algorithms).*
 
-Correct; fix in language.
+This has been fixed. 
 
 *The explanation that the augmentation process (starting at line 418) preserves
 the topological structure of the underlying data is not very convincing. This
@@ -66,7 +66,7 @@ process adds small clouds of points extending in every dimension around
 existing points. That is not quite the same as generating new points that
 belong to a small dimension manifold in the sample space.*
 
-We should acknowledge this limitation, and suggest that in future work we would do something like favor augmentation along the first few PCs of the local manifold, but not in scope here. This goes in discussion.
+We acknowledge this limitation of our data augmentation process; we added discussion about an improved data augmentation process as future work in our Discussion section.
 
 *Line 467-473: Why are there multiple linear search implementations used as
 ground truth? These different implementation are apparently used to evaluate
@@ -116,7 +116,7 @@ This has been fixed.
 more readable in pseudo-code form and are just fine in explained in the text.
 (E.g., Algorithm 2.4).*
 
-get rid of alg 2.4
+We removed what was formerly Algorithm 2.4. 
 
 *The Github repository gives very little instructions on how to compile the
 code, run it or reproduce the results from this manuscript.*
@@ -204,7 +204,7 @@ given without much precision.  It is better to give precise theorems or
 propositions for each thing to be proved, with appropriate assumptions,
 and to give precise proofs of same.*
 
-state theorem, which is the time complexity, and formalize the argument into a proof
+We have expressed claimed time complexities as precise theorems with assumptions and provided proofs. 
 
 *The manuscript makes too much use of unfamiliar terminology taken from
 earlier papers without defining terms.  For example, see line 233 and
