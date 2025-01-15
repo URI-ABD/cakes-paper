@@ -48,17 +48,17 @@ we observe that while linear search can outperform CAKES on datasets with small 
 Moreover, we observe that CAKES's algorithms outperform linear search at a lower cardinality when the dataset has a lower LFD.
 For example, Sift has much higher LFD than Fashion-Mnist and Glove-25, and we observe that CAKES overtakes linear search at a cardinality of $10^7$ for Sift, as opposed to about $10^5$ and $10^6$ for Fashion-Mnist and Glove-25, respectively.
 For the Random dataset, which has the highest LFD, CAKES's algorithms \textit{never} outperform linear search.
-These observations support our claim that CAKES performs well on datasets that arise from constrained generating phenomena, even as the cardinalities of these datasets grow exponentially. 
+These observations support our claim that CAKES performs well on datasets that arise from constrained generating phenomena, even as the cardinalities of these datasets grow exponentially.
 
-
+We note that despite the genericity of CAKES, effectively applying it to real-world datasets may typically require domain-specific knowledge. As an example, consider the domain of protein sequence search; protein sequences are of highly variable length (30--1000 amino acids are typical, with some outliers) and typically comprise a 20-letter alphabet. There have been numerous protein sequence search algorithms~\cite{kim2021entrance, daniels2013compressive, yu2015entropy, steinegger2018clustering}, and the one thing they have in common besides the application domain is that their development required deep domain-specific knowledge. While simple edit distance may be a poor choice for clustering when sequence lengths exhibit such variance, other choices of distance metrics and preprocessing could be used by CAKES, such as representing each sequence as a set of $k$-mers (short substrings of length $k$) and choosing Jaccard distance as the metric; this approach was chosen by~\cite{kim2021entrance}.
 
 
 The questions raised by this study suggest several additional avenues for future work.
 A comparison across more datasets is in order, as is further analysis with other distance functions that existing methods, such as FAISS, HNSW and ANNOY, do not support. These include Wasserstein distance~\cite{vallender1974calculation} for probability distributions (particularly for high dimensional distributions) and Tanimoto distance~\cite{bajusz2015tanimoto} for comparing molecular structures by their maximal common subgraphs.
 Incorporating these or other distance functions in CAKES requires only that a Rust implementation of the distance function be provided.
 
-Additionally, we intend to improve the data augmentation process described in Section~\ref{sec:methods:synthetic-data} to better preserve the topological structure of the underlying dataset. 
-In particular, we expect that favoring augmentation along the first principal components of the local manifold may allow for more realistic data augmentation. 
+Additionally, we intend to improve the data augmentation process described in Section~\ref{sec:methods:synthetic-data} to better preserve the topological structure of the underlying dataset.
+In particular, we expect that favoring augmentation along the first principal components of the local manifold may allow for more realistic data augmentation.
 
 We also plan to investigate hierarchical data compression by representing differences at each level of the binary tree, particularly for string or genomic data, where all differences are discrete.
 Such an encoding would allow us to store the data in a compressed format, and to perform search on the compressed data without decompressing it.

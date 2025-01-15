@@ -4077,3 +4077,27 @@ author = "Coppersmith, Dan and Winograd, Shmuel",
   year={2023},
   publisher={ACM New York, NY, USA}
 }
+
+@article {kim2021entrance,
+	author = {Kim, Yoonjin and Guo, Zhen and Robertson, Jeffrey A. and Reidys, Benjamin and Zhang, Ziyan and Heath, Lenwood S.},
+	title = {EnTrance: Exploration of Entropy Scaling Ball Cover Search in Protein Sequences},
+	elocation-id = {2021.05.31.446458},
+	year = {2021},
+	doi = {10.1101/2021.05.31.446458},
+	publisher = {Cold Spring Harbor Laboratory},
+	abstract = {Biological sequence alignment using computational power has received increasing attention as technology develops. It is important to predict if a novel DNA sequence is potentially dangerous by determining its taxonomic identity and functional characteristics through sequence identification. This task can be facilitated by the rapidly increasing amounts of biological data in DNA and protein databases thanks to the corresponding increase in computational and storage costs. Unfortunately, the growth in biological databases has caused difficulty in exploiting this information. EnTrance presents an approach that can expedite the analysis of this large database by employing entropy scaling. This allows scaling with the amount of entropy in the database instead of scaling with the absolute size of the database. Since DNA and protein sequences are biologically meaningful, the space of biological sequences demonstrates the structure exploited by entropy scaling. As biological sequence databases grow, taking advantage of this structure can be extremely beneficial for reducing query times. EnTrance, the entropy scaling search algorithm introduced here, accelerates the biological sequence search exemplified by tools such as BLAST. EnTrance does this by utilizing a two step search approach. In this fashion, EnTrance quickly reduces the number of potential matches before more exhaustively searching the remaining sequences. Tests of EnTrance show that this approach can lead to improved query times. However, constructing the required entropy scaling indices beforehand can be challenging. To improve performance, EnTrance investigates several ideas for accelerating index build time that supports entropy scaling searches. In particular, EnTrance makes full use of the concurrency features of Go language greatly reducing the index build time. Our results identify key tradeoffs and demonstrate that there is potential in using these techniques for sequence similarity searches. Finally, EnTrance returns more matches and higher percentage identity matches when compared with existing tools.Competing Interest StatementThe authors have declared no competing interest.},
+	URL = {https://www.biorxiv.org/content/early/2021/05/31/2021.05.31.446458},
+	eprint = {https://www.biorxiv.org/content/early/2021/05/31/2021.05.31.446458.full.pdf},
+	journal = {bioRxiv}
+}
+
+@article{steinegger2018clustering,
+  title={Clustering huge protein sequence sets in linear time},
+  author={Steinegger, Martin and S{\"o}ding, Johannes},
+  journal={Nature communications},
+  volume={9},
+  number={1},
+  pages={2542},
+  year={2018},
+  publisher={Nature Publishing Group UK London}
+}

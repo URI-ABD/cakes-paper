@@ -51,14 +51,14 @@ there are 2 parameters in the definition of LFD (r_1 and r_2), but the
 discussion seems to imply there is only 1 (a radius r). That discussion only
 seems to make sense after line 163 and the rewrite of the definition 2.1.*
 
-We have revised the LFD definitions in this section for clarity. 
+We have revised the LFD definitions in this section for clarity.
 
 *Smith-Waterman and Needleman-Wunsch are not distances (unlike Levenshtein and
 Hamming distances). They are dynamic programming algorithms to compute
 distances like the Levenshtein distance (and others depending on the exact
 parameters of the algorithms).*
 
-This has been fixed. 
+This has been fixed.
 
 *The explanation that the augmentation process (starting at line 418) preserves
 the topological structure of the underlying data is not very convincing. This
@@ -116,7 +116,7 @@ This has been fixed.
 more readable in pseudo-code form and are just fine in explained in the text.
 (E.g., Algorithm 2.4).*
 
-We removed what was formerly Algorithm 2.4. 
+We removed what was formerly Algorithm 2.4.
 
 *The Github repository gives very little instructions on how to compile the
 code, run it or reproduce the results from this manuscript.*
@@ -204,7 +204,7 @@ given without much precision.  It is better to give precise theorems or
 propositions for each thing to be proved, with appropriate assumptions,
 and to give precise proofs of same.*
 
-We have expressed claimed time complexities as precise theorems with assumptions and provided proofs. 
+We have expressed claimed time complexities as precise theorems with assumptions and provided proofs.
 
 *The manuscript makes too much use of unfamiliar terminology taken from
 earlier papers without defining terms.  For example, see line 233 and
@@ -229,7 +229,7 @@ set of protein sequences.  In any case, I would like the authors to
 reference [1] and discuss in more depth how they address the challenges of
 the various real world examples.*
 
-fine, cite 1, and discuss (NI)
+The fact that protein sequences have widely varying lengths does pose problems in terms of the potential sparsity of the manifold; it suggests that many distances would be maximized. While this makes the notion of a 'center' somewhat arbitrary and meaningless in domain terms, there would still be a computable cluster center (as demonstrated in work we just published in IEEE Big Data, largely done after the CAKES work). However, the approach in [1] is quite justified. We have added a discussion of protein sequence search as a specific example of a difficult domain, and cited [1] among others.
 
 
 
