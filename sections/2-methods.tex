@@ -55,7 +55,7 @@ The center, therefore, is one of the points in the cluster and is used as a repr
 The radius is the maximum distance from the center to any point in the cluster.
 Each non-leaf cluster has two child clusters in much the same way that a node in a binary tree has two child nodes.
 Note that clusters can have overlapping volumes and, in such cases, points in the overlapping volume are assigned to exactly one of the overlapping clusters.
-As a consequence, a cluster can be a proper subset of the metric ball at the same center and radius, i.e.,\,$C(c, r) \subset B(c, r)$. We denote the cluster tree by $\mathcal{T}$ and the root by $\mathcal{R}$ (see Section~\ref{sec:methods:clustering:building-the-tree}). 
+As a consequence, a cluster can be a proper subset of the metric ball at the same center and radius, i.e.,\,$C(c, r) \subset B(c, r)$. We denote the cluster tree by $\mathcal{T}$ and the root by $\mathcal{R}$ (see Section~\ref{sec:methods:clustering:building-the-tree}).
 
 Hereafter, when we refer to the LFD of a cluster, it is estimated at the length scale of the cluster radius and half that radius, i.e.,\,using Equation~\ref{eq:methods:lfd-half}.
 We also only use points that are in $C(c, r)$ instead of all those in $B(c, r)$.
@@ -145,7 +145,7 @@ The only case in which we would expect a balanced tree is if the dataset were un
 
 When building a tree for a real dataset, the depth would be larger than $\log n$, which would seem to increase the cost of tree-building.
 However, because of the large numbers of leaf clusters at shallow depths, each subsequent level of $\mathcal{T}$ would also have fewer points, and so the cost of building each subsequent level would be lower.
-Any analysis of unbalanced trees would be highly dependent on the specific dataset, and so we do not provide one here.
+Any analysis of unbalanced trees would be highly dependent on the specific dataset, and so we do not provide one here, but we explore empirical results based on forcing a balanced tree in Section~\ref{sec:results:clustering-strategies-and-number-of-distance-computations}.
 In any case, the tree is built only once, so this cost is amortized over all search queries and other applications.
 
 
@@ -295,7 +295,7 @@ Once $\sum_{C \in Q} |C| \geq k$, we are guaranteed to have found at least $k$ n
         \Bigg)
         \label{eq:methods:repeated-rnn-complexity1}
     \end{gather}
-    where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of the dataset, $d$ is the LFD of the dataset, and $k$ is the number of nearest neighbors. 
+    where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of the dataset, $d$ is the LFD of the dataset, and $k$ is the number of nearest neighbors.
 \end{theorem}
 
 % \textbf{Theorem.} \textit{Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Then time complexity of performing Repeated $\rho$-NN search on $X$ with query $q$ is} \begin{gather}
@@ -374,7 +374,7 @@ By combining the bounds for tree-search and leaf-search, we see that Repeated $\
     \Bigg)
     \label{eq:methods:repeated-rnn-complexity}
 \end{gather*}
-as claimed. 
+as claimed.
 \end{proof}
 
 
@@ -495,7 +495,7 @@ Tree-search navigates the cluster tree and adds clusters to $Q$.
 Leaf-search exhaustively searches \textit{some} of the clusters in $Q$ to find the $k$ nearest neighbors.
 
 
-\begin{theorem} 
+\begin{theorem}
     Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Then, for dataset $X$ and query $q$, the time complexity of performing Breadth-First Sieve search is \begin{equation}
         \mathcal{O} \Big( (T + L ) \log (T + L ) \Big)
         \label{eq:methods:breadth-first-sieve-complexity}
@@ -518,13 +518,13 @@ The asymptotic complexity of Breadth-First Sieve is dominated by the QuickSelect
 Since this method is log-linear in the length of $Q$, and $Q$ contains the clusters from tree-search and the points from leaf-search, we see that the asymptotic complexity is
 \begin{equation*}
     \mathcal{O} \Big( (T + L ) \log (T + L ) \Big),
-\end{equation*} as claimed. 
+\end{equation*} as claimed.
 
 For Depth-First Sieve, since we use two priority queues, the asymptotic complexity is dominated by the priority queue operations.
 Thus, the complexity is
 \begin{equation*}
-    \mathcal{O} \Big( T \log T + L \log k \Big), 
-\end{equation*} as claimed. 
+    \mathcal{O} \Big( T \log T + L \log k \Big),
+\end{equation*} as claimed.
 \end{proof}
 
 \subsection{Auto-Tuning}

@@ -27,7 +27,7 @@ We observe that until approximately depth 5, Fashion-Mnist's LFD is low (i.e., l
 
 Relative to Fashion-Mnist, Glove-25 has low LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}.
 Percentile lines for Glove-25 are flatter and lower, indicating that the LFD is lower across the entire dataset, and that the LFD does not vary as much by depth.
-In particular, Glove-25's LFD is less than 3 for all depths. 
+In particular, Glove-25's LFD is less than 3 for all depths.
 Before depth 25, the LFD hovers near 2, and from depth 20 onward, it hovers near 3.5 before dipping sharply at the maximum depths.
 
 
@@ -148,7 +148,7 @@ When reporting recall, we use $1.000*$ to denote that the recall is imperfect, b
 
 
 Figure~\ref{fig:results:scaling-plots} shows that for Fashion-Mnist, Glove-25, and Sift, as cardinality increases, the CAKES algorithms (Depth-First Sieve in blue, Repeated $\rho$-NN in green, and Breadth-First Sieve in purple) become faster than our Rust implementation of na\"{i}ve linear search (in orange).
-Though we observe this trend, we note that the exact cardinality at which CAKES's algorithms overtake linear search differs by dataset (see Figure~\ref{fig:results:scaling-plots}). 
+Though we observe this trend, we note that the exact cardinality at which CAKES's algorithms overtake linear search differs by dataset (see Figure~\ref{fig:results:scaling-plots}).
 % For Fashion-Mnist, CAKES begins outperforming linear search starting at a cardinality near $10^5$, while for Glove-25 and Sift, this happens near $10^6$ and $10^7$ respectively.
 
 
@@ -329,9 +329,10 @@ For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe th
 \subsection{Clustering Strategies and Number of Distance Computations}
 \label{sec:results:clustering-strategies-and-number-of-distance-computations}
 
-In addition to the scaling experiments, we also explore how four different clustering strategies affect the performance of search.
-To help with this analysis, we also added some instrumentation to our implementation of CAKES to count the number of distance computations performed during search.
-These are shown in Figure~\ref{fig:results:distance-counts}.
+In addition to the scaling experiments, we also explore how four different clustering strategies affect the performance of search. These strategies are the Cartesian product of balanced vs. unbalanced clustering, and the presence vs. absence of depth-first reordering as described in Section~\ref{sec:methods:clustering:depth-first-reordering}.
+To help with this analysis, we also added some instrumentation to our implementation of CAKES to count the number of distance computations performed during search. We note that this instrumentation significantly slows down the wall-clock time of search, so it would not be used in a real-world application.
+
+These four comparisons (referred to as Ball, BalancedBall, PermutedBalancedBall, and PermutedBall, where depth-first-reordering is referred to as Permuted for brevity) for all three search algorithms on the Fashion-MNIST dataset are shown in Figure~\ref{fig:results:distance-counts}. Notably, performance is not only strictly worse for the balanced approaches, but the asymptotic behavior is significantly worse; the instances (such as Depth First Sieve) that seemed to exhibit constant-time behavior in Figure~\ref{fig:results:scaling-plots}, which is effectively PermutedBall, no longer do. We note that on this dataset, depth-first reordering (the Permuted plotlines) seems to have little effect.
 
 
 \begin{figure}
