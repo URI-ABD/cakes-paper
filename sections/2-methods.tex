@@ -279,14 +279,44 @@ Once $\sum_{C \in Q} |C| \geq k$, we are guaranteed to have found at least $k$ n
 \subsubsection{Complexity of Repeated \texorpdfstring{$\rho$}{p}-NN}
 \label{sec:methods:knn-search:repeated-rnn-complexity}
 
-The complexity bounds for Repeated $\rho$-NN rely on the assumption that the query point is sampled from the same distribution as the rest of the data or, in other words, that it arises from the same generative process as the rest of the dataset.
-Given the uses of $k$-NN search in practice, this assumption is reasonable.
-From this assumption, we can infer that the LFD near the query does not differ significantly from the (harmonic) mean of the LFDs of clusters near the query at the scale of the distance from the query to the $k^{th}$ nearest neighbor.
+% The complexity bounds for Repeated $\rho$-NN rely on the assumption that the query point is sampled from the same distribution as the rest of the data or, in other words, that it arises from the same generative process as the rest of the dataset.
+% Given the uses of $k$-NN search in practice, this assumption is reasonable.
+% From this assumption, we can infer that the LFD near the query does not differ significantly from the (harmonic) mean of the LFDs of clusters near the query at the scale of the distance from the query to the $k^{th}$ nearest neighbor.
 
-We find it useful to start by discussing the \textit{tree-search} and \textit{leaf-search} stages separately.
-Tree-search refers to the process of identifying clusters that overlap with the query ball, or in other words, clusters that might contain one of the $k$ nearest neighbors.
-Leaf-search refers to the process of identifying the $k$ nearest neighbors among the points in the clusters identified by tree-search.
+\begin{theorem} Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Then time complexity of performing Repeated $\rho$-NN search on $X$ with query $q$ is \begin{gather}
+        \mathcal{O}
+        \Bigg(
+            \underbrace{
+                \log~\overbrace{\mathcal{N}_{\hat{r}}(X)}^{\textrm{metric entropy}}
+            }_{\textrm{tree-search}}
+            \ + \
+            \underbrace{
+                \overbrace{k}^{\textrm{output size}} \cdot
+                \overbrace{\bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d}^{\textrm{scaling factor}}
+            }_{\textrm{leaf-search}}
+        \Bigg)
+        \label{eq:methods:repeated-rnn-complexity1}
+    \end{gather}
+    where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of the dataset, $d$ is the LFD of the dataset, and $k$ is the number of nearest neighbors. 
+\end{theorem}
 
+% \textbf{Theorem.} \textit{Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Then time complexity of performing Repeated $\rho$-NN search on $X$ with query $q$ is} \begin{gather}
+%     \mathcal{O}
+%     \Bigg(
+%         \underbrace{
+%             \log~\overbrace{\mathcal{N}_{\hat{r}}(X)}^{\textrm{metric entropy}}
+%         }_{\textrm{tree-search}}
+%         \ + \
+%         \underbrace{
+%             \overbrace{k}^{\textrm{output size}} \cdot
+%             \overbrace{\bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d}^{\textrm{scaling factor}}
+%         }_{\textrm{leaf-search}}
+%     \Bigg).
+%     \label{eq:methods:repeated-rnn-complexity1}
+% \end{gather}
+
+\begin{proof} We consider the \textit{tree-search} and \textit{leaf-search} stages of search separately.
+Tree-search refers to the process of identifying clusters that overlap with the query ball, or in other words, clusters that might contain one of the $k$ nearest neighbors by doing repeated iterations of the  $\rho$-NN search Algorithm~\ref{alg:methods:rnn-search:tree-search}.
 In ~\cite{ishaq2019clustered}, we showed that the complexity of $\rho$-NN search is
 \begin{gather}
     \mathcal{O}
@@ -304,33 +334,35 @@ In ~\cite{ishaq2019clustered}, we showed that the complexity of $\rho$-NN search
 \end{gather}
 where $\hat{r}$ is the \textit{mean} radius of leaf clusters, $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy at that radius, $B(q, \rho)$ is a ball of radius $\rho$ around the query $q$, and $d$ is the LFD around the query at the length scale of $\rho$ and $\rho + 2 \cdot \hat{r}$.
 
-To build on this and determine the complexity of Repeated $\rho$-NN, we must first estimate the number of iterations of tree-search (Algorithm~\ref{alg:methods:rnn-search:tree-search}) needed to find a radius that guarantees at least $k$ neighbors.
 
-Based on the assumption that the LFD near the query does not differ significantly from that of the clusters near the query (the set $Q$), Equation~\ref{eq:methods:repeated-rnn-factor} suggests that in the expected case, we need only two iterations of tree-search to find $k$ neighbors:
+To extend Equation~\ref{eq:methods:rnn-search-complexity} to Repeated $\rho$-NN, we must first estimate the number of iterations of tree-search (Algorithm~\ref{alg:methods:rnn-search:tree-search}) needed to find a radius that guarantees at least $k$ neighbors.
+Since $q$ is sampled from the same distribution as $X$, the LFD near $q$ should not differ significantly from the (harmonic) mean of the LFDs of clusters near $q$ at the scale of the distance from the query to the $k^{th}$ nearest neighbor.
+Given that LFD near $q$ does not differ significantly from that of nearby clusters, Equation~\ref{eq:methods:repeated-rnn-factor} suggests that in the expected case, we need only two iterations of tree-search to find $k$ neighbors:
 one iteration to find at least one cluster, and one more to find enough clusters to guarantee $k$ neighbors.
 Since this is a constant factor, complexity of tree-search for Repeated $\rho$-NN is the same as that of $\rho$-NN search, i.e.,\,$\mathcal{O}\big(\log\mathcal{N}_{\hat{r}}(X)\big)$.
 
-To determine the asymptotic complexity of leaf-search, we must estimate $\sum_{C \in Q} |C|$, the total cardinality of the clusters returned by tree-search.
-Since we must examine every point in each such cluster, time complexity of leaf-search is linear in $\sum_{C \in Q} |C|$.
+
+We proceed to determine the complexity of leaf-search. Let $Q$ be the set of clusters returned by tree-search. We must estimate $\sum_{C \in Q} |C|$, the total cardinality of the clusters returned by tree-search; since we must examine every point in each such cluster, time complexity of leaf-search is linear in this quantity.
 Let $\rho_k$ be the distance from the query to the $k^{th}$ nearest neighbor.
 Then, we see that $Q$ is expected to be the set of clusters that overlap with a ball of radius $\rho_k$ around the query.
 We can estimate this region as a ball of radius $\rho_k + 2\hat{r}$, where $\hat{r}$ is the mean radius of the clusters in $Q$.
 
+
 The work in~\cite{yu2015entropy} showed that $\sum_{C \in S} |C| \leq \gamma  \left| B(q, \rho_k) \right| \left(\frac{\rho_k + 2 \cdot \hat{r}}{\rho_k} \right)^d$, where $\gamma$ is a constant.
 By definition of $\rho_k$, we have that $|B(q, \rho_k)| = k$.
 Thus, $\sum_{C \in S} |C| \leq \gamma k \left( 1 + 2 \cdot \frac{\hat{r}}{\rho_k} \right)^d$.
-However, an estimate for $\rho_k$ is still needed.
-For this, we once again rely on the assumption that the query is drawn from the same distribution as the rest of the data, and thus the LFD at the query point is not significantly different from the LFD of nearby clusters.
+It remains to determine an estimate for $\rho_k$.
+% For this, we once again rely on the assumption that the query is drawn from the same distribution as the rest of the data, and thus the LFD at the query point is not significantly different from the LFD of nearby clusters.
 We let $\hat{d}$ be the (harmonic) mean LFD of the clusters in $Q$.
 While ordinarily we compute LFD by comparing cardinalities of two balls with two different radii centered at \textit{the same} point, in order to estimate $\rho_k$, we instead compare the cardinality of a ball \textit{around the query} of radius $\rho_k$ to the mean cardinality, $\hat{|C|}$, of clusters in $Q$ at a radius equal to the mean of their radii, $\hat{r}$.
-We justify this approach by noting that, since the query is from the same distribution as the rest of the data, we could move from the query to the center of one of the nearby clusters without significantly changing our estimate of the LFD.
+Since $q$ is from the same distribution as $X$, the LFD at $q$ should not be significantly different from that at the center of a cluster in $Q$.
 By Equation~\ref{eq:methods:lfd-original}, $\hat{d} = \frac{\log{}\frac{\hat{|C|}}{k}}{\log{}\frac{\hat{r}}{\rho_k}}$.
 We can rearrange this equation to get $\frac{\hat{r}}{\rho_k} = \left( \frac{\hat{|C|}}{k} \right)^{\hat{d}^{-1}}$.
 Using this to simplify the term for leaf-search in Equation~\ref{eq:methods:rnn-search-complexity}, we get $k \left( 1 + 2 \cdot \left( \frac{\hat{|C|}}{k} \right) ^ {\hat{d}^{-1}} \right)^d$.
 
-In addition, by our assumption that the LFD at the query is not significantly different from the LFD of nearby clusters, we have that $\hat{d} \approx d$.
-By combining the bounds for tree-search and leaf-search, we see that Repeated $\rho$-NN has an asymptotic complexity of
-\begin{gather}
+Again using the assumption that since $q$ is from the same distribution as $X$, the LFD at $q$ should not be significantly different from that at a cluster in $Q$, we have that $\hat{d} \approx d$.
+By combining the bounds for tree-search and leaf-search, we see that Repeated $\rho$-NN has time complexity
+\begin{gather*}
     \mathcal{O}
     \Bigg(
         \underbrace{
@@ -343,9 +375,13 @@ By combining the bounds for tree-search and leaf-search, we see that Repeated $\
         }_{\textrm{leaf-search}}
     \Bigg)
     \label{eq:methods:repeated-rnn-complexity}
-\end{gather}
-where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of the dataset, $d$ is the LFD of the dataset, and $k$ is the number of nearest neighbors.
-Note that the scaling factor should be close to 1 unless LFD is highly variable in the region around the query (i.e.,\,if $\hat{d}$ differs significantly from $d$).
+\end{gather*}
+as claimed. 
+\end{proof}
+
+
+
+We remark that the scaling factor in Equation~\ref{eq:methods:repeated-rnn-complexity1} should be close to 1 unless LFD is highly variable in the region around the query (i.e.,\,if $\hat{d}$ differs significantly from $d$).
 
 
 \subsubsection{Breadth-First Sieve}

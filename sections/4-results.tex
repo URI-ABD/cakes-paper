@@ -6,27 +6,40 @@
 \label{sec:results:lfd-of-datasets}
 
 Since the time complexity of CAKES algorithms scales with the LFD of the dataset, we examine the LFD of each dataset we used for benchmarks.
-Figure~\ref{fig:results:lfd-plots} illustrates the trends in LFD for Fashion-Mnist, Glove-25, Sift, Random, Silva 18S, and RadioML.
-The horizontal axis denotes depth in the cluster tree, and the vertical axis denotes the LFD of clusters at that depth.
-We plot lines for the 5$^{th}$, 25$^{th}$, 50th, 75$^{th}$ and 95$^{th}$ percentiles of LFD, as well as the minimum and maximum LFD at each depth.
-In order to have the plots best reflect the distribution of LFDs across the entire \textit{dataset}, we count each cluster as many times as its cardinality.
-In other words, if, for some dataset, the 95$^{th}$ percentile of LFD at depth 40 is 3, this means that 95\% of the points in clusters at depth 40 belong to a cluster whose LFD is at most 3.
+Figure~\ref{fig:results:lfd-plots} illustrates the trends in LFD for Fashion-Mnist, Glove-25, Sift, Random, Silva 18S, and RadioML. In this section, when we discuss trends in LFD, unless otherwise noted, we are referring to the 95$^{th}$ percentile of LFD, as it seems most relevant to CAKES's performance (see Figure~\ref{fig:results:lfd-plots}).
+% The horizontal axis denotes depth in the cluster tree, and the vertical axis denotes the LFD of clusters at that depth.
+% We plot lines for the 5$^{th}$, 25$^{th}$, 50th, 75$^{th}$ and 95$^{th}$ percentiles of LFD, as well as the minimum and maximum LFD at each depth. In this section, when we discuss trends in LFD, unless otherwise noted, we are referring to the 95$^{th}$ percentile of LFD, as it seems most relevant to CAKES's performance.
+% In order to have the plots best reflect the distribution of LFDs across the entire \textit{dataset}, we count each cluster as many times as its cardinality.
+% In other words, if, for some dataset, the 95$^{th}$ percentile of LFD at depth 40 is 3, this means that 95\% of the points in clusters at depth 40 belong to a cluster whose LFD is at most 3.
+
+
 Figure~\ref{fig:results:fashion-mnist-lfd} shows the LFD by depth for Fashion-Mnist.
-We observe that until about depth 5, LFD is low, as the 95$^{th}$ percentile (orange plotted line) is less than 4, and the median (red line) is just above 2.
-For depths 15 through 25, we observe that LFD increases, with the 95$^{th}$ percentile (orange plotted line) slightly less than 6, and the median near 3.
-Finally, for depths 25 through the maximum depth, we observe that the LFD decreases again, as the 95$^{th}$ percentile is between 3 and 4, and the median is less than 2.
+% We observe that until about depth 5, LFD is low, as the 95$^{th}$ percentile (orange plotted line) is less than 4, and the median (red line) is just above 2.
+% For depths 15 through 25, we observe that LFD increases, with the 95$^{th}$ percentile (orange plotted line) slightly less than 6, and the median near 3.
+% Finally, for depths 25 through the maximum depth, we observe that the LFD decreases again, as the 95$^{th}$ percentile is between 3 and 4, and the median is less than 2.
+We observe that until approximately depth 5, Fashion-Mnist's LFD is low (i.e., less than 4). It then starts increasing, reaching a peak of about 6 near depth 25, before decreasing again until the maximum depth.
+
+% Relative to Fashion-Mnist, Glove-25 has low LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}.
+% Percentile lines for Glove-25 are flatter and lower, indicating that the LFD is lower across the entire dataset, and that the LFD does not vary as much by depth.
+% The 95$^{th}$ percentile of LFD is less than 3 for all depths, and the median is less than 2 for all depths.
+% Before depth 25, the 95$^{th}$ percentile hovers near 2, and from depth 20 onward, it hovers near 3.5 before dipping sharply at the maximum depths.
+% The median hovers near 1.5 for all depths.
 
 Relative to Fashion-Mnist, Glove-25 has low LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}.
 Percentile lines for Glove-25 are flatter and lower, indicating that the LFD is lower across the entire dataset, and that the LFD does not vary as much by depth.
-The 95$^{th}$ percentile of LFD is less than 3 for all depths, and the median is less than 2 for all depths.
-Before depth 25, the 95$^{th}$ percentile hovers near 2, and from depth 20 onward, it hovers near 3.5 before dipping sharply at the maximum depths.
-The median hovers near 1.5 for all depths.
+In particular, Glove-25's LFD is less than 3 for all depths. 
+Before depth 25, the LFD hovers near 2, and from depth 20 onward, it hovers near 3.5 before dipping sharply at the maximum depths.
 
-Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for Sift.
-Until about depth 5, the 95$^{th}$ percentile is between 2 and 6.
-From about depth 5 through about depth 20, the 95$^{th}$ percentile is greater than 6, even exceeding 8 near depth 10.
-From about depth 20 onward, the 95$^{th}$ percentile is less than 6, and from about depth 30 onward, it is between 3 and 4.
-The median reaches its peak of about 5 at around depth 15, but hovers near 2 after about depth 30.
+
+% Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for Sift, which has higher LFD relative to Fashion-Mnist and Glove-25.
+% Until about depth 5, the LFD is between 2 and 6.
+% From about depth 5 through about depth 20, the 95$^{th}$ percentile is greater than 6, even exceeding 8 near depth 10.
+% From about depth 20 onward, the 95$^{th}$ percentile is less than 6, and from about depth 30 onward, it is between 3 and 4.
+% The median reaches its peak of about 5 at around depth 15, but hovers near 2 after about depth 30.
+
+Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for Sift, which has higher LFD relative to Fashion-Mnist and Glove-25.
+Until about depth 5, the LFD is between 2 and 6. LFD is greater than 6 until about depth 20, even exceeding 8 near depth 10.
+From about depth 20 onward, LFD falls below 6, and from about depth 30 onward, it hovers between 3 and 4.
 
 In contrast with Figure~\ref{fig:results:sift-lfd}, Figure~\ref{fig:results:random-lfd} shows the LFD by depth for a random dataset with the same cardinality and dimensionality as those of Sift.
 We observe that the LFD starts as high as 20 (for all data) at depth 0.
@@ -41,15 +54,21 @@ in other words, $B_X(c, \tfrac{r}{2})$ contains only $c$ while $B_X(c, r)$ conta
 Given our definition of LFD in Equation~\ref{eq:methods:lfd-original}, this means that the LFD of $\mathcal{R}$ is approximately $\log_2(\frac{|X|}{1}) = \log_2(1,000,000) \approx 20$, which is what we observe in Figure~\ref{fig:results:random-lfd}.
 
 Silva, as shown in Figure~\ref{fig:results:silva-lfd}, exhibits consistently low LFD.
-The 95$^{th}$ percentile is less than about 3 for all depths, hovering near 1 for depths 40 through 128.
-The median reaches its peak at 2 for about depth 10 and remains close to 0 for depths 40 through 128.
+In particular, LFD is less than about 3 for all depths, hovering near 1 for depths 40 through 128.
+% The median reaches its peak at 2 for about depth 10 and remains close to 0 for depths 40 through 128.
 
-Relative to the other datasets, RadioML, as displayed in Figure~\ref{fig:results:radioml-lfd}, exhibits high LFD.
-Notably, however, for the first approximately 15 depths, the 95$^{th}$ percentile and median LFD are very close to 0.
-Both percentiles increase sharply after depth 20, nearly reaching 16.
-LFD remains high even as depth increases, with the 95$^{th}$ percentile fluctuating between about 6 and 15 for depths about 20-40.
+% Relative to the other  datasets, RadioML, as displayed in Figure~\ref{fig:results:radioml-lfd}, exhibits high LFD.
+% Notably, however, for the first approximately 15 depths, the 95$^{th}$ percentile and median LFD are very close to 0.
+% Both percentiles increase sharply after depth 20, nearly reaching 16.
+% LFD remains high even as depth increases, with the 95$^{th}$ percentile fluctuating between about 6 and 15 for depths about 20-40.
+% It then spikes up again to about 10 at around depth 45 before decreasing linearly to 1 at depth 60.
+% The median LFD follows a similar pattern of peaks and troughs, fluctuating between about 3 and 15 for depths 20-40, spiking at about depth 50 to 5, and then decreasing approximately linearly to 1 at depth 60. The inconsistency of LFD in the RadioML dataset suggests that it obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth; this could be due to dense sampling or---as this is still a synthetic dataset---nonuniform generation of data. Silva, in contrast, appears to obey the manifold hypothesis at all scales.
+
+Relative to the other  datasets, RadioML, as displayed in Figure~\ref{fig:results:radioml-lfd}, exhibits high LFD.
+Notably, however, for the first approximately 15 depths, LFD is very close to 0, although it increases sharply after depth 20, nearly reaching 16.
+LFD remains high even as depth increases, fluctuating between about 6 and 15 for depths about 20-40.
 It then spikes up again to about 10 at around depth 45 before decreasing linearly to 1 at depth 60.
-The median LFD follows a similar pattern of peaks and troughs, fluctuating between about 3 and 15 for depths 20-40, spiking at about depth 50 to 5, and then decreasing approximately linearly to 1 at depth 60. The inconsistency of LFD in the RadioML dataset suggests that it obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth; this could be due to dense sampling or---as this is still a synthetic dataset---nonuniform generation of data. Silva, in contrast, appears to obey the manifold hypothesis at all scales.
+The inconsistency of LFD in the RadioML dataset suggests that it obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth; this could be due to dense sampling or---as this is still a synthetic dataset---nonuniform generation of data. Silva, in contrast, appears to obey the manifold hypothesis at all scales.
 
 \begin{figure}
     \captionsetup[subfigure]{aboveskip=-15pt,belowskip=-3pt}
@@ -93,8 +112,7 @@ The median LFD follows a similar pattern of peaks and troughs, fluctuating betwe
         \label{fig:results:lfd-legend}
     \end{subfigure}%
     \vskip -0.1in
-    \caption{Local fractal dimension vs. cluster depth across six datasets, grouped by percentiles of local fractal dimension and weighted by the cardinalities of the clusters.
-    Note that the y-axis is different for the random dataset.}
+    \caption{Local fractal dimension vs. cluster depth across six datasets. The last dataset is randomly generated according to the procedure in Section~\ref{sec:datasets-and-benchmarks:random-datasets}; note that the y-axis is different for this dataset. In each plot, the horizontal axis denotes depth in the cluster tree, and the vertical axis denotes the LFD of clusters at that depth. We show lines for the 5$^{th}$, 25$^{th}$, 50th, 75$^{th}$ and 95$^{th}$ percentiles of LFD, as well as the minimum and maximum LFD at each depth. So that plots best reflect the distribution of LFDs across the entire \textit{dataset}, we count each cluster as many times as its cardinality. For example, if, for some dataset, the 95$^{th}$ percentile of LFD at depth 40 is 3, this means that 95\% of the points in clusters at depth 40 belong to a cluster whose LFD is at most 3.}
     \label{fig:results:lfd-plots}
     \vskip -0.4in
 \end{figure}
@@ -130,30 +148,37 @@ When reporting recall, we use $1.000*$ to denote that the recall is imperfect, b
 
 
 Figure~\ref{fig:results:scaling-plots} shows that for Fashion-Mnist, Glove-25, and Sift, as cardinality increases, the CAKES algorithms (Depth-First Sieve in blue, Repeated $\rho$-NN in green, and Breadth-First Sieve in purple) become faster than our Rust implementation of na\"{i}ve linear search (in orange).
-Though we observe this trend, we note that the exact cardinality at which CAKES's algorithms overtake linear search differs by dataset. For Fashion-Mnist, CAKES begins outperforming linear search starting at a cardinality near $10^5$, while for Glove-25 and Sift, this happens near $10^6$ and $10^7$ respectively.
+Though we observe this trend, we note that the exact cardinality at which CAKES's algorithms overtake linear search differs by dataset (see Figure~\ref{fig:results:scaling-plots}). 
+% For Fashion-Mnist, CAKES begins outperforming linear search starting at a cardinality near $10^5$, while for Glove-25 and Sift, this happens near $10^6$ and $10^7$ respectively.
+
+
 Which one of the three CAKES algorithms is fastest also differs by dataset.
 For Fashion-Mnist, Depth-First Sieve is consistently fastest, while for Glove-25, the fastest is Repeated $\rho$-NN, and for Sift, Breadth-First Sieve.
 On all three datasets, Depth-First Sieve and Breadth-First Sieve appear to have performance that is \textit{constant} in the cardinality of the dataset.
 With Glove-25, Repeated $\rho$-NN exhibits similar constant scaling.
 We also observe that on these three datasets, for nearly all cardinalities, all three of the CAKES algorithms are faster than FAISS-Flat (in brown), and that at some cardinality, CAKES's algorithms become faster than FAISS-IVF (in pink).
-For Fashion-Mnist, CAKES becomes faster than FAISS-IVF near cardinality $10^5$, whereas for Glove-25 and Sift, this happens near cardinality $10^7$.
+% For Fashion-Mnist, CAKES becomes faster than FAISS-IVF near cardinality $10^5$, whereas for Glove-25 and Sift, this happens near cardinality $10^7$.
+
 On all three of these datasets, HNSW (in gray) and ANNOY (in yellow) are faster than CAKES's algorithms for all cardinalities; however, CAKES exhibits perfect or near-perfect recall on each dataset, while HNSW and ANNOY exhibit much lower recall, as shown in Table~\ref{tab:datasets:summary}.
 While recall for CAKES's does \emph{not} degrade with cardinality, recall for HNSW and ANNOY degrades with cardinality.
-At a cardinality multiplier as low as eight, HNSW and ANNOY have recall of $0.525$ and $0.857$ respectively for Fashion-Mnist, 0.607 and 0.832 for Glove-25, and 0.782 and 0.686 on Sift.
+% At a cardinality multiplier as low as eight, HNSW and ANNOY have recall of $0.525$ and $0.857$ respectively for Fashion-Mnist, 0.607 and 0.832 for Glove-25, and 0.782 and 0.686 on Sift.
 In contrast, CAKES has perfect recall on Fashion-Mnist and Sift (where the distance function is a metric), and near-perfect recall on Glove-25 (cosine distance is not a metric).
 
 
 In contrast with the results on the ANN Benchmark datasets reported above, as seen in Figure~\ref{fig:results:random-scaling}, we observe performs quite slowly pn the Random dataset.
 As with the real datasets, HNSW and ANNOY are the fastest algorithms, and CAKES exhibits perfect recall at all cardinalities.
-HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets;
-in particular, with a multiplier of 1, HNSW and ANNOY have recall as low as 0.060 and 0.028 respectively, as reported in Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift}, and~\ref{tab:results:qps-and-recall-random}.
+% HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets;
+% in particular, with a multiplier of 1, HNSW and ANNOY have recall as low as 0.060 and 0.028 respectively, as reported in Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift}, and~\ref{tab:results:qps-and-recall-random}.
+HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets,as shown in Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift}, and~\ref{tab:results:qps-and-recall-random}.
 
 For Silva and RadioML, we benchmarked only CAKES's algorithms because HNSW, ANNOY and FAISS support neither the required distance functions nor, in the case of RadioML, complex-valued data.
 Due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset---rather than augmented versions of the dataset---to examine how performance scales with cardinality.
-With Silva, as shown in Figure~\ref{fig:results:silva-scaling}, we observe that for all algorithms, throughput initially seems to linearly decrease as cardinality increases, but that it seems to begin levelling off near cardinality $10^5$.
-Until cardinality near $10^4$, Depth-First Sieve is the fastest CAKES algorithm, but for larger cardinalities, Repeated $\rho$-NN is the fastest CAKES algorithm.
-For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe that throughput declines nearly linearly, and that the three CAKES algorithms exhibit virtually indistinguishable performance.
-In particular, throughput of CAKES's algorithms is identical within three significant figures.
+% With Silva, as shown in Figure~\ref{fig:results:silva-scaling}, we observe that for all algorithms, throughput initially seems to linearly decrease as cardinality increases, but that it seems to begin levelling off near cardinality $10^5$.
+% Until cardinality near $10^4$, Depth-First Sieve is the fastest CAKES algorithm, but for larger cardinalities, Repeated $\rho$-NN is the fastest CAKES algorithm.
+
+With Silva, as shown in Figure~\ref{fig:results:silva-scaling}, we observe that for all algorithms, throughput initially seems to linearly decrease as cardinality increases, but that it levels off at higher cardinalities.
+Depth-First Sieve is the fastest CAKES algorithm for lower multipliers, but for larger cardinalities, Repeated $\rho$-NN becomes the fastest.
+For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe that throughput declines nearly linearly, and that the three CAKES algorithms exhibit virtually indistinguishable performance; in particular, throughput of CAKES's algorithms is identical within three significant figures.
 
 \begin{figure}
     \begin{subfigure}[b]{0.47\textwidth}
@@ -196,8 +221,11 @@ In particular, throughput of CAKES's algorithms is identical within three signif
     \end{subfigure}%
     \caption{Throughput across six datasets, including a randomly-generated dataset.
     In each plot, the horizontal axis represents increasing cardinality of the dataset, while the vertical axis represents the throughput in queries per second (higher is better).
-    For HNSW and ANNOY, we were not able to take measurements for each cardinality because building the index required more RAM than was available (i.e.,\,more then 512GB).
-    For linear search with CAKES, we only report the throughput for a few of the initial multipliers because the trend is clear.}
+    For some algorithms, we were not able to take measurements for each cardinality because the index-building required more RAM than was available (i.e.,\,more then 512GB).
+    For linear search with CAKES, we only report the throughput for a few of the initial multipliers because the trend is clear.
+    We observe that the cardinality at which CAKES algorithms outperform linear search differs by dataset. For Fashion-Mnist, CAKES begins outperforming linear search starting at a cardinality near $10^5$, while for Glove-25 and Sift, this happens near $10^6$ and $10^7$ respectively.
+    % For Fashion-Mnist, CAKES becomes faster than FAISS-IVF near cardinality $10^5$, whereas for Glove-25 and Sift, this happens near cardinality $10^7$.
+    }
     \label{fig:results:scaling-plots}
 \end{figure}
 
