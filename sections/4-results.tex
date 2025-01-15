@@ -34,43 +34,18 @@ Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for Sift, which has hig
 It increases sharply to a peak of 9 around a depth of 10.
 It then decreases smoothly until reaching the deepest leaves in the tree.
 
-<<<<<<< HEAD
-Relative to Fashion-Mnist, Glove-25 has low LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}.
-Percentile lines for Glove-25 are flatter and lower, indicating that the LFD is lower across the entire dataset, and that the LFD does not vary as much by depth.
-In particular, Glove-25's LFD is less than 3 for all depths.
-Before depth 25, the LFD hovers near 2, and from depth 20 onward, it hovers near 3.5 before dipping sharply at the maximum depths.
-
-
-% Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for Sift, which has higher LFD relative to Fashion-Mnist and Glove-25.
-% Until about depth 5, the LFD is between 2 and 6.
-% From about depth 5 through about depth 20, the 95$^{th}$ percentile is greater than 6, even exceeding 8 near depth 10.
-% From about depth 20 onward, the 95$^{th}$ percentile is less than 6, and from about depth 30 onward, it is between 3 and 4.
-% The median reaches its peak of about 5 at around depth 15, but hovers near 2 after about depth 30.
-
-Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for Sift, which has higher LFD relative to Fashion-Mnist and Glove-25.
-Until about depth 5, the LFD is between 2 and 6. LFD is greater than 6 until about depth 20, even exceeding 8 near depth 10.
-From about depth 20 onward, LFD falls below 6, and from about depth 30 onward, it hovers between 3 and 4.
-
-In contrast with Figure~\ref{fig:results:sift-lfd}, Figure~\ref{fig:results:random-lfd} shows the LFD by depth for a random dataset with the same cardinality and dimensionality as those of Sift.
-We observe that the LFD starts as high as 20 (for all data) at depth 0.
-As shown by the needlepoint shape of the plot, the LFD for all clusters has a very narrow spread from depth 0 through depth 5.
-After depth 5, we begin to see a wider spread between the maximum and minimum LFD at each depth.
-All percentile lines seem to decrease linearly with depth.
-The LFD of approximately 20 at depth 0 (i.e.,\,the root cluster $\mathcal{R}$) is what we expect for this random dataset.
-=======
 We generated the Random dataset to have the same cardinality and dimensionality as Sift.
 We used a uniform distribution in a 128-dimensional unit-hypercube to generate the points and the Euclidean metric to measure distances among them.
 Figure~\ref{fig:results:random-lfd} shows that the character of this dataset is significantly different from the others.
 The LFD starts at 20 at depth 0 and all percentile lines decrease linearly with depth until reaching the leaves of the tree.
 The spread in LFD starts very small for the first few clusters and increases as depth increases.
 The LFD of approximately 20 for the root cluster $\mathcal{R}$ is what we expect for this random dataset.
->>>>>>> d9ad3c4bad09415cfaf898eea9d79441c006ed1d
 To elaborate, the distribution of points in such a dataset should reflect the curse of dimensionality, i.e.,\,the fact that in high dimensional spaces, the minimum and maximum pairwise distances between any two points are approximately equal.
 As a result, $\mathcal{R}$'s radius $r$, which reflects the maximum distance between the center $c$ and any other point, should not differ significantly from the distance between the center and its closest point.
 A consequence of this is that, with high probability, for every point in $\mathcal{R}$, its distance from $c$ is greater than $\tfrac{r}{2}$;
 in other words, $B(c, \tfrac{r}{2})$ contains only $c$ while $B(c, r)$ contains the entire dataset.
 Given our definition of LFD in Equation~\ref{eq:methods:lfd-half}, this means that the LFD of $\mathcal{R}$ is approximately $\log_2(\frac{|X|}{1}) = \log_2(1,000,000) \approx 20$, which is what we observe in Figure~\ref{fig:results:random-lfd}.
-Theoretically, we the LFD of this dataset should be 128, i.e.\, it should be the same as the embedding dimension.
+Theoretically, the LFD of this dataset should be 128, i.e.\, it should be the same as the embedding dimension.
 This reflects the difference between how we empirically measure the LFD and the value we would expect.
 With sample sizes larger than 1,000,000, we would expect the LFD to approach 128 until we have sampled $2^128$ points, at which point the LFD would be 128 and would stay at 128 for even larger sample sizes.
 Unfortunately, such a large sample is practically impossible to generate.
