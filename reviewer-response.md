@@ -45,7 +45,7 @@ This is restating the complexity from the CHESS paper, but it's correct that it'
 the assumption on the LFD is not satisfied, then an extra log factor would
 appear in the cost.*
 
-write in plain english right after eq 2.3, explaining in plain english the rationale for the min(2,x) expansion: namely, we don't think the very low LFD would be representative of what we'd see if we massively increased the radius (TODO Morgan)
+write a rebuttal here, mentioning Thm 2.1 (TODO Najib)
 
 *The discussion on LFD after its definition line 141 is hard to understand:
 there are 2 parameters in the definition of LFD (r_1 and r_2), but the
@@ -221,7 +221,7 @@ We have addressed this by making the paper more self-contained.
 redundant.  Take lines 651 to 668 as an example.  Tightening up the
 Results and the Discussion can only help the exposition.*
 
-offload to figure captions where possible, don't spell out everything
+offload to figure captions where possible, don't spell out everything (TODO MORGAN)
 
 *I led a bioinformatics project that used an entropy scaling approach to
 search a database of protein sequences.  See Reference [1].  As a result,
