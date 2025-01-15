@@ -2,8 +2,8 @@ Dear Dr. Becker,
 
 We thank you and the anonymous reviewers for the thoughtful and insightful suggestions regarding our manuscript. Below, please find a point-by-point accounting of our responses to the reviews.
 
-Associate Editor comments (Remarks to Author):
-I have sent the manuscript out to two referees and received those reports back, and I have also looked at your paper myself. Both referees have identified quite a few items they would like to see addressed, but overall I'm pleased to report that I think the manuscript has merit and impact, and so I am recommending a major revision. In addition to rephrasing, reorganizing and clarifying the paper (per the referees' comments), the two major items to address are (1) details about the real world examples (cf comments from referee 1), and (2) referee 2 raises an issue about different ground truths.
+**Associate Editor comments (Remarks to Author):**
+*I have sent the manuscript out to two referees and received those reports back, and I have also looked at your paper myself. Both referees have identified quite a few items they would like to see addressed, but overall I'm pleased to report that I think the manuscript has merit and impact, and so I am recommending a major revision. In addition to rephrasing, reorganizing and clarifying the paper (per the referees' comments), the two major items to address are (1) details about the real world examples (cf comments from referee 1), and (2) referee 2 raises an issue about different ground truths.*
 
 
 **Referee #2 (Remarks to the Author):**
@@ -26,14 +26,14 @@ characteristics (e.g., low fractal dimension, the tree is balanced). These
 assumptions should be made clear in the intro and when giving the run time
 expressions.*
 
-this is easy to address, and we will do so
+TODO We agree that because the time complexity is highly depedent on the manifold structure of the data, this was insufficiently rigorous. We have attempted to address this in a few ways. MORGAN TODO: to be addressed Wednesday. Changing to a theorem-style structure ... Also possible TODO: axe the 2.1.1 (?) description to avoid redundancy but include that we do NOT expect a balanced tree, and that's a good thing. Move the last section of 2.1.1 to the section on complexity analysis
 
 *For example, line 215, does the cost of partitioning of O(n log(n)) depend on
 the tree being balanced? It is an important hypothesis because line 197 states
 that "the imbalance in the tree is a feature, not a bug, as it reflects the
 underlying structure of the data". That may look like a contradiction.*
 
-we can address this with the plots that include a balanced tree -- expand 2.1.3, balanced vs unbalanced, dropping off points faster with an unbalanced tree?
+We have attempted to address this by including additional computational experiments: in section 4.?, we have included plots indicating performance where we forced a balanced tree (in general, this performs worse, as we expected). TODO Najib go over this paragraph.
 
 *The cost on line 260 uses $\hat{r}$, which is a mean radius. Now that cost is in
 expectation (in addition to the balanced tree hypothesis).*
@@ -44,7 +44,7 @@ this is restating the complexity from the CHESS paper, but it's correct that it'
 the assumption on the LFD is not satisfied, then an extra log factor would
 appear in the cost.*
 
-write in plain english right after eq 2.3, explaining in plain english the rationale for the min(2,x) expansion: namely, we don't think the very low LFD would be representative of what we'd see if we massively increased the radius
+write in plain english right after eq 2.3, explaining in plain english the rationale for the min(2,x) expansion: namely, we don't think the very low LFD would be representative of what we'd see if we massively increased the radius (TODO Morgan)
 
 *The discussion on LFD after its definition line 141 is hard to understand:
 there are 2 parameters in the definition of LFD (r_1 and r_2), but the
@@ -77,7 +77,7 @@ is written in?*
 *Do these 2 tools return the same result? If so, why use multiple tools? If
 not, then the evaluation is flawed.*
 
-We don't have a python wrapper for cakes, and the other tools were in python. There is only one ground truth. Fix language starting in Results. **Najib, can you handle this one?**
+We don't have a python wrapper for cakes, and the other tools were in python. There is only one ground truth. Fix language starting in Results. **Najib, can you handle this one?** (NI)
 
 # Minor comments
 
@@ -85,7 +85,7 @@ We don't have a python wrapper for cakes, and the other tools were in python. Th
 ||x||$. $r$ is chosen in the sphere of radius $\epsilon$ and added to $x$, and, as
 stated correctly line 424, $x'$ is within $\epsilon$ of $x$.*
 
-We have addressed this, by clarifying in notation, particularly by making all vectors boldfaced.
+We have addressed this, by clarifying the notation, particularly by making all vectors boldfaced.
 
 *There are many small LaTeX issues: wrong space after "i.e." and "e.g." (add a
 backslash), large spaces around formulas (e.g., line 342), em-dashes that look
