@@ -71,18 +71,6 @@ We start by performing a divisive hierarchical clustering on the dataset using C
 The procedure is almost identical to that outlined in CHESS~\cite{ishaq2019clustered}, but with better selection of poles for partitioning (see Algorithm~\ref{alg:methods:partition}).
 After building $\mathcal{T}$ with CLAM, we also perform a depth-first reordering of the dataset (see Section~\ref{sec:methods:clustering:depth-first-reordering}).
 
-Given a cluster $C$ with $|C|$ points, we define its two children by the following process. We take a random subsample $S$ of $\sqrt{|C|}$ of $C$'s points, and compute pairwise distances between all points in $S$.
-Using these distances, we compute the \textit{geometric median} of $S$; in other words, we find the point that minimizes the sum of distances to all other points in $S$.
-We define the \textit{center} of $C$ to be this geometric median.
-
-The \textit{radius} of $C$ is the maximum distance from the center to any other point in $C$.
-The point that is responsible for that radius (i.e.,\,the furthest point from the center) is designated the \textit{left pole} and the point that is furthest from the left pole is designated the \textit{right pole}.
-We then partition the cluster into a \textit{left child} and a \textit{right child}, where the left child contains all points in the cluster that are closer to the left pole than to the right pole, and the right child contains all points in the cluster that are closer to the right pole than to the left pole.
-Without loss of generality, we assign to the left child those points that are equidistant from the two poles.
-Starting from a root cluster $\mathcal{R}$ containing the entire dataset, we repeat this procedure until each leaf contains only one datum, or we meet some other user-specified stopping criteria (e.g., minimum cluster radius, minimum cluster cardinality, maximum tree depth, etc).
-This process is described in Algorithm \ref{alg:methods:partition}.
-During the partitioning process, we also compute (and cache) the LFD of each cluster using Equation~\ref{eq:methods:lfd-half}.
-
 \begin{algorithm} % enter the algorithm environment
     \caption{Partition($C$, $criteria$)} % give the algorithm a caption
     \label{alg:methods:partition} % and a label for \ref{} commands later in the document
@@ -107,16 +95,21 @@ During the partitioning process, we also compute (and cache) the LFD of each clu
     \end{algorithmic}
 \end{algorithm}
 
-Note that the tree $\mathcal{T}$ produced by Algorithm~\ref{alg:methods:partition} is not necessarily balanced.
-In fact, for real datasets, we expect anything but a balanced tree; the varying sampling density in different regions of the manifold and the low dimensional ``shape'' of the manifold itself will cause it to be unbalanced.
-The only case in which we would expect a balanced tree is if the dataset were uniformly distributed, e.g.,\,in a $d$-dimensional hyper-cube.
-In this sense, the imbalance in the tree is a feature, not a bug, as it reflects the underlying structure of the data.
+Given a cluster $C$ with $|C|$ points, we define its two children by the following process. We take a random subsample $S$ of $\sqrt{|C|}$ of $C$'s points, and compute pairwise distances between all points in $S$.
+Using these distances, we compute the \textit{geometric median} of $S$; in other words, we find the point that minimizes the sum of distances to all other points in $S$.
+We define the \textit{center} of $C$ to be this geometric median.
+
+The \textit{radius} of $C$ is the maximum distance from the center to any other point in $C$.
+The point that is responsible for that radius (i.e.,\,the furthest point from the center) is designated the \textit{left pole} and the point that is furthest from the left pole is designated the \textit{right pole}.
+We then partition the cluster into a \textit{left child} and a \textit{right child}, where the left child contains all points in the cluster that are closer to the left pole than to the right pole, and the right child contains all points in the cluster that are closer to the right pole than to the left pole.
+Without loss of generality, we assign to the left child those points that are equidistant from the two poles.
+Starting from a root cluster $\mathcal{R}$ containing the entire dataset, we repeat this procedure until each leaf contains only one datum, or we meet some other user-specified stopping criteria (e.g., minimum cluster radius, minimum cluster cardinality, maximum tree depth, etc).
+This process is described in Algorithm \ref{alg:methods:partition}.
+During the partitioning process, we also compute (and cache) the LFD of each cluster using Equation~\ref{eq:methods:lfd-half}.
 
 
 \subsubsection{Depth-First Reordering}
 \label{sec:methods:clustering:depth-first-reordering}
-
-%After building the tree, we reorder the dataset so that the points are stored in the order that they would be visited during a depth-first traversal of the tree.
 
 In CHESS~\cite{ishaq2019clustered}, each cluster stored a list of indices into the dataset.
 This list was used to retrieve the clusters' points during search.
@@ -124,14 +117,19 @@ Although this approach allowed us to retrieve the points in constant time, its m
 With a dataset of cardinality $n$ and each cluster storing a list of indices for its points, we stored a total of $n$ indices at each depth in the tree $\mathcal{T}$.
 Assuming $\mathcal{T}$ is balanced, and thus $\mathcal{O}(\log n)$ depth, this approach had a memory overhead of $\mathcal{O}(n \log n)$.
 In this work, we introduce a new approach wherein, after building $\mathcal{T}$, we reorder the dataset so that points are stored in a depth-first order.
-Then, within each cluster, we need only store its \textit{cardinality} and an \textit{offset} to access its points from the dataset, based on a useful invariant.
+Then, within each cluster, we need only store its \textit{cardinality} and an \textit{offset} to access its points from the dataset.
 The root cluster $\mathcal{R}$ has an offset of zero and a cardinality equal to the number of points in the dataset.
 A left child has the same offset its parent, and the corresponding right child has an offset equal to the left child's offset plus the left child's cardinality.
-With no additional memory cost nor time cost for retrieving points during search, depth-first reordering offers the same time complexity as CHESS with $\mathcal{O}(n)$ space.
+With no additional memory cost nor time cost for retrieving points during search, depth-first reordering offers the same time complexity as CHESS but with $\mathcal{O}(n)$ memory overhead.
 
 
 \subsubsection{Complexity}
 \label{sec:methods:clustering:complexity}
+
+% Note that the tree $\mathcal{T}$ produced by Algorithm~\ref{alg:methods:partition} is not necessarily balanced.
+% In fact, for real datasets, we expect anything but a balanced tree; the varying sampling density in different regions of the manifold and the low dimensional ``shape'' of the manifold itself will cause it to be unbalanced.
+% The only case in which we would expect a balanced tree is if the dataset were uniformly distributed, e.g.,\,in a $d$-dimensional hyper-cube.
+% In this sense, the imbalance in the tree is a feature, not a bug, as it reflects the underlying structure of the data.
 
 The asymptotic complexity of Partition is the same as described in~\cite{ishaq2019clustered}.
 By using an approximate partitioning with a $\sqrt{n}$ sample, we achieve $\mathcal{O}(n)$ cost of partitioning and $\mathcal{O}(n \log n)$ cost of building $\mathcal{T}$.
@@ -142,13 +140,26 @@ While a user could specify criteria of any complexity (our implementation allows
 This criterion costs $\mathcal{O}(1)$ to check per cluster, and so does it not affect the overall complexity of the algorithm as used in this paper.
 
 We also note here that this $\mathcal{O}(n \log n)$ complexity assumes that $\mathcal{T}$ is balanced.
-This can realistically only happen when the data are uniformly distributed in the embedding space.
-This represents the worst-case scenario for subsequent search algorithms because the LFD of the dataset will approach or equal the embedding dimension.
-For real-world datasets with low LFD, we expect $\mathcal{T}$ to be highly unbalanced, reflecting the topological structure of the data.
-When building trees for such datasets, their depths would be larger than $\log n$, which would seem to increase the cost of tree-building.
+In practice, for real datasets, we expect Algorithm~\ref{alg:methods:partition} to produce anything but a balanced tree; the varying sampling density in different regions of the manifold and the low dimensional ``shape'' of the manifold itself will cause it to be unbalanced.
+The only case in which we would expect a balanced tree is if the dataset were uniformly distributed, e.g.,\,in a $d$-dimensional hyper-cube.
+
+When building a tree for a real dataset, the depth would be larger than $\log n$, which would seem to increase the cost of tree-building.
 However, because of the large numbers of leaf clusters at shallow depths, each subsequent level of $\mathcal{T}$ would also have fewer points, and so the cost of building each subsequent level would be lower.
 Any analysis of unbalanced trees would be highly dependent on the specific dataset, and so we do not provide one here.
 In any case, the tree is built only once, so this cost is amortized over all search queries and other applications.
+
+
+\subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
+\label{sec:methods:knn-search}
+
+Given a dataset $\textbf{X}$, a distance function $f$ and the root cluster $\mathcal{R}$ of the tree $\mathcal{T}$ (constructed by Algorithm~\ref{alg:methods:partition}), we can now formally pose the $k$-NN search problem.
+Given a user specified integer $k$ and query $q$, $k$-NN search aims to find the $k$ closest points to $q$ in $\textbf{X}$.
+In other words, $k$-NN search aims to find the set $H$ such that $|H| = k$ and $H = B_X(q, \rho_k)$ where $\rho_k = \max \left\{ f(q, p) \ \forall \ p \in H \right\}$ is the distance from $q$ to the $k^{th}$ nearest neighbor in $\textbf{X}$.
+
+In this section, we present three novel algorithms for exact $k$-NN search:
+Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
+In these algorithms, we use $H$, for \textit{hits}, to refer to the data structure that stores the closest points to the query found so far, and $Q$ to refer to the data structure that stores the clusters and points that are still in contention for being one of the $k$ nearest neighbors.
+These algorithms also use some terminology defined and illustrated in Figure~\ref{fig:methods:deltas}.
 
 \begin{figure}[H]
     \centering
@@ -160,8 +171,14 @@ In any case, the tree is built only once, so this cost is amortized over all sea
         ${\color{green}\delta^{-}} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest point in $C$.
     }
     \label{fig:methods:deltas}
-    \vskip -0.5in
+    \vskip -0.25in
 \end{figure}
+
+
+\subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
+\label{sec:methods:knn-search:repeated-rnn}
+
+This algorithm relies on the \textit{tree-search} (Algorithm~\ref{alg:methods:rnn-search:tree-search}) and \textit{leaf-search} (Algorithm~\ref{alg:methods:rnn-search:leaf-search}) as described in~\cite{ishaq2019clustered} and reproduced here for completeness.
 
 \begin{minipage}{.425\textwidth}
     \begin{algorithm}[H]
@@ -182,7 +199,7 @@ In any case, the tree is built only once, so this cost is amortized over all sea
     \end{algorithm}
 \end{minipage}
 \hfill
-\begin{minipage}{.45\textwidth}
+\begin{minipage}{.475\textwidth}
     \begin{algorithm}[H]
         \caption{leaf-search($Q$, $q$, $r$)}
         \label{alg:methods:rnn-search:leaf-search}
@@ -207,18 +224,18 @@ In any case, the tree is built only once, so this cost is amortized over all sea
     \end{algorithm}
 \end{minipage}
 
+For Repeated $\rho$-NN search (Algorithm~\ref{alg:methods:repeated-rnn}), we begin by performing \textit{tree-search} with a search radius $r$ equal to the radius of the root $\mathcal{R}$ divided by the cardinality of the dataset.
+If no clusters are found, then we double $r$ and perform tree-search again, repeating until we find at least one cluster.
 
-\subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
-\label{sec:methods:knn-search}
-
-Given a dataset $\textbf{X}$, a distance function $f$ and the root cluster $\mathcal{R}$ of the tree $\mathcal{T}$ (constructed by Algorithm~\ref{alg:methods:partition}), we can now formally pose the $k$-NN search problem.
-Given a user specified integer $k$ and query $q$, $k$-NN search aims to find the $k$ closest points to $q$ in $\textbf{X}$.
-In other words, $k$-NN search aims to find the set $H$ such that $|H| = k$ and $H = B_X(q, \rho_k)$ where $\rho_k = \max \left\{ f(q, p) \ \forall \ p \in H \right\}$ is the distance from $q$ to the $k^{th}$ nearest neighbor in $\textbf{X}$.
-
-In this section, we present three novel algorithms for exact $k$-NN search:
-Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
-In these algorithms, we use $H$, for \textit{hits}, to refer to the data structure that stores the closest points to the query found so far, and $Q$ to refer to the data structure that stores the clusters and points that are still in contention for being one of the $k$ nearest neighbors.
-These algorithms also use some terminology defined and illustrated in Figure~\ref{fig:methods:deltas}.
+Now, so long as $\sum_{C \in Q} |C| < k$, we continue to perform tree-search, but instead of doubling $r$ on each iteration, we multiply it by a factor determined by the LFD in the vicinity of the query ball.
+In particular, we increase the radius by a factor of
+\begin{equation}
+    \min \left(2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu} \right)
+    \label{eq:methods:repeated-rnn-factor}
+\end{equation}
+where $\mu$ is the multiplicative inverse of the harmonic mean of the LFD of the clusters in $Q$, i.e.,\,$\mu = \frac{1}{|Q|} \cdot \sum_{C \in Q} \big( LFD(C)^{-1} \big)$.
+We use the harmonic mean to ensure that $\mu$ is not dominated by outlier clusters with very high LFD.
+We cap the radial increase at 2 to ensure that we do not increase the radius too quickly in any single iteration.
 
 \begin{algorithm} % enter the algorithm environment
     \caption{Repeated $\rho$-NN($\mathcal{R}$, $q$, $k$)} % give the algorithm a caption
@@ -235,7 +252,7 @@ These algorithms also use some terminology defined and illustrated in Figure~\re
             \If{$Q = \emptyset$}
                 \State $r \Leftarrow 2 \cdot r$
             \ElsIf{$\sum_{C \in Q} |C| >= k$}
-                \State $\mu \Leftarrow |Q| \cdot \sum_{C \in Q} \big( LFD(C)^{-1} \big)$
+                \State $\mu \Leftarrow \frac{1}{|Q|} \cdot \sum_{C \in Q} \big( LFD(C)^{-1} \big)$
                 \State $r \Leftarrow r \cdot \min \bigg( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu} \bigg)$
             \EndIf
             \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
@@ -244,25 +261,6 @@ These algorithms also use some terminology defined and illustrated in Figure~\re
         \State \textbf{return} $H$ as a list
     \end{algorithmic}
 \end{algorithm}
-
-
-\subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
-\label{sec:methods:knn-search:repeated-rnn}
-
-This algorithm relies on the \textit{tree-search} (Algorithm~\ref{alg:methods:rnn-search:tree-search}) and \textit{leaf-search} (Algorithm~\ref{alg:methods:rnn-search:leaf-search}) as described in~\cite{ishaq2019clustered} and reproduced here for completeness.
-
-For Repeated $\rho$-NN search (Algorithm~\ref{alg:methods:repeated-rnn}), we begin by performing \textit{tree-search} with a search radius $r$ equal to the radius of the root $\mathcal{R}$ divided by the cardinality of the dataset.
-If no clusters are found, then we double $r$ and perform tree-search again, repeating until we find at least one cluster.
-
-Now, so long as $\sum_{C \in Q} |C| < k$, we continue to perform tree-search, but instead of doubling $r$ on each iteration, we multiply it by a factor determined by the LFD in the vicinity of the query ball.
-In particular, we increase the radius by a factor of
-\begin{equation}
-    \min \left(2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu} \right)
-    \label{eq:methods:repeated-rnn-factor}
-\end{equation}
-where $\mu$ is the multiplicative inverse of the harmonic mean of the LFD of the clusters in $Q$, i.e.,\,$\mu = |Q| \cdot \sum_{C \in Q} \big( LFD(C)^{-1} \big)$.
-We use the harmonic mean to ensure that $\mu$ is not dominated by outlier clusters with very high LFD.
-We cap the radial increase at 2 to ensure that we do not increase the radius too quickly in any single iteration.
 
 Intuitively, the factor by which we increase the radius should be \textit{inversely} related to the number of points found so far.
 When the LFD at the radius scale from the previous iteration is high, this suggests that the data are densely populated in that region.

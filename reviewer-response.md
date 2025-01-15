@@ -33,7 +33,8 @@ the tree being balanced? It is an important hypothesis because line 197 states
 that "the imbalance in the tree is a feature, not a bug, as it reflects the
 underlying structure of the data". That may look like a contradiction.*
 
-We have attempted to address this by including additional computational experiments: in section 4.?, we have included plots indicating performance where we forced a balanced tree (in general, this performs worse, as we expected). TODO Najib go over this paragraph.
+We have added Section 4.4 to compare the performance of balanced and unbalanced clustering.
+We show that balanced trees perform strictly worse during search.
 
 *The cost on line 260 uses $\hat{r}$, which is a mean radius. Now that cost is in
 expectation (in addition to the balanced tree hypothesis).*
@@ -77,7 +78,10 @@ is written in?*
 *Do these 2 tools return the same result? If so, why use multiple tools? If
 not, then the evaluation is flawed.*
 
-We don't have a python wrapper for cakes, and the other tools were in python. There is only one ground truth. Fix language starting in Results. **Najib, can you handle this one?** (NI)
+We have fixed our approach for this and have updated the language in the paper to reflect this.
+We now perform linear search on the augmented datasets and save that as the ground-truth, using a format that can be loaded in Python for calculating the recall of HNSW, ANNOY and FAISS-IVF.
+We verified that our linear search in Rust identifies the same neighbors on the original dataset as those provided in the ANN-Benchmarks suite of datasets.
+Thus, our approach now uses a unified ground truth across all algorithms and both programming languages.
 
 # Minor comments
 
@@ -121,8 +125,7 @@ We removed what was formerly Algorithm 2.4.
 *The Github repository gives very little instructions on how to compile the
 code, run it or reproduce the results from this manuscript.*
 
-will fix (NI)
-
+We have updated the README to include instructions on how to compile the code, run it, and reproduce the results from the manuscript.
 
 
 **Review of

@@ -50,7 +50,7 @@ The LFD of approximately 20 at depth 0 (i.e.,\,the root cluster $\mathcal{R}$) i
 To elaborate, the distribution of points in such a dataset should reflect the curse of dimensionality, i.e.,\,the fact that in high dimensional spaces, the minimum and maximum pairwise distances between any two points are approximately equal.
 As a result, $\mathcal{R}$'s radius $r$, which reflects the maximum distance between the center $c$ and any other point, should not differ significantly from the distance between the center and its closest point.
 A consequence of this is that, with high probability, for every point in $\mathcal{R}$, its distance from $c$ is greater than $\tfrac{r}{2}$;
-in other words, $B_X(c, \tfrac{r}{2})$ contains only $c$ while $B_X(c, r)$ contains the entire dataset.
+in other words, $B(c, \tfrac{r}{2})$ contains only $c$ while $B(c, r)$ contains the entire dataset.
 Given our definition of LFD in Equation~\ref{eq:methods:lfd-original}, this means that the LFD of $\mathcal{R}$ is approximately $\log_2(\frac{|X|}{1}) = \log_2(1,000,000) \approx 20$, which is what we observe in Figure~\ref{fig:results:random-lfd}.
 
 Silva, as shown in Figure~\ref{fig:results:silva-lfd}, exhibits consistently low LFD.
@@ -165,7 +165,7 @@ While recall for CAKES's does \emph{not} degrade with cardinality, recall for HN
 In contrast, CAKES has perfect recall on Fashion-Mnist and Sift (where the distance function is a metric), and near-perfect recall on Glove-25 (cosine distance is not a metric).
 
 
-In contrast with the results on the ANN Benchmark datasets reported above, as seen in Figure~\ref{fig:results:random-scaling}, we observe performs quite slowly pn the Random dataset.
+In contrast with the results on the ANN Benchmark datasets reported above, as seen in Figure~\ref{fig:results:random-scaling}, we observe performs quite slowly on the Random dataset.
 As with the real datasets, HNSW and ANNOY are the fastest algorithms, and CAKES exhibits perfect recall at all cardinalities.
 % HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets;
 % in particular, with a multiplier of 1, HNSW and ANNOY have recall as low as 0.060 and 0.028 respectively, as reported in Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift}, and~\ref{tab:results:qps-and-recall-random}.
