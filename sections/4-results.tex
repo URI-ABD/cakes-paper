@@ -50,8 +50,8 @@ This reflects the difference between how we empirically measure the LFD and the 
 With sample sizes larger than 1,000,000, we would expect the LFD to approach 128 until we have sampled $2^{128}$ points, at which point the LFD would be 128 and would stay at 128 for even larger sample sizes.
 Unfortunately, such a large sample is practically impossible to generate.
 
-The Silva-18S dataset consists of genomic sequences whose unaligned lengths are at-most 3,712 but were provided in an MSA of width 50,000.
-As such the embedding dimension is somewhere between 3,712 and 50,000.
+The Silva-18S dataset consists of genomic sequences whose unaligned lengths are at-most 3,712.
+As such the embedding dimension is 3,712, though as discussed previously, the embedding dimension would be 50,000 in a multiple sequence alignment.
 We use the Levenshtein edit distance (a metric) to measure distances between sequences.
 This dataset, as shown in Figure~\ref{fig:results:silva-lfd}, exhibits consistently low LFD.
 In particular, LFD is less than 3 for all depths, hovering near 1 for clusters at depth 40 and deeper.

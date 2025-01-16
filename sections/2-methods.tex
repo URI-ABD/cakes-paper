@@ -37,8 +37,8 @@ We use a simplified version of Equation~\ref{eq:methods:lfd-original} by using a
 
 Intuitively, LFD measures the rate of change in the number of points in a ball of radius $r$ around a point $q$ as $r$ increases. When the vast majority of points in the dataset have low ($\ll D$) LFD, we can simply say that the dataset has low LFD.
 We stress that this concept differs from the \textit{embedding dimension} of a dataset.
-To illustrate the difference, consider the SILVA 18S rRNA dataset that contains genomic sequences with unaligned lengths of up to 3,718 base pairs and aligned length of 50,000 base pairs.
-Hence, the \textit{embedding dimension} of this dataset is at least 3,718 and at most 50,000.
+To illustrate the difference, consider the SILVA 18S rRNA dataset that contains genomic sequences with unaligned lengths of up to 3,712 base pairs and aligned length of 50,000 base pairs.
+Hence, the \textit{embedding dimension} of this dataset is at least 3,712 and at most 50,000; as used in this paper it is 3,712.
 However, physical constraints (namely, biological evolution and biochemistry) constrain the data to a lower-dimensional manifold within this space.
 LFD is an approximation of the dimensionality of that lower-dimensional manifold in the ``vicinity'' of a given point.
 Figure~\ref{fig:results:lfd-plots} illustrates this concept on a variety of datasets, showing how real datasets uphold the manifold hypothesis.
@@ -361,22 +361,7 @@ Using this to simplify the term for leaf-search in Equation~\ref{eq:methods:rnn-
 \end{equation*}
 
 Again using the assumption that since $q$ is from the same distribution as $X$, the LFD at $q$ should not be significantly different from that at a cluster in $Q$, we have that $\hat{d} \approx d$.
-By combining the bounds for tree-search and leaf-search, we see that Repeated $\rho$-NN has time complexity
-\begin{gather*}
-    \mathcal{O}
-    \Bigg(
-        \underbrace{
-            \log~\overbrace{\mathcal{N}_{\hat{r}}(X)}^{\textrm{metric entropy}}
-        }_{\textrm{tree-search}}
-        \ + \
-        \underbrace{
-            \overbrace{k}^{\textrm{output size}} \cdot
-            \overbrace{\bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d}^{\textrm{scaling factor}}
-        }_{\textrm{leaf-search}}
-    \Bigg)
-    \label{eq:methods:repeated-rnn-complexity}
-\end{gather*}
-as claimed.
+By combining the bounds for tree-search and leaf-search, we see that Repeated $\rho$-NN has time complexity claimed in Equation~\ref{eq:methods:repeated-rnn-complexity1}.
 \end{proof}
 
 We remark that the scaling factor in Equation~\ref{eq:methods:repeated-rnn-complexity1} should be close to 1 unless LFD is highly variable in the region around the query (i.e.,\,if $\hat{d}$ differs significantly from $d$).

@@ -8,7 +8,7 @@ Often dubbed ``the Big Data explosion,'' this phenomenon has created a need for 
 
 Examples of large datasets include genomic databases, time-series data such as radio frequency signals, and neural network embeddings.
 Large language models such as GPT~\cite{2020arXiv200514165B, OpenAI2023GPT4TR} and LLAMA-2~\cite{Touvron2023Llama2O}, and image embedding models~\cite{radford2021learning, dosovitskiy2020image} are a common source of neural network embeddings.
-Among biological datasets,  SILVA 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of approximately 2.25 million genomes with an aligned length of 50,000 letters.
+Among biological datasets,  SILVA 18S~\cite{10.1093/nar/gks1219} contains ribosomal DNA sequences of approximately 2.25 million genomes; the longest of these individual sequences is 3,712 amino acids, but in a multiple sequence alignment, the length becomes 50,000 letters.
 Among time-series datasets, the RadioML dataset~\cite{oshea2018radioml} contains approximately 2.55 million samples of synthetically-generated signals of different modulation modes.
 
 Many researchers are interested in similarity search on these datasets.
@@ -67,8 +67,8 @@ In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search)~\ci
 CLAM (Clustering, Learning and Approximation with Manifolds), originally developed to allow ``manifold mapping'' for anomaly detection~\cite{ishaq2021clustered}, is a refinement of the clustering algorithm from CHESS.
 In this paper, we introduce CAKES, a set of three entropy-scaling algorithms for $k$-NN search, implemented in the Rust programming language.
 
-We also provide a theoretical analysis of the time complexity of CAKES's algorithms in Sections~\ref{sec:methods:knn-search:repeated-rnn-complexity} and~\ref{sec:methods:knn-search:complexity-of-sieve-methods}. 
+We also provide a theoretical analysis of the time complexity of CAKES's algorithms in Sections~\ref{sec:methods:knn-search:repeated-rnn-complexity} and~\ref{sec:methods:knn-search:complexity-of-sieve-methods}.
 These analyses are not worst-case analyses in the traditional sense, as they do not assume the worst possible dataset, namely, a uniform distribution.
-Given that CAKES's algorithms are intended to be used on datasets with a manifold structure, complexity analysis assuming a uniform distribution of data would be uninformative. 
+Given that CAKES's algorithms are intended to be used on datasets with a manifold structure, complexity analysis assuming a uniform distribution of data would be uninformative.
 As a result, we assume in our analyses that the dataset has a manifold structure, as quantified by low fractal dimension and metric entropy.
-For our purposes, it makes more sense to analyze the expected performance of CAKES's algorithms under these assumptions. 
+For our purposes, it makes more sense to analyze the expected performance of CAKES's algorithms under these assumptions.

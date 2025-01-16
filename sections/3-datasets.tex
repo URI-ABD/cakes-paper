@@ -27,7 +27,7 @@ The Rust compiler was Rust 1.83.0, and the Python interpreter version was 3.9.18
                 \hline
                 Random           & Euclidean                   & 1,000,000          & 128                    \\
                 \hline
-                SILVA            & Levenshtein                 & 2,224,640          & 3,712 - 50,000         \\
+                SILVA            & Levenshtein                 & 2,224,640          & 3,712         \\
                 \hline
                 RadioML          & Dynamic Time Warping        & 97,920             & 1,024                  \\
                 \hline
@@ -55,9 +55,10 @@ We then use the results of linear search on the augmented datasets as ground tru
 \label{sec:datasets-and-benchmarks:silva-18s}
 
 To demonstrate CAKES with a more exotic distance function, we also benchmarked on the SILVA 18S ribosomal RNA dataset~\cite{10.1093/nar/gks1219}.
-This dataset contains ribosomal RNA sequences of 2,224,640 genomes with an aligned length of 50,000 letters.
-We held out a set of 1,000 random sequences from the dataset to use as queries for benchmarking.
+This dataset contains ribosomal RNA sequences of 2,224,640 genomes, with the longest sequence having 3,712 letters.
 We use Levenshtein~\cite{levenshtein1966binary} distance on the unaligned sequences to build the tree and to perform $k$-NN search.
+We note that when put into a multiple sequence alignment, the length (and thus dimensionality) would be 50,000, but in that case one could use Hamming distance, which is computationally less expensive than Levenshtein distance.
+We held out a set of 1,000 random sequences from the dataset to use as queries for benchmarking.
 Since this dataset contains many redundant, i.e.,\,nearly identical, sequences, we used a maximum tree-depth of 128 as a partition criterion in Algorithm~\ref{alg:methods:partition}.
 
 
