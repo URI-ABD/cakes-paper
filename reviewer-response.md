@@ -26,7 +26,8 @@ characteristics (e.g., low fractal dimension, the tree is balanced). These
 assumptions should be made clear in the intro and when giving the run time
 expressions.*
 
-TODO We agree that because the time complexity is highly depedent on the manifold structure of the data, this was insufficiently rigorous. We have attempted to address this in a few ways. MORGAN TODO: to be addressed Wednesday. Changing to a theorem-style structure ... Also possible TODO: axe the 2.1.1 (?) description to avoid redundancy but include that we do NOT expect a balanced tree, and that's a good thing. Move the last section of 2.1.1 to the section on complexity analysis
+We agree that because the time complexity is highly dependent on the manifold structure of the data, this was insufficiently rigorous. We have attempted to address this in a few ways. First, we added the condition "when the dataset has a manifold structure" to our statement about asymptotic complexity of entropy-scaling search in Section 1.2. Additionally, we added a paragraph to Section 1.2 justifying our approach to complexity analyses, and restated it in Section 2.2.2 and Section 2.2.5 before giving runtime expressions. 
+
 
 *For example, line 215, does the cost of partitioning of O(n log(n)) depend on
 the tree being balanced? It is an important hypothesis because line 197 states
@@ -39,7 +40,7 @@ We show that balanced trees perform strictly worse during search.
 *The cost on line 260 uses $\hat{r}$, which is a mean radius. Now that cost is in
 expectation (in addition to the balanced tree hypothesis).*
 
-This is restating the complexity from the CHESS paper, but it's correct that it's an expected cost. Worst-case analysis isn't really useful here.
+This is correct; we added justification for our approach to complexity analyses in Sections 1.2, 2.2.2, and 2.2.5.
 
 *Another example, line 326, comes from the minimum with value 2 on line 284. If
 the assumption on the LFD is not satisfied, then an extra log factor would
@@ -221,7 +222,7 @@ We have addressed this by making the paper more self-contained.
 redundant.  Take lines 651 to 668 as an example.  Tightening up the
 Results and the Discussion can only help the exposition.*
 
-offload to figure captions where possible, don't spell out everything (TODO MORGAN)
+We attempted to address this by omitting unnecessary details, offloading observations to figure captions, and eliminating redundant sections of the discussion.  
 
 *I led a bioinformatics project that used an entropy scaling approach to
 search a database of protein sequences.  See Reference [1].  As a result,

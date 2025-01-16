@@ -35,8 +35,8 @@ For example, on Glove-25, Repeated $\rho$-NN exhibits the highest throughput of 
 On Silva, Repeated $\rho$-NN is comparable to the other CAKES algorithms at low multipliers, but becomes the fastest at the higher multipliers.
 When we view these results in light of the LFD plots in Figure~\ref{fig:results:lfd-plots}, we realize that Repeated $\rho$-NN appears to be the fastest CAKES algorithm on datasets where a large proportion of the data have a very low LFD, such as Glove-25 and Silva.
 This trend is unsurprising, given that Repeated $\rho$-NN relies on a low LFD around the query in order to quickly estimate the correct radius for $k$ hits.
-These findings suggest that Repeated $\rho$-NN is the most ``sensitive'' to the manifold structure of the dataset.
-Exploring this sensitivity is a potential avenue for future study, as it remains to learn at what LFD Repeated $\rho$-NN transitions away from being the fastest CAKES algorithm, and whether this transition is sharp.
+% These findings suggest that Repeated $\rho$-NN is the most ``sensitive'' to the manifold structure of the dataset.
+% Exploring this sensitivity is a potential avenue for future study, as it remains to learn at what LFD Repeated $\rho$-NN transitions away from being the fastest CAKES algorithm, and whether this transition is sharp.
 
 While the fastest CAKES algorithm varies by dataset, we note that on all three ANN-benchmark datasets (Fashion-Mnist, Glove-25, and Sift), Depth-First Sieve and Breadth-First Sieve show nearly constant throughput as the cardinality increases.
 This observation warrants further investigation, but it is especially promising given that both algorithms consistently outperform linear search for high cardinalities.

@@ -277,6 +277,9 @@ Once $\sum_{C \in Q} |C| \geq k$, we are guaranteed to have found at least $k$ n
 \subsubsection{Complexity of Repeated \texorpdfstring{$\rho$}{p}-NN}
 \label{sec:methods:knn-search:repeated-rnn-complexity}
 
+
+As stated in Section~\ref{sec:intoduction:entropy-scaling-search}, Theorem~\ref{thm:methods:rnn-complexity} assumes that the dataset $X$ has a manifold structure. 
+
 % The complexity bounds for Repeated $\rho$-NN rely on the assumption that the query point is sampled from the same distribution as the rest of the data or, in other words, that it arises from the same generative process as the rest of the dataset.
 % Given the uses of $k$-NN search in practice, this assumption is reasonable.
 % From this assumption, we can infer that the LFD near the query does not differ significantly from the (harmonic) mean of the LFDs of clusters near the query at the scale of the distance from the query to the $k^{th}$ nearest neighbor.
@@ -296,6 +299,7 @@ Once $\sum_{C \in Q} |C| \geq k$, we are guaranteed to have found at least $k$ n
         \label{eq:methods:repeated-rnn-complexity1}
     \end{gather}
     where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of the dataset, $d$ is the LFD of the dataset, and $k$ is the number of nearest neighbors.
+    \label{thm:methods:rnn-complexity}
 \end{theorem}
 
 % \textbf{Theorem.} \textit{Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Then time complexity of performing Repeated $\rho$-NN search on $X$ with query $q$ is} \begin{gather}
@@ -493,16 +497,17 @@ Due to their similarity, we combine the complexity analyses of both Sieve method
 For these methods we again use the terminology of tree-search and leaf-search.
 Tree-search navigates the cluster tree and adds clusters to $Q$.
 Leaf-search exhaustively searches \textit{some} of the clusters in $Q$ to find the $k$ nearest neighbors.
-
+As stated in Section~\ref{sec:intoduction:entropy-scaling-search}, Theorem~\ref{thm:methods:sieve-complexity} assumes that the dataset $X$ has a manifold structure. 
 
 \begin{theorem}
-    Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Then, for dataset $X$ and query $q$, the time complexity of performing Breadth-First Sieve search is \begin{equation}
+    Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Let $T \coloneqq \mathcal{O} \big( \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X) \big)$ and   $L \coloneqq \mathcal{O} \left( k \cdot \bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d \right)$, where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of $X$, $d$ is the LFD of $X$, $\hat{|C|}$ is the mean cardinality of clusters overlapping the query ball, and $k$ is the number of nearest neighbors. Then, for dataset $X$ and query $q$, the time complexity of performing Breadth-First Sieve search is \begin{equation}
         \mathcal{O} \Big( (T + L ) \log (T + L ) \Big)
         \label{eq:methods:breadth-first-sieve-complexity}
     \end{equation} and the the time complexity of performing Depth-First Sieve search is \begin{equation}
         \mathcal{O} \Big( T \log T + L \log k \Big).
         \label{eq:methods:depth-first-sieve-complexity}
     \end{equation}
+    \label{thm:methods:sieve-complexity}
 \end{theorem}
 
 \begin{proof}

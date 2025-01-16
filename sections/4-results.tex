@@ -18,7 +18,7 @@ than balanced clustering (see Section~\ref{sec:results:clustering-strategies-and
 Since the time complexity of CAKES algorithms scales with the LFD of the dataset, we examine the LFD of each dataset we used for benchmarks.
 Figure~\ref{fig:results:lfd-plots} illustrates the trends in LFD for Fashion-MNIST, Glove-25, Sift, Random, Silva 18S, and RadioML.
 In this section, when we discuss trends in LFD, unless otherwise noted, we are referring to the 95$^{th}$ percentile of LFD.
-This is because our algorithms scale exponentially in the LFD, and we are interested in the worst-case behavior of the algorithms.
+% This is because our algorithms scale exponentially in the LFD, a
 
 The Fashion-MNIST dataset has an embedding dimension of 784 and uses the Euclidean distance metric.
 In Figure~\ref{fig:results:fashion-mnist-lfd} we observe that until approximately depth 5, Fashion-MNIST's LFD is low (i.e., less than 4).
@@ -134,6 +134,8 @@ The vertical axis denotes throughput in queries per second.
 Both axes are on a logarithmic scale.
 In this section, we report results only for $k$-NN search with $k = 10$, but similar plots for $k = 100$ can be found in the Supplement.
 For HNSW and ANNOY, we report the recall for each measurement in the plots. For algorithms that exhibit recall greater than $0.9995$, we do not report the recall in the plots, but we do report it in the tables below.
+For some algorithms, we were not able to take measurements for each cardinality because the index-building required more RAM than was available (i.e.,\,more then 512GB).
+For linear search with CAKES, we only report the throughput for a few of the initial multipliers because the trend is clear.
 
 Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift} and~\ref{tab:results:qps-and-recall-random} show the throughput and recall of CAKES's algorithms at each augmented cardinality for Fashion-MNIST, Glove-25, Sift, and Random respectively.
 Though the plots in Figure~\ref{fig:results:scaling-plots} present results for each of CAKES's three algorithms separately, the results in the CAKES column in these tables represent the fastest CAKES algorithm at that dataset and cardinality only.
@@ -141,30 +143,29 @@ We used our auto-tuning approach (see Section~\ref{sec:methods:auto-tuning}) for
 Since we also allow for tuning hyper-parameters for the other algorithms, and we allow for different sets of hyper-parameters at each cardinality, it is a fair comparison for these tables to only list the performance of the fastest CAKES algorithm.
 When reporting recall, we use $1.000*$ to denote that the recall is imperfect, but rounds to $1.000$.
 
-Figure~\ref{fig:results:scaling-plots} shows that for Fashion-MNIST, Glove-25, and Sift, as cardinality increases, the CAKES algorithms (Depth-First Sieve in blue, Repeated $\rho$-NN in green, and Breadth-First Sieve in purple) become faster than our Rust implementation of na\"{i}ve linear search (in orange).
-Though we observe this trend, we note that the exact cardinality at which CAKES's algorithms overtake linear search differs by dataset (see Figure~\ref{fig:results:scaling-plots}).
-
-Which one of the three CAKES algorithms is fastest also differs by dataset.
-For Fashion-MNIST, Depth-First Sieve is consistently fastest, while for Glove-25, the fastest is Repeated $\rho$-NN, and for Sift, Breadth-First Sieve.
-On all three datasets, Depth-First Sieve and Breadth-First Sieve appear to have performance that is \textit{constant} in the cardinality of the dataset.
-With Glove-25, Repeated $\rho$-NN exhibits similar constant scaling.
-We also observe that on these three datasets, for nearly all cardinalities, all three of the CAKES algorithms are faster than FAISS-Flat (in brown), and that at some cardinality, CAKES's algorithms become faster than FAISS-IVF (in pink).
-
-On all three of these datasets, HNSW (in gray) and ANNOY (in yellow) are faster than CAKES's algorithms for all cardinalities; however, CAKES exhibits perfect or near-perfect recall on each dataset, while HNSW and ANNOY exhibit much lower recall, as shown in Table~\ref{tab:datasets:summary}.
-While recall for CAKES's does \emph{not} degrade with cardinality, recall for HNSW and ANNOY degrades with cardinality.
-In contrast, CAKES has perfect recall on Fashion-MNIST and Sift (where the distance function is a metric), and near-perfect recall on Glove-25 (cosine distance is not a metric).
 
 
-In contrast with the results on the ANN Benchmark datasets reported above, as seen in Figure~\ref{fig:results:random-scaling}, we observe performs quite slowly on the Random dataset.
-As with the real datasets, HNSW and ANNOY are the fastest algorithms, and CAKES exhibits perfect recall at all cardinalities.
-HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets,as shown in Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift}, and~\ref{tab:results:qps-and-recall-random}.
+% Figure~\ref{fig:results:scaling-plots} shows that for Fashion-MNIST, Glove-25, and Sift, as cardinality increases, the CAKES algorithms (Depth-First Sieve in blue, Repeated $\rho$-NN in green, and Breadth-First Sieve in purple) become faster than our Rust implementation of na\"{i}ve linear search (in orange).
+% Though we observe this trend, we note that the exact cardinality at which CAKES's algorithms overtake linear search differs by dataset (see Figure~\ref{fig:results:scaling-plots}).
+
+% Which one of the three CAKES algorithms is fastest also differs by dataset.
+% For Fashion-MNIST, Depth-First Sieve is consistently fastest, while for Glove-25, the fastest is Repeated $\rho$-NN, and for Sift, Breadth-First Sieve.
+% On all three datasets, Depth-First Sieve and Breadth-First Sieve appear to have performance that is \textit{constant} in the cardinality of the dataset.
+% With Glove-25, Repeated $\rho$-NN exhibits similar constant scaling.
+% We also observe that on these three datasets, for nearly all cardinalities, all three of the CAKES algorithms are faster than FAISS-Flat (in brown), and that at some cardinality, CAKES's algorithms become faster than FAISS-IVF (in pink).
+
+
+% While recall for CAKES's does \emph{not} degrade with cardinality, recall for HNSW and ANNOY degrades with cardinality.
+% In contrast, CAKES has perfect recall on Fashion-MNIST and Sift (where the distance function is a metric), and near-perfect recall on Glove-25 (cosine distance is not a metric).
+
+
+% In contrast with the results on the ANN Benchmark datasets reported above, as seen in Figure~\ref{fig:results:random-scaling}, we observe performs quite slowly on the Random dataset.
+% As with the real datasets, HNSW and ANNOY are the fastest algorithms, and CAKES exhibits perfect recall at all cardinalities.
+% HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets,as shown in Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift}, and~\ref{tab:results:qps-and-recall-random}.
 
 For Silva and RadioML, we benchmarked only CAKES's algorithms because HNSW, ANNOY and FAISS support neither the required distance functions nor, in the case of RadioML, complex-valued data.
 Due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset---rather than augmented versions of the dataset---to examine how performance scales with cardinality.
 
-With Silva, as shown in Figure~\ref{fig:results:silva-scaling}, we observe that for all algorithms, throughput initially seems to linearly decrease as cardinality increases, but that it levels off at higher cardinalities.
-Depth-First Sieve is the fastest CAKES algorithm for lower multipliers, but for larger cardinalities, Repeated $\rho$-NN becomes the fastest.
-For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe that throughput declines nearly linearly, and that the three CAKES algorithms exhibit virtually indistinguishable performance; in particular, throughput of CAKES's algorithms is identical within three significant figures.
 
 \begin{figure}
     \begin{subfigure}[b]{0.5\textwidth}
@@ -207,16 +208,29 @@ For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe th
     \end{subfigure}%
     \caption{Throughput across six datasets, including a randomly-generated dataset.
     In each plot, the horizontal axis represents increasing cardinality of the dataset, while the vertical axis represents the throughput in queries per second (higher is better).
-    For some algorithms, we were not able to take measurements for each cardinality because the index-building required more RAM than was available (i.e.,\,more then 512GB).
-    For linear search with CAKES, we only report the throughput for a few of the initial multipliers because the trend is clear.
-    We observe that the cardinality at which CAKES algorithms outperform linear search differs by dataset. For Fashion-MNIST, CAKES begins outperforming linear search starting at a cardinality near $10^5$, while for Glove-25 and Sift, this happens near $10^6$ and $10^7$ respectively.}
+    For Fashion-MNIST, Glove-25, and Sift, as cardinality increases, the CAKES algorithms become faster than linear search.
+    We observe that the cardinality at which CAKES algorithms outperform linear search differs by dataset. 
+    % For Fashion-MNIST, CAKES begins outperforming linear search starting at a cardinality near $10^5$, while for Glove-25 and Sift, this happens near $10^6$ and $10^7$ respectively.
+    For Fashion-MNIST, Depth-First Sieve is consistently fastest, while for Glove-25, the fastest is Repeated $\rho$-NN, and for Sift, Breadth-First Sieve.
+    On all three datasets, Depth-First Sieve and Breadth-First Sieve appear to have performance that is \textit{constant} in the cardinality of the dataset.
+    With Glove-25, Repeated $\rho$-NN exhibits similar constant scaling.
+    % We also observe that on these three datasets, for nearly all cardinalities, all three of the CAKES algorithms are faster than FAISS-Flat (in brown), and that at some cardinality, CAKES's algorithms become faster than FAISS-IVF (in pink).
+    With Silva, as shown in Figure~\ref{fig:results:silva-scaling}, we observe that for all algorithms, throughput initially seems to linearly decrease as cardinality increases, but that it levels off at higher cardinalities.
+    Depth-First Sieve is the fastest CAKES algorithm for lower multipliers, but for larger cardinalities, Repeated $\rho$-NN becomes the fastest.
+    For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe that throughput declines nearly linearly, and that the three CAKES algorithms exhibit virtually indistinguishable performance; in particular, throughput of CAKES's algorithms is identical within three significant figures.
+    On all three of these datasets, HNSW and ANNOY are faster than CAKES's algorithms for all cardinalities; however, CAKES exhibits perfect or near-perfect recall on each dataset, while HNSW and ANNOY exhibit much lower recall, as shown in Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove},\ref{tab:results:qps-and-recall-sift}, \ref{tab:results:qps-and-recall-random}.
+    }
     \label{fig:results:scaling-plots}
 \end{figure}
 
 
+
+
+
 \begin{table}
     \caption{Throughput (QPS) and Recall on the Fashion-MNIST dataset.
-    A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
+    A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000. While recall for CAKES's does \emph{not} degrade with cardinality, recall for HNSW and ANNOY degrades with cardinality.
+    In contrast, CAKES has perfect recall on Fashion-MNIST, since it used with Euclidean distance, which is a metric.}
     \label{tab:results:qps-and-recall-fmn}
     \begin{tabular}{|l|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|}
         \hline
@@ -242,7 +256,8 @@ For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe th
 
 \begin{table}
     \caption{Throughput (QPS) and Recall on the Glove-25 dataset.
-    A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
+    A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000. While recall for CAKES's does \emph{not} degrade with cardinality, recall for HNSW and ANNOY degrades with cardinality.
+    In contrast, CAKES has near-perfect recall on Glove-25, since it used with cosine distance, which is not a metric.}
     \label{tab:results:qps-and-recall-glove}
     \begin{tabular}{|l|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|}
         \hline
@@ -267,7 +282,8 @@ For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe th
 
 \begin{table}
     \caption{Throughput (QPS) and Recall on the Sift dataset.
-    A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
+    A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000. While recall for CAKES's does \emph{not} degrade with cardinality, recall for HNSW and ANNOY degrades with cardinality.
+    In contrast, CAKES has perfect recall on Sift, since it is used with Euclidean distance, which is a metric.}
     \label{tab:results:qps-and-recall-sift}
     \begin{tabular}{|l|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|}
         \hline
@@ -290,7 +306,10 @@ For RadioML, as shown in Figure~\ref{fig:results:radioml-scaling}, we observe th
 
 \begin{table}
     \caption{Throughput (QPS) and Recall on the Random dataset.
-    A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000.}
+    A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000. In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, we observe that CAKES's algorithms perform quite slowly.
+    As with the real datasets, HNSW and ANNOY are the fastest algorithms, and CAKES exhibits perfect recall at all cardinalities.
+    HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets.
+    }
     \label{tab:results:qps-and-recall-random}
     \begin{tabular}{|l|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|}
         \hline
