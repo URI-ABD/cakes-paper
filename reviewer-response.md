@@ -46,7 +46,11 @@ This is correct; we added justification for our approach to complexity analyses 
 the assumption on the LFD is not satisfied, then an extra log factor would
 appear in the cost.*
 
-write a rebuttal here, mentioning Thm 2.1 (TODO Najib)
+We have, in Theorem 2.1, explicitly stated the assumption that the query is drawn from the same distribution as the other points in the dataset.
+This should ensure that, in practical applications with real-world datasets, the LFD around a query is similar to the LFD around its nearest neighbors.
+In the theoretical worst case where the LFD around a query is extremely low, repeating tree-search with doubling radii might not encounter any additional points, we may introduce an extra factor (logarithmic in the distance between the query and the k-th nearest neighbor) the in contribution of the tree search to the overall complexity.
+However, we can easily detect and sidestep this issue in our implementation by calculating the distance from the query to the center of the root cluster and using that distance, along with the radius and LFD of the root cluster, to determine an initial radius for tree-search.
+This approach, once again, brings us to a constant factor for the contribution from tree-search.
 
 *The discussion on LFD after its definition line 141 is hard to understand:
 there are 2 parameters in the definition of LFD (r_1 and r_2), but the

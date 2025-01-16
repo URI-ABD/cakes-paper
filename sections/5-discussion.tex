@@ -5,16 +5,17 @@ We have presented CAKES, a set of three algorithms for fast $k$-NN search that a
 CAKES's algorithms are exact when the distance function in use is a metric (see definition in Section~\ref{sec:methods}).
 Even under cosine distance, which is not a metric, CAKES's algorithms exhibit nearly perfect recall.
 CAKES's algorithms are designed to be most effective when the data uphold the manifold hypothesis, or in other words, when the data are constrained to a low-dimensional manifold even when embedded in a high-dimensional space.
+CAKES uses an unbalanced clustering algorithm to build a binary tree that better captures the manifold structure of the data and provides for faster search performance.
 As a consequence, these algorithms do not perform well on data with random distributions, because of the absence of a manifold structure.
 In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each dataset we tested exhibits a manifold structure, as quantified by the percentiles of LFD.
-As expected, our results from Figure~\ref{fig:results:scaling-plots} indicate that CAKES's algorithms scale sub-linearly with cardinality on datasets with low LFD, and scale linearly on datasets with high LFD.
+As expected, our results from Figure~\ref{fig:results:scaling-plots} indicate that CAKES's algorithms scale sub-linearly with cardinality on real-world datasets with low LFD, and scale linearly on synthetic datasets with high LFD.
 
-CAKES's performance on Sift against that on the Random dataset illustrates this phenomenon well. As seen in Figures~\ref{fig:results:random-lfd}~and~\ref{fig:results:sift-lfd}, the LFD of the Random dataset is much higher than that of Sift, even though both datasets have the same cardinality and dimensionality.
+CAKES's performance on Sift against that on the Random dataset illustrates this phenomenon well.
+As seen in Figures~\ref{fig:results:random-lfd}~and~\ref{fig:results:sift-lfd}, the LFD of the Random dataset is much higher than that of Sift, even though both datasets have the same cardinality and dimensionality.
 This is unsurprising, given that the Random dataset is uniformly distributed, while Sift is not.
 On the Random dataset, CAKES's speed decreases linearly as the multiplier increases, while with Sift, Depth-First Sieve and Breadth-First Sieve both exhibit nearly constant throughput.
 While Repeated $\rho$-NN does not exhibit near-constant throughput with Sift, throughput decreases much more slowly than it does with the Random dataset.
 Since these two datasets have the same cardinality and embedding dimension, the aforementioned discrepancies highlight how manifold structure affects algorithm performance.
-
 
 We emphasize that although CAKES's algorithms are slower on the Random dataset, their recalls remain perfect.
 Figure~\ref{fig:results:scaling-plots} also shows that HNSW and ANNOY have near-constant throughput as the multiplier increases, but their recall continues to decrease as the multiplier increases.
@@ -30,14 +31,6 @@ the harmonic mean LFD $\mu$ can still be low, so the factor of radial increase i
 This suggests that rather than using the reciprocal of the harmonic mean LFD in~\ref{eq:methods:repeated-rnn-factor}, we may achieve better results with a mean that is more sensitive to high outliers, such as the geometric mean.
 We leave it as an avenue for future work to characterize when Repeated $\rho$-NN significantly overestimates the correct radius $\rho_k$ and to improve upon the factor of radial increase in Equation~\ref{eq:methods:repeated-rnn-factor} so that this occurs less frequently and with less severity.
 
-As the previous paragraph suggests, the fastest CAKES algorithm varies by dataset.
-For example, on Glove-25, Repeated $\rho$-NN exhibits the highest throughput of any CAKES algorithm, despite having the lowest throughput of the three on Sift and Fashion-Mnist.
-On Silva, Repeated $\rho$-NN is comparable to the other CAKES algorithms at low multipliers, but becomes the fastest at the higher multipliers.
-When we view these results in light of the LFD plots in Figure~\ref{fig:results:lfd-plots}, we realize that Repeated $\rho$-NN appears to be the fastest CAKES algorithm on datasets where a large proportion of the data have a very low LFD, such as Glove-25 and Silva.
-This trend is unsurprising, given that Repeated $\rho$-NN relies on a low LFD around the query in order to quickly estimate the correct radius for $k$ hits.
-% These findings suggest that Repeated $\rho$-NN is the most ``sensitive'' to the manifold structure of the dataset.
-% Exploring this sensitivity is a potential avenue for future study, as it remains to learn at what LFD Repeated $\rho$-NN transitions away from being the fastest CAKES algorithm, and whether this transition is sharp.
-
 While the fastest CAKES algorithm varies by dataset, we note that on all three ANN-benchmark datasets (Fashion-Mnist, Glove-25, and Sift), Depth-First Sieve and Breadth-First Sieve show nearly constant throughput as the cardinality increases.
 This observation warrants further investigation, but it is especially promising given that both algorithms consistently outperform linear search for high cardinalities.
 Finally, we emphasize that the variation in performance of our algorithms across different datasets and cardinalities supports our use of an auto-tuning function (as discussed in Section~\ref{sec:methods:auto-tuning}) to select the best algorithm for a given dataset.
@@ -50,19 +43,22 @@ For example, Sift has much higher LFD than Fashion-Mnist and Glove-25, and we ob
 For the Random dataset, which has the highest LFD, CAKES's algorithms \textit{never} outperform linear search.
 These observations support our claim that CAKES performs well on datasets that arise from constrained generating phenomena, even as the cardinalities of these datasets grow exponentially.
 
-We note that despite the genericity of CAKES, effectively applying it to real-world datasets may typically require domain-specific knowledge. As an example, consider the domain of protein sequence search; protein sequences are of highly variable length (30--1000 amino acids are typical, with some outliers) and typically comprise a 20-letter alphabet. There have been numerous protein sequence search algorithms~\cite{kim2021entrance, daniels2013compressive, yu2015entropy, steinegger2018clustering}, and the one thing they have in common besides the application domain is that their development required deep domain-specific knowledge. While simple edit distance may be a poor choice for clustering when sequence lengths exhibit such variance, other choices of distance metrics and preprocessing could be used by CAKES, such as representing each sequence as a set of $k$-mers (short substrings of length $k$) and choosing Jaccard distance as the metric; this approach was chosen by~\cite{kim2021entrance}.
-
+We note that despite the genericity of CAKES, effectively applying it to real-world datasets may typically require domain-specific knowledge.
+As an example, consider the domain of protein sequence search; protein sequences are of highly variable length (30--1000 amino acids are typical, with some outliers) and typically comprise a 20-letter alphabet.
+There have been numerous protein sequence search algorithms~\cite{kim2021entrance, daniels2013compressive, yu2015entropy, steinegger2018clustering}, and the one thing they have in common besides the application domain is that their development required deep domain-specific knowledge.
+While simple edit distance may be a poor choice for clustering when sequence lengths exhibit such variance, other choices of distance metrics and preprocessing could be used by CAKES, such as representing each sequence as a set of $k$-mers (short substrings of length $k$) and choosing Jaccard distance as the metric; this approach was chosen by~\cite{kim2021entrance}.
 
 The questions raised by this study suggest several additional avenues for future work.
-A comparison across more datasets is in order, as is further analysis with other distance functions that existing methods, such as FAISS, HNSW and ANNOY, do not support. These include Wasserstein distance~\cite{vallender1974calculation} for probability distributions (particularly for high dimensional distributions) and Tanimoto distance~\cite{bajusz2015tanimoto} for comparing molecular structures by their maximal common subgraphs.
+A comparison across more datasets is in order, as is further analysis with other distance functions that existing methods, such as FAISS, HNSW and ANNOY, do not support.
+These include Wasserstein distance~\cite{vallender1974calculation} for probability distributions (particularly for high dimensional distributions) and Tanimoto distance~\cite{bajusz2015tanimoto} for comparing molecular structures by their maximal common subgraphs.
 Incorporating these or other distance functions in CAKES requires only that a Rust implementation of the distance function be provided.
 
 Additionally, we intend to improve the data augmentation process described in Section~\ref{sec:methods:synthetic-data} to better preserve the topological structure of the underlying dataset.
-In particular, we expect that favoring augmentation along the first principal components of the local manifold may allow for more realistic data augmentation.
+In particular, we expect that favoring augmentation along the first few principal components of the local manifold may allow for more realistic data augmentation.
 
 We also plan to investigate hierarchical data compression by representing differences at each level of the binary tree, particularly for string or genomic data, where all differences are discrete.
-Such an encoding would allow us to store the data in a compressed format, and to perform search on the compressed data without decompressing it.
-This would allow us to perform fast search on datasets that are too large to fit in memory.
+Such an encoding would allow us to store the data in a compressed format, and to perform search on the compressed data without decompressing it in its entirety.
+This would allow us to perform fast search on datasets that are otherwise too large to fit in memory.
 An exploration of compression and compressed search is another avenue for future work.
 
 We also would like to explore the use of CAKES in a streaming environment.
