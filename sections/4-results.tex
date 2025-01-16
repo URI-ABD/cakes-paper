@@ -47,7 +47,7 @@ in other words, $B(c, \tfrac{r}{2})$ contains only $c$ while $B(c, r)$ contains 
 Given our definition of LFD in Equation~\ref{eq:methods:lfd-half}, this means that the LFD of $\mathcal{R}$ is approximately $\log_2(\frac{|X|}{1}) = \log_2(1,000,000) \approx 20$, which is what we observe in Figure~\ref{fig:results:random-lfd}.
 Theoretically, the LFD of this dataset should be 128, i.e.\, it should be the same as the embedding dimension.
 This reflects the difference between how we empirically measure the LFD and the value we would expect.
-With sample sizes larger than 1,000,000, we would expect the LFD to approach 128 until we have sampled $2^128$ points, at which point the LFD would be 128 and would stay at 128 for even larger sample sizes.
+With sample sizes larger than 1,000,000, we would expect the LFD to approach 128 until we have sampled $2^{128}$ points, at which point the LFD would be 128 and would stay at 128 for even larger sample sizes.
 Unfortunately, such a large sample is practically impossible to generate.
 
 The Silva-18S dataset consists of genomic sequences whose unaligned lengths are at-most 3,712 but were provided in an MSA of width 50,000.
@@ -126,7 +126,7 @@ We benchmark the CAKES algorithms, na\"{i}ve linear search, HNSW, ANNOY, and FAI
 We augment these datasets with synthetic points to examine how performance scales with cardinality.
 We also benchmark the CAKES algorithms on the Silva and RadioML datasets, and we subsample these datasets instead of augmenting them to examine how performance scales with cardinality.
 For each dataset, we use the corresponding distance function (see Table~\ref{tab:datasets:summary}).
-For HNSW, ANNOY, and FAISS-IVF, allow for a hyper-parameter search to tune their index for maximum recall.
+For HNSW, ANNOY, and FAISS-IVF, we allow for a hyper-parameter search to tune their index for maximum recall.
 For CAKES, we build the tree and use our auto-tuning approach (see Section~\ref{sec:methods:auto-tuning}) to select the fastest algorithm for each dataset and cardinality.
 We show results for $k=10$ in the main text, but results for $k=100$ can be found in the Supplement.
 Figure~\ref{fig:results:scaling-plots} shows the scaling behavior of these algorithms on these datasets while Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift} and~\ref{tab:results:qps-and-recall-random} report the throughput and recall of CAKES's algorithms at each augmented cardinality for Fashion-MNIST, Glove-25, Sift, and Random respectively.
@@ -134,9 +134,9 @@ Figure~\ref{fig:results:scaling-plots} shows the scaling behavior of these algor
 On the Fashion-MNIST, Glove-25, and Sift datasets (in Figures~\ref{fig:results:fashion-mnist-scaling},~\ref{fig:results:glove-25-scaling},~and~\ref{fig:results:sift-scaling} respectively), we observe that as cardinality increases, the Depth-First Sieve algorithm is consistently the fastest CAKES algorithm with a throughput that is constant in the cardinality of the dataset.
 The Breadth-First Sieve algorithm is the usually the second fastest, also with a nearly constant throughput across all cardinalities.
 The Repeated $\rho$-NN algorithm, however, falls off in throughput as cardinality increases.
-All three CAKES algorithms exhibit perfect recall on the Fashion-MNIST and Sift datasets, and near-perfect recall on the Glove-25 dataset.
+All three CAKES algorithms exhibit perfect recall on the Fashion-MNIST and Sift datasets, and near-perfect recall on the Glove-25 dataset (which uses cosine distance).
 In contrast, HNSW and ANNOY are faster than CAKES's algorithms for all cardinalities and have near constant throughput as cardinality increases, but their recall degrades quickly as cardinality increases.
-FAISS-IVF exhibits linearly decreasing throughput as cardinality increases, which is expected from the algorithm given that we tune the hyper-parameters to maximize.
+FAISS-IVF exhibits linearly decreasing throughput as cardinality increases, which is expected from the algorithm given that we tune the hyper-parameters to maximize recall.
 
 On the Random dataset, HNSW and ANNOY are still the fastest algorithms but exhibit recall values near 0.
 CAKES's algorithms show linearly decreasing throughput as cardinality increases and are also slower than na\"{i}ve linear search.
@@ -320,7 +320,7 @@ We note that this instrumentation significantly slows down the wall-clock time o
 These four comparisons (referred to as Ball, BalancedBall, PermutedBall, and, PermutedBalancedBall, where depth-first-reordering is referred to as Permuted for brevity) for all three search algorithms on the Fashion-MNIST dataset are shown in Figure~\ref{fig:results:distance-counts}.
 Notably, performance is not only strictly worse for the balanced approaches, but the asymptotic behavior is significantly worse;
 the instances (such as Depth-First Sieve) that seemed to exhibit constant-time behavior in Figure~\ref{fig:results:scaling-plots}, which is effectively PermutedBall, no longer do under a balanced clustering.
-We note that on this dataset, depth-first reordering (the Permuted plotlines) seems to have little effect.
+We note that on this dataset, depth-first reordering (the Permuted plotlines) seems to have little effect; depth-first reordering is intended to improve space complexity only.
 
 
 \begin{figure}
