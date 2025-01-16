@@ -278,7 +278,7 @@ Once $\sum_{C \in Q} |C| \geq k$, we are guaranteed to have found at least $k$ n
 \label{sec:methods:knn-search:repeated-rnn-complexity}
 
 
-As stated in Section~\ref{sec:intoduction:entropy-scaling-search}, Theorem~\ref{thm:methods:rnn-complexity} assumes that the dataset $X$ has a manifold structure. 
+As stated in Section~\ref{sec:intoduction:entropy-scaling-search}, Theorem~\ref{thm:methods:rnn-complexity} assumes that the dataset $X$ has a manifold structure.
 
 % The complexity bounds for Repeated $\rho$-NN rely on the assumption that the query point is sampled from the same distribution as the rest of the data or, in other words, that it arises from the same generative process as the rest of the dataset.
 % Given the uses of $k$-NN search in practice, this assumption is reasonable.
@@ -360,7 +360,9 @@ While ordinarily we compute LFD by comparing cardinalities of two balls with two
 Since $q$ is from the same distribution as $X$, the LFD at $q$ should not be significantly different from that at the center of a cluster in $Q$.
 By Equation~\ref{eq:methods:lfd-original}, $\hat{d} = \frac{\log{}\frac{\hat{|C|}}{k}}{\log{}\frac{\hat{r}}{\rho_k}}$.
 We can rearrange this equation to get $\frac{\hat{r}}{\rho_k} = \left( \frac{\hat{|C|}}{k} \right)^{\hat{d}^{-1}}$.
-Using this to simplify the term for leaf-search in Equation~\ref{eq:methods:rnn-search-complexity}, we get $k \left( 1 + 2 \cdot \left( \frac{\hat{|C|}}{k} \right) ^ {\hat{d}^{-1}} \right)^d$.
+Using this to simplify the term for leaf-search in Equation~\ref{eq:methods:rnn-search-complexity}, we get:
+
+\[{k \left( 1 + 2 \cdot \left( \frac{\hat{|C|}}{k} \right) ^ {\hat{d}^{-1}} \right)^d \]
 
 Again using the assumption that since $q$ is from the same distribution as $X$, the LFD at $q$ should not be significantly different from that at a cluster in $Q$, we have that $\hat{d} \approx d$.
 By combining the bounds for tree-search and leaf-search, we see that Repeated $\rho$-NN has time complexity
@@ -497,7 +499,7 @@ Due to their similarity, we combine the complexity analyses of both Sieve method
 For these methods we again use the terminology of tree-search and leaf-search.
 Tree-search navigates the cluster tree and adds clusters to $Q$.
 Leaf-search exhaustively searches \textit{some} of the clusters in $Q$ to find the $k$ nearest neighbors.
-As stated in Section~\ref{sec:intoduction:entropy-scaling-search}, Theorem~\ref{thm:methods:sieve-complexity} assumes that the dataset $X$ has a manifold structure. 
+As stated in Section~\ref{sec:intoduction:entropy-scaling-search}, Theorem~\ref{thm:methods:sieve-complexity} assumes that the dataset $X$ has a manifold structure.
 
 \begin{theorem}
     Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Let $T \coloneqq \mathcal{O} \big( \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X) \big)$ and   $L \coloneqq \mathcal{O} \left( k \cdot \bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d \right)$, where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of $X$, $d$ is the LFD of $X$, $\hat{|C|}$ is the mean cardinality of clusters overlapping the query ball, and $k$ is the number of nearest neighbors. Then, for dataset $X$ and query $q$, the time complexity of performing Breadth-First Sieve search is \begin{equation}
