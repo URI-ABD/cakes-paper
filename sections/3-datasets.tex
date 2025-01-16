@@ -60,7 +60,7 @@ We held out a set of 1,000 random sequences from the dataset to use as queries f
 We use Levenshtein~\cite{levenshtein1966binary} distance on the unaligned sequences to build the tree and to perform $k$-NN search.
 We note that the sequences in this dataset were provided in a multiple sequence alignment with a width of 50,000 characters.
 We could have used Hamming distance on the aligned sequences, but we chose to use Levenshtein distance on the unaligned sequences to help demonstrate the flexibility of CAKES in handling exotic distance functions.
-Under hamming distance, we could consider this dataset to have an embedding dimension of 50,000, but for Levenshtein distance, we state the dimensionality as the length of the longest sequence, i.e.\, 3,712.
+Under Hamming distance, we could consider this dataset to have an embedding dimension of 50,000, but for Levenshtein distance, we state the dimensionality as the length of the longest sequence, i.e.\, 3,712.
 
 
 \subsection{Radio ML}
