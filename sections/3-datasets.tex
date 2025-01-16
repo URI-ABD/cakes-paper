@@ -56,22 +56,22 @@ We then use the results of linear search on the augmented datasets as ground tru
 
 To demonstrate CAKES with a more exotic distance function, we also benchmarked on the SILVA 18S ribosomal RNA dataset~\cite{10.1093/nar/gks1219}.
 This dataset contains ribosomal RNA sequences of 2,224,640 genomes, with the longest sequence having 3,712 letters.
-We use Levenshtein~\cite{levenshtein1966binary} distance on the unaligned sequences to build the tree and to perform $k$-NN search.
-We note that when put into a multiple sequence alignment, the length (and thus dimensionality) would be 50,000, but in that case one could use Hamming distance, which is computationally less expensive than Levenshtein distance.
 We held out a set of 1,000 random sequences from the dataset to use as queries for benchmarking.
-Since this dataset contains many redundant, i.e.,\,nearly identical, sequences, we used a maximum tree-depth of 128 as a partition criterion in Algorithm~\ref{alg:methods:partition}.
+We use Levenshtein~\cite{levenshtein1966binary} distance on the unaligned sequences to build the tree and to perform $k$-NN search.
+We note that the sequences in this dataset were provided in a multiple sequence alignment with a width of 50,000 characters.
+We could have used Hamming distance on the aligned sequences, but we chose to use Levenshtein distance on the unaligned sequences to help demonstrate the flexibility of CAKES in handling exotic distance functions.
+Under hamming distance, we could consider this dataset to have an embedding dimension of 50,000, but for Levenshtein distance, we state the dimensionality as the length of the longest sequence, i.e.\, 3,712.
 
 
 \subsection{Radio ML}
 \label{sec:datasets-and-benchmarks:radio-ml}
 
-As another example of an exotic distance function, we benchmarked CAKES on the RadioML dataset~\cite{oshea2018radioml}.
-The RadioML dataset contains samples of synthetically generated signal captures of different modulation modes over a range of SNR levels.
-Specifically, it comprises 24 modulation modes at 26 different signal-to-noise ratio (SNR) levels ranging from -20 dB to 30 dB, with 4,096 samples at each combination of modulation mode and SNR level.
+As another example of an exotic distance function, we benchmarked CAKES on the Radio-ML dataset~\cite{oshea2018radioml} under Dynamic Time Warping~\cite{muller2007dynamic} as the distance function.
+This dataset contains samples of synthetically generated signal captures of different modulation modes over a range of signal-to-noise ratio (SNR) levels.
+Specifically, it comprises 24 modulation modes at 26 different SNRs ranging from -20 dB to 30 dB, with 4,096 samples at each combination of modulation mode and SNR level.
 Thus, it contains $24 \cdot 26 \cdot 4096 = 2,555,504$ samples in total.
 Each sample is a 1,024-dimensional complex-valued vector, representing a signal capture (a time-series of complex-valued numbers).
 We used a subset of this dataset, containing $97,304$ samples at 10dB SNR and used another $1,000$ samples at the same SNR as a hold-out set of queries.
-We use Dynamic Time Warping~\cite{muller2007dynamic} as the distance function for this dataset.
 
 
 \subsection{Other Algorithms}
