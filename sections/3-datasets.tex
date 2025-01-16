@@ -76,7 +76,9 @@ We use Dynamic Time Warping~\cite{muller2007dynamic} as the distance function fo
 \subsection{Other Algorithms}
 \label{sec:datasets-and-benchmarks:other-algorithms}
 
-We benchmarked CAKES's algorithms against the state-of-the-art similarity search algorithms HNSW, ANNOY and FAISS-IVF, and two implementations of linear search.
-In particular, we use FAISS-Flat, a Python implementation of linear search, to provide ground-truth values for recall of HNSW, ANNOY, and FAISS-IVF.
-We use our own Rust implementation of linear search to provide ground-truth values for calculating recall of CAKES's algorithms.
-We plot the throughput of these two implementations of linear search as a reference point for all other algorithms in Figure~\ref{fig:results:scaling-plots}.
+We benchmarked the three CAKES algorithms against a na\"ive linear search implementation in Rust.
+We also benchmarked against three state-of-the-art similarity search algorithms: HNSW, ANNOY, and FAISS-IVF in Python.
+We verified that our implementation of linear search produces the same neighbors as provided by the ANN-Benchmarks suite for Fashion-MNIST, Glove-25 and Sift datasets.
+We then used this linear search implementation to find and store the ground-truth for the augmented versions of the datasets.
+We used this ground-truth to calculate recall for CAKES's algorithms in Rust and for HNSW, ANNOY, and FAISS-IVF in Python.
+We plot the results of these benchmarks in Figure~\ref{fig:results:scaling-plots}.

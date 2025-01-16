@@ -126,11 +126,6 @@ With no additional memory cost nor time cost for retrieving points during search
 \subsubsection{Complexity}
 \label{sec:methods:clustering:complexity}
 
-% Note that the tree $\mathcal{T}$ produced by Algorithm~\ref{alg:methods:partition} is not necessarily balanced.
-% In fact, for real datasets, we expect anything but a balanced tree; the varying sampling density in different regions of the manifold and the low dimensional ``shape'' of the manifold itself will cause it to be unbalanced.
-% The only case in which we would expect a balanced tree is if the dataset were uniformly distributed, e.g.,\,in a $d$-dimensional hyper-cube.
-% In this sense, the imbalance in the tree is a feature, not a bug, as it reflects the underlying structure of the data.
-
 The asymptotic complexity of Partition is the same as described in~\cite{ishaq2019clustered}.
 By using an approximate partitioning with a $\sqrt{n}$ sample, we achieve $\mathcal{O}(n)$ cost of partitioning and $\mathcal{O}(n \log n)$ cost of building $\mathcal{T}$.
 This is a significant improvement over exact partitioning and tree-building, which cost $\mathcal{O}(n^2)$ and $\mathcal{O}(n^2 \log n)$ respectively.
@@ -156,11 +151,6 @@ Given a dataset $\textbf{X}$, a distance function $f$ and the root cluster $\mat
 Given a user specified integer $k$ and query $q$, $k$-NN search aims to find the $k$ closest points to $q$ in $\textbf{X}$.
 In other words, $k$-NN search aims to find the set $H$ such that $|H| = k$ and $H = B_X(q, \rho_k)$ where $\rho_k = \max \left\{ f(q, p) \ \forall \ p \in H \right\}$ is the distance from $q$ to the $k^{th}$ nearest neighbor in $\textbf{X}$.
 
-In this section, we present three novel algorithms for exact $k$-NN search:
-Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
-In these algorithms, we use $H$, for \textit{hits}, to refer to the data structure that stores the closest points to the query found so far, and $Q$ to refer to the data structure that stores the clusters and points that are still in contention for being one of the $k$ nearest neighbors.
-These algorithms also use some terminology defined and illustrated in Figure~\ref{fig:methods:deltas}.
-
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.65]{images/geometry/deltas.pdf}
@@ -173,12 +163,6 @@ These algorithms also use some terminology defined and illustrated in Figure~\re
     \label{fig:methods:deltas}
     \vskip -0.25in
 \end{figure}
-
-
-\subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
-\label{sec:methods:knn-search:repeated-rnn}
-
-This algorithm relies on the \textit{tree-search} (Algorithm~\ref{alg:methods:rnn-search:tree-search}) and \textit{leaf-search} (Algorithm~\ref{alg:methods:rnn-search:leaf-search}) as described in~\cite{ishaq2019clustered} and reproduced here for completeness.
 
 \begin{minipage}{.425\textwidth}
     \begin{algorithm}[H]
@@ -223,6 +207,17 @@ This algorithm relies on the \textit{tree-search} (Algorithm~\ref{alg:methods:rn
         \end{algorithmic}
     \end{algorithm}
 \end{minipage}
+
+In this section, we present three novel algorithms for exact $k$-NN search:
+Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
+In these algorithms, we use $H$, for \textit{hits}, to refer to the data structure that stores the closest points to the query found so far, and $Q$ to refer to the data structure that stores the clusters and points that are still in contention for being one of the $k$ nearest neighbors.
+These algorithms also use some terminology defined and illustrated in Figure~\ref{fig:methods:deltas}.
+
+
+\subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
+\label{sec:methods:knn-search:repeated-rnn}
+
+This algorithm relies on the \textit{tree-search} (Algorithm~\ref{alg:methods:rnn-search:tree-search}) and \textit{leaf-search} (Algorithm~\ref{alg:methods:rnn-search:leaf-search}) as described in~\cite{ishaq2019clustered} and reproduced here for completeness.
 
 For Repeated $\rho$-NN search (Algorithm~\ref{alg:methods:repeated-rnn}), we begin by performing \textit{tree-search} with a search radius $r$ equal to the radius of the root $\mathcal{R}$ divided by the cardinality of the dataset.
 If no clusters are found, then we double $r$ and perform tree-search again, repeating until we find at least one cluster.
@@ -361,8 +356,9 @@ Since $q$ is from the same distribution as $X$, the LFD at $q$ should not be sig
 By Equation~\ref{eq:methods:lfd-original}, $\hat{d} = \frac{\log{}\frac{\hat{|C|}}{k}}{\log{}\frac{\hat{r}}{\rho_k}}$.
 We can rearrange this equation to get $\frac{\hat{r}}{\rho_k} = \left( \frac{\hat{|C|}}{k} \right)^{\hat{d}^{-1}}$.
 Using this to simplify the term for leaf-search in Equation~\ref{eq:methods:rnn-search-complexity}, we get:
-
-\[{k \left( 1 + 2 \cdot \left( \frac{\hat{|C|}}{k} \right) ^ {\hat{d}^{-1}} \right)^d \]
+\begin{equation*}
+    k \left( 1 + 2 \cdot \left( \frac{\hat{|C|}}{k} \right) ^ {\hat{d}^{-1}} \right)^d
+\end{equation*}
 
 Again using the assumption that since $q$ is from the same distribution as $X$, the LFD at $q$ should not be significantly different from that at a cluster in $Q$, we have that $\hat{d} \approx d$.
 By combining the bounds for tree-search and leaf-search, we see that Repeated $\rho$-NN has time complexity
@@ -383,19 +379,7 @@ By combining the bounds for tree-search and leaf-search, we see that Repeated $\
 as claimed.
 \end{proof}
 
-
-
 We remark that the scaling factor in Equation~\ref{eq:methods:repeated-rnn-complexity1} should be close to 1 unless LFD is highly variable in the region around the query (i.e.,\,if $\hat{d}$ differs significantly from $d$).
-
-
-\subsubsection{Breadth-First Sieve}
-\label{sec:methods:knn-search:bredth-first-sieve}
-
-This algorithm (described in Algorithm~\ref{alg:methods:bredth-first-sieve}) performs a breadth-first traversal of the tree $\mathcal{T}$, pruning clusters by using a modified version of the QuickSelect algorithm~\cite{hoare1961algorithm} at each level.
-
-We begin by letting $Q$ be a set of 3-tuples $(p, \delta^{+}_{p}, m)$, where $p$ is either a cluster or a point, $\delta^{+}_{p}$ is the $\delta^{+}$ of $p$ as illustrated in Figure~\ref{fig:methods:deltas}, and $m$ is the multiplicity of $p$ in $Q$.
-During the breadth-first traversal, for every cluster $C$ we encounter, we add $(C, \delta^{+}_{C}, |C| - 1)$ and $(c, \delta_{c}, 1)$ to $Q$, where $c$ is the center of $C$.
-Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\ref{sec:methods:knn-search}, since $c$ is a point, $\delta_{C} = \delta_{c} = \delta^{+}_{c} = \delta^{-}_{c}$.
 
 \begin{minipage}{0.5125\textwidth}
     \begin{algorithm}[H]\small
@@ -459,7 +443,15 @@ Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\re
     \end{algorithm}
 \end{minipage}
 
-\vskip 0.1in
+
+\subsubsection{Breadth-First Sieve}
+\label{sec:methods:knn-search:bredth-first-sieve}
+
+This algorithm (described in Algorithm~\ref{alg:methods:bredth-first-sieve}) performs a breadth-first traversal of the tree $\mathcal{T}$, pruning clusters by using a modified version of the QuickSelect algorithm~\cite{hoare1961algorithm} at each level.
+
+We begin by letting $Q$ be a set of 3-tuples $(p, \delta^{+}_{p}, m)$, where $p$ is either a cluster or a point, $\delta^{+}_{p}$ is the $\delta^{+}$ of $p$ as illustrated in Figure~\ref{fig:methods:deltas}, and $m$ is the multiplicity of $p$ in $Q$.
+During the breadth-first traversal, for every cluster $C$ we encounter, we add $(C, \delta^{+}_{C}, |C| - 1)$ and $(c, \delta_{c}, 1)$ to $Q$, where $c$ is the center of $C$.
+Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\ref{sec:methods:knn-search}, since $c$ is a point, $\delta_{C} = \delta_{c} = \delta^{+}_{c} = \delta^{-}_{c}$.
 
 We then use the QuickSelect algorithm, modified to account for multiplicities and to reorder $Q$ in-place, to find the element in $Q$ with the $k^{th}$ smallest $\delta^{+}$; in other words, we find $\tau$, the smallest $\delta^{+}$ in $Q$ such that $\left| B(q, \tau) \right| \geq k$.
 Since this step may require a binary search for the correct pivot element to find $\tau$ and reordering with a new pivot takes linear time in the size of the input list, this version of QuickSelect has $\mathcal{O}\left(|Q| \log |Q|\right)$ time complexity.

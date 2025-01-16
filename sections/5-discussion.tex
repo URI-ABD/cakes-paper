@@ -23,15 +23,16 @@ This, coupled with the increasing time and space cost of building the indices fo
 CAKES's tree is orders of magnitude faster and less memory-intensive to build, and CAKES's algorithms, while slower than HNSW and ANNOY, still show near-constant scaling as well as perfect recall.
 
 When written with the same notation as used in Section~\ref{sec:methods:knn-search:complexity-of-sieve-methods}, we see that the time complexity of Repeated $\rho$-NN is $\mathcal{O}(\tfrac{T}{\lceil d \rceil} + L)$, where $T$ is the time complexity of tree-search and $L$ is the time complexity of leaf-search.
-Even though Repeated $\rho$-NN has the least time cost (compare to $\mathcal{O}(T\log{(T+L)} + L\log{(T+L)})$ for Breadth-First Sieve and $\mathcal{O}(T\log{T} + L\log{k})$ for Depth-First Sieve) of the three CAKES algorithms, it is not always the fastest algorithm empirically.
-We believe that some of this discrepancy can be explained by the fact that if Repeated $\rho$-NN significantly ``overshoots'' the correct radius for $k$ hits ($\rho_k$) during tree-search, leaf-search will require looking at more points, rendering the true scaling factor higher than that in Equation~\ref{eq:methods:repeated-rnn-complexity}.
+Even though Repeated $\rho$-NN has the least time cost (compared to $\mathcal{O}\left((T + L)\log{(T+L)}\right)$ for Breadth-First Sieve and $\mathcal{O}(T\log{T} + L\log{k})$ for Depth-First Sieve) of the three CAKES algorithms, it is not always the fastest algorithm empirically.
+We believe that some of this discrepancy can be explained by the fact that Repeated $\rho$-NN can significantly ``overshoots'' the correct radius for $k$ hits ($\rho_k$) during tree-search.
+This causes leaf-search to exhaustively search many more clusters than necessary, rendering the true scaling factor higher than that in Equation~\ref{eq:methods:repeated-rnn-complexity}.
 This overshot can occur when the LFDs of clusters near the query are not concentrated around their expectation.
 For example, if most clusters near the query have very low LFD except for one anomaly with very high LFD,
 the harmonic mean LFD $\mu$ can still be low, so the factor of radial increase in (Equation)~\ref{eq:methods:repeated-rnn-factor} may be much larger than necessary for guaranteeing $k$ hits.
 This suggests that rather than using the reciprocal of the harmonic mean LFD in~\ref{eq:methods:repeated-rnn-factor}, we may achieve better results with a mean that is more sensitive to high outliers, such as the geometric mean.
 We leave it as an avenue for future work to characterize when Repeated $\rho$-NN significantly overestimates the correct radius $\rho_k$ and to improve upon the factor of radial increase in Equation~\ref{eq:methods:repeated-rnn-factor} so that this occurs less frequently and with less severity.
 
-While the fastest CAKES algorithm varies by dataset, we note that on all three ANN-benchmark datasets (Fashion-Mnist, Glove-25, and Sift), Depth-First Sieve and Breadth-First Sieve show nearly constant throughput as the cardinality increases.
+While the fastest CAKES algorithm can vary by dataset and cardinality, we note that on all three ANN-benchmark datasets (Fashion-MNIST, Glove-25, and Sift), Depth-First Sieve and Breadth-First Sieve show nearly constant throughput as the cardinality increases.
 This observation warrants further investigation, but it is especially promising given that both algorithms consistently outperform linear search for high cardinalities.
 Finally, we emphasize that the variation in performance of our algorithms across different datasets and cardinalities supports our use of an auto-tuning function (as discussed in Section~\ref{sec:methods:auto-tuning}) to select the best algorithm for a given dataset.
 Future work is needed to better characterize those datasets for which each algorithm performs best, but our results suggest that a more sophisticated auto-tuning function could be developed to select the fastest algorithm based on the properties of the dataset.
@@ -43,15 +44,17 @@ For example, Sift has much higher LFD than Fashion-Mnist and Glove-25, and we ob
 For the Random dataset, which has the highest LFD, CAKES's algorithms \textit{never} outperform linear search.
 These observations support our claim that CAKES performs well on datasets that arise from constrained generating phenomena, even as the cardinalities of these datasets grow exponentially.
 
-We note that despite the genericity of CAKES, effectively applying it to real-world datasets may typically require domain-specific knowledge.
+We note that despite the genericity of CAKES, effectively applying it to real-world datasets may require domain-specific knowledge.
 As an example, consider the domain of protein sequence search; protein sequences are of highly variable length (30--1000 amino acids are typical, with some outliers) and typically comprise a 20-letter alphabet.
 There have been numerous protein sequence search algorithms~\cite{kim2021entrance, daniels2013compressive, yu2015entropy, steinegger2018clustering}, and the one thing they have in common besides the application domain is that their development required deep domain-specific knowledge.
-While simple edit distance may be a poor choice for clustering when sequence lengths exhibit such variance, other choices of distance metrics and preprocessing could be used by CAKES, such as representing each sequence as a set of $k$-mers (short substrings of length $k$) and choosing Jaccard distance as the metric; this approach was chosen by~\cite{kim2021entrance}.
+While simple edit distance may be a poor choice for clustering when sequence lengths exhibit such variance, other choices of distance metrics and preprocessing could be used by CAKES, such as representing each sequence as a set of $k$-mers (short substrings of length $k$) and choosing Jaccard distance on these sets as the metric; this approach was chosen by~\cite{kim2021entrance}.
+If the distance function uses a global sequence alignment algorithm, such as Needleman-Wunsch~\cite{needleman1970general}, the dataset may also be preprocessed into a number of mutually exclusive subsets based on the lengths of the sequences, and a separate CAKES tree may be built for each subset.
+At search time, the query sequence would be assigned to the appropriate tree based on its length, and the search would be performed on that tree, and on a small number of trees on adjacent lengths' bins.
 
 The questions raised by this study suggest several additional avenues for future work.
 A comparison across more datasets is in order, as is further analysis with other distance functions that existing methods, such as FAISS, HNSW and ANNOY, do not support.
 These include Wasserstein distance~\cite{vallender1974calculation} for probability distributions (particularly for high dimensional distributions) and Tanimoto distance~\cite{bajusz2015tanimoto} for comparing molecular structures by their maximal common subgraphs.
-Incorporating these or other distance functions in CAKES requires only that a Rust implementation of the distance function be provided.
+Incorporating new distance functions in CAKES requires only that a Rust implementation of the distance function be provided.
 
 Additionally, we intend to improve the data augmentation process described in Section~\ref{sec:methods:synthetic-data} to better preserve the topological structure of the underlying dataset.
 In particular, we expect that favoring augmentation along the first few principal components of the local manifold may allow for more realistic data augmentation.

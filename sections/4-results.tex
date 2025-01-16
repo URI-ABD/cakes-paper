@@ -54,7 +54,7 @@ The Silva-18S dataset consists of genomic sequences whose unaligned lengths are 
 As such the embedding dimension is somewhere between 3,712 and 50,000.
 We use the Levenshtein edit distance (a metric) to measure distances between sequences.
 This dataset, as shown in Figure~\ref{fig:results:silva-lfd}, exhibits consistently low LFD.
-In particular, LFD is less than about 3 for all depths, hovering near 1 for clusters at depth 40 and deeper.
+In particular, LFD is less than 3 for all depths, hovering near 1 for clusters at depth 40 and deeper.
 
 The Radio-ML dataset consists of measurements of radio-frequency signals using 1,024 dimensional complex-valued vectors.
 We use the Dynamic Time Warping distance metric on this dataset.
@@ -62,7 +62,7 @@ This dataset is synthetic~\cite{oshea2018radioml} but uses a far more elaborate 
 The LFD values show three distinct peaks around an LFD of 12 at or near depths of 8, 25 and 50.
 Each peak is followed by a linear decrease until encountering a sharp spike for the next peak.
 Within each of the tree portions, this dataset has a character very similar to that of the Random dataset.
-This suggests that the dataset obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth;
+This suggests that the dataset obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth.
 This is likely the result of a piecewise uniform sampling strategy used to generate the different modulation modes present in the dataset.
 
 \begin{figure}
@@ -319,8 +319,8 @@ We note that this instrumentation significantly slows down the wall-clock time o
 
 These four comparisons (referred to as Ball, BalancedBall, PermutedBall, and, PermutedBalancedBall, where depth-first-reordering is referred to as Permuted for brevity) for all three search algorithms on the Fashion-MNIST dataset are shown in Figure~\ref{fig:results:distance-counts}.
 Notably, performance is not only strictly worse for the balanced approaches, but the asymptotic behavior is significantly worse;
-the instances (such as Depth-First Sieve) that seemed to exhibit constant-time behavior in Figure~\ref{fig:results:scaling-plots}, which is effectively PermutedBall, no longer do under a balanced clustering.
-We note that on this dataset, depth-first reordering (the Permuted plotlines) seems to have little effect; depth-first reordering is intended to improve space complexity only.
+the algorithms (such as Depth-First Sieve) that seemed to exhibit constant-time behavior in Figure~\ref{fig:results:scaling-plots}, which shows results using PermutedBall, no longer do so under a balanced clustering.
+We note that on this dataset, depth-first reordering (the Permuted variants) seems to have little effect on throughput; depth-first reordering is primarily intended to improve space complexity.
 
 
 \begin{figure}
