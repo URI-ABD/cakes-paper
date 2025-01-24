@@ -1,16 +1,25 @@
 % SIAM Supplemental File Template
+\newif\ifarxiv
+\arxivtrue % swap this to true to build for the arxiv
+\ifarxiv
+\documentclass{article}
+\usepackage{arxiv}
+\else
 \documentclass[review,supplement,onefignum,onetabnum]{siamonline220329}
+\fi
 
 \input{cakes_shared}
 \begin{document}
 % Optional PDF information
+\ifarxiv
+\else
 \ifpdf
 \hypersetup{
   pdftitle={Supplementary Materials: Let them have CAKES: A Cutting-Edge Algorithm for Scalable, Efficient, and Exact Search on Big DataAn Example Article},
   pdfauthor={M. E. Prior, T. J. Howard III, O. McLaughlin, T. Ferguson, N. Ishaq, N. M. Daniels}
 }
 \fi
-
+\fi
 
 \maketitle
 

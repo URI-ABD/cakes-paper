@@ -1,17 +1,28 @@
+\newif\ifarxiv
+\arxivtrue % swap this to true to build for the arxiv
+\ifarxiv
+\documentclass{article}
+\usepackage{arxiv}
+\else
 \documentclass[review,onefignum,onetabnum]{siamonline220329}
+\fi
+
+\pdfoutput=1
 % below is for arxiv
 % \documentclass{article}
 % \pdfoutput=1
 % \usepackage{arxiv}
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
+\ifarxiv
+\else
 \ifpdf
 \hypersetup{
   pdftitle={Let them have CAKES: A Cutting-Edge Algorithm for Scalable, Efficient, and Exact Search on Big Data},
   pdfauthor={M. E. Prior, T. J. Howard III, O. McLaughlin, T. Ferguson, N. Ishaq, N. M. Daniels}
 }
 \fi
-
+\fi
 
 
 
@@ -19,124 +30,11 @@
 
 \input{cakes_shared}
 \begin{document}
-% \title{CLAM-Accelerated K-Nearest Neighbors Entropy-Scaling Search of Large High-Dimensional Datasets via an Actualization of the Manifold Hypothesis}
-% \title{Let them have CAKES: A Cutting-Edge Algorithm for Scalable, Efficient, and Exact Search on Big Data}
-% \author{Morgan E. Prior}
-% \email{meprior424@gmail.com}
-% \orcid{0009-0003-1553-1672}
-% \affiliation{%
-%   \institution{Department of Mathematics and Applied Mathematical Sciences\\University of Rhode Island}
-%   \city{Kingston}
-%   \state{Rhode Island}
-%   \country{USA}
-%   \postcode{02881}
-% }
-%
-% \author{Thomas J. Howard III}
-% \email{thoward27@uri.edu}
-% \orcid{0000-0001-6051-2508}
-% \affiliation{%
-%   \institution{Department of Computer Science and Statistics\\University of Rhode Island}
-%   \city{Kingston}
-%   \state{Rhode Island}
-%   \country{USA}
-%   \postcode{02881}
-% }
-%
-% \author{Oliver McLaughlin}
-% \email{olwmcjp@gmail.com}
-% \orcid{0009-0009-0830-0124}
-% \affiliation{%
-%   \institution{Department of Computer Science and Statistics\\University of Rhode Island}
-%   \city{Kingston}
-%   \state{Rhode Island}
-%   \country{USA}
-%   \postcode{02881}
-% }
-%
-% \author{Terrence Ferguson}
-% \email{fergusontr@gmail.com}
-% \orcid{0009-0002-6619-4277}
-% \affiliation{%
-%   \institution{Department of Computer Science and Statistics\\University of Rhode Island}
-%   \city{Kingston}
-%   \state{Rhode Island}
-%   \country{USA}
-%   \postcode{02881}
-% }
-%
-% \author{Najib Ishaq}
-% \authornotemark[1]
-% \email{najib_ishaq@zoho.com}
-% \orcid{0009-0009-0830-0124}
-% \affiliation{%
-%   \institution{Department of Computer Science and Statistics\\University of Rhode Island}
-%   \city{Kingston}
-%   \state{Rhode Island}
-%   \country{USA}
-%   \postcode{02881}
-% }
-%
-% \author{Noah M. Daniels}
-% \authornotemark[1]
-% \email{noah\_daniels@uri.edu}
-% \orcid{0000-0002-9538-825X}
-% \affiliation{%
-%   \institution{Department of Computer Science and Statistics\\University of Rhode Island}
-%   \city{Kingston}
-%   \state{Rhode Island}
-%   \country{USA}
-%   \postcode{02881}
-% }
 
-% \author{
-%     Morgan E. Prior \\
-%     Department of Mathematics \\
-%     University of Rhode Island \\
-%     Kingston, RI \\
-%     \texttt{meprior424@gmail.com} \\
-%     \And
-%     Thomas J. Howard III \\
-%     Department of Computer Science and Statistics\\
-%     University of Rhode Island\\
-%     Kingston, RI\\
-%     \texttt{thoward27@uri.edu} \\
-%     \And
-%     Oliver McLaughlin \\
-%     Department of Computer Science and Statistics\\
-%     University of Rhode Island\\
-%     Kingston, RI\\
-%     \texttt{olwmc@gmail.com} \\
-%     \And
-%     Terrence Ferguson \\
-%     Department of Computer Science and Statistics\\
-%     University of Rhode Island\\
-%     Kingston, RI\\
-%     \texttt{fergusontr@gmail.com} \\
-%     \And
-%     Najib Ishaq \\
-%     Department of Computer Science and Statistics\\
-%     University of Rhode Island\\
-%     Kingston, RI\\
-%     \texttt{najib\_ishaq@zoho.com} \\
-%     \And
-%     Noah M. Daniels \\
-%     Department of Computer Science and Statistics\\
-%     University of Rhode Island\\
-%     Kingston, RI\\
-%     \texttt{noah\_daniels@uri.edu} \\
-% }
 
 \maketitle
 
 
-%%
-%% By default, the full list of authors will be used in the page
-%% headers. Often, this list is too long, and will overlap
-%% other information printed in the page headers. This command allows
-%% the author to define a more concise list
-%% of authors' names for this purpose.
-% \renewcommand{\shortauthors}{Prior et al.}
 
 \begin{abstract}
   The Big Data explosion has created a demand for efficient and scalable algorithms for similarity search.
@@ -152,9 +50,12 @@
 % \keywords{K-NN Search, Manifold Hypothesis, Sub-Linear  Algorithms, Big Data}
 
 % REQUIRED
+\ifarxiv
+\else
 \begin{MSCcodes}
 68P05, 68P10
 \end{MSCcodes}
+\fi
 %%
 %% This command processes the author and affiliation and title
 %% information and builds the first part of the formatted document.

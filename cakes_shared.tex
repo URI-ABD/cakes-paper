@@ -24,7 +24,12 @@
 \usepackage{mathtools}
 \usepackage{siunitx}
 \sisetup{table-number-alignment=center, exponent-product=\times}
-
+\ifarxiv
+\usepackage{algorithm}
+% \usepackage{algorithmic}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+\fi
 
 \usepackage{hyperref}
 \usepackage{xr}
@@ -56,6 +61,7 @@
 \usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{algpseudocode}
+\usepackage{float}
 \ifpdf
   \DeclareGraphicsExtensions{.eps,.pdf,.png,.jpg}
 \else
@@ -69,20 +75,65 @@
 
 % Add a serial/Oxford comma by default.
 \newcommand{\creflastconjunction}{, and~}
-
+\ifarxiv
+\else
 % Used for creating new theorem and remark environments
 \newsiamremark{remark}{Remark}
 \newsiamremark{hypothesis}{Hypothesis}
 \crefname{hypothesis}{Hypothesis}{Hypotheses}
 \newsiamthm{claim}{Claim}
-
 % Sets running headers as well as PDF title and authors
 \headers{CAKES: Scalable, Exact Search on Big Data}{M. E. Prior, T. J. Howard III, O. McLaughlin, T. Ferguson, N. Ishaq, N. M. Daniels}
+\fi
+
 
 % Title. If the supplement option is on, then "Supplementary Material"
 % is automatically inserted before the title.
 \title{Let them have CAKES: A Cutting-Edge Algorithm for Scalable, Efficient, and Exact Search on Big Data\thanks{Submitted to the editors DATE.
 }}
+
+%%%%
+\ifarxiv
+
+\author{
+    Morgan E. Prior \\
+    Department of Computer Science \\
+    Tufts University \\
+    Medford, MA \\
+    \texttt{morgan.prior@tufts.edu } \\
+    \And
+    Thomas J. Howard III \\
+    Department of Computer Science and Statistics\\
+    University of Rhode Island\\
+    Kingston, RI\\
+    \texttt{thoward27@uri.edu} \\
+    \And
+    Oliver McLaughlin \\
+    Department of Computer Science and Statistics\\
+    University of Rhode Island\\
+    Kingston, RI\\
+    \texttt{olwmc@gmail.com} \\
+    \And
+    Terry Ferguson \\
+    Department of Computer Science and Statistics\\
+    University of Rhode Island\\
+    Kingston, RI\\
+    \texttt{fergusontr@gmail.com} \\
+    \And
+    Najib Ishaq \\
+    Department of Computer Science and Statistics\\
+    University of Rhode Island\\
+    Kingston, RI\\
+    \texttt{najib\_ishaq@zoho.com} \\
+    \And
+    Noah M. Daniels \\
+    Department of Computer Science and Statistics\\
+    University of Rhode Island\\
+    Kingston, RI\\
+    \texttt{noah\_daniels@uri.edu} \\
+}
+
+\else
 
 \author{
     Morgan E. Prior\thanks{
@@ -105,6 +156,11 @@
     \and
     Noah M. Daniels\footnotemark[3]
 }
+
+\fi
+%%%
+
+
 
 
 \usepackage{amsopn}
