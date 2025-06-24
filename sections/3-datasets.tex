@@ -5,7 +5,7 @@
 \label{sec:datasets-and-benchmarks:ann-benchmark-datasets}
 
 We benchmark on a variety of datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
-Table~\ref{tab:datasets:summary} summarizes these datasets.
+Table~\ref{tab:datasets:summary} summarizes the cardinality and dimensionality of each these datasets.
 All benchmarks were conducted on an Intel Xeon E5-2690 v4 CPU @ 2.60GHz with 512GB RAM.
 The OS kernel was Manjaro Linux 5.15.164-1-MANJARO.
 The Rust compiler was Rust 1.83.0, and the Python interpreter version was 3.9.18.
@@ -73,6 +73,34 @@ Thus, it contains $24 \cdot 26 \cdot 4096 = 2,555,504$ samples in total.
 Each sample is a 1,024-dimensional complex-valued vector, representing a signal capture (a time-series of complex-valued numbers).
 We used a subset of this dataset, containing $97,304$ samples at 10dB SNR and used another $1,000$ samples at the same SNR as a hold-out set of queries.
 
+\subsection{Local Fractal Dimension}
+\label{sec:dayasets:lfd-of-datasets}
+
+Since the CAKES algorithms were designed to scale in time with the LFD of the dataset, we examine the LFD of each dataset we used for benchmarks.
+Figure~\ref{fig:results:lfd-plots} illustrates the trends in LFD for Fashion-MNIST, Glove-25, Sift, Random, Silva 18S, and Radio-ML.
+In this section, when we discuss trends in LFD, unless otherwise noted, we are referring to the 95$^{th}$ percentile of LFD.
+
+For the Fashion-MNIST dataset we observe in Figure~\ref{fig:results:fashion-mnist-lfd} that until approximately depth 5, Fashion-MNIST's LFD is low (i.e., less than 4).
+It then starts increasing, reaching a peak of about 6 near depth 20, before decreasing to 1 at the maximum depth.
+
+Relative to Fashion-MNIST, Glove-25 has low LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}.
+In particular, Glove-25's LFD is less than 3 for all depths.
+
+Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for Sift, which has higher LFD relative to Fashion-MNIST and Glove-25.
+It increases sharply to a peak of 9 around a depth of 10, after which it decreases smoothly until reaching the deepest leaves in the tree.
+
+We contrast the low LFD of Sift with that of the Random dataset which has the same cardinality and dimension. As shown in Figure~\ref{fig:results:random-lfd}, the character of this dataset is very different from the others.
+The LFD starts at 20 at depth 0 and all percentile lines decrease linearly with depth until reaching the leaves of the tree.
+The spread in LFD starts very small for the first few clusters and increases as depth increases.
+
+The Silva dataset, shown in Figure~\ref{fig:results:silva-lfd}, exhibits consistently low LFD.
+In particular, LFD is less than 3 for all depths, hovering near 1 for clusters at depth 40 and deeper.
+
+For the Radio-ML dataset, the LFD values show three distinct peaks around an LFD of 12 at or near depths of 8, 25 and 50.
+Each peak is followed by a linear decrease until encountering a sharp spike for the next peak.
+Within each of the tree portions, this dataset has a character similar to that of the Random dataset.
+This suggests that the dataset obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth.
+This is likely the result of a piecewise uniform sampling strategy used to generate the different modulation modes present in the dataset.
 
 \subsection{Other Algorithms}
 \label{sec:datasets-and-benchmarks:other-algorithms}

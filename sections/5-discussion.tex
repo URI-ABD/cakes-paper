@@ -24,15 +24,15 @@ Figure~\ref{fig:results:scaling-plots} also shows that HNSW and ANNOY have near-
 This, coupled with the increasing time and space cost of building the indices for HNSW and ANNOY, makes these algorithms unsuitable for real-world applications in which the datasets are growing exponentially.
 CAKES's tree is orders of magnitude faster and less memory-intensive to build, and CAKES's algorithms, while slower than HNSW and ANNOY, still show near-constant scaling as well as perfect recall.
 
-When written with the same notation as used in Section~\ref{sec:methods:knn-search:complexity-of-sieve-methods}, we see that the time complexity of Repeated $\rho$-NN is $\mathcal{O}(\tfrac{T}{\lceil d \rceil} + L)$, where $T$ is the time complexity of tree-search and $L$ is the time complexity of leaf-search.
-Even though Repeated $\rho$-NN has the least time cost (compared to $\mathcal{O}\left((T + L)\log{(T+L)}\right)$ for Breadth-First Sieve and $\mathcal{O}(T\log{T} + L\log{k})$ for Depth-First Sieve) of the three CAKES algorithms, it is not always the fastest algorithm empirically.
-We believe that some of this discrepancy can be explained by the fact that Repeated $\rho$-NN can significantly ``overshoots'' the correct radius for $k$ hits ($\rho_k$) during tree-search.
-This causes leaf-search to exhaustively search many more clusters than necessary, rendering the true scaling factor higher than that in Equation~\ref{eq:methods:repeated-rnn-complexity}.
-This overshot can occur when the LFDs of clusters near the query are not concentrated around their expectation.
-For example, if most clusters near the query have very low LFD except for one anomaly with very high LFD,
-the harmonic mean LFD $\mu$ can still be low, so the factor of radial increase in (Equation)~\ref{eq:methods:repeated-rnn-factor} may be much larger than necessary for guaranteeing $k$ hits.
-This suggests that rather than using the reciprocal of the harmonic mean LFD in~\ref{eq:methods:repeated-rnn-factor}, we may achieve better results with a mean that is more sensitive to high outliers, such as the geometric mean.
-We leave it as an avenue for future work to characterize when Repeated $\rho$-NN significantly overestimates the correct radius $\rho_k$ and to improve upon the factor of radial increase in Equation~\ref{eq:methods:repeated-rnn-factor} so that this occurs less frequently and with less severity.
+% When written with the same notation as used in Section~\ref{sec:methods:knn-search:complexity-of-sieve-methods}, we see that the time complexity of Repeated $\rho$-NN is $\mathcal{O}(\tfrac{T}{\lceil d \rceil} + L)$, where $T$ is the time complexity of tree-search and $L$ is the time complexity of leaf-search.
+% Even though Repeated $\rho$-NN has the least time cost (compared to $\mathcal{O}\left((T + L)\log{(T+L)}\right)$ for Breadth-First Sieve and $\mathcal{O}(T\log{T} + L\log{k})$ for Depth-First Sieve) of the three CAKES algorithms, it is not always the fastest algorithm empirically.
+% We believe that some of this discrepancy can be explained by the fact that Repeated $\rho$-NN can significantly ``overshoots'' the correct radius for $k$ hits ($\rho_k$) during tree-search.
+% This causes leaf-search to exhaustively search many more clusters than necessary, rendering the true scaling factor higher than that in Equation~\ref{eq:methods:repeated-rnn-complexity}.
+% This overshot can occur when the LFDs of clusters near the query are not concentrated around their expectation.
+% For example, if most clusters near the query have very low LFD except for one anomaly with very high LFD,
+% the harmonic mean LFD $\mu$ can still be low, so the factor of radial increase in (Equation)~\ref{eq:methods:repeated-rnn-factor} may be much larger than necessary for guaranteeing $k$ hits.
+% This suggests that rather than using the reciprocal of the harmonic mean LFD in~\ref{eq:methods:repeated-rnn-factor}, we may achieve better results with a mean that is more sensitive to high outliers, such as the geometric mean.
+% We leave it as an avenue for future work to characterize when Repeated $\rho$-NN significantly overestimates the correct radius $\rho_k$ and to improve upon the factor of radial increase in Equation~\ref{eq:methods:repeated-rnn-factor} so that this occurs less frequently and with less severity.
 
 While the fastest CAKES algorithm can vary by dataset and cardinality, we note that on all three ANN-benchmark datasets (Fashion-MNIST, Glove-25, and Sift), Depth-First Sieve and Breadth-First Sieve show nearly constant throughput as the cardinality increases.
 This observation warrants further investigation, but it is especially promising given that both algorithms consistently outperform linear search for high cardinalities.
@@ -65,10 +65,13 @@ Incorporating new distance functions in CAKES requires only that a Rust implemen
 Additionally, we intend to improve the data augmentation process described in Section~\ref{sec:methods:synthetic-data} to better preserve the topological structure of the underlying dataset.
 In particular, we expect that favoring augmentation along the first few principal components of the local manifold may allow for more realistic data augmentation.
 
-We also plan to investigate hierarchical data compression by representing differences at each level of the binary tree, particularly for string or genomic data, where all differences are discrete.
-Such an encoding would allow us to store the data in a compressed format, and to perform search on the compressed data without decompressing it in its entirety.
-This would allow us to perform fast search on datasets that are otherwise too large to fit in memory.
-An exploration of compression and compressed search is another avenue for future work.
+
+% We already did compression so it feels weird to have this in there:
+
+% We also plan to investigate hierarchical data compression by representing differences at each level of the binary tree, particularly for string or genomic data, where all differences are discrete.
+% Such an encoding would allow us to store the data in a compressed format, and to perform search on the compressed data without decompressing it in its entirety.
+% This would allow us to perform fast search on datasets that are otherwise too large to fit in memory.
+% An exploration of compression and compressed search is another avenue for future work.
 
 We also would like to explore the use of CAKES in a streaming environment.
 This would require the ability to perform ``online'' updates to the tree as points are added to or deleted from the dataset.

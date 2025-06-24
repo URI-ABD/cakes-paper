@@ -26,6 +26,120 @@
 
 \section{Supplementary Methods}
 
+\subsection{Algorithm Details}
+
+\begin{algorithm} % enter the algorithm environment
+    \caption{Partition($C$, $criteria$)} % give the algorithm a caption
+    \label{alg:methods:partition} % and a label for \ref{} commands later in the document
+    \begin{algorithmic} % enter the algorithmic environment
+    \Require $f: X \times X \mapsto \mathbb{R}^+ \cup \{0\}$, a distance function
+    \Require $C$, a cluster
+    \Require $criteria$, user-specified continuation criteria
+
+    \State $seeds \Leftarrow$ random sample of $\left\lceil \sqrt{|C|} \right\rceil$ points from $C$
+    \State $c \Leftarrow$ geometric median of $seeds$
+    \State $l \Leftarrow \argmax f(c, x) \ \forall \ x \in C$
+    \State $r \Leftarrow \argmax f(l, x) \ \forall \ x \in C$
+    \State $L \Leftarrow \{x \ | \ x \in C \land f(l, x) \le f(r, x)\}$
+    \State $R \Leftarrow \{x \ | \ x \in C \land f(r, x) < f(l, x)\}$
+
+    \If{$|L| > 1$ \textbf{and} $L$ satisfies $criteria$}
+        \State Partition($L$, $criteria$)
+    \EndIf
+
+    \If{$|R| > 1$ \textbf{and} $R$ satisfies $criteria$}
+        \State Partition($R$, $criteria$)
+    \EndIf
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm} % enter the algorithm environment
+    \caption{Repeated $\rho$-NN($\mathcal{R}$, $q$, $k$)} % give the algorithm a caption
+    \label{alg:methods:repeated-rnn} % and a label for \ref{} commands later in the document
+    \begin{algorithmic} % enter the algorithmic environment
+        \Require $\mathcal{R}$, the root cluster
+        \Require $q$, a query
+        \Require $k$, the number of neighbors to find
+        \State{$H \Leftarrow [\ ]$, a max-heap by $\delta$ of size $k$}
+        \State $r \Leftarrow radius$ of $\mathcal{R}$
+        \State $r \Leftarrow$ $\frac{r}{|\mathcal{R}|}$
+        \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
+        \While{$\sum_{C \in Q} |C| < k$}
+            \If{$Q = \emptyset$}
+                \State $r \Leftarrow 2 \cdot r$
+            \ElsIf{$\sum_{C \in Q} |C| >= k$}
+                \State $\mu \Leftarrow \frac{1}{|Q|} \cdot \sum_{C \in Q} \big( LFD(C)^{-1} \big)$
+                \State $r \Leftarrow r \cdot \min \bigg( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu} \bigg)$
+            \EndIf
+            \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
+        \EndWhile
+        \State $H \Leftarrow \text{leaf-search}(Q, q, r)$
+        \State \textbf{return} $H$ as a list
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \caption{Breadth-First Sieve($\mathcal{R}$, $q$, $k$)} % give the algorithm a caption
+    \label{alg:methods:bredth-first-sieve} % and a label for \ref{} commands later in the document
+    \begin{algorithmic} % enter the algorithmic environment
+        \Require $\mathcal{R}$, the root cluster
+        \Require $q$, a query
+        \Require $k$, the number of neighbors to find
+        \State $c \Leftarrow$ \textit{center} of $\mathcal{R}$
+        \State $Q \Leftarrow$ \{ ($\mathcal{R}$, $\delta^{+}_{\mathcal{R}}$, $|\mathcal{R}| - 1$), ($c$, $\delta_{\mathcal{R}}$, 1) \}
+        \While{$\sum_{(\_, \_, m) \in Q} m \neq k$}
+            \State $\tau \Leftarrow$ QuickSelect($Q$, $k$)
+            \State $Q^{'} \Leftarrow \emptyset$
+            \For{$(C, \_, \_) \in Q$}
+                \If{$\delta^{-}_{C} \leq \tau$}
+                    \If{$C$ is a point}
+                        \State $Q^{'} \Leftarrow Q^{'} \cup \{ (C, \delta_{C}, 1) \}$
+                    \ElsIf{$C$ is a leaf}
+                        \State $Q^{'} \Leftarrow Q^{'} \cup \{ (p, \delta_{p}, 1)$ for $p \in C \}$
+                    \Else
+                        \State $[L, R] \Leftarrow$ children of $C$
+                        \State $l, r \Leftarrow$ centers of $L, R$
+                        \State $Q^{'} \Leftarrow Q^{'} \cup \{ (L, \delta^{+}_{L}, |L| - 1), (l, \delta_{L}, 1) \}$
+                        \State $Q^{'} \Leftarrow Q^{'} \cup \{ (R, \delta^{+}_{R}, |R| - 1), (l, \delta_{R}, 1) \}$
+                    \EndIf
+                \EndIf
+            \EndFor
+            \State $Q \Leftarrow Q^{'}$
+        \EndWhile
+        \State QuickSelect($Q$, $k$)
+        \State \textbf{return} The first $k$ points in $Q$
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \caption{Depth-First Sieve($\mathcal{R}$, $q$, $k$)}
+    \label{alg:methods:depth-first-sieve}
+    \begin{algorithmic}
+        \Require $\mathcal{R}$, the root cluster
+        \Require $q$, a query
+        \Require $k$, the number of neighbors to find
+        \State{$Q \Leftarrow [\mathcal{R}]$, a min-heap by $\delta^{-}$}
+        \State{$H \Leftarrow [\ ]$, a max-heap by $\delta$ of size $k$}
+        \While{$|H| < k$ \textbf{or} $H.peek.\delta \geq Q.peek.\delta^{-}$}
+            \While{$Q.peek$ is not a leaf}
+                \State{$C \Leftarrow Q.pop$, the closest cluster}
+                \State{$[L, R] \Leftarrow$ children of $C$}
+                \State{$Q.push(L)$}
+                \State{$Q.push(R)$}
+            \EndWhile
+            \State{$leaf \Leftarrow Q.pop$}
+            \For{$p \in leaf$}
+                \State{$H.push(p)$}
+            \EndFor
+        \EndWhile
+        \State \textbf{return} $H$
+    \end{algorithmic}
+\end{algorithm}
+
+
+\subsection{Algorithm Details}
+\label{sec:supplement:algorithm-details}
+
 \subsection{\texorpdfstring{$\rho$}{p}-Nearest Neighbors Search}
 
 We conduct $\rho$-NN search as described in~\cite{ishaq2019clustered}, but with the following improvement:
@@ -273,6 +387,19 @@ With Sift, CAKES's indexing time is faster than that of FAISS-IVF until a cardin
     We also excluded all clusters with normalized radii smaller than $10^{-6}$, as they distort the scale of the plots.}
     \label{fig:supplement:fractal_density-plots}
 \end{figure}
+
+\subsection{Clustering Strategies and Number of Distance Computations}
+\label{sec:results:clustering-strategies-and-number-of-distance-computations}
+
+In addition to the scaling experiments, we also explore how four different clustering strategies affect the performance of search.
+These strategies are the Cartesian product of balanced vs. unbalanced clustering, and the presence vs. absence of depth-first reordering as described in Section~\ref{sec:methods:clustering:depth-first-reordering}.
+To help with this analysis, we also added some instrumentation to our implementation of CAKES to count the number of distance computations performed during search.
+We note that this instrumentation significantly slows down the wall-clock time of search, so it would not be used in a real-world application.
+
+These four comparisons (referred to as Ball, BalancedBall, PermutedBall, and, PermutedBalancedBall, where depth-first-reordering is referred to as Permuted for brevity) for all three search algorithms on the Fashion-MNIST dataset are shown in Figure~\ref{fig:results:distance-counts}.
+Notably, performance is not only strictly worse for the balanced approaches, but the asymptotic behavior is significantly worse;
+the algorithms (such as Depth-First Sieve) that seemed to exhibit constant-time behavior in Figure~\ref{fig:results:scaling-plots}, which shows results using PermutedBall, no longer do so under a balanced clustering.
+We note that on this dataset, depth-first reordering (the Permuted variants) seems to have little effect on throughput; depth-first reordering is primarily intended to improve space complexity.
 
 
 \bibliographystyle{siamplain}

@@ -71,30 +71,30 @@ We start by performing a divisive hierarchical clustering on the dataset using C
 The procedure is almost identical to that outlined in CHESS~\cite{ishaq2019clustered}, but with better selection of poles for partitioning (see Algorithm~\ref{alg:methods:partition}).
 After building $\mathcal{T}$ with CLAM, we also perform a depth-first reordering of the dataset (see Section~\ref{sec:methods:clustering:depth-first-reordering}).
 
-\begin{algorithm} % enter the algorithm environment
-    \caption{Partition($C$, $criteria$)} % give the algorithm a caption
-    \label{alg:methods:partition} % and a label for \ref{} commands later in the document
-    \begin{algorithmic} % enter the algorithmic environment
-    \REQUIRE $f: X \times X \mapsto \mathbb{R}^+ \cup \{0\}$, a distance function
-    \REQUIRE $C$, a cluster
-    \REQUIRE $criteria$, user-specified continuation criteria
+% \begin{algorithm} % enter the algorithm environment
+%     \caption{Partition($C$, $criteria$)} % give the algorithm a caption
+%     \label{alg:methods:partition} % and a label for \ref{} commands later in the document
+%     \begin{algorithmic} % enter the algorithmic environment
+%     \REQUIRE $f: X \times X \mapsto \mathbb{R}^+ \cup \{0\}$, a distance function
+%     \REQUIRE $C$, a cluster
+%     \REQUIRE $criteria$, user-specified continuation criteria
 
-    \STATE $seeds \Leftarrow$ random sample of $\left\lceil \sqrt{|C|} \right\rceil$ points from $C$
-    \STATE $c \Leftarrow$ geometric median of $seeds$
-    \STATE $l \Leftarrow \argmax f(c, x) \ \forall \ x \in C$
-    \STATE $r \Leftarrow \argmax f(l, x) \ \forall \ x \in C$
-    \STATE $L \Leftarrow \{x \ | \ x \in C \land f(l, x) \le f(r, x)\}$
-    \STATE $R \Leftarrow \{x \ | \ x \in C \land f(r, x) < f(l, x)\}$
+%     \STATE $seeds \Leftarrow$ random sample of $\left\lceil \sqrt{|C|} \right\rceil$ points from $C$
+%     \STATE $c \Leftarrow$ geometric median of $seeds$
+%     \STATE $l \Leftarrow \argmax f(c, x) \ \forall \ x \in C$
+%     \STATE $r \Leftarrow \argmax f(l, x) \ \forall \ x \in C$
+%     \STATE $L \Leftarrow \{x \ | \ x \in C \land f(l, x) \le f(r, x)\}$
+%     \STATE $R \Leftarrow \{x \ | \ x \in C \land f(r, x) < f(l, x)\}$
 
-    \IF{$|L| > 1$ \textbf{and} $L$ satisfies $criteria$}
-        \STATE Partition($L$, $criteria$)
-    \ENDIF
+%     \IF{$|L| > 1$ \textbf{and} $L$ satisfies $criteria$}
+%         \STATE Partition($L$, $criteria$)
+%     \ENDIF
 
-    \IF{$|R| > 1$ \textbf{and} $R$ satisfies $criteria$}
-        \STATE Partition($R$, $criteria$)
-    \ENDIF
-\end{algorithmic}
-\end{algorithm}
+%     \IF{$|R| > 1$ \textbf{and} $R$ satisfies $criteria$}
+%         \STATE Partition($R$, $criteria$)
+%     \ENDIF
+% \end{algorithmic}
+% \end{algorithm}
 
 Given a cluster $C$ with $|C|$ points, we define its two children by the following process. We take a random subsample $S$ of $\sqrt{|C|}$ of $C$'s points, and compute pairwise distances between all points in $S$.
 Using these distances, we compute the \textit{geometric median} of $S$; in other words, we find the point that minimizes the sum of distances to all other points in $S$.
@@ -139,11 +139,11 @@ We also note here that this $\mathcal{O}(n \log n)$ complexity assumes that $\ma
 In practice, for real datasets, we expect Algorithm~\ref{alg:methods:partition} to produce anything but a balanced tree; the varying sampling density in different regions of the manifold and the low dimensional ``shape'' of the manifold itself will cause it to be unbalanced.
 The only case in which we would expect a balanced tree is if the dataset were uniformly distributed, e.g.,\,in a $d$-dimensional hyper-cube.
 
-When building a tree for a real dataset, the depth would be larger than $\log n$, which would seem to increase the cost of tree-building.
-However, because of the large numbers of leaf clusters at shallow depths, each subsequent level of $\mathcal{T}$ would also have fewer points, and so the cost of building each subsequent level would be lower.
-Any analysis of unbalanced trees would be highly dependent on the specific dataset, and so we do not provide one here.
-We do, however, explore empirical results based on forcing a balanced tree in Section~\ref{sec:results:clustering-strategies-and-number-of-distance-computations}.
-In any case, the tree is built only once, so this cost is amortized over all search queries and other applications.
+% When building a tree for a real dataset, the depth would be larger than $\log n$, which would seem to increase the cost of tree-building.
+% However, because of the large numbers of leaf clusters at shallow depths, each subsequent level of $\mathcal{T}$ would also have fewer points, and so the cost of building each subsequent level would be lower.
+% Any analysis of unbalanced trees would be highly dependent on the specific dataset, and so we do not provide one here.
+% We do, however, explore empirical results based on forcing a balanced tree in Section~\ref{sec:results:clustering-strategies-and-number-of-distance-computations}.
+% In any case, the tree is built only once, so this cost is amortized over all search queries and other applications.
 
 % \begin{figure}[H]
 %     \vskip -0.2in
@@ -218,30 +218,6 @@ Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
 In these algorithms, we use $H$, for \textit{hits}, to refer to the data structure that stores the closest points to the query found so far, and $Q$ to refer to the data structure that stores the clusters and points that are still in contention for being one of the $k$ nearest neighbors.
 These algorithms also use some terminology defined and illustrated in Figure~\ref{fig:methods:deltas}.
 
-\begin{algorithm} % enter the algorithm environment
-    \caption{Repeated $\rho$-NN($\mathcal{R}$, $q$, $k$)} % give the algorithm a caption
-    \label{alg:methods:repeated-rnn} % and a label for \ref{} commands later in the document
-    \begin{algorithmic} % enter the algorithmic environment
-        \REQUIRE $\mathcal{R}$, the root cluster
-        \REQUIRE $q$, a query
-        \REQUIRE $k$, the number of neighbors to find
-        \STATE{$H \Leftarrow [\ ]$, a max-heap by $\delta$ of size $k$}
-        \STATE $r \Leftarrow radius$ of $\mathcal{R}$
-        \STATE $r \Leftarrow$ $\frac{r}{|\mathcal{R}|}$
-        \STATE $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
-        \WHILE{$\sum_{C \in Q} |C| < k$}
-            \IF{$Q = \emptyset$}
-                \STATE $r \Leftarrow 2 \cdot r$
-            \ELSIF{$\sum_{C \in Q} |C| >= k$}
-                \STATE $\mu \Leftarrow \frac{1}{|Q|} \cdot \sum_{C \in Q} \big( LFD(C)^{-1} \big)$
-                \STATE $r \Leftarrow r \cdot \min \bigg( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu} \bigg)$
-            \ENDIF
-            \STATE $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
-        \ENDWHILE
-        \STATE $H \Leftarrow \text{leaf-search}(Q, q, r)$
-        \STATE \textbf{return} $H$ as a list
-    \end{algorithmic}
-\end{algorithm}
 
 
 \subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
@@ -325,8 +301,9 @@ Let $\rho_k$ be the distance from the query to the $k^{th}$ nearest neighbor.
 Then, we see that $Q$ is expected to be the set of clusters that overlap with a ball of radius $\rho_k$ around the query.
 We can estimate this region as a ball of radius $\rho_k + 2\hat{r}$, where $\hat{r}$ is the mean radius of the clusters in $Q$.
 
-The work in~\cite{yu2015entropy} showed that $\sum_{C \in S} |C| \leq \gamma  \left| B(q, \rho_k) \right| \left(\frac{\rho_k + 2 \cdot \hat{r}}{\rho_k} \right)^d$, where $\gamma$ is a constant.
-By definition of $\rho_k$, we have that $|B(q, \rho_k)| = k$.
+The work in~\cite{yu2015entropy} showed that 
+\begin{equation} \sum_{C \in S} |C| \leq \gamma  \left| B(q, \rho_k) \right| \left(\frac{\rho_k + 2 \cdot \hat{r}}{\rho_k} \right)^d \end{equation}, where $\gamma$ is a constant.
+By definition of $\rho_k$, we have that $|B(q, \rho_k)| = k.$
 Thus, $\sum_{C \in S} |C| \leq \gamma k \left( 1 + 2 \cdot \frac{\hat{r}}{\rho_k} \right)^d$.
 It remains to determine an estimate for $\rho_k$.
 We let $\hat{d}$ be the (harmonic) mean LFD of the clusters in $Q$.
@@ -355,65 +332,9 @@ We begin by letting $Q$ be a set of 3-tuples $(p, \delta^{+}_{p}, m)$, where $p$
 During the breadth-first traversal, for every cluster $C$ we encounter, we add $(C, \delta^{+}_{C}, |C| - 1)$ and $(c, \delta_{c}, 1)$ to $Q$, where $c$ is the center of $C$.
 Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\ref{sec:methods:knn-search}, since $c$ is a point, $\delta_{C} = \delta_{c} = \delta^{+}_{c} = \delta^{-}_{c}$.
 
-    \begin{algorithm}
-        \caption{Breadth-First Sieve($\mathcal{R}$, $q$, $k$)} % give the algorithm a caption
-        \label{alg:methods:bredth-first-sieve} % and a label for \ref{} commands later in the document
-        \begin{algorithmic} % enter the algorithmic environment
-            \REQUIRE $\mathcal{R}$, the root cluster
-            \REQUIRE $q$, a query
-            \REQUIRE $k$, the number of neighbors to find
-            \STATE $c \Leftarrow$ \textit{center} of $\mathcal{R}$
-            \STATE $Q \Leftarrow$ \{ ($\mathcal{R}$, $\delta^{+}_{\mathcal{R}}$, $|\mathcal{R}| - 1$), ($c$, $\delta_{\mathcal{R}}$, 1) \}
-            \WHILE{$\sum_{(\_, \_, m) \in Q} m \neq k$}
-                \STATE $\tau \Leftarrow$ QuickSelect($Q$, $k$)
-                \STATE $Q^{'} \Leftarrow \emptyset$
-                \FOR{$(C, \_, \_) \in Q$}
-                    \IF{$\delta^{-}_{C} \leq \tau$}
-                        \IF{$C$ is a point}
-                            \STATE $Q^{'} \Leftarrow Q^{'} \cup \{ (C, \delta_{C}, 1) \}$
-                        \ELSIF{$C$ is a leaf}
-                            \STATE $Q^{'} \Leftarrow Q^{'} \cup \{ (p, \delta_{p}, 1)$ for $p \in C \}$
-                        \ELSE
-                            \STATE $[L, R] \Leftarrow$ children of $C$
-                            \STATE $l, r \Leftarrow$ centers of $L, R$
-                            \STATE $Q^{'} \Leftarrow Q^{'} \cup \{ (L, \delta^{+}_{L}, |L| - 1), (l, \delta_{L}, 1) \}$
-                            \STATE $Q^{'} \Leftarrow Q^{'} \cup \{ (R, \delta^{+}_{R}, |R| - 1), (l, \delta_{R}, 1) \}$
-                        \ENDIF
-                    \ENDIF
-                \ENDFOR
-                \STATE $Q \Leftarrow Q^{'}$
-            \ENDWHILE
-            \STATE QuickSelect($Q$, $k$)
-            \STATE \textbf{return} The first $k$ points in $Q$
-        \end{algorithmic}
-    \end{algorithm}
 
-    \begin{algorithm}
-        \caption{Depth-First Sieve($\mathcal{R}$, $q$, $k$)}
-        \label{alg:methods:depth-first-sieve}
-        \begin{algorithmic}
-            \REQUIRE $\mathcal{R}$, the root cluster
-            \REQUIRE $q$, a query
-            \REQUIRE $k$, the number of neighbors to find
-            \STATE{$Q \Leftarrow [\mathcal{R}]$, a min-heap by $\delta^{-}$}
-            \STATE{$H \Leftarrow [\ ]$, a max-heap by $\delta$ of size $k$}
-            \WHILE{$|H| < k$ \textbf{or} $H.peek.\delta \geq Q.peek.\delta^{-}$}
-                \WHILE{$Q.peek$ is not a leaf}
-                    \STATE{$C \Leftarrow Q.pop$, the closest cluster}
-                    \STATE{$[L, R] \Leftarrow$ children of $C$}
-                    \STATE{$Q.push(L)$}
-                    \STATE{$Q.push(R)$}
-                \ENDWHILE
-                \STATE{$leaf \Leftarrow Q.pop$}
-                \FOR{$p \in leaf$}
-                    \STATE{$H.push(p)$}
-                \ENDFOR
-            \ENDWHILE
-            \STATE \textbf{return} $H$
-        \end{algorithmic}
-    \end{algorithm}
 
-\vskip 0.1in
+% \vskip 0.1in
 
 We then use the QuickSelect algorithm, modified to account for multiplicities and to reorder $Q$ in-place, to find the element in $Q$ with the $k^{th}$ smallest $\delta^{+}$; in other words, we find $\tau$, the smallest $\delta^{+}$ in $Q$ such that $\left| B(q, \tau) \right| \geq k$.
 Since this step may require a binary search for the correct pivot element to find $\tau$ and reordering with a new pivot takes linear time in the size of the input list, this version of QuickSelect has $\mathcal{O}\left(|Q| \log |Q|\right)$ time complexity.
