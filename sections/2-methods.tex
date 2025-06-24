@@ -75,25 +75,25 @@ After building $\mathcal{T}$ with CLAM, we also perform a depth-first reordering
     \caption{Partition($C$, $criteria$)} % give the algorithm a caption
     \label{alg:methods:partition} % and a label for \ref{} commands later in the document
     \begin{algorithmic} % enter the algorithmic environment
-        \Require $f: X \times X \mapsto \mathbb{R}^+ \cup \{0\}$, a distance function
-        \Require $C$, a cluster
-        \Require $criteria$, user-specified continuation criteria
+    \REQUIRE $f: X \times X \mapsto \mathbb{R}^+ \cup \{0\}$, a distance function
+    \REQUIRE $C$, a cluster
+    \REQUIRE $criteria$, user-specified continuation criteria
 
-        \State $seeds \Leftarrow$ random sample of $\left\lceil \sqrt{|C|} \right\rceil$ points from $C$
-        \State $c \Leftarrow$ geometric median of $seeds$
-        \State $l \Leftarrow \argmax f(c, x) \ \forall \ x \in C$
-        \State $r \Leftarrow \argmax f(l, x) \ \forall \ x \in C$
-        \State $L \Leftarrow \{x \ | \ x \in C \land f(l, x) \le f(r, x)\}$
-        \State $R \Leftarrow \{x \ | \ x \in C \land f(r, x) < f(l, x)\}$
+    \STATE $seeds \Leftarrow$ random sample of $\left\lceil \sqrt{|C|} \right\rceil$ points from $C$
+    \STATE $c \Leftarrow$ geometric median of $seeds$
+    \STATE $l \Leftarrow \argmax f(c, x) \ \forall \ x \in C$
+    \STATE $r \Leftarrow \argmax f(l, x) \ \forall \ x \in C$
+    \STATE $L \Leftarrow \{x \ | \ x \in C \land f(l, x) \le f(r, x)\}$
+    \STATE $R \Leftarrow \{x \ | \ x \in C \land f(r, x) < f(l, x)\}$
 
-        \If{$|L| > 1$ \textbf{and} $L$ satisfies $criteria$}
-            \State Partition($L$, $criteria$)
-        \EndIf
+    \IF{$|L| > 1$ \textbf{and} $L$ satisfies $criteria$}
+        \STATE Partition($L$, $criteria$)
+    \ENDIF
 
-        \If{$|R| > 1$ \textbf{and} $R$ satisfies $criteria$}
-            \State Partition($R$, $criteria$)
-        \EndIf
-    \end{algorithmic}
+    \IF{$|R| > 1$ \textbf{and} $R$ satisfies $criteria$}
+        \STATE Partition($R$, $criteria$)
+    \ENDIF
+\end{algorithmic}
 \end{algorithm}
 
 Given a cluster $C$ with $|C|$ points, we define its two children by the following process. We take a random subsample $S$ of $\sqrt{|C|}$ of $C$'s points, and compute pairwise distances between all points in $S$.
@@ -145,36 +145,36 @@ Any analysis of unbalanced trees would be highly dependent on the specific datas
 We do, however, explore empirical results based on forcing a balanced tree in Section~\ref{sec:results:clustering-strategies-and-number-of-distance-computations}.
 In any case, the tree is built only once, so this cost is amortized over all search queries and other applications.
 
-\begin{figure}[H]
-    \vskip -0.2in
-    \centering
-    \includegraphics[scale=0.65]{images/geometry/deltas.pdf}
-    \caption{
-        {\color{blue}$\delta$}, {\color{red}$\delta^{+}$}, and {\color{green}$\delta^{-}$} for a cluster $C$ and a query $q$.
-        ${\color{blue}\delta} = f(q, c)$ is the distance from the query to the cluster center $c$.
-        ${\color{red}\delta^{+}} = \delta + r$ is the distance from the query to the theoretically farthest point in $C$.
-        ${\color{green}\delta^{-}} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest point in $C$.
-    }
-    \label{fig:methods:deltas}
-    \vskip -0.5in
-\end{figure}
+% \begin{figure}[H]
+%     \vskip -0.2in
+%     \centering
+%     \includegraphics[scale=0.65]{images/geometry/deltas.pdf}
+%     \caption{
+%         {\color{blue}$\delta$}, {\color{red}$\delta^{+}$}, and {\color{green}$\delta^{-}$} for a cluster $C$ and a query $q$.
+%         ${\color{blue}\delta} = f(q, c)$ is the distance from the query to the cluster center $c$.
+%         ${\color{red}\delta^{+}} = \delta + r$ is the distance from the query to the theoretically farthest point in $C$.
+%         ${\color{green}\delta^{-}} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest point in $C$.
+%     }
+%     \label{fig:methods:deltas}
+%     \vskip -0.5in
+% \end{figure}
 
 \begin{minipage}{.425\textwidth}
     \begin{algorithm}[H]
         \caption{tree-search($C$, $q$, $r$)}
         \label{alg:methods:rnn-search:tree-search}
         \begin{algorithmic}
-            \Require $f$, a distance function
-            \Require $C$, a cluster
-            \Require $q$, a query
-            \Require $r$, a search radius
-            \If{$\delta^+_C \leq r$}
-                \State \textbf{return} $\{C\}$
-            \Else
-                \State $[L, R]$ $\Leftarrow$ \textit{children} of $C$
-                \State \textbf{return} tree-search($L, q, r$) \\
+            \REQUIRE $f$, a distance function
+            \REQUIRE $C$, a cluster
+            \REQUIRE $q$, a query
+            \REQUIRE $r$, a search radius
+            \IF{$\delta^+_C \leq r$}
+                \STATE \textbf{return} $\{C\}$
+            \ELSE
+                \STATE $[L, R]$ $\Leftarrow$ \textit{children} of $C$
+                \STATE \textbf{return} tree-search($L, q, r$) \\
                 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ $\cup$ tree-search($R, q, r$)
-            \EndIf
+            \ENDIF
         \end{algorithmic}
     \end{algorithm}
 \end{minipage}
@@ -184,23 +184,23 @@ In any case, the tree is built only once, so this cost is amortized over all sea
         \caption{leaf-search($Q$, $q$, $r$)}
         \label{alg:methods:rnn-search:leaf-search}
         \begin{algorithmic}
-            \Require $f$, a distance function
-            \Require $Q$, a set of clusters
-            \Require $q$, a query
-            \Require $r$, a search radius
-            \State $H \Leftarrow \emptyset$
-            \For{$C \in Q$}
-                \If{$\delta^+_C \leq r$}
-                    \State $H$ $\Leftarrow$ $H \cup C$
-                \Else
-                    \For{$p \in C$}
-                        \If{$f(p, q) \leq r$}
-                            \State $H$ $\Leftarrow$ $H \cup \{p\}$
-                        \EndIf
-                    \EndFor
-                \EndIf
-            \EndFor
-            \State \textbf{return} $H$
+            \REQUIRE $f$, a distance function
+            \REQUIRE $Q$, a set of clusters
+            \REQUIRE $q$, a query
+            \REQUIRE $r$, a search radius
+            \STATE $H \Leftarrow \emptyset$
+            \FOR{$C \in Q$}
+                \IF{$\delta^+_C \leq r$}
+                    \STATE $H$ $\Leftarrow$ $H \cup C$
+                \ELSE
+                    \FOR{$p \in C$}
+                        \IF{$f(p, q) \leq r$}
+                            \STATE $H$ $\Leftarrow$ $H \cup \{p\}$
+                        \ENDIF
+                    \ENDFOR
+                \ENDIF
+            \ENDFOR
+            \STATE \textbf{return} $H$
         \end{algorithmic}
     \end{algorithm}
 \end{minipage}
@@ -222,24 +222,24 @@ These algorithms also use some terminology defined and illustrated in Figure~\re
     \caption{Repeated $\rho$-NN($\mathcal{R}$, $q$, $k$)} % give the algorithm a caption
     \label{alg:methods:repeated-rnn} % and a label for \ref{} commands later in the document
     \begin{algorithmic} % enter the algorithmic environment
-        \Require $\mathcal{R}$, the root cluster
-        \Require $q$, a query
-        \Require $k$, the number of neighbors to find
-        \State{$H \Leftarrow [\ ]$, a max-heap by $\delta$ of size $k$}
-        \State $r \Leftarrow radius$ of $\mathcal{R}$
-        \State $r \Leftarrow$ $\frac{r}{|\mathcal{R}|}$
-        \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
-        \While{$\sum_{C \in Q} |C| < k$}
-            \If{$Q = \emptyset$}
-                \State $r \Leftarrow 2 \cdot r$
-            \ElsIf{$\sum_{C \in Q} |C| >= k$}
-                \State $\mu \Leftarrow \frac{1}{|Q|} \cdot \sum_{C \in Q} \big( LFD(C)^{-1} \big)$
-                \State $r \Leftarrow r \cdot \min \bigg( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu} \bigg)$
-            \EndIf
-            \State $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
-        \EndWhile
-        \State $H \Leftarrow \text{leaf-search}(Q, q, r)$
-        \State \textbf{return} $H$ as a list
+        \REQUIRE $\mathcal{R}$, the root cluster
+        \REQUIRE $q$, a query
+        \REQUIRE $k$, the number of neighbors to find
+        \STATE{$H \Leftarrow [\ ]$, a max-heap by $\delta$ of size $k$}
+        \STATE $r \Leftarrow radius$ of $\mathcal{R}$
+        \STATE $r \Leftarrow$ $\frac{r}{|\mathcal{R}|}$
+        \STATE $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
+        \WHILE{$\sum_{C \in Q} |C| < k$}
+            \IF{$Q = \emptyset$}
+                \STATE $r \Leftarrow 2 \cdot r$
+            \ELSIF{$\sum_{C \in Q} |C| >= k$}
+                \STATE $\mu \Leftarrow \frac{1}{|Q|} \cdot \sum_{C \in Q} \big( LFD(C)^{-1} \big)$
+                \STATE $r \Leftarrow r \cdot \min \bigg( 2, \left( {\frac{k}{\sum_{C \in Q} |C|}} \right)^{\mu} \bigg)$
+            \ENDIF
+            \STATE $Q \Leftarrow$ tree-search($\mathcal{R}$, $q$, $r$)
+        \ENDWHILE
+        \STATE $H \Leftarrow \text{leaf-search}(Q, q, r)$
+        \STATE \textbf{return} $H$ as a list
     \end{algorithmic}
 \end{algorithm}
 
@@ -277,23 +277,23 @@ Once $\sum_{C \in Q} |C| \geq k$, we are guaranteed to have found at least $k$ n
 \subsubsection{Complexity of Repeated \texorpdfstring{$\rho$}{p}-NN}
 \label{sec:methods:knn-search:repeated-rnn-complexity}
 
-\begin{theorem} Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Then time complexity of performing Repeated $\rho$-NN search on $X$ with query $q$ is \begin{gather}
-        \mathcal{O}
-        \Bigg(
-            \underbrace{
-                \log~\overbrace{\mathcal{N}_{\hat{r}}(X)}^{\textrm{metric entropy}}
-            }_{\textrm{tree-search}}
-            \ + \
-            \underbrace{
-                \overbrace{k}^{\textrm{output size}} \cdot
-                \overbrace{\bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d}^{\textrm{scaling factor}}
-            }_{\textrm{leaf-search}}
-        \Bigg)
-        \label{eq:methods:repeated-rnn-complexity}
-    \end{gather}
-    where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of the dataset, $d$ is the LFD of the dataset, and $k$ is the number of nearest neighbors.
-    \label{thm:methods:rnn-complexity}
-\end{theorem}
+% \begin{theorem} Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Then time complexity of performing Repeated $\rho$-NN search on $X$ with query $q$ is \begin{gather}
+%         \mathcal{O}
+%         \Bigg(
+%             \underbrace{
+%                 \log~\overbrace{\mathcal{N}_{\hat{r}}(X)}^{\textrm{metric entropy}}
+%             }_{\textrm{tree-search}}
+%             \ + \
+%             \underbrace{
+%                 \overbrace{k}^{\textrm{output size}} \cdot
+%                 \overbrace{\bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d}^{\textrm{scaling factor}}
+%             }_{\textrm{leaf-search}}
+%         \Bigg)
+%         \label{eq:methods:repeated-rnn-complexity}
+%     \end{gather}
+%     where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of the dataset, $d$ is the LFD of the dataset, and $k$ is the number of nearest neighbors.
+%     \label{thm:methods:rnn-complexity}
+% \end{theorem}
 
 \begin{proof} We consider the \textit{tree-search} and \textit{leaf-search} stages of search separately.
 Tree-search refers to the process of identifying clusters that overlap with the query ball, or in other words, clusters that might contain one of the $k$ nearest neighbors by doing repeated iterations of the  $\rho$-NN search Algorithm~\ref{alg:methods:rnn-search:tree-search}.
@@ -355,67 +355,63 @@ We begin by letting $Q$ be a set of 3-tuples $(p, \delta^{+}_{p}, m)$, where $p$
 During the breadth-first traversal, for every cluster $C$ we encounter, we add $(C, \delta^{+}_{C}, |C| - 1)$ and $(c, \delta_{c}, 1)$ to $Q$, where $c$ is the center of $C$.
 Recall that by the definitions of $\delta$ and $\delta^{+}$ given in Section~\ref{sec:methods:knn-search}, since $c$ is a point, $\delta_{C} = \delta_{c} = \delta^{+}_{c} = \delta^{-}_{c}$.
 
-\begin{minipage}{0.5125\textwidth}
-    \begin{algorithm}[H]\small
+    \begin{algorithm}
         \caption{Breadth-First Sieve($\mathcal{R}$, $q$, $k$)} % give the algorithm a caption
         \label{alg:methods:bredth-first-sieve} % and a label for \ref{} commands later in the document
         \begin{algorithmic} % enter the algorithmic environment
-            \Require $\mathcal{R}$, the root cluster
-            \Require $q$, a query
-            \Require $k$, the number of neighbors to find
-            \State $c \Leftarrow$ \textit{center} of $\mathcal{R}$
-            \State $Q \Leftarrow$ \{ ($\mathcal{R}$, $\delta^{+}_{\mathcal{R}}$, $|\mathcal{R}| - 1$), ($c$, $\delta_{\mathcal{R}}$, 1) \}
-            \While{$\sum_{(\_, \_, m) \in Q} m \neq k$}
-                \State $\tau \Leftarrow$ QuickSelect($Q$, $k$)
-                \State $Q^{'} \Leftarrow \emptyset$
-                \For{$(C, \_, \_) \in Q$}
-                    \If{$\delta^{-}_{C} \leq \tau$}
-                        \If{$C$ is a point}
-                            \State $Q^{'} \Leftarrow Q^{'} \cup \{ (C, \delta_{C}, 1) \}$
-                        \ElsIf{$C$ is a leaf}
-                            \State $Q^{'} \Leftarrow Q^{'} \cup \{ (p, \delta_{p}, 1)$ for $p \in C \}$
-                        \Else
-                            \State $[L, R] \Leftarrow$ children of $C$
-                            \State $l, r \Leftarrow$ centers of $L, R$
-                            \State $Q^{'} \Leftarrow Q^{'} \cup \{ (L, \delta^{+}_{L}, |L| - 1), (l, \delta_{L}, 1) \}$
-                            \State $Q^{'} \Leftarrow Q^{'} \cup \{ (R, \delta^{+}_{R}, |R| - 1), (l, \delta_{R}, 1) \}$
-                        \EndIf
-                    \EndIf
-                \EndFor
-                \State $Q \Leftarrow Q^{'}$
-            \EndWhile
-            \State QuickSelect($Q$, $k$)
-            \State \textbf{return} The first $k$ points in $Q$
+            \REQUIRE $\mathcal{R}$, the root cluster
+            \REQUIRE $q$, a query
+            \REQUIRE $k$, the number of neighbors to find
+            \STATE $c \Leftarrow$ \textit{center} of $\mathcal{R}$
+            \STATE $Q \Leftarrow$ \{ ($\mathcal{R}$, $\delta^{+}_{\mathcal{R}}$, $|\mathcal{R}| - 1$), ($c$, $\delta_{\mathcal{R}}$, 1) \}
+            \WHILE{$\sum_{(\_, \_, m) \in Q} m \neq k$}
+                \STATE $\tau \Leftarrow$ QuickSelect($Q$, $k$)
+                \STATE $Q^{'} \Leftarrow \emptyset$
+                \FOR{$(C, \_, \_) \in Q$}
+                    \IF{$\delta^{-}_{C} \leq \tau$}
+                        \IF{$C$ is a point}
+                            \STATE $Q^{'} \Leftarrow Q^{'} \cup \{ (C, \delta_{C}, 1) \}$
+                        \ELSIF{$C$ is a leaf}
+                            \STATE $Q^{'} \Leftarrow Q^{'} \cup \{ (p, \delta_{p}, 1)$ for $p \in C \}$
+                        \ELSE
+                            \STATE $[L, R] \Leftarrow$ children of $C$
+                            \STATE $l, r \Leftarrow$ centers of $L, R$
+                            \STATE $Q^{'} \Leftarrow Q^{'} \cup \{ (L, \delta^{+}_{L}, |L| - 1), (l, \delta_{L}, 1) \}$
+                            \STATE $Q^{'} \Leftarrow Q^{'} \cup \{ (R, \delta^{+}_{R}, |R| - 1), (l, \delta_{R}, 1) \}$
+                        \ENDIF
+                    \ENDIF
+                \ENDFOR
+                \STATE $Q \Leftarrow Q^{'}$
+            \ENDWHILE
+            \STATE QuickSelect($Q$, $k$)
+            \STATE \textbf{return} The first $k$ points in $Q$
         \end{algorithmic}
     \end{algorithm}
-\end{minipage}
-\hfill
-\begin{minipage}{0.425\textwidth}
-    \begin{algorithm}[H]\small
+
+    \begin{algorithm}
         \caption{Depth-First Sieve($\mathcal{R}$, $q$, $k$)}
         \label{alg:methods:depth-first-sieve}
         \begin{algorithmic}
-            \Require $\mathcal{R}$, the root cluster
-            \Require $q$, a query
-            \Require $k$, the number of neighbors to find
-            \State{$Q \Leftarrow [\mathcal{R}]$, a min-heap by $\delta^{-}$}
-            \State{$H \Leftarrow [\ ]$, a max-heap by $\delta$ of size $k$}
-            \While{$|H| < k$ \textbf{or} $H.peek.\delta \geq Q.peek.\delta^{-}$}
-                \While{$Q.peek$ is not a leaf}
-                    \State{$C \Leftarrow Q.pop$, the closest cluster}
-                    \State{$[L, R] \Leftarrow$ children of $C$}
-                    \State{$Q.push(L)$}
-                    \State{$Q.push(R)$}
-                \EndWhile
-                \State{$leaf \Leftarrow Q.pop$}
-                \For{$p \in leaf$}
-                    \State{$H.push(p)$}
-                \EndFor
-            \EndWhile
-            \State \textbf{return} $H$
+            \REQUIRE $\mathcal{R}$, the root cluster
+            \REQUIRE $q$, a query
+            \REQUIRE $k$, the number of neighbors to find
+            \STATE{$Q \Leftarrow [\mathcal{R}]$, a min-heap by $\delta^{-}$}
+            \STATE{$H \Leftarrow [\ ]$, a max-heap by $\delta$ of size $k$}
+            \WHILE{$|H| < k$ \textbf{or} $H.peek.\delta \geq Q.peek.\delta^{-}$}
+                \WHILE{$Q.peek$ is not a leaf}
+                    \STATE{$C \Leftarrow Q.pop$, the closest cluster}
+                    \STATE{$[L, R] \Leftarrow$ children of $C$}
+                    \STATE{$Q.push(L)$}
+                    \STATE{$Q.push(R)$}
+                \ENDWHILE
+                \STATE{$leaf \Leftarrow Q.pop$}
+                \FOR{$p \in leaf$}
+                    \STATE{$H.push(p)$}
+                \ENDFOR
+            \ENDWHILE
+            \STATE \textbf{return} $H$
         \end{algorithmic}
     \end{algorithm}
-\end{minipage}
 
 \vskip 0.1in
 
@@ -458,16 +454,16 @@ For these methods we again use the terminology of tree-search and leaf-search.
 Tree-search navigates the cluster tree and adds clusters to $Q$.
 Leaf-search exhaustively searches \textit{some} of the clusters in $Q$ to find the $k$ nearest neighbors.
 
-\begin{theorem}
-    Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Let $T \coloneqq \mathcal{O} \big( \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X) \big)$ and   $L \coloneqq \mathcal{O} \left( k \cdot \bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d \right)$, where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of $X$, $d$ is the LFD of $X$, $\hat{|C|}$ is the mean cardinality of clusters overlapping the query ball, and $k$ is the number of nearest neighbors. Then, for dataset $X$ and query $q$, the time complexity of performing Breadth-First Sieve search is \begin{equation}
-        \mathcal{O} \Big( (T + L ) \log (T + L ) \Big)
-        \label{eq:methods:breadth-first-sieve-complexity}
-    \end{equation} and the the time complexity of performing Depth-First Sieve search is \begin{equation}
-        \mathcal{O} \Big( T \log T + L \log k \Big).
-        \label{eq:methods:depth-first-sieve-complexity}
-    \end{equation}
-    \label{thm:methods:sieve-complexity}
-\end{theorem}
+% \begin{theorem}
+%     Let $X$ be a dataset and $q$ a query sampled from the same distribution (i.e., arising from the same generative process) as $X$. Let $T \coloneqq \mathcal{O} \big( \lceil d \rceil \cdot \log \mathcal{N}_{\hat{r}}(X) \big)$ and   $L \coloneqq \mathcal{O} \left( k \cdot \bigg( 1 + 2 \cdot \Big( \frac{\hat{|C|}}{k} \Big) ^ {d^{-1}} \bigg)^d \right)$, where $\mathcal{N}_{\hat{r}}(X)$ is the metric entropy of $X$, $d$ is the LFD of $X$, $\hat{|C|}$ is the mean cardinality of clusters overlapping the query ball, and $k$ is the number of nearest neighbors. Then, for dataset $X$ and query $q$, the time complexity of performing Breadth-First Sieve search is \begin{equation}
+%         \mathcal{O} \Big( (T + L ) \log (T + L ) \Big)
+%         \label{eq:methods:breadth-first-sieve-complexity}
+%     \end{equation} and the the time complexity of performing Depth-First Sieve search is \begin{equation}
+%         \mathcal{O} \Big( T \log T + L \log k \Big).
+%         \label{eq:methods:depth-first-sieve-complexity}
+%     \end{equation}
+%     \label{thm:methods:sieve-complexity}
+% \end{theorem}
 
 \begin{proof}
 Since $q$ is sampled from the same distribution as $X$, the LFD near $q$ should not differ significantly from the LFDs of clusters near $q$ at the scale of the distance from the query to the $k^{th}$ nearest neighbor.

@@ -1,39 +1,116 @@
-\newif\ifarxiv
-\arxivtrue % swap this to true to build for the arxiv
-\ifarxiv
-\documentclass{article}
-\usepackage{arxiv}
+\documentclass[conference,compsoc]{IEEEtran}
+
+\ifCLASSOPTIONcompsoc
+  % IEEE Computer Society needs nocompress option
+  % requires cite.sty v4.0 or later (November 2003)
+  \usepackage[nocompress]{cite}
 \else
-\documentclass[review,onefignum,onetabnum]{siamonline220329}
+  % normal IEEE
+  \usepackage{cite}
 \fi
 
-\pdfoutput=1
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+% \usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{lipsum}
+\usepackage{graphicx}
+% \usepackage{subfigure}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{hyperref}
+\usepackage{xr}
+\usepackage{subfig}
+\usepackage{placeins}
+
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\score}{score}
+
+% \pdfoutput=1
 % below is for arxiv
 % \documentclass{article}
 % \pdfoutput=1
 % \usepackage{arxiv}
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
-\ifarxiv
-\else
-\ifpdf
-\hypersetup{
-  pdftitle={Let them have CAKES: A Cutting-Edge Algorithm for Scalable, Efficient, and Exact Search on Big Data},
-  pdfauthor={M. E. Prior, T. J. Howard III, O. McLaughlin, T. Ferguson, N. Ishaq, N. M. Daniels}
+% \ifarxiv
+% \else
+% \ifpdf
+% \hypersetup{
+%   pdftitle={Let them have CAKES: A Cutting-Edge Algorithm for Scalable, Efficient, and Exact Search on Big Data},
+%   pdfauthor={M. E. Prior, T. J. Howard III, O. McLaughlin, T. Ferguson, N. Ishaq, N. M. Daniels}
+% }
+% \fi
+% \fi
+
+\newcommand{\linebreakand}{%
+  \end{@IEEEauthorhalign}
+  \hfill\mbox{}\par
+  \mbox{}\hfill\begin{@IEEEauthorhalign}
 }
-\fi
-\fi
+\makeatother
 
 
 
 
-
-\input{cakes_shared}
+% \input{cakes_shared}
 \begin{document}
+\title{Let them have CAKES: A Cutting-Edge Algorithm for Scalable, Efficient, and Exact Search on Big Data},
+
+\author{
+\IEEEauthorblockN{Morgan E. Prior}
+\IEEEauthorblockA{Mathematics\\
+University of Rhode Island\\
+Kingston, RI 02881\\
+meprior424@gmail.com}
+\and
+\IEEEauthorblockN{Thomas J. Howard III}
+\IEEEauthorblockA{Computer Science and Statistics\\
+University of Rhode Island\\
+Kingston, RI 02881\\
+thoward27@uri.edu}
+\and
+\IEEEauthorblockN{Oliver McLaughlin}
+\IEEEauthorblockA{Computer Science and Statistics\\
+University of Rhode Island\\
+Kingston, RI 02881\\
+olwmcjp@gmail.com}
+\and
+\IEEEauthorblockN{Terrence Ferguson}
+\IEEEauthorblockA{Computer Science and Statistics\\
+University of Rhode Island\\
+Kingston, RI 02881\\
+fergusontr@gmail.com}
+\and
+\IEEEauthorblockN{Najib Ishaq}
+\IEEEauthorblockA{Computer Science and Statistics\\
+University of Rhode Island\\
+Kingston, RI 02881\\
+najib\_ishaq@zoho.com}
+\and
+\IEEEauthorblockN{Noah M. Daniels}
+\IEEEauthorblockA{Computer Science and Statistics\\
+University of Rhode Island\\
+Kingston, RI 02881\\
+noah\_daniels@uri.edu}}
 
 
+\IEEEoverridecommandlockouts
+\IEEEpubid{\makebox[\columnwidth]{978-1-6654-3902-2/21/\$31.00~\copyright2021 IEEE \hfill} \hspace{\columnsep}\makebox[\columnwidth]{ }}
+% make the title area
 \maketitle
-
+\IEEEpubidadjcol
+% this must go after the closing bracket ] following \twocolumn[ ...
 
 
 \begin{abstract}
@@ -50,30 +127,31 @@
 % \keywords{K-NN Search, Manifold Hypothesis, Sub-Linear  Algorithms, Big Data}
 
 % REQUIRED
-\ifarxiv
-\else
-\begin{MSCcodes}
-68P05, 68P10
-\end{MSCcodes}
-\fi
+% \ifarxiv
+% \else
+% \begin{MSCcodes}
+% 68P05, 68P10
+% \end{MSCcodes}
+% \fi
 %%
 %% This command processes the author and affiliation and title
 %% information and builds the first part of the formatted document.
-\maketitle
-
+% \maketitle
+\IEEEpeerreviewmaketitle
     \input{sections/1-introduction.tex}
     \input{sections/2-methods.tex}
     \input{sections/3-datasets.tex}
     \input{sections/4-results.tex}
     \input{sections/5-discussion.tex}
 
-    %\section*{Acknowledgments}
-    %The authors thank the members of the University of Rhode Island's Algorithms for Big Data research group for their helpful comments throughout the development of this work.
-    %We are especially grateful to Carl Stoker and Rachel F. Daniels for their thorough reviews of the paper and valuable feedback.
+    \section*{Acknowledgments}
+    The authors thank the members of the University of Rhode Island's Algorithms for Big Data research group for their helpful comments throughout the development of this work.
+    We are especially grateful to Carl Stoker and Rachel F. Daniels for their thorough reviews of the paper and valuable feedback.
 
     % \afterpage{\clearpage}
     \FloatBarrier
-    \bibliographystyle{siamplain}
+    \bibliographystyle{IEEEtran}
+    \typeout{}     
     \bibliography{references}
     % \newpage
     % \input{supplement.tex}
