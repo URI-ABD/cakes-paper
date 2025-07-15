@@ -3,9 +3,8 @@
 
 Researchers are collecting data at an unprecedented rate, with datasets in many fields growing exponentially, and outpacing improvements in computing performance predicted by Moore's Law~\cite{kahn2011future}. This ``Big Data explosion'' has created a need for algorithms that scale efficiently to large datasets.
 
-Examples of such datasets include genomic databases, time-series signals, and neural network embeddings.
-Large language models such as GPT~\cite{2020arXiv200514165B, OpenAI2023GPT4TR} and LLAMA-2~\cite{Touvron2023Llama2O}, and image embedding models~\cite{radford2021learning, dosovitskiy2020image} are a common source of neural network embeddings.
-Among biological datasets,  SILVA 18S~\cite{10.1093/nar/gks1219} includes ribosomal DNA sequences from approximately 2.25 million genomes, reaching 50,000 letters when aligned.
+Examples of such datasets include genomic databases, time-series signals, and neural network embeddings such as GPT~\cite{2020arXiv200514165B, OpenAI2023GPT4TR}, LLAMA-2~\cite{Touvron2023Llama2O}, and image embedding models~\cite{radford2021learning, dosovitskiy2020image}.
+Among biological datasets,  SILVA 18S~\cite{10.1093/nar/gks1219} includes ribosomal RNA sequences from approximately 2.25 million genomes, reaching 50,000 letters when aligned.
 Among time-series datasets, the RadioML dataset~\cite{oshea2018radioml} contains approximately 2.55 million samples of synthetically-generated radio frequency signals.
 
 Similarity search is a fundamental task on such datasets, enabling applications such as recommendation~\cite{annoy} and classification ~\cite{suyanto2022knnclassifier}.
@@ -13,15 +12,12 @@ Yet as datasets grow in size and dimensionality, efficient and accurate similari
 even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{malkov2016hnsw, johnson2019billion, annoy, aumuller2020ann}.
 
 Given some measure of similarity between data points, two standard similarity search paradigms are $k$-nearest neighbor search ($k$-NN) and $\rho$-nearest neighbor search ($\rho$-NN).
-The former retrieves the $k$ most similar points to a query, while the latter retrieves all points within a similarity threshold $\rho$ of a query.
-While prior work has used the term \textit{approximate} search to refer to $\rho$-NN, we use it more narrowly: an {approximate} search algorithm is any algorithm that yields less than perfect recall, whereas an \textit{exact} algorithm guarantees perfect recall.
+The former retrieves the $k$ points closest to a query, while the latter retrieves all points within a similarity threshold $\rho$ of a query.
+While prior work has used the term \textit{approximate} search to refer to $\rho$-NN, we use it more narrowly: an {approximate} search algorithm is any algorithm that yields imperfect recall, whereas an \textit{exact} algorithm guarantees perfect recall.
 
-$k$-NN search is one of the most widely-used methods in classification and recommendation~\cite{fix1952discriminatory, cover1967nearest}, but na\"{i}ve implementations are prohibitively slow because their time complexity is linear in the dataset's cardinality.
+$k$-NN search is one of the most widely-used methods in classification and recommendation~\cite{fix1952discriminatory, cover1967nearest}, but na\"{i}ve implementations are prohibitively slow because due to linear time complexity.
 Existing fast algorithms are often approximate~\cite{gao2023high}, which may suffice for some applications, but the need for efficient and \textit{exact} search remains~\cite{ukey2023survey}.
-For example, for a majority voting classifier, approximate $k$-NN search may agree with exact $k$-NN search for large values of $k$, but may be sensitive to local perturbations for smaller values of $k$.
-
-For example, approximate methods may fail in majority-voting classifiers with small $k$ or poorly separated classes~\cite{zhang2022imbalanced}, and distance functions like cosine similarity, which violate the triangle inequality, have shown poor performance in biomedical applications~\cite{hu2016distance}. 
-
+In a majority voting classifier, approximate $k$-NN search may agree with exact $k$-NN search for large values of $k$, but be sensitive to local perturbations for smaller values of $k$.
 
 This paper introduces CAKES (CLAM-Accelerated $K$-NN Entropy-Scaling Search), a set of three novel algorithms for \emph{exact} $k$-NN search.
 We benchmark CAKES against state-of-the-art methods--FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}--on datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
@@ -34,15 +30,7 @@ To further contextualize results, we compare against a synthetic dataset with si
 
 Several algorithms have been developed to scale $k$-nearest neighbor search to large datasets, including Hierarchical Navigable Small World networks (HNSW)~\cite{malkov2016hnsw}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. However, many of these algorithms do not support \emph{exact} search (as defined in Section \ref{sec:introduction}).
 
-Hierarchical Navigable Small World networks~\cite{malkov2016hnsw} rely on navigable small world (NSW) networksand skip lists.
-HNSW builds a multi-layered small-world graph~\cite{kleinberg2000navigation, boguna2009navigability} of the dataset, with queries and elements placed at each layer according to an exponentially-decaying probability distribution.
-Each node connects to its $M$ nearest neighbors (a tunable parameter) in the in the graph, where $M$. Search proceeds top-down, using a greedy search at each layer. Accuracy is controlled by the $efSearch$ hyperparameter, which specifies how many candidates are explored during search.
-
-InVerted File indexing (IVF)~\cite{faissivf, sacks1987multikey, kent1990signature} partitions data into high-dimensional Voronoi cells, and searches exhaustively only within cells near the query.
-The number of clusters is set via the $n_{list}$ parameter; accuracy is improved by probing additional neighboring cells, controlled by the $n_{probe}$ parameter. This approach resembles earlier entropy-scaling methods~\cite{yu2015entropy}.
-
-
-ANNOY~\cite{annoy} uses random projection and tree building. 
+Hierarchical Navigable Small World networks~\cite{malkov2016hnsw} rely on navigable small world (NSW) networks and skip lists. InVerted File indexing (IVF)~\cite{faissivf, sacks1987multikey, kent1990signature} partitions data into high-dimensional Voronoi cells, and searches exhaustively only within cells near the query. ANNOY~\cite{annoy} uses random projection and tree building.
 At each intermediate node of the tree, a random hyperplane, defined by two sampled points, splits the space.  Multiple such trees form a forest; increasing the number of trees improves recall but increases search time.
 
 
@@ -59,5 +47,3 @@ This paper introduces CAKES, a set of three entropy-scaling algorithms for $k$-N
 These analyses are not worst-case analyses in the traditional sense, as they do not assume the worst possible dataset, namely, a uniform distribution.
 Given that CAKES's algorithms are intended to be used on datasets with a manifold structure, complexity analysis assuming a uniform distribution of data would be uninformative.
 As a result, our analysis assumes datasets with manifold structure—characterized by low fractal dimension and metric entropy—reflecting the conditions for which CAKES is designed.
-
-
