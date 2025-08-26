@@ -5,7 +5,7 @@
 % As such, we begin by examining our assumptions about the LFD of real-world datasets (see Section~\ref{sec:results:lfd-of-datasets} and Figure~\ref{fig:results:lfd-plots}).
 
 
-For each dataset, we benchmark using the distance function listed in Table~\ref{tab:datasets:summary}, and results in this section are based on k-NN with $k=10$.
+For each dataset, we benchmark using the distance function listed in Table~\ref{tab:datasets:summary}. As described in Section~\ref{sec:introduction}, approximate search can be more sensitive to local perturbations than exact search, especially for small values of $k$, and hence we focus on $k=10$ for our benchmarks. 
 
 In Figure~\ref{fig:results:scaling-plots}, we show how the throughput of each of CAKES's algorithms scales with cardinality for each of the six datasets we examined. To do this, we synthetically augmented the Fashion-MNIST, Glove-25, Sift, and Random datasets to create larger datasets using the process described in Section~\ref{sec:methods:synthetic-data}. For Silva and RadioML, due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset---rather than augmented versions of the dataset---to examine how performance scales with cardinality.
 

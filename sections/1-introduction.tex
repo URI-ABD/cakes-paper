@@ -15,7 +15,7 @@ Given some measure of similarity between data points, two standard similarity se
 The former retrieves the $k$ points closest to a query, while the latter retrieves all points within a similarity threshold $\rho$ of a query.
 While prior work has used the term \textit{approximate} search to refer to $\rho$-NN, we use it more narrowly: an {approximate} search algorithm is any algorithm that yields imperfect recall, whereas an \textit{exact} algorithm guarantees perfect recall.
 
-$k$-NN search is one of the most widely-used methods in classification and recommendation~\cite{fix1952discriminatory, cover1967nearest}, but na\"{i}ve implementations are prohibitively slow because due to linear time complexity.
+$k$-NN search is one of the most widely-used methods in classification and recommendation~\cite{fix1952discriminatory, cover1967nearest}, but na\"{i}ve implementations are prohibitively slow because they scale linearly with dataset size.
 Existing fast algorithms are often approximate~\cite{gao2023high}, which may suffice for some applications, but the need for efficient and \textit{exact} search remains~\cite{ukey2023survey}.
 In a majority voting classifier, approximate $k$-NN search may agree with exact $k$-NN search for large values of $k$, but be sensitive to local perturbations for smaller values of $k$.
 

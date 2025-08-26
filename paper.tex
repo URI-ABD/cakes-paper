@@ -124,13 +124,8 @@ noah\_daniels@uri.edu}}
 
 
 \begin{abstract}
-  The Big Data explosion has created a demand for efficient and scalable algorithms for similarity search.
-  While much recent work has focused on \textit{approximate} $k$-NN search, \textit{exact} $k$-NN search has not kept up.
-  We present CAKES, a set of three novel algorithms for exact $k$-NN search.
-  CAKES's algorithms are generic over \textit{any} distance function, and do not scale with the cardinality or embedding dimension of the dataset. Instead, they scale with geometric properties of the dataset--namely, metric entropy and fractal dimension--thus providing immense speed improvements over existing exact $k$-NN search algorithms when the dataset conforms to the manifold hypothesis.
-  We demonstrate these claims by contrasting performance on a randomly-generated dataset against that on some datasets from the ANN-Benchmarks suite under commonly-used distance functions, a genomic dataset under Levenshtein distance, and a radio-frequency dataset under Dynamic Time Warping distance. CAKES exhibits near-constant running time on data conforming to the manifold hypothesis as cardinality grows, and has perfect recall on data in metric spaces. CAKES also has significantly higher recall than state-of-the-art $k$-NN search algorithms even when the distance function is not a metric.
-  We conclude that CAKES is a highly efficient and scalable algorithm for exact $k$-NN search on Big Data.
-  We provide a Rust implementation of CAKES under an MIT license at https://github.com/URI-ABD/clam.
+  The Big Data explosion has created demand for efficient, scalable similarity search. While recent work emphasizes \textit{approximate} $k$-NN search, \textit{exact} $k$-NN search has lagged. We present CAKES, three novel algorithms for exact $k$-NN search. CAKES is generic over \textit{any} distance function and scales not with dataset cardinality or embedding dimension but with geometric properties—metric entropy and fractal dimension—yielding large speedups over existing exact methods when the dataset conforms to the manifold hypothesis. We demonstrate this by contrasting performance on a randomly generated dataset and on ANN-Benchmarks datasets under common distances, on a genomic dataset under Levenshtein distance, and on a radio-frequency dataset under Dynamic Time Warping. CAKES exhibits near-constant running time on manifold-structured data as cardinality grows and achieves perfect recall in metric spaces; it also attains significantly higher recall than state-of-the-art $k$-NN search methods when the distance is not a metric. We conclude that CAKES is a highly efficient, scalable solution for exact $k$-NN on Big Data. A Rust implementation is available under the MIT license at \url{https://github.com/URI-ABD/clam}.
+
 
 \end{abstract}
 %

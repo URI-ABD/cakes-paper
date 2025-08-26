@@ -40,7 +40,7 @@ Intuitively, LFD measures the rate of change in the number of points in a ball o
 We stress that this concept differs from the \textit{embedding dimension} of a dataset.
 To illustrate the difference, consider the SILVA 18S rRNA dataset that contains genomic sequences with unaligned lengths of up to 3,712 base pairs and aligned length of 50,000 base pairs.
 Hence, the \textit{embedding dimension} of this dataset is at least 3,712 and at most 50,000; as used in this paper it is 3,712.
-However, physical constraints (namely, biological evolution and biochemistry) constrain the data to a lower-dimensional manifold within this space.
+However, physical limitations (namely, biological evolution and biochemistry) constrain the data to a lower-dimensional manifold within this space.
 LFD is an approximation of the dimensionality of that lower-dimensional manifold in the ``vicinity'' of a given point.
 % Section~\ref{sec:results:lfd-of-datasets} discusses this concept on a variety of datasets, showing how real datasets uphold the manifold hypothesis.
 For real-world datasets, we expect the LFD to be locally uniform, i.e.,\,when $r$ is small, but potentially highly variable at larger length scales, i.e.,\,when $r$ is large.
@@ -49,24 +49,13 @@ For real-world datasets, we expect the LFD to be locally uniform, i.e.,\,when $r
 \subsection{Clustering}
 \label{sec:methods:clustering}
 
-We define a \textit{cluster} as a set of points with a \textit{center} and a \textit{radius}.
-The center is the geometric median of the points in the cluster, i.e.,\,it is the point that minimizes the sum of distances to all other points in the cluster.
-In cases where the cardinality of the cluster is large, we take a random subsample of $\sqrt{|C|}$ points and compute the geometric median of that subsample~\cite{ishaq2019clustered}.
-The center, therefore, is one of the points in the cluster and is used as a representative of the cluster.
-The radius is the maximum distance from the center to any point in the cluster.
-Each non-leaf cluster has two child clusters in much the same way that a node in a binary tree has two child nodes.
-Note that clusters can have overlapping volumes and, in such cases, points in the overlapping volume are assigned to exactly one of the overlapping clusters.
-As a consequence, a cluster can be a proper subset of the metric ball at the same center and radius, i.e.,\,$C(c, r) \subset B(c, r)$. We denote the cluster tree by $\mathcal{T}$ and the root by $\mathcal{R}$ (see Section~\ref{sec:methods:clustering:building-the-tree}).
+We define a \emph{cluster} $C$ as a set of points with a \emph{center} and \emph{radius}. The center is the geometric median of the points in $C$; for large $|C|$ we take a random subsample of size $\sqrt{|C|}$ and use its geometric median~\cite{ishaq2019clustered}. Thus the center is one of the points in $C$ and serves as its representative. The radius is the maximum distance from the center to any point in $C$. Each non-leaf cluster has two children (as in a binary tree). Clusters may have overlapping volumes, but each point in an overlap is assigned to exactly one cluster; consequently $C(c,r)\subset B(c,r)$. We denote the cluster tree by $\mathcal{T}$ and its root by $\mathcal{R}$ (Sec.~\ref{sec:methods:clustering:building-the-tree}).
 
-Hereafter, when we refer to the LFD of a cluster, it is estimated at the length scale of the cluster radius and half that radius, i.e.,\,using Equation~\ref{eq:methods:lfd-half}.
-We also only use points that are in $C(c, r)$ instead of all those in $B(c, r)$.
+Unless stated otherwise, the LFD of a cluster is estimated at scales $r$ and $r/2$ via Eq.~\ref{eq:methods:lfd-half}, using only points in $C(c,r)$ (not all of $B(c,r)$).
 
-The \textit{metric entropy} $\mathcal{N}_{r}(X)$ for some radius $r$ is the minimum number of clusters of a uniform radius $r$ needed to cover the data~\cite{yu2015entropy} for a flat clustering with clusters of radius $r$.
-In this paper, where the clustering is hierarchical rather than flat, we define the metric entropy $\mathcal{N}_{\hat{r}}(X)$ as the number of leaf clusters in the tree where $\hat{r}$ is the mean radius of all leaf clusters.
+For a flat clustering, the \emph{metric entropy} $\mathcal{N}_r(X)$ is the minimum number of radius-$r$ clusters needed to cover $X$~\cite{yu2015entropy}. In our hierarchical setting, we define $\mathcal{N}_{\hat r}(X)$ as the number of leaf clusters, where $\hat r$ is the mean radius of all leaves.
 
 
-\subsubsection{Building the Tree}
-\label{sec:methods:clustering:building-the-tree}
 
 \subsubsection{Building the Tree}
 \label{sec:methods:clustering:building-the-tree}
