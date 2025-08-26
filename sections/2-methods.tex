@@ -1,39 +1,40 @@
 \section{Methods}
 \label{sec:methods}
 
-In this manuscript, we are primarily concerned with $k$-NN search in a finite-dimensional space.
-Given a dataset $\textbf{X} = \{x_1 \dots x_n\}$ of cardinality $|\textbf{X}| = n$, we define a \textit{point} or \textit{datum} $x_i \in \textbf{X}$ as a singular observation. Examples include the neural-network embedding of an image, the genome of an organism, and a measurement of a radio frequency signal.
+In this manuscript, we study $k$-NN search in finite-dimensional spaces. Given a dataset $\textbf{X} = \{x_1, \dots, x_n\}$, we refer to each $x_i \in \textbf{X}$ as a point or datum. Examples include image embeddings, genomic sequences, and time-series measurements.
 
 We define a \textit{distance function} $f : \textbf{X} \times \textbf{X} \mapsto \mathbb{R}^+ \ \cup \ \{0\}$ which, given two points, deterministically returns a finite and non-negative real number.
-A distance value of zero defines an identity among points (i.e.,\,$f(x, y) = 0 \Leftrightarrow x = y$) and larger values indicate greater dissimilarity among points.
-We also require that the distance function be symmetric (i.e.,\,$f(x, y) = f(y, x) \ \forall \ x, y \in \textbf{X}$).
-In addition to these constraints, if the distance function obeys the triangle inequality (i.e.,\,$f(x, y) \leq f(x, z) + f(z, y) \ \forall \ x, y, z \in \textbf{X}$), then it is also a \textit{distance metric}.
+We require $f$ to be symmetric and identity-preserving ($f(x, y) = 0 \iff x = y$). 
+If $f$ satisfies the triangle inequality (i.e.,\,$f(x, y) \leq f(x, z) + f(z, y) \ \forall \ x, y, z \in \textbf{X}$), then it is also a \textit{distance metric}. Common examples include Euclidean, Levenshtein~\cite{levenshtein1966binary}, and DTW~\cite{muller2007dynamic}; cosine distance, which violates the triangle inequality, is not a metric.
 Similar to~\cite{yu2015entropy}, when used with distance metrics, all search algorithms in CAKES are exact.
-For example, Euclidean, Levenshtein~\cite{levenshtein1966binary} and Dynamic Time Warping (DTW)~\cite{muller2007dynamic} distances are all distance metrics, while cosine distance is not a metric because it violates the triangle inequality (e.g.,\,consider the points $x = (1, 0)$, $y = (0, 1)$ and $z = (1, 1)$ on the Cartesian plane).
 
-The choice of an appropriate distance function varies by dataset and domain.
-For example, with neural-network embeddings, one could use Euclidean or Cosine distance.
-With genomic or proteomic sequence data, Levenshtein and Hamming distances are useful.
-With time-series data, one could use Dynamic Time Warping (DTW) or Wasserstein distance.
 
-CAKES derives its advantages from the manifold hypothesis~\cite{fefferman2016testing}, the notion that high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold within their embedding space.
-We say that such data are \textit{manifold-constrained} and have low \textit{local fractal dimension} (LFD).
-In other words, we assume that the dataset is embedded in a $D$-dimensional space, but that the data only occupy a $d$-dimensional manifold, where $d \ll D$.
-While we sometimes use Euclidean notions to describe the geometric and topological properties of the clusters and manifold, CLAM and CAKES do not rely on such notions;
-they serve merely as convenient and intuitive vocabulary to discuss the underlying mathematics.
-CAKES exploits the low LFD of such datasets to accelerate search.
-We define LFD at some length scale around a point in the dataset as:
+% cosine distance is not a metric because it violates the triangle inequality (e.g.,\,consider the points $x = (1, 0)$, $y = (0, 1)$ and $z = (1, 1)$ on the Cartesian plane).
+
+The appropriate distance function depends on the data: Euclidean or cosine is often used for neural embeddings, Levenshtein or Hamming for sequences, and DTW or Wasserstein for time-series data.
+
+CAKES derives its advantages from the manifold hypothesis~\cite{fefferman2016testing}, the notion that high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold within their embedding space. We define the \emph{local fractal dimension} (LFD) to quantify this property. 
+
+For a point $q \in \textbf{X}$ and radii $r_1 > r_2$,
+
 \begin{equation}
     \text{LFD}(q, r_1, r_2) = \frac{\text{log} \left( \frac{|B(q, r_1)|}{|B(q, r_2)|} \right) }{\text{log} \left( \frac{r_1}{r_2} \right) }
     \label{eq:methods:lfd-original}
 \end{equation}
-where $B(q, r)$ is the set of points contained in the metric ball of radius $r$ centered at a point $q$ in the dataset $\textbf{X}$.
+where $B(q, r)$ is the set of points in the metric ball of radius $r$ centered at $q$.
 
-We use a simplified version of Equation~\ref{eq:methods:lfd-original} by using a length scale where $r_1 = 2 \cdot r_2$.
+We typically use a simplified version of Equation~\ref{eq:methods:lfd-original} with $r_1 = 2 \cdot r_2$:
 \begin{equation}
-    \text{LFD}(q, r) = \text{log}_2 \left( \frac{|B(q, r)|}{|B(q, \frac{r}{2})|} \right)
+    \text{LFD}(q, r) = \text{log}_2 \left( \frac{|B(q, r)|}{|B(q, \frac{r}{2})|} \right).
     \label{eq:methods:lfd-half}
 \end{equation}
+
+% In other words, we assume that the dataset is embedded in a $D$-dimensional space, but that the data only occupy a $d$-dimensional manifold, where $d \ll D$.
+% While we sometimes use Euclidean notions to describe the geometric and topological properties of the clusters and manifold, CLAM and CAKES do not rely on such notions;
+% they serve merely as convenient and intuitive vocabulary to discuss the underlying mathematics.
+% CAKES exploits the low LFD of such datasets to accelerate search.
+
+
 
 Intuitively, LFD measures the rate of change in the number of points in a ball of radius $r$ around a point $q$ as $r$ increases. When the vast majority of points in the dataset have low ($\ll D$) LFD, we can simply say that the dataset has low LFD.
 We stress that this concept differs from the \textit{embedding dimension} of a dataset.
