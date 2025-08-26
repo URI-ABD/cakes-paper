@@ -7,7 +7,7 @@
 
 For each dataset, we benchmark using the distance function listed in Table~\ref{tab:datasets:summary}. As described in Section~\ref{sec:introduction}, approximate search can be more sensitive to local perturbations than exact search, especially for small values of $k$, and hence we focus on $k=10$ for our benchmarks. 
 
-In Figure~\ref{fig:results:scaling-plots}, we show how the throughput of each of CAKES's algorithms scales with cardinality for each of the six datasets we examined. To do this, we synthetically augmented the Fashion-MNIST, Glove-25, Sift, and Random datasets to create larger datasets using the process described in Section~\ref{sec:methods:synthetic-data}. For Silva and RadioML, due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset---rather than augmented versions of the dataset---to examine how performance scales with cardinality.
+In Figure~\ref{fig:results:scaling-plots}, we show how the throughput of each of CAKES's algorithms scales with cardinality for each of the six datasets we examined. To do this, we synthetically augmented the Fashion-MNIST, Glove-25, Sift, and Random datasets to create larger datasets using the process described in Section~\ref{sec:methods:synthetic-data}. For Silva and RadioML, due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset---rather than augmented versions of the dataset---to examine how performance scales with cardinality. These plots also illustrate how the CAKES algorithms compare to na\"{i}ve linear search. 
 
 
 Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift} and~\ref{tab:results:qps-and-recall-random} compare the performance (throughput and recall) of the CAKES algorithms against state-of-the-art algorithms on the Fashion-MNIST, Glove-25, Sift and Random datasets. In particular, we examine performance of HNSW, ANNOY and FAISS-IVF on each of those datasets as well as synthetically augmented versions of the datasets to isolate the effect of dataset size on performance. We did not perform similar benchmarks on the Silva and RadioML datasets because HNSW, ANNOY and FAISS support neither the required distance functions nor, in the case of RadioML, complex-valued data. For HNSW, ANNOY, and FAISS-IVF, we allow for a hyper-parameter search to tune their index for maximum recall.
@@ -182,9 +182,8 @@ Though the plots in Figure~\ref{fig:results:scaling-plots} present results for e
   \end{figure}
 
 
-\textbf{General notes (applies to Tables \ref{tab:results:qps-and-recall-fmn},\ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}).}
-  Throughput is measured in queries per second. A recall value of $1.000*$ denotes imperfect recall that rounds to $1.000$. In each table, we observe that while recall for CAKES does \emph{not} degrade with cardinality, recall for
-  HNSW and ANNOY degrades with cardinality. CAKES exhibits perfect recall on the Fashion-MNIST and Sift datasets, and near-perfect recall on the Glove-25 dataset (which uses cosine distance). 
+  Throughput is measured in queries per second. A recall value of $1.000*$ denotes imperfect recall that rounds to $1.000$. In each of Tables \ref{tab:results:qps-and-recall-fmn},\ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, we observe that while recall for CAKES does \emph{not} degrade with cardinality, recall for
+  HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on the Fashion-MNIST and Sift datasets, and near-perfect recall on the Glove-25 dataset (which uses cosine distance). 
 
 \begin{table}[t]
     \centering
@@ -282,7 +281,7 @@ Though the plots in Figure~\ref{fig:results:scaling-plots} present results for e
 
 \begin{table}
     \caption{Random dataset: throughput and recall.
-    In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, we observe that CAKES's algorithms perform quite slowly.CAKES exhibits perfect recall at all cardinalities, whereas HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets.
+    In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, we observe that CAKES's algorithms perform quite slowly. CAKES exhibits perfect recall at all cardinalities, whereas HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets.
     }
     \label{tab:results:qps-and-recall-random}
     \small
