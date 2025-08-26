@@ -40,38 +40,24 @@ The Rust compiler was Rust 1.83.0, and the Python interpreter version was 3.9.18
 \subsection{Random Datasets and Synthetic Augmentation}
 \label{sec:datasets-and-benchmarks:random-datasets}
 
-In addition to benchmarks on datasets from the ANN-Benchmarks suite, we also benchmarked on synthetic augmentations of these real datasets, using the process described in \ref{sec:methods:synthetic-data}.
-In particular, we use a noise tolerance $\epsilon = 0.01$ and explore the scaling behavior as the cardinality multiplier (referred to as ``Mult.'' in Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift} and~\ref{tab:results:qps-and-recall-random}) increases.
-We also benchmarked on purely randomly-generated datasets of various cardinalities.
-For this, we used a base cardinality of 1,000,000 and a dimensionality of 128 to match the Sift dataset; hereafter, we refer to the random dataset with cardinality 1,000,000 and dimensionality 128 as ``Random.''
-This benchmark allows us to isolate the effect of a manifold structure (which we expect to be absent in a purely random dataset) on the performance of the CAKES' algorithms.
 
-In order to calculate recall on the augmented datasets, we perform linear search in Rust and save the results to disk.
-We verified that linear search on the original dataset produced neighbors with perfect recall compared to those provided by the ANN-Benchmarks suite.
-We then use the results of linear search on the augmented datasets as ground truth for calculating recall of CAKES's algorithms in Rust and read them in Python for calculating recall of HNSW, ANNOY, and FAISS-IVF.
+In addition to ANN-Benchmarks datasets, we evaluate synthetic augmentations generated as in Sec.~\ref{sec:methods:synthetic-data}, using a noise tolerance $\epsilon=0.01$, and study scaling as the cardinality multiplier (“Mult.” in Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, \ref{tab:results:qps-and-recall-random}) increases. We also benchmark purely random datasets at various cardinalities; to match Sift we use a random dataset with base cardinality of $1{,}000{,}000$ and dimensionality $128$, and refer to this dataset as “Random.” This benchmark isolates the effect of manifold structure—expected to be absent in purely random data—on CAKES algorithms’ performance.
+
+To compute recall on the augmented datasets, we run linear search in Rust and write the results to disk. We verified on the ANN-Benchmark datasets that this linear search attains perfect recall using the test data provided. We then use the linear-search results on the augmentations as ground truth to evaluate CAKES in Rust and to compute recall for HNSW, ANNOY, and FAISS-IVF in Python.
+
 
 
 \subsection{SILVA 18S}
 \label{sec:datasets-and-benchmarks:silva-18s}
 
-To demonstrate CAKES with a more exotic distance function, we also benchmarked on the SILVA 18S ribosomal RNA dataset~\cite{10.1093/nar/gks1219}.
-This dataset contains ribosomal RNA sequences of 2,224,640 genomes, with the longest sequence having 3,712 letters.
-We held out a set of 1,000 random sequences from the dataset to use as queries for benchmarking.
-We use Levenshtein~\cite{levenshtein1966binary} distance on the unaligned sequences to build the tree and to perform $k$-NN search.
-We note that the sequences in this dataset were provided in a multiple sequence alignment with a width of 50,000 characters.
-We could have used Hamming distance on the aligned sequences, but we chose to use Levenshtein distance on the unaligned sequences to help demonstrate the flexibility of CAKES in handling exotic distance functions.
-Under Hamming distance, we could consider this dataset to have an embedding dimension of 50,000, but for Levenshtein distance, we state the dimensionality as the length of the longest sequence, i.e.\, 3,712.
-
+To demonstrate CAKES with an exotic distance, we benchmark the SILVA 18S ribosomal RNA dataset~\cite{10.1093/nar/gks1219}, which contains rRNA sequences from 2,224,640 genomes; the longest sequence has 3,712 letters. We hold out 1,000 random sequences as queries. We build the tree and perform $k$-NN using Levenshtein distance~\cite{levenshtein1966binary} on unaligned sequences. Although the dataset is provided as a multiple sequence alignment of width 50{,}000, we intentionally use Levenshtein rather than Hamming on the aligned strings to demonstrate CAKES’s flexibility. Under Hamming, the embedding dimension would be 50{,}000; under Levenshtein, we report the dimensionality as the length of the longest sequence (3{,}712).
 
 \subsection{Radio ML}
 \label{sec:datasets-and-benchmarks:radio-ml}
 
-As another example of an exotic distance function, we benchmarked CAKES on the Radio-ML dataset~\cite{oshea2018radioml} under Dynamic Time Warping~\cite{muller2007dynamic} as the distance function.
-This dataset contains samples of synthetically generated signal captures of different modulation modes over a range of signal-to-noise ratio (SNR) levels.
-Specifically, it comprises 24 modulation modes at 26 different SNRs ranging from -20 dB to 30 dB, with 4,096 samples at each combination of modulation mode and SNR level.
-Thus, it contains $24 \cdot 26 \cdot 4096 = 2,555,504$ samples in total.
-Each sample is a 1,024-dimensional complex-valued vector, representing a signal capture (a time-series of complex-valued numbers).
-We used a subset of this dataset, containing $97,304$ samples at 10dB SNR and used another $1,000$ samples at the same SNR as a hold-out set of queries.
+We also benchmark CAKES on the Radio-ML dataset~\cite{oshea2018radioml} using Dynamic Time Warping~\cite{muller2007dynamic} as the distance. The dataset spans 24 modulation modes across 26 SNR levels from $-20$ to $30$\,dB, with 4{,}096 samples per combination, totaling $24\!\cdot\!26\!\cdot\!4096=2{,}555{,}504$ samples. Each sample is a 1{,}024-dimensional complex-valued vector (a time series). For experiments, we use the 10dB SNR subset with 97{,}304 samples and a 1{,}000-sample hold-out query set at the same SNR.
+
+
 
 % \subsection{Local Fractal Dimension}
 % \label{sec:dayasets:lfd-of-datasets}
