@@ -30,6 +30,17 @@
 \usepackage{xr}
 \usepackage{subfig}
 \usepackage{placeins}
+\usepackage{siunitx}
+\sisetup{
+  scientific-notation = fixed,   % disable auto sci notation
+  fixed-exponent = 0,            % always print plain numbers
+  round-mode = places,
+  round-precision = 0,           % round to integer
+  detect-weight=true,
+  detect-family=true
+}
+\usepackage{booktabs} 
+\usepackage{adjustbox}
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
