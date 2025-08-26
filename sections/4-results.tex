@@ -154,57 +154,53 @@ Depth-First Sieve is, once again, the fastest CAKES algorithm.
 For Radio-ML (see Figure~\ref{fig:results:radioml-scaling}), however, we see that throughput declines nearly linearly with cardinality, and that the three CAKES algorithms are, again, slower that na\"{i}ve linear search.
 
 
-% \begin{figure}
-%     \captionsetup[subfigure]{aboveskip=-5pt,belowskip=-0.5pt}
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics{plots/fashion-mnist_PermutedBall_10_throughput.png}
-%         \subcaption{Fashion-MNIST for $k=10$.}
-%         \label{fig:results:fashion-mnist-scaling}
-%     \end{subfigure}%
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.95\textwidth]{plots/glove-25_PermutedBall_10_throughput.png}
-%         \subcaption{Glove-25 for $k=10$.}
-%         \label{fig:results:glove-25-scaling}
-%     \end{subfigure}%
-%     \\
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.95\textwidth]{plots/sift_PermutedBall_10_throughput.png}
-%         \subcaption{Sift for $k=10$.}
-%         \label{fig:results:sift-scaling}
-%     \end{subfigure}%
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.95\textwidth]{plots/random_PermutedBall_10_throughput.png}
-%         \subcaption{A random dataset for $k=10$.}
-%         \label{fig:results:random-scaling}
-%     \end{subfigure}%
-%     \\
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.95\textwidth]{plots/silva-SSU-Ref_PermutedBall_10_throughput.png}
-%         \subcaption{Silva for $k=10$.}
-%         \label{fig:results:silva-scaling}
-%     \end{subfigure}%
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.95\textwidth]{plots/radio-ml_Ball_10_throughput.png}
-%         \subcaption{RadioML for $k=10$ at SnR = 10dB.}
-%         \label{fig:results:radioml-scaling}
-%     \end{subfigure}%
-%     \\
-%     \begin{subfigure}[b]{0.94\textwidth}
-%         \centering
-%         \includegraphics[width=0.7\textwidth]{plots/legend.png}
-%         \label{fig:results:scaling-legend}
-%     \end{subfigure}%
-%     \caption{Throughput across six datasets, including a randomly-generated dataset.
-%     In each plot, the horizontal axis represents increasing cardinality of the dataset, while the vertical axis represents the throughput in queries per second (higher is better).
-%     For Fashion-MNIST, Glove-25, and Sift, as cardinality increases, the CAKES algorithms become faster than linear search but the cardinality at which this occurs differs by dataset.
-%     For Fashion-MNIST and Glove-25, Depth-First Sieve is consistently fastest, while for Sift, Repeated $\rho$-NN is the fastest for smaller cardinalities and Depth-First Sieve is the fastest for larger cardinalities.
-%     With Silva, we observe that for all algorithms, throughput initially seems to linearly decrease as cardinality increases, but that it starts to level off at higher cardinalities.
-%     Depth-First Sieve is consistently the fastest algorithm on the Silva dataset.
-%     For Radio-ML and Random, we see that all three CAKES algorithms are slower than na\"{i}ve linear search, and that their throughput decreases linearly with cardinality.
-%     HNSW and ANNOY are the fastest algorithms on all four datasets we benchmarked them on, but their recall degrades quickly as cardinality increases on all datasets.
-%     In particular, on the Random dataset, HNSW and ANNOY have near-zero recall.}
-%     \label{fig:results:scaling-plots}
-% \end{figure}
+\begin{figure}[t]
+    \centering
+    % Row 1
+    \subfloat[Fashion-MNIST for $k=10$.]{
+      \includegraphics[width=0.48\columnwidth]{plots/fashion-mnist_PermutedBall_10_throughput.png}
+      \label{fig:results:fashion-mnist-scaling}
+    }
+    \subfloat[Glove-25 for $k=10$.]{
+      \includegraphics[width=0.48\columnwidth]{plots/glove-25_PermutedBall_10_throughput.png}
+      \label{fig:results:glove-25-scaling}
+    }
+  
+    % Row 2
+    \subfloat[Sift for $k=10$.]{
+      \includegraphics[width=0.48\columnwidth]{plots/sift_PermutedBall_10_throughput.png}
+      \label{fig:results:sift-scaling}
+    }
+    \subfloat[Random dataset for $k=10$.]{
+      \includegraphics[width=0.48\columnwidth]{plots/random_PermutedBall_10_throughput.png}
+      \label{fig:results:random-scaling}
+    }
+  
+    % Row 3
+    \subfloat[Silva for $k=10$.]{
+      \includegraphics[width=0.48\columnwidth]{plots/silva-SSU-Ref_PermutedBall_10_throughput.png}
+      \label{fig:results:silva-scaling}
+    }
+    \subfloat[RadioML for $k=10$ at SnR = 10dB.]{
+      \includegraphics[width=0.48\columnwidth]{plots/radio-ml_Ball_10_throughput.png}
+      \label{fig:results:radioml-scaling}
+    }
+  
+    % Legend (as a plain graphic)
+    \vspace{2pt}
+    \includegraphics[width=1\columnwidth]{plots/legend.png}
+  
+    \caption{Throughput across six datasets, including a randomly-generated dataset.
+        In each plot, the horizontal axis represents increasing cardinality of the dataset, while the vertical axis represents the throughput in queries per second (higher is better).
+        For Fashion-MNIST, Glove-25, and Sift, as cardinality increases, the CAKES algorithms become faster than linear search but the cardinality at which this occurs differs by dataset.
+        For Fashion-MNIST and Glove-25, Depth-First Sieve is consistently fastest, while for Sift, Repeated $\rho$-NN is the fastest for smaller cardinalities and Depth-First Sieve is the fastest for larger cardinalities.
+        With Silva, we observe that for all algorithms, throughput initially seems to linearly decrease as cardinality increases, but that it starts to level off at higher cardinalities.
+        Depth-First Sieve is consistently the fastest algorithm on the Silva dataset.
+        For Radio-ML and Random, we see that all three CAKES algorithms are slower than na\"{i}ve linear search, and that their throughput decreases linearly with cardinality.
+        HNSW and ANNOY are the fastest algorithms on all four datasets we benchmarked them on, but their recall degrades quickly as cardinality increases on all datasets.
+        In particular, on the Random dataset, HNSW and ANNOY have near-zero recall.}
+    \label{fig:results:scaling-plots}
+  \end{figure}
 
 
 % \begin{table}
@@ -212,6 +208,7 @@ For Radio-ML (see Figure~\ref{fig:results:radioml-scaling}), however, we see tha
 %     A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000. While recall for CAKES's does \emph{not} degrade with cardinality, recall for HNSW and ANNOY degrades with cardinality.
 %     In contrast, CAKES has perfect recall on Fashion-MNIST, since it used with Euclidean distance, which is a metric.}
 %     \label{tab:results:qps-and-recall-fmn}
+%     \resizebox{\linewidth}{!}{%
 %     \begin{tabular}{|l|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|}
 %         \hline
 %         \multirow{2}{*}{\textbf{Mult.}} & \multicolumn{2}{c|}{\textbf{HNSW}} & \multicolumn{2}{c|}{\textbf{ANNOY}} & \multicolumn{2}{c|}{\textbf{FAISS-IVF}}  & \multicolumn{2}{c|}{\textbf{CAKES}} \\\cline{2-9}
@@ -230,6 +227,7 @@ For Radio-ML (see Figure~\ref{fig:results:radioml-scaling}), however, we see tha
 %         512 & --           & --     & \num{1.83e3} & 0.581  & \num{3.56e0} & 0.949 & \num{2.84e3} & 1.000 \\
 %         \hline
 %     \end{tabular}
+% }
 %     \vskip -0.2in
 % \end{table}
 
@@ -239,6 +237,7 @@ For Radio-ML (see Figure~\ref{fig:results:radioml-scaling}), however, we see tha
 %     A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000. While recall for CAKES's does \emph{not} degrade with cardinality, recall for HNSW and ANNOY degrades with cardinality.
 %     In contrast, CAKES has near-perfect recall on Glove-25, since it used with cosine distance, which is not a metric.}
 %     \label{tab:results:qps-and-recall-glove}
+%     \resizebox{\linewidth}{!}{%
 %     \begin{tabular}{|l|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|}
 %         \hline
 %         \multirow{2}{*}{\textbf{Mult.}} & \multicolumn{2}{c|}{\textbf{HNSW}} & \multicolumn{2}{c|}{\textbf{ANNOY}} & \multicolumn{2}{c|}{\textbf{FAISS-IVF}}  & \multicolumn{2}{c|}{\textbf{CAKES}} \\\cline{2-9}
@@ -256,6 +255,7 @@ For Radio-ML (see Figure~\ref{fig:results:radioml-scaling}), however, we see tha
 %         256 & --           & --    & --           & --    & \num{9.47e0} & 0.998  & \num{8.91e2} & 1.000* \\
 %         \hline
 %     \end{tabular}
+% }
 %     \vskip -0.2in
 % \end{table}
 
@@ -265,6 +265,7 @@ For Radio-ML (see Figure~\ref{fig:results:radioml-scaling}), however, we see tha
 %     A recall value of $1.000*$ denotes imperfect recall that rounds to 1.000. While recall for CAKES's does \emph{not} degrade with cardinality, recall for HNSW and ANNOY degrades with cardinality.
 %     In contrast, CAKES has perfect recall on Sift, since it is used with Euclidean distance, which is a metric.}
 %     \label{tab:results:qps-and-recall-sift}
+%     \resizebox{\linewidth}{!}{%
 %     \begin{tabular}{|l|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|}
 %         \hline
 %         \multirow{2}{*}{\textbf{Mult.}} & \multicolumn{2}{c|}{\textbf{HNSW}} & \multicolumn{2}{c|}{\textbf{ANNOY}} & \multicolumn{2}{c|}{\textbf{FAISS-IVF}}  & \multicolumn{2}{c|}{\textbf{CAKES}} \\\cline{2-9}
@@ -281,6 +282,7 @@ For Radio-ML (see Figure~\ref{fig:results:radioml-scaling}), however, we see tha
 %         128 & --           & --    & \num{3.36e3} & 0.643 & \num{4.78e0} & 0.993  & \num{1.31e2} & 1.000 \\
 %         \hline
 %     \end{tabular}
+% }
 %     \vskip -0.2in
 % \end{table}
 
@@ -291,6 +293,7 @@ For Radio-ML (see Figure~\ref{fig:results:radioml-scaling}), however, we see tha
 %     HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets.
 %     }
 %     \label{tab:results:qps-and-recall-random}
+%     \resizebox{\linewidth}{!}{%
 %     \begin{tabular}{|l|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|p{1.55cm}|p{1.1cm}|}
 %         \hline
 %         \multirow{2}{*}{\textbf{Mult.}} & \multicolumn{2}{c|}{\textbf{HNSW}} & \multicolumn{2}{c|}{\textbf{ANNOY}} & \multicolumn{2}{c|}{\textbf{FAISS-IVF}}  & \multicolumn{2}{c|}{\textbf{CAKES}} \\\cline{2-9}
@@ -305,6 +308,7 @@ For Radio-ML (see Figure~\ref{fig:results:radioml-scaling}), however, we see tha
 %         32 & --           & --    & \num{3.01e3} & 0.007 & \num{1.721} & 1.000* & \num{1.31e1} & 1.000 \\
 %         \hline
 %     \end{tabular}
+%     }
 %     \vskip -0.2in
 % \end{table}
 
