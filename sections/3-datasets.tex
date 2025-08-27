@@ -62,6 +62,25 @@ We also benchmark CAKES on the Radio-ML dataset~\cite{oshea2018radioml} using Dy
 \subsection{Local Fractal Dimension}
 \label{sec:dayasets:lfd-of-datasets}
 
+
+Since the time complexity of CAKES algorithms scales with the LFD of the dataset, we examine the LFD of each
+dataset we used for benchmarks, as shown in Figure~\ref{fig:results:lfd-plots}. In this section, when we discuss trends in LFD, unless otherwise noted, we are referring to
+the 95th percentile of LFD.
+
+In Figure~\ref{fig:results:fashion-mnist-lfd}, we observe that until approximately depth 5, Fashion-MNIST’s LFD is low (i.e., less than 4). 
+It then starts increasing, reaching a peak of about 6 near depth 20, before decreasing to 1 at the maximum depth.
+Relative to Fashion-MNIST, Glove-25 has low LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}. 
+In particular, Glove-25’s LFD is less than 3 for all depths.
+Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for Sift, which has higher LFD relative to Fashion-MNIST and Glove-25. 
+It increases sharply to a peak of 9 around a depth of 10.
+For the Random dataset, which has the same cardinality and dimensionality as Sift, LFD starts at 20 at depth
+0 and all percentile lines decrease linearly with depth until reaching the leaves of the tree. The spread in LFD starts very
+small for the first few clusters and increases as depth increases. For Silva, as
+shown in Figure~\ref{fig:results:silva-lfd}, exhibits consistently low LFD. In particular, LFD is less than 3 for all depths, hovering near 1 for
+clusters at depth 40 and deeper. For the Radio-ML dataset, Figure~\ref{fig:results:radioml-lfd} LFD values show three distinct peaks around an LFD
+of 12 at or near depths of 8, 25 and 50. Each peak is followed by a linear decrease until encountering a sharp spike for
+the next peak. Within each of the three portions, this dataset has a character very similar to that of the Random dataset.
+
 \begin{figure}[t]
     \centering
     % Row 1
