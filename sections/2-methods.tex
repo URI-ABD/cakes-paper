@@ -13,9 +13,7 @@ Similar to~\cite{yu2015entropy}, when used with distance metrics, all search alg
 
 The appropriate distance function depends on the data: Euclidean or cosine is often used for neural embeddings, Levenshtein or Hamming for sequences, and DTW or Wasserstein for time-series data.
 
-CAKES derives its advantages from the manifold hypothesis~\cite{fefferman2016testing}, the notion that high-dimensional data collected from constrained generating phenomena typically only occupy a low-dimensional manifold within their embedding space. We define the \emph{local fractal dimension} (LFD) to quantify this property. 
-
-For a point $q \in \textbf{X}$ and radii $r_1 > r_2$,
+CAKES derives advantages from the manifold hypothesis~\cite{fefferman2016testing}, the notion that high-dimensional data collected from constrained generating phenomena often occupy a low-dimensional manifold within their embedding space. We define the \emph{local fractal dimension} (LFD) to quantify this property. For a point $q \in \textbf{X}$ and radii $r_1 > r_2$,
 
 \begin{equation}
     \text{LFD}(q, r_1, r_2) = \frac{\text{log} \left( \frac{|B(q, r_1)|}{|B(q, r_2)|} \right) }{\text{log} \left( \frac{r_1}{r_2} \right) }
@@ -129,7 +127,7 @@ The only case in which we would expect a balanced tree is if the dataset were un
 % We do, however, explore empirical results based on forcing a balanced tree in Section~\ref{sec:results:clustering-strategies-and-number-of-distance-computations}.
 % In any case, the tree is built only once, so this cost is amortized over all search queries and other applications.
 
-\begin{figure}[H]
+\begin{figure}[t]
     \vskip -0.2in
     \centering
     \includegraphics[scale=0.5]{images/geometry/deltas.pdf}
@@ -140,14 +138,16 @@ The only case in which we would expect a balanced tree is if the dataset were un
         ${\color{green}\delta^{-}} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest point in $C$.
     }
     \label{fig:methods:deltas}
-    \vskip -0.5in
+    % \vskip -0.5in
 \end{figure}
+\FloatBarrier
 
-\begin{minipage}{.425\textwidth}
-    \begin{algorithm}[H]
+% \begin{minipage}{.425\textwidth}
+\FloatBarrier
+    \begin{algorithm}[!t]
         \caption{tree-search($C$, $q$, $r$)}
         \label{alg:methods:rnn-search:tree-search}
-        \begin{algorithmic}
+        \begin{algorithmic}[1]
             \REQUIRE $f$, a distance function
             \REQUIRE $C$, a cluster
             \REQUIRE $q$, a query
@@ -161,13 +161,13 @@ The only case in which we would expect a balanced tree is if the dataset were un
             \ENDIF
         \end{algorithmic}
     \end{algorithm}
-\end{minipage}
-\hfill
-\begin{minipage}{.475\textwidth}
-    \begin{algorithm}[H]
+% \end{minipage}
+
+% \begin{minipage}{.475\textwidth}
+    \begin{algorithm}[!t]
         \caption{leaf-search($Q$, $q$, $r$)}
         \label{alg:methods:rnn-search:leaf-search}
-        \begin{algorithmic}
+        \begin{algorithmic}[1]
             \REQUIRE $f$, a distance function
             \REQUIRE $Q$, a set of clusters
             \REQUIRE $q$, a query
@@ -187,7 +187,7 @@ The only case in which we would expect a balanced tree is if the dataset were un
             \STATE \textbf{return} $H$
         \end{algorithmic}
     \end{algorithm}
-\end{minipage}
+% \end{minipage}
 
 
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}

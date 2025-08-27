@@ -59,8 +59,42 @@ We also benchmark CAKES on the Radio-ML dataset~\cite{oshea2018radioml} using Dy
 
 
 
-% \subsection{Local Fractal Dimension}
-% \label{sec:dayasets:lfd-of-datasets}
+\subsection{Local Fractal Dimension}
+\label{sec:dayasets:lfd-of-datasets}
+
+\begin{figure}[t]
+    \centering
+    % Row 1
+    \subfloat[Fashion-MNIST\label{fig:results:fashion-mnist-lfd}]{
+      \includegraphics[width=0.48\columnwidth]{images/lfd/fashion-mnist.png}}
+    \hfill
+    \subfloat[Glove-25\label{fig:results:glove-25-lfd}]{
+      \includegraphics[width=0.48\columnwidth]{images/lfd/glove-25.png}}
+  
+    % Row 2
+    \par\medskip
+    \subfloat[Sift\label{fig:results:sift-lfd}]{
+      \includegraphics[width=0.48\columnwidth]{images/lfd/sift.png}}
+    \hfill
+    \subfloat[Random dataset\label{fig:results:random-lfd}]{
+      \includegraphics[width=0.48\columnwidth]{images/lfd/random.png}}
+  
+    % Row 3
+    \par\medskip
+    \subfloat[Silva 18S\label{fig:results:silva-lfd}]{
+      \includegraphics[width=0.48\columnwidth]{images/lfd/silva-SSU-Ref.png}}
+    \hfill
+    \subfloat[RadioML\label{fig:results:radioml-lfd}]{
+      \includegraphics[width=0.48\columnwidth]{images/lfd/radio-ml.png}}
+  
+    % Legend
+    \par\smallskip
+    \includegraphics[width=0.65\columnwidth]{images/lfd/legend.png}
+  
+    \caption{Local fractal dimension vs. cluster depth across six datasets. The ‘random’ dataset is generated as in Sec.~\ref{sec:datasets-and-benchmarks:random-datasets}; note the different y-axis. The x-axis is tree depth; the y-axis is LFD at that depth. We plot the 5th, 25th, 50th, 75th, and 95th percentiles, plus min/max. Each cluster is counted by its cardinality so the curves reflect dataset-level distributions.}
+    \label{fig:results:lfd-plots}
+  \end{figure}
+
 
 % Since the CAKES algorithms were designed to scale in time with the LFD of the dataset, we examine the LFD of each dataset we used for benchmarks.
 % Figure~\ref{fig:results:lfd-plots} illustrates the trends in LFD for Fashion-MNIST, Glove-25, Sift, Random, Silva 18S, and Radio-ML.

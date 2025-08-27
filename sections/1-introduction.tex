@@ -31,7 +31,7 @@ To further contextualize results, we compare against a synthetic dataset with si
 Several algorithms have been developed to scale $k$-nearest neighbor search to large datasets, including Hierarchical Navigable Small World networks (HNSW)~\cite{malkov2016hnsw}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}. However, many of these algorithms do not support \emph{exact} search (as defined in Section \ref{sec:introduction}).
 
 Hierarchical Navigable Small World networks~\cite{malkov2016hnsw} rely on navigable small world (NSW) networks and skip lists. InVerted File indexing (IVF)~\cite{faissivf, sacks1987multikey, kent1990signature} partitions data into high-dimensional Voronoi cells, and searches exhaustively only within cells near the query. ANNOY~\cite{annoy} uses random projection and tree building.
-At each intermediate node of the tree, a random hyperplane, defined by two sampled points, splits the space.  Multiple such trees form a forest; increasing the number of trees improves recall but increases search time.
+At each intermediate node of the tree, a random hyperplane, defined by two sampled points, splits the space.  Increasing the number of such trees improves recall but increases search time.
 
 
 \subsection{Entropy-Scaling Search}
@@ -39,11 +39,11 @@ At each intermediate node of the tree, a random hyperplane, defined by two sampl
 
 Entropy-scaling algorithms exploit the inherent structure of large datasets, achieving complexity that scales with topological properties—such as metric entropy and fractal dimension—rather than cardinality. This makes them especially suitable for manifold-structured data.
 
-In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search)~\cite{ishaq2019clustered}, which extended the original flat clustering approach to entropy-scaling $\rho$-NN search from a flat clustering approach~\cite{yu2015entropy} to a hierarchical one.
+In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search)~\cite{ishaq2019clustered}, which extended the flat clustering approach used in~\cite{yu2015entropy} to a hierarchical one.
 CLAM (Clustering, Learning and Approximation with Manifolds), originally developed to allow ``manifold mapping'' for anomaly detection~\cite{ishaq2021clustered}, refined the clustering algorithm from CHESS.
 
 
 This paper introduces CAKES, a set of three entropy-scaling algorithms for $k$-NN search, implemented in Rust. We also provide a theoretical analysis of their time complexity in Sections~\ref{sec:methods:knn-search:repeated-rnn-complexity} and~\ref{sec:methods:knn-search:complexity-of-sieve-methods}.
 These analyses are not worst-case analyses in the traditional sense, as they do not assume the worst possible dataset, namely, a uniform distribution.
-Given that CAKES's algorithms are intended to be used on datasets with a manifold structure, complexity analysis assuming a uniform distribution of data would be uninformative.
+Given that CAKES's algorithms are intended for datasets with a manifold structure, complexity analyses assuming a uniform distribution would be uninformative.
 As a result, our analysis assumes datasets with manifold structure—characterized by low fractal dimension and metric entropy—reflecting the conditions for which CAKES is designed.
