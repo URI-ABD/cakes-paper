@@ -185,37 +185,74 @@ Though the plots in Figure~\ref{fig:results:scaling-plots} present results for e
   Throughput is measured in queries per second. A recall value of $1.000*$ denotes imperfect recall that rounds to $1.000$. In each of Tables \ref{tab:results:qps-and-recall-fmn},\ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, we observe that while recall for CAKES does \emph{not} degrade with cardinality, recall for
   HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on the Fashion-MNIST and Sift datasets, and near-perfect recall on the Glove-25 dataset (which uses cosine distance). 
 
-\begin{table}[t]
-    \centering
-    \caption{Fashion-MNIST: throughput and recall. See general notes above.}
-    \label{tab:results:qps-and-recall-fmn}
-    \small
-    \setlength{\tabcolsep}{4pt}
-    \begin{adjustbox}{width=\columnwidth,center}
-    \begin{tabular}{@{} lcccccccc @{}}
-    \toprule
-    \textbf{Mult.} &
-    \multicolumn{2}{c}{\textbf{HNSW}} &
-    \multicolumn{2}{c}{\textbf{ANNOY}} &
-    \multicolumn{2}{c}{\textbf{FAISS-IVF}} &
-    \multicolumn{2}{c}{\textbf{CAKES}} \\
-    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
-    & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
-    \midrule
-    1   & \num{1.33e4} & 0.954 & \num{2.19e3} & 0.950 & \num{2.01e3} & $1.000^{*}$ & \num{3.46e3} & 1.000 \\
-    2   & \num{1.38e4} & 0.803 & \num{2.12e3} & 0.927 & \num{9.39e2} & $1.000^{*}$ & \num{3.68e3} & 1.000 \\
-    4   & \num{1.66e4} & 0.681 & \num{2.04e3} & 0.898 & \num{4.61e2} & 0.997       & \num{3.44e3} & 1.000 \\
-    8   & \num{1.68e4} & 0.525 & \num{1.93e3} & 0.857 & \num{2.26e2} & 0.995       & \num{3.30e3} & 1.000 \\
-    16  & \num{1.87e4} & 0.494 & \num{1.84e3} & 0.862 & \num{1.17e2} & 0.991       & \num{3.34e3} & 1.000 \\
-    32  & \num{1.56e4} & 0.542 & \num{1.85e3} & 0.775 & \num{5.91e1} & 0.985       & \num{2.96e3} & 1.000 \\
-    64  & \num{1.50e4} & 0.378 & \num{1.78e3} & 0.677 & \num{2.61e1} & 0.968       & \num{3.25e3} & 1.000 \\
-    128 & \num{1.49e4} & 0.357 & \num{1.66e3} & 0.538 & \num{1.33e1} & 0.964       & \num{2.96e3} & 1.000 \\
-    256 & --           & --    & \num{1.60e3} & 0.592 & \num{6.65e0} & 0.962       & \num{2.79e3} & 1.000 \\
-    512 & --           & --    & \num{1.83e3} & 0.581 & \num{3.56e0} & 0.949       & \num{2.84e3} & 1.000 \\
-    \bottomrule
-    \end{tabular}
-    \end{adjustbox}
-    \end{table}
+% \begin{table}[t]
+%     \centering
+%     \caption{Fashion-MNIST: throughput and recall. See general notes above.}
+%     \label{tab:results:qps-and-recall-fmn}
+%     \small
+%     \setlength{\tabcolsep}{4pt}
+%     \begin{adjustbox}{width=\columnwidth,center}
+%     \begin{tabular}{@{} lcccccccc @{}}
+%     \toprule
+%     \textbf{M} &
+%     \multicolumn{2}{c}{\textbf{HNSW}} &
+%     \multicolumn{2}{c}{\textbf{ANNOY}} &
+%     \multicolumn{2}{c}{\textbf{FAISS-IVF}} &
+%     \multicolumn{2}{c}{\textbf{CAKES}} \\
+%     \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+%     & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
+%     \midrule
+%     1   & \num{1.33e4} & 0.95 & \num{2.19e3} & 0.95 & \num{2.01e3} & $1.00^{*}$ & \num{3.46e3} & 1.00 \\
+%     2   & \num{1.38e4} & 0.80 & \num{2.12e3} & 0.93 & \num{9.39e2} & $1.00^{*}$ & \num{3.68e3} & 1.00 \\
+%     4   & \num{1.66e4} & 0.68 & \num{2.04e3} & 0.90 & \num{4.61e2} & $1.00^{*}$ & \num{3.44e3} & 1.00 \\
+%     8   & \num{1.68e4} & 0.53 & \num{1.93e3} & 0.86 & \num{2.26e2} & $1.00^{*}$ & \num{3.30e3} & 1.00 \\
+%     16  & \num{1.87e4} & 0.49 & \num{1.84e3} & 0.86 & \num{1.17e2} & 0.99       & \num{3.34e3} & 1.00 \\
+%     32  & \num{1.56e4} & 0.54 & \num{1.85e3} & 0.78 & \num{5.91e1} & 0.99       & \num{2.96e3} & 1.00 \\
+%     64  & \num{1.50e4} & 0.38 & \num{1.78e3} & 0.69 & \num{2.61e1} & 0.97       & \num{3.25e3} & 1.00 \\
+%     128 & \num{1.49e4} & 0.36 & \num{1.66e3} & 0.54 & \num{1.33e1} & 0.96       & \num{2.96e3} & 1.00 \\
+%     256 & --           & --    & \num{1.60e3} & 0.59 & \num{6.65e0} & 0.96       & \num{2.79e3} & 1.00 \\
+%     512 & --           & --    & \num{1.83e3} & 0.58 & \num{3.56e0} & 0.95       & \num{2.84e3} & 1.00 \\
+%     \bottomrule
+%     \end{tabular}
+%     \end{adjustbox}
+%     \end{table}
+
+
+    
+    
+    \begin{table}[t]
+      \centering
+      \begin{tiny}
+      \caption{Fashion-MNIST: throughput and recall. See general notes above.}
+      \end{tiny}
+      \label{tab:results:qps-and-recall-fmn}
+      \small
+      \setlength{\tabcolsep}{4pt}
+      \begin{adjustbox}{width=\columnwidth,center}
+      \begin{tabular}{@{} lllllllll @{}}
+      \toprule
+      \textbf{Mult.} &
+      \multicolumn{2}{c}{\textbf{HNSW}} &
+      \multicolumn{2}{c}{\textbf{ANNOY}} &
+      \multicolumn{2}{c}{\textbf{FAISS-IVF}} &
+      \multicolumn{2}{c}{\textbf{CAKES}} \\
+      \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+      & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
+      \midrule
+      1   & \num{1.33e4} & 0.954 & \num{2.19e3} & 0.950 & \num{2.01e3} & $1.000^{*}$ & \num{3.46e3} & 1.000 \\
+      2   & \num{1.38e4} & 0.803 & \num{2.12e3} & 0.927 & \num{9.39e2} & $1.000^{*}$ & \num{3.68e3} & 1.000 \\
+      4   & \num{1.66e4} & 0.681 & \num{2.04e3} & 0.898 & \num{4.61e2} & 0.997       & \num{3.44e3} & 1.000 \\
+      8   & \num{1.68e4} & 0.525 & \num{1.93e3} & 0.857 & \num{2.26e2} & 0.995       & \num{3.30e3} & 1.000 \\
+      16  & \num{1.87e4} & 0.494 & \num{1.84e3} & 0.862 & \num{1.17e2} & 0.991       & \num{3.34e3} & 1.000 \\
+      32  & \num{1.56e4} & 0.542 & \num{1.85e3} & 0.775 & \num{5.91e1} & 0.985       & \num{2.96e3} & 1.000 \\
+      64  & \num{1.50e4} & 0.378 & \num{1.78e3} & 0.677 & \num{2.61e1} & 0.968       & \num{3.25e3} & 1.000 \\
+      128 & \num{1.49e4} & 0.357 & \num{1.66e3} & 0.538 & \num{1.33e1} & 0.964       & \num{2.96e3} & 1.000 \\
+      256 & --           & --    & \num{1.60e3} & 0.592 & \num{6.65e0} & 0.962       & \num{2.79e3} & 1.000 \\
+      512 & --           & --    & \num{1.83e3} & 0.581 & \num{3.56e0} & 0.949       & \num{2.84e3} & 1.000 \\
+      \bottomrule
+      \end{tabular}
+      \end{adjustbox}
+      \end{table}
 
 \begin{table}
     \centering
@@ -224,7 +261,7 @@ Though the plots in Figure~\ref{fig:results:scaling-plots} present results for e
     \small
     \setlength{\tabcolsep}{4pt}
     \begin{adjustbox}{width=\columnwidth,center}
-    \begin{tabular}{@{} lcccccccc @{}}
+    \begin{tabular}{@{} lllllllll @{}}
         \toprule
         \textbf{Mult.} &
         \multicolumn{2}{c}{\textbf{HNSW}} &
@@ -256,7 +293,7 @@ Though the plots in Figure~\ref{fig:results:scaling-plots} present results for e
         \small
         \setlength{\tabcolsep}{4pt}
         \begin{adjustbox}{width=\columnwidth,center}
-        \begin{tabular}{@{} lcccccccc @{}}
+        \begin{tabular}{@{} lllllllll @{}}
         \toprule
         \textbf{Mult.} &
         \multicolumn{2}{c}{\textbf{HNSW}} &
@@ -279,6 +316,7 @@ Though the plots in Figure~\ref{fig:results:scaling-plots} present results for e
     \end{adjustbox}
     \end{table}
 
+
 \begin{table}
     \caption{Random dataset: throughput and recall.
     In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, we observe that CAKES's algorithms perform quite slowly. CAKES exhibits perfect recall at all cardinalities, whereas HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets.
@@ -287,14 +325,14 @@ Though the plots in Figure~\ref{fig:results:scaling-plots} present results for e
     \small
     \setlength{\tabcolsep}{4pt}
     \begin{adjustbox}{width=\columnwidth,center}
-    \begin{tabular}{@{} lcccccccc @{}}
+    \begin{tabular}{@{} lllllllll @{}}
     \toprule
     \textbf{Mult.} &
     \multicolumn{2}{c}{\textbf{HNSW}} &
     \multicolumn{2}{c}{\textbf{ANNOY}} &
     \multicolumn{2}{c}{\textbf{FAISS-IVF}} &
     \multicolumn{2}{c}{\textbf{CAKES}} \\
-    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+    \cmidrule(lr){2-3}\cmidrule(lllllllll){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
         & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
         \midrule
         1  & \num{1.17e4} & 0.060 & \num{4.28e3} & 0.028 & \num{7.342} & 1.000* & \num{6.06e2} & 1.000 \\
