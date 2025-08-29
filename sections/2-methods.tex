@@ -132,7 +132,7 @@ This is a significant improvement over the exact approach, which costs $\mathcal
 % This criterion costs $\mathcal{O}(1)$ to check per cluster, and so does it not affect the overall complexity of the algorithm as used in this paper.
 
 
-The $\mathcal{O}(n\log n)$ build complexity assumes a balanced tree $\mathcal{T}$. In practice, Algorithm~\ref{alg:methods:partition} yields unbalanced trees on real data because of nonuniform sampling densities and the manifold’s low-dimensional structure. A balanced tree is expected only for uniformly distributed data (e.g., in a $d$-dimensional hypercube).
+The $\mathcal{O}(n\log n)$ build complexity assumes a balanced tree $\mathcal{T}$. In practice, our clustering algorithm yields unbalanced trees on real data because of nonuniform sampling densities and the manifold’s low-dimensional structure. A balanced tree is expected only for uniformly distributed data (e.g., in a $d$-dimensional hypercube).
 
 Although real trees may be deeper than $\log n$, which may appear to increase the cost of tree-building, many leaves appear at shallow depths, so later levels contain fewer points and their per-level build costs decline. A general analysis for unbalanced trees is dataset-dependent and is not provided; instead, we report empirical results based on forcing a balanced tree in Section~\ref{sec:results:clustering-strategies-and-number-of-distance-computations}. In any case, the tree is built once, so this cost is amortized over all queries and subsequent applications.
 
