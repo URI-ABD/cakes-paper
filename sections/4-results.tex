@@ -402,15 +402,10 @@ HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on t
 \subsection{Clustering Strategies and Number of Distance Computations}
 \label{sec:results:clustering-strategies-and-number-of-distance-computations}
 
-In addition to the scaling experiments, we also explore how four different clustering strategies affect the performance of search.
-These strategies are the Cartesian product of balanced vs. unbalanced clustering, and the presence vs. absence of depth-first reordering as described in Section~\ref{sec:methods:clustering:depth-first-reordering}.
-To help with this analysis, we also added instrumentation to our implementation of CAKES to count the number of distance computations during search.
-We note that this instrumentation significantly slows down the wall-clock time of search, so it would not be used in a real-world application.
 
-Figure~\ref{fig:results:distance-counts}. shows these four comparisons (referred to as Ball, BalancedBall, PermutedBall, and, PermutedBalancedBall, where depth-first-reordering is called Permuted for brevity) for all three search algorithms on the Fashion-MNIST dataset.
-Notably, performance is not only strictly worse for the balanced approaches, but the asymptotic behavior is significantly worse;
-the algorithms (such as Depth-First Sieve) that seemed to exhibit constant-time behavior in Figure~\ref{fig:results:scaling-plots} ( which shows results using PermutedBall), no longer do so under a balanced clustering.
-We note that on this dataset, depth-first reordering (the Permuted variants) seems to have little effect on throughput; depth-first reordering is primarily intended to improve space complexity.
+Beyond scaling behavior, we examine how clustering strategy affects search performance. We consider four strategies—the Cartesian product of balanced vs.\ unbalanced clustering and the presence vs.\ absence of depth-first reordering (Sec.~\ref{sec:methods:clustering:depth-first-reordering}). We instrument CAKES to count distance computations during search; this adds substantial overhead and would not be used in real-world applications.
+
+Figure~\ref{fig:results:distance-counts} compares \textit{Ball}, \textit{BalancedBall}, \textit{PermutedBall}, and \textit{PermutedBalancedBall} (``Permuted'' denotes depth-first reordering) for all three algorithms on Fashion-MNIST. Balanced clustering is strictly worse in throughput and has poorer asymptotics: algorithms such as Depth-First Sieve that appear nearly constant-time in Fig.~\ref{fig:results:scaling-plots} (with \textit{PermutedBall}) no longer do so under balanced clustering. On this dataset, depth-first reordering has little effect on throughput; it is primarily intended to improve space complexity.
 
 
 

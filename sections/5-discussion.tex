@@ -5,7 +5,7 @@ We have presented CAKES, a suite of three algorithms for fast $k$-NN search acro
 When the distance is a metric (Sec.~\ref{sec:methods}), the algorithms are exact.
 Under Cosine distance, a non-metric, they achieve nearly perfect recall.
 CAKES is most effective when data satisfy the manifold hypothesis, i.e., they occupy a low-dimensional manifold within a high-dimensional space. 
-It builds an unbalanced cluster tree that captures manifold structure and helps accelerate search.
+It builds an unbalanced cluster tree that captures manifold structure and helps accelerate search. The results in Section~\ref{sec:results:clustering-strategies-and-number-of-distance-computations} shows that this unbalanced clustering approach is superior to balanced clustering in both absolute and asymptotic performance. 
 Conversely, performance degrades on randomly distributed data, where such structure is absent.
 In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each dataset we tested exhibits a manifold structure, as quantified by the percentiles of LFD.  
 
