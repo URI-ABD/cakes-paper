@@ -1,20 +1,26 @@
 \section{Results}
 \label{sec:results}
 
-% The algorithms presented in this paper rely heavily on the local fractal dimension (LFD) being much smaller than than the embedding dimension of the dataset.
-% As such, we begin by examining our assumptions about the LFD of real-world datasets (see Section~\ref{sec:results:lfd-of-datasets} and Figure~\ref{fig:results:lfd-plots}).
+For every dataset and distance funciton listed in Table~\ref{tab:datasets:summary}, we benchmark $k$-NN search using $k=10$.
+Smaller values of $k$, as described in Section~\ref{sec:introduction}, would be too sensitive to local perturbations, while larger values can capture too much of the global structure.
 
+In Figure~\ref{fig:results:scaling-plots}, we show how the throughput of each algorithm scales with cardinality for each of the six datasets we examined.
+To do this, we synthetically augmented the Fashion-MNIST, Glove-25, Sift, and Random datasets to create larger datasets using the process described in Section~\ref{sec:methods:synthetic-data}.
+For Silva and RadioML, due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset to examine how performance scales with cardinality.
+These plots also illustrate how the CAKES algorithms compare to na\"{i}ve linear search. 
 
-For each dataset, we benchmark using the distance function listed in Table~\ref{tab:datasets:summary}. As described in Section~\ref{sec:introduction}, approximate search can be more sensitive to local perturbations than exact search, especially for small values of $k$, and hence we focus on $k=10$ for our benchmarks. 
-
-In Figure~\ref{fig:results:scaling-plots}, we show how the throughput of each of CAKES's algorithms scales with cardinality for each of the six datasets we examined. To do this, we synthetically augmented the Fashion-MNIST, Glove-25, Sift, and Random datasets to create larger datasets using the process described in Section~\ref{sec:methods:synthetic-data}. For Silva and RadioML, due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset---rather than augmented versions of the dataset---to examine how performance scales with cardinality. These plots also illustrate how the CAKES algorithms compare to na\"{i}ve linear search. 
-
-
-Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift} and~\ref{tab:results:qps-and-recall-random} compare the performance (throughput and recall) of the CAKES algorithms against state-of-the-art algorithms on the Fashion-MNIST, Glove-25, Sift and Random datasets. In particular, we examine performance of HNSW, ANNOY and FAISS-IVF on each of those datasets as well as synthetically augmented versions of the datasets to isolate the effect of dataset size on performance. We did not perform similar benchmarks on the Silva and RadioML datasets because HNSW, ANNOY and FAISS support neither the required distance functions nor, in the case of RadioML, complex-valued data. For HNSW, ANNOY, and FAISS-IVF, we allow for a hyper-parameter search to tune their index for maximum recall.
+Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift} and~\ref{tab:results:qps-and-recall-random} compare the performance (throughput and recall) of the CAKES algorithms against state-of-the-art algorithms on the Fashion-MNIST, Glove-25, Sift and Random datasets.
+In particular, we examine performance of HNSW, ANNOY and FAISS-IVF on each of those datasets as well as synthetically augmented versions of the datasets to isolate the effect of dataset size on performance.
+We did not perform similar benchmarks on the Silva and RadioML datasets because HNSW, ANNOY and FAISS support neither the required distance functions nor, in the case of RadioML, complex-valued data.
+For HNSW, ANNOY, and FAISS-IVF, we allow for a hyper-parameter search to tune their index for maximum recall.
 For CAKES, we build the tree and use our auto-tuning approach (see Section~\ref{sec:methods:auto-tuning}) to select the fastest algorithm for each dataset and cardinality.
 
-
 Though the plots in Figure~\ref{fig:results:scaling-plots} present results for each of CAKES's three algorithms separately, the results in the CAKES column in these tables represent the fastest CAKES algorithm at that dataset and cardinality only.
+
+Throughput is measured in queries per second.
+A recall value of $1.000*$ denotes imperfect recall that rounds to $1.000$.
+In each of Tables \ref{tab:results:qps-and-recall-fmn},\ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, we observe that while recall for CAKES does \emph{not} degrade with cardinality, recall for
+HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on the Fashion-MNIST and Sift datasets, and near-perfect recall on the Glove-25 dataset (which uses cosine distance).
 
 
 % Finally, we test our intuitions about unbalanced clustering being better for search
@@ -145,45 +151,41 @@ Though the plots in Figure~\ref{fig:results:scaling-plots} present results for e
 
 
 \begin{figure}[h]
-    \centering
-    \subfloat[Fashion-MNIST for $k=10$.]{
-      \includegraphics[width=0.48\columnwidth]{plots/fashion-mnist_PermutedBall_10_throughput.png}
-      \label{fig:results:fashion-mnist-scaling}
-    }
-    \subfloat[Glove-25 for $k=10$.]{
-      \includegraphics[width=0.48\columnwidth]{plots/glove-25_PermutedBall_10_throughput.png}
-      \label{fig:results:glove-25-scaling}
-    }
-  
-    \subfloat[Sift for $k=10$.]{
-      \includegraphics[width=0.48\columnwidth]{plots/sift_PermutedBall_10_throughput.png}
-      \label{fig:results:sift-scaling}
-    }
-    \subfloat[Random dataset for $k=10$.]{
-      \includegraphics[width=0.48\columnwidth]{plots/random_PermutedBall_10_throughput.png}
-      \label{fig:results:random-scaling}
-    }
-  
-    \subfloat[Silva for $k=10$.]{
-      \includegraphics[width=0.48\columnwidth]{plots/silva-SSU-Ref_PermutedBall_10_throughput.png}
-      \label{fig:results:silva-scaling}
-    }
-    \subfloat[RadioML for $k=10$ at SnR = 10dB.]{
-      \includegraphics[width=0.48\columnwidth]{plots/radio-ml_Ball_10_throughput.png}
-      \label{fig:results:radioml-scaling}
-    }
-  
-    \vspace{2pt}
-    \includegraphics[width=1\columnwidth]{plots/legend.png}
-  
-    \caption{Throughput across six datasets, including a randomly-generated dataset.
-    Each plot shows throughput (queries per second; higher is better) versus dataset cardinality. For Fashion-MNIST, Glove-25, and Sift, CAKES becomes faster than linear search as cardinality grows, with the crossover point varying by dataset. For Fashion-MNIST and Glove-25, Depth-First Sieve is consistently fastest. For Sift, Repeated $\rho$-NN is fastest at small cardinalities, while Depth-First Sieve is fastest at large cardinalities. For Silva, throughput for all algorithms initially decreases approximately linearly with cardinality and then levels off at higher cardinalities; Depth-First Sieve is consistently fastest. For Radio-ML and Random, all CAKES variants are slower than na"{i}ve linear search, and their throughput decreases linearly with cardinality. HNSW and ANNOY are the fastest algorithms on all four datasets we benchmarked them on, but their recall degrades quickly as cardinality increases on all datasets; on Random, their recall is near zero.}
-    \label{fig:results:scaling-plots}
-  \end{figure}
+  \centering
+  \subfloat[Fashion-MNIST for $k=10$.]{
+    \includegraphics[width=0.48\columnwidth]{plots/fashion-mnist_PermutedBall_10_throughput.png}
+    \label{fig:results:fashion-mnist-scaling}
+  }
+  \subfloat[Glove-25 for $k=10$.]{
+    \includegraphics[width=0.48\columnwidth]{plots/glove-25_PermutedBall_10_throughput.png}
+    \label{fig:results:glove-25-scaling}
+  }
 
+  \subfloat[Sift for $k=10$.]{
+    \includegraphics[width=0.48\columnwidth]{plots/sift_PermutedBall_10_throughput.png}
+    \label{fig:results:sift-scaling}
+  }
+  \subfloat[Random dataset for $k=10$.]{
+    \includegraphics[width=0.48\columnwidth]{plots/random_PermutedBall_10_throughput.png}
+    \label{fig:results:random-scaling}
+  }
 
-  Throughput is measured in queries per second. A recall value of $1.000*$ denotes imperfect recall that rounds to $1.000$. In each of Tables \ref{tab:results:qps-and-recall-fmn},\ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, we observe that while recall for CAKES does \emph{not} degrade with cardinality, recall for
-  HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on the Fashion-MNIST and Sift datasets, and near-perfect recall on the Glove-25 dataset (which uses cosine distance). 
+  \subfloat[Silva for $k=10$.]{
+    \includegraphics[width=0.48\columnwidth]{plots/silva-SSU-Ref_PermutedBall_10_throughput.png}
+    \label{fig:results:silva-scaling}
+  }
+  \subfloat[RadioML for $k=10$ at SnR = 10dB.]{
+    \includegraphics[width=0.48\columnwidth]{plots/radio-ml_Ball_10_throughput.png}
+    \label{fig:results:radioml-scaling}
+  }
+
+  \vspace{2pt}
+  \includegraphics[width=1\columnwidth]{plots/legend.png}
+
+  \caption{Throughput across six datasets, including a randomly-generated dataset.
+  Each plot shows throughput (queries per second; higher is better) versus dataset cardinality. For Fashion-MNIST, Glove-25, and Sift, CAKES becomes faster than linear search as cardinality grows, with the crossover point varying by dataset. For Fashion-MNIST and Glove-25, Depth-First Sieve is consistently fastest. For Sift, Repeated $\rho$-NN is fastest at small cardinalities, while Depth-First Sieve is fastest at large cardinalities. For Silva, throughput for all algorithms initially decreases approximately linearly with cardinality and then levels off at higher cardinalities; Depth-First Sieve is consistently fastest. For Radio-ML and Random, all CAKES variants are slower than na\"{i}ve linear search, and their throughput decreases linearly with cardinality. HNSW and ANNOY are the fastest algorithms on all four datasets we benchmarked them on, but their recall degrades quickly as cardinality increases on all datasets; on Random, their recall is near zero.}
+  \label{fig:results:scaling-plots}
+\end{figure}
 
 % \begin{table}[t]
 %     \centering
@@ -217,111 +219,76 @@ Though the plots in Figure~\ref{fig:results:scaling-plots} present results for e
 %     \end{adjustbox}
 %     \end{table}
 
-
-    
-    
-    \begin{table}[t]
-      \centering
-      \begin{tiny}
-      \caption{Fashion-MNIST: throughput and recall. See general notes above.}
-      \end{tiny}
-      \label{tab:results:qps-and-recall-fmn}
-      \small
-      \setlength{\tabcolsep}{4pt}
-      \begin{adjustbox}{width=\columnwidth,center}
-      \begin{tabular}{@{} lllllllll @{}}
-      \toprule
-      \textbf{Mult.} &
-      \multicolumn{2}{c}{\textbf{HNSW}} &
-      \multicolumn{2}{c}{\textbf{ANNOY}} &
-      \multicolumn{2}{c}{\textbf{FAISS-IVF}} &
-      \multicolumn{2}{c}{\textbf{CAKES}} \\
-      \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
-      & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
-      \midrule
-      1   & \num{1.33e4} & 0.954 & \num{2.19e3} & 0.950 & \num{2.01e3} & $1.000^{*}$ & \num{3.46e3} & 1.000 \\
-      2   & \num{1.38e4} & 0.803 & \num{2.12e3} & 0.927 & \num{9.39e2} & $1.000^{*}$ & \num{3.68e3} & 1.000 \\
-      4   & \num{1.66e4} & 0.681 & \num{2.04e3} & 0.898 & \num{4.61e2} & 0.997       & \num{3.44e3} & 1.000 \\
-      8   & \num{1.68e4} & 0.525 & \num{1.93e3} & 0.857 & \num{2.26e2} & 0.995       & \num{3.30e3} & 1.000 \\
-      16  & \num{1.87e4} & 0.494 & \num{1.84e3} & 0.862 & \num{1.17e2} & 0.991       & \num{3.34e3} & 1.000 \\
-      32  & \num{1.56e4} & 0.542 & \num{1.85e3} & 0.775 & \num{5.91e1} & 0.985       & \num{2.96e3} & 1.000 \\
-      64  & \num{1.50e4} & 0.378 & \num{1.78e3} & 0.677 & \num{2.61e1} & 0.968       & \num{3.25e3} & 1.000 \\
-      128 & \num{1.49e4} & 0.357 & \num{1.66e3} & 0.538 & \num{1.33e1} & 0.964       & \num{2.96e3} & 1.000 \\
-      256 & --           & --    & \num{1.60e3} & 0.592 & \num{6.65e0} & 0.962       & \num{2.79e3} & 1.000 \\
-      512 & --           & --    & \num{1.83e3} & 0.581 & \num{3.56e0} & 0.949       & \num{2.84e3} & 1.000 \\
-      \bottomrule
-      \end{tabular}
-      \end{adjustbox}
-      \end{table}
+\begin{table}[t]
+  \centering
+  \begin{tiny}
+  \caption{Fashion-MNIST: throughput and recall.}
+  \end{tiny}
+  \label{tab:results:qps-and-recall-fmn}
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{adjustbox}{width=\columnwidth,center}
+  \begin{tabular}{@{} lllllllll @{}}
+    \toprule
+    \textbf{Mult.} &
+    \multicolumn{2}{c}{\textbf{HNSW}} &
+    \multicolumn{2}{c}{\textbf{ANNOY}} &
+    \multicolumn{2}{c}{\textbf{FAISS-IVF}} &
+    \multicolumn{2}{c}{\textbf{CAKES}} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+    & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
+    \midrule
+    1   & \num{1.33e4} & 0.954 & \num{2.19e3} & 0.950 & \num{2.01e3} & $1.000^{*}$ & \num{3.46e3} & 1.000 \\
+    2   & \num{1.38e4} & 0.803 & \num{2.12e3} & 0.927 & \num{9.39e2} & $1.000^{*}$ & \num{3.68e3} & 1.000 \\
+    4   & \num{1.66e4} & 0.681 & \num{2.04e3} & 0.898 & \num{4.61e2} & 0.997       & \num{3.44e3} & 1.000 \\
+    8   & \num{1.68e4} & 0.525 & \num{1.93e3} & 0.857 & \num{2.26e2} & 0.995       & \num{3.30e3} & 1.000 \\
+    16  & \num{1.87e4} & 0.494 & \num{1.84e3} & 0.862 & \num{1.17e2} & 0.991       & \num{3.34e3} & 1.000 \\
+    32  & \num{1.56e4} & 0.542 & \num{1.85e3} & 0.775 & \num{5.91e1} & 0.985       & \num{2.96e3} & 1.000 \\
+    64  & \num{1.50e4} & 0.378 & \num{1.78e3} & 0.677 & \num{2.61e1} & 0.968       & \num{3.25e3} & 1.000 \\
+    128 & \num{1.49e4} & 0.357 & \num{1.66e3} & 0.538 & \num{1.33e1} & 0.964       & \num{2.96e3} & 1.000 \\
+    256 & --           & --    & \num{1.60e3} & 0.592 & \num{6.65e0} & 0.962       & \num{2.79e3} & 1.000 \\
+    512 & --           & --    & \num{1.83e3} & 0.581 & \num{3.56e0} & 0.949       & \num{2.84e3} & 1.000 \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+\end{table}
 
 \begin{table}
-    \centering
-    \caption{Glove-25: throughput and recall. See general notes above.}
-    \label{tab:results:qps-and-recall-glove}
-    \small
-    \setlength{\tabcolsep}{4pt}
-    \begin{adjustbox}{width=\columnwidth,center}
-    \begin{tabular}{@{} lllllllll @{}}
-        \toprule
-        \textbf{Mult.} &
-        \multicolumn{2}{c}{\textbf{HNSW}} &
-        \multicolumn{2}{c}{\textbf{ANNOY}} &
-        \multicolumn{2}{c}{\textbf{FAISS-IVF}} &
-        \multicolumn{2}{c}{\textbf{CAKES}} \\
-        \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
-        & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
-        \midrule
-        1   & \num{2.28e4} & 0.801 & \num{2.83e3} & 0.835 & \num{2.38e3} & 1.000* & \num{1.54e3} & 1.000* \\
-        2   & \num{2.38e4} & 0.607 & \num{2.70e3} & 0.832 & \num{1.19e3} & 1.000* & \num{1.49e3} & 1.000* \\
-        4   & \num{2.50e4} & 0.443 & \num{2.61e3} & 0.839 & \num{6.19e2} & 1.000* & \num{1.28e3} & 1.000* \\
-        8   & \num{2.78e4} & 0.294 & \num{2.51e3} & 0.834 & \num{3.03e2} & 1.000* & \num{1.30e3} & 1.000* \\
-        16  & \num{3.11e4} & 0.213 & \num{2.23e3} & 0.885 & \num{1.51e2} & 1.000* & \num{1.14e3} & 1.000* \\
-        32  & \num{3.24e4} & 0.178 & \num{2.01e3} & 0.764 & \num{7.40e1} & 0.999  & \num{1.05e3} & 1.000* \\
-        64  & --           & --    & \num{1.99e3} & 0.631 & \num{3.77e1} & 0.997  & \num{1.07e3} & 1.000* \\
-        128 & --           & --    & --           & --    & \num{1.90e1} & 0.998  & \num{8.92e2} & 1.000* \\
-        256 & --           & --    & --           & --    & \num{9.47e0} & 0.998  & \num{8.91e2} & 1.000* \\
-        \bottomrule
-    \end{tabular}
-    \end{adjustbox}
-    \end{table}
+  \centering
+  \caption{Glove-25: throughput and recall.}
+  \label{tab:results:qps-and-recall-glove}
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{adjustbox}{width=\columnwidth,center}
+  \begin{tabular}{@{} lllllllll @{}}
+    \toprule
+    \textbf{Mult.} &
+    \multicolumn{2}{c}{\textbf{HNSW}} &
+    \multicolumn{2}{c}{\textbf{ANNOY}} &
+    \multicolumn{2}{c}{\textbf{FAISS-IVF}} &
+    \multicolumn{2}{c}{\textbf{CAKES}} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+    & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
+    \midrule
+    1   & \num{2.28e4} & 0.801 & \num{2.83e3} & 0.835 & \num{2.38e3} & 1.000* & \num{1.54e3} & 1.000* \\
+    2   & \num{2.38e4} & 0.607 & \num{2.70e3} & 0.832 & \num{1.19e3} & 1.000* & \num{1.49e3} & 1.000* \\
+    4   & \num{2.50e4} & 0.443 & \num{2.61e3} & 0.839 & \num{6.19e2} & 1.000* & \num{1.28e3} & 1.000* \\
+    8   & \num{2.78e4} & 0.294 & \num{2.51e3} & 0.834 & \num{3.03e2} & 1.000* & \num{1.30e3} & 1.000* \\
+    16  & \num{3.11e4} & 0.213 & \num{2.23e3} & 0.885 & \num{1.51e2} & 1.000* & \num{1.14e3} & 1.000* \\
+    32  & \num{3.24e4} & 0.178 & \num{2.01e3} & 0.764 & \num{7.40e1} & 0.999  & \num{1.05e3} & 1.000* \\
+    64  & --           & --    & \num{1.99e3} & 0.631 & \num{3.77e1} & 0.997  & \num{1.07e3} & 1.000* \\
+    128 & --           & --    & --           & --    & \num{1.90e1} & 0.998  & \num{8.92e2} & 1.000* \\
+    256 & --           & --    & --           & --    & \num{9.47e0} & 0.998  & \num{8.91e2} & 1.000* \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+\end{table}
 
 
 \begin{table}
-    \centering
-    \caption{Sift: throughput and recall. See general notes above.}
-    \label{tab:results:qps-and-recall-sift}
-        \small
-        \setlength{\tabcolsep}{4pt}
-        \begin{adjustbox}{width=\columnwidth,center}
-        \begin{tabular}{@{} lllllllll @{}}
-        \toprule
-        \textbf{Mult.} &
-        \multicolumn{2}{c}{\textbf{HNSW}} &
-        \multicolumn{2}{c}{\textbf{ANNOY}} &
-        \multicolumn{2}{c}{\textbf{FAISS-IVF}} &
-        \multicolumn{2}{c}{\textbf{CAKES}} \\
-        \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
-        & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
-        \midrule
-        1   & \num{1.93e4} & 0.782 & \num{3.98e3} & 0.686 & \num{6.98e2} & 1.000* & \num{6.20e2} & 1.000 \\
-        2   & \num{2.03e4} & 0.552 & \num{3.80e3} & 0.614 & \num{3.30e2} & 1.000* & \num{2.95e2} & 1.000 \\
-        4   & \num{2.18e4} & 0.394 & \num{3.69e3} & 0.637 & \num{1.65e2} & 1.000* & \num{1.76e2} & 1.000 \\
-        8   & \num{2.48e4} & 0.298 & \num{3.58e3} & 0.710 & \num{7.72e1} & 1.000* & \num{1.27e2} & 1.000 \\
-        16  & \num{2.68e4} & 0.210 & \num{3.50e3} & 0.690 & \num{3.98e1} & 1.000* & \num{1.47e2} & 1.000 \\
-        32  & \num{2.75e4} & 0.193 & \num{3.44e3} & 0.639 & \num{2.09e1} & 0.999  & \num{1.24e2} & 1.000 \\
-        64  & --           & --    & \num{3.39e3} & 0.678 & \num{8.87e0} & 0.997  & \num{1.34e2} & 1.000 \\
-        128 & --           & --    & \num{3.36e3} & 0.643 & \num{4.78e0} & 0.993  & \num{1.31e2} & 1.000 \\
-        \bottomrule
-    \end{tabular}
-    \end{adjustbox}
-    \end{table}
-
-
-\begin{table}
-    \caption{Random dataset: throughput and recall.
-    In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, we observe that CAKES's algorithms perform quite slowly. CAKES exhibits perfect recall at all cardinalities, whereas HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets.
-    }
-    \label{tab:results:qps-and-recall-random}
+  \centering
+  \caption{Sift: throughput and recall.}
+  \label{tab:results:qps-and-recall-sift}
     \small
     \setlength{\tabcolsep}{4pt}
     \begin{adjustbox}{width=\columnwidth,center}
@@ -332,19 +299,51 @@ Though the plots in Figure~\ref{fig:results:scaling-plots} present results for e
     \multicolumn{2}{c}{\textbf{ANNOY}} &
     \multicolumn{2}{c}{\textbf{FAISS-IVF}} &
     \multicolumn{2}{c}{\textbf{CAKES}} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+    & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
+    \midrule
+    1   & \num{1.93e4} & 0.782 & \num{3.98e3} & 0.686 & \num{6.98e2} & 1.000* & \num{6.20e2} & 1.000 \\
+    2   & \num{2.03e4} & 0.552 & \num{3.80e3} & 0.614 & \num{3.30e2} & 1.000* & \num{2.95e2} & 1.000 \\
+    4   & \num{2.18e4} & 0.394 & \num{3.69e3} & 0.637 & \num{1.65e2} & 1.000* & \num{1.76e2} & 1.000 \\
+    8   & \num{2.48e4} & 0.298 & \num{3.58e3} & 0.710 & \num{7.72e1} & 1.000* & \num{1.27e2} & 1.000 \\
+    16  & \num{2.68e4} & 0.210 & \num{3.50e3} & 0.690 & \num{3.98e1} & 1.000* & \num{1.47e2} & 1.000 \\
+    32  & \num{2.75e4} & 0.193 & \num{3.44e3} & 0.639 & \num{2.09e1} & 0.999  & \num{1.24e2} & 1.000 \\
+    64  & --           & --    & \num{3.39e3} & 0.678 & \num{8.87e0} & 0.997  & \num{1.34e2} & 1.000 \\
+    128 & --           & --    & \num{3.36e3} & 0.643 & \num{4.78e0} & 0.993  & \num{1.31e2} & 1.000 \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+\end{table}
+
+
+\begin{table}
+  \caption{Random dataset: throughput and recall.
+  In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, we observe that CAKES's algorithms perform quite slowly.
+  CAKES exhibits perfect recall at all cardinalities, whereas HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets.}
+  \label{tab:results:qps-and-recall-random}
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{adjustbox}{width=\columnwidth,center}
+  \begin{tabular}{@{} lllllllll @{}}
+    \toprule
+    \textbf{Mult.} &
+    \multicolumn{2}{c}{\textbf{HNSW}} &
+    \multicolumn{2}{c}{\textbf{ANNOY}} &
+    \multicolumn{2}{c}{\textbf{FAISS-IVF}} &
+    \multicolumn{2}{c}{\textbf{CAKES}} \\
     \cmidrule(lr){2-3}\cmidrule(lllllllll){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
-        & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
-        \midrule
-        1  & \num{1.17e4} & 0.060 & \num{4.28e3} & 0.028 & \num{7.342} & 1.000* & \num{6.06e2} & 1.000 \\
-        2  & \num{1.01e4} & 0.048 & \num{4.04e3} & 0.021 & \num{3.582} & 1.000* & \num{2.75e2} & 1.000 \\
-        4  & \num{9.12e3} & 0.031 & \num{3.64e3} & 0.014 & \num{1.902} & 1.000* & \num{1.35e2} & 1.000 \\
-        8  & \num{8.35e3} & 0.022 & \num{3.37e3} & 0.013 & \num{8.841} & 1.000* & \num{6.13e1} & 1.000 \\
-        16 & \num{8.25e3} & 0.008 & \num{3.17e3} & 0.006 & \num{4.361} & 1.000* & \num{2.82e1} & 1.000 \\
-        32 & --           & --    & \num{3.01e3} & 0.007 & \num{1.721} & 1.000* & \num{1.31e1} & 1.000 \\
-        \bottomrule
-    \end{tabular}
-    \end{adjustbox}
-    \end{table}
+    & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
+    \midrule
+    1  & \num{1.17e4} & 0.060 & \num{4.28e3} & 0.028 & \num{7.342} & 1.000* & \num{6.06e2} & 1.000 \\
+    2  & \num{1.01e4} & 0.048 & \num{4.04e3} & 0.021 & \num{3.582} & 1.000* & \num{2.75e2} & 1.000 \\
+    4  & \num{9.12e3} & 0.031 & \num{3.64e3} & 0.014 & \num{1.902} & 1.000* & \num{1.35e2} & 1.000 \\
+    8  & \num{8.35e3} & 0.022 & \num{3.37e3} & 0.013 & \num{8.841} & 1.000* & \num{6.13e1} & 1.000 \\
+    16 & \num{8.25e3} & 0.008 & \num{3.17e3} & 0.006 & \num{4.361} & 1.000* & \num{2.82e1} & 1.000 \\
+    32 & --           & --    & \num{3.01e3} & 0.007 & \num{1.721} & 1.000* & \num{1.31e1} & 1.000 \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+\end{table}
 
 
 
