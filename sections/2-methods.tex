@@ -130,9 +130,11 @@ This is a significant improvement over the exact approach, which costs $\mathcal
 % This complexity analysis ignores the cost of checking the continuation criteria.
 % While a user could specify criteria of any complexity (our implementation allows for this), for this paper we continue clustering until each cluster is a singleton, i.e.,\,it contains only one point or duplicates of the same point and has a radius of zero.
 % This criterion costs $\mathcal{O}(1)$ to check per cluster, and so does it not affect the overall complexity of the algorithm as used in this paper.
-We also note here that the $\mathcal{O}(n \log n)$ complexity assumes that $\mathcal{T}$ is balanced.
-For real datasets, we expect the process from Section~\ref{sec:methods:clustering:building-the-tree} to produce anything but a balanced tree; the varying sampling density in different regions of the manifold and the low dimensional ``shape'' of the manifold itself will cause it to be unbalanced.
-The only case in which we would expect a balanced tree is if the dataset were uniformly distributed in a $D$-dimensional space.
+
+
+The $\mathcal{O}(n\log n)$ build complexity assumes a balanced tree $\mathcal{T}$. In practice, Algorithm~\ref{alg:methods:partition} yields unbalanced trees on real data because of nonuniform sampling densities and the manifold’s low-dimensional structure. A balanced tree is expected only for uniformly distributed data (e.g., in a $d$-dimensional hypercube).
+
+Although real trees may be deeper than $\log n$, which may appear to increase the cost of tree-building, many leaves appear at shallow depths, so later levels contain fewer points and their per-level build costs decline. A general analysis for unbalanced trees is dataset-dependent and is not provided; instead, we report empirical results based on forcing a balanced tree in Section~\ref{sec:results:clustering-strategies-and-number-of-distance-computations}. In any case, the tree is built once, so this cost is amortized over all queries and subsequent applications.
 
 % When building a tree for a real dataset, the depth would be larger than $\log n$, which would seem to increase the cost of tree-building.
 % However, because of the large numbers of leaf clusters at shallow depths, each subsequent level of $\mathcal{T}$ would also have fewer points, and so the cost of building each subsequent level would be lower.
