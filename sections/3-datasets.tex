@@ -37,49 +37,52 @@ The Rust compiler was Rust 1.83.0, and the Python interpreter version was 3.9.18
     \vskip -0.1in
 \end{table}
 
+
 \subsection{Random Datasets and Synthetic Augmentation}
 \label{sec:datasets-and-benchmarks:random-datasets}
 
-
-In addition to ANN-Benchmarks datasets, we evaluate synthetic augmentations generated as in Sec.~\ref{sec:methods:synthetic-data}, using a noise tolerance $\epsilon=0.01$, and study scaling as the cardinality multiplier (“Mult.” in Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, \ref{tab:results:qps-and-recall-random}) increases. We also benchmark purely random datasets at various cardinalities; to match Sift we use a random dataset with base cardinality of $1{,}000{,}000$ and dimensionality $128$, and refer to this dataset as “Random.” This benchmark isolates the effect of manifold structure—expected to be absent in purely random data—on CAKES algorithms’ performance.
-
-To compute recall on the augmented datasets, we run linear search in Rust and write the results to disk. We verified on the ANN-Benchmark datasets that this linear search attains perfect recall using the test data provided. We then use the linear-search results on the augmentations as ground truth to evaluate CAKES in Rust and to compute recall for HNSW, ANNOY, and FAISS-IVF in Python.
-
+In addition to the ANN-Benchmarks datasets, we evaluate synthetic augmentations generated as in Sec.~\ref{sec:methods:synthetic-data}, using $\epsilon=0.01$, and study scaling behavior as the multiplier (“Mult.” in Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, \ref{tab:results:qps-and-recall-random}) increases.
+We also benchmark a random dataset at various cardinalities;
+we use a random dataset with base cardinality of $10^6$ and dimensionality $128$, and refer to this dataset as ``Random.''
+This benchmark isolates the effect of manifold structure—expected to be absent in purely random data—on CAKES algorithms.
 
 
 \subsection{SILVA 18S}
 \label{sec:datasets-and-benchmarks:silva-18s}
 
-To demonstrate CAKES with an exotic distance, we benchmark the SILVA 18S ribosomal RNA dataset~\cite{10.1093/nar/gks1219}, which contains rRNA sequences from 2,224,640 genomes; the longest sequence has 3,712 letters. We hold out 1,000 random sequences as queries. We build the tree and perform $k$-NN using Levenshtein distance~\cite{levenshtein1966binary} on unaligned sequences. Although the dataset is provided as a multiple sequence alignment of width 50{,}000, we intentionally use Levenshtein rather than Hamming on the aligned strings to demonstrate CAKES’s flexibility. Under Hamming, the embedding dimension would be 50{,}000; under Levenshtein, we report the dimensionality as the length of the longest sequence (3{,}712).
+To demonstrate CAKES with an exotic distance function, we use the SILVA 18S ribosomal RNA dataset~\cite{10.1093/nar/gks1219}, which contains rRNA sequences from 2,224,640 genomes;
+the longest sequence being 3,712 letters.
+Holding out 1,000 random sequences as queries, we build the tree and perform $k$-NN using Levenshtein distance~\cite{levenshtein1966binary} on \emph{unaligned} sequences.
+Although this dataset is a multiple sequence alignment of width 50,000, we do not use Hamming distance on the aligned strings so as to demonstrate CAKES's flexibility.
+Under Hamming, the embedding dimension would be 50,000;
+under Levenshtein, the dimensionality is 3,712.
 
 \subsection{Radio ML}
 \label{sec:datasets-and-benchmarks:radio-ml}
 
-We also benchmark CAKES on the Radio-ML dataset~\cite{oshea2018radioml} using Dynamic Time Warping~\cite{muller2007dynamic} as the distance. The dataset spans 24 modulation modes across 26 SNR levels from $-20$ to $30$\,dB, with 4{,}096 samples per combination, totaling $24\!\cdot\!26\!\cdot\!4096=2{,}555{,}504$ samples. Each sample is a 1{,}024-dimensional complex-valued vector (a time series). For experiments, we use the 10dB SNR subset with 97{,}304 samples and a 1{,}000-sample hold-out query set at the same SNR.
-
-
+We also use the Radio-ML dataset~\cite{oshea2018radioml} under Dynamic Time Warping~\cite{muller2007dynamic} as the metric.
+This dataset contains 24 modulation modes spanning 26 SNR levels from $-20$dB to $30$dB, with 4,096 samples per combination, yielding 2,555,504 samples.
+Each sample is a 1,024-dimensional complex-valued vector (a time-series).
+For the benchmarks, we use the 10dB SNR subset with 97,304 samples and a 1,000-sample hold-out set of queries.
 
 \subsection{Local Fractal Dimension}
 \label{sec:dayasets:lfd-of-datasets}
 
+Since the time complexity of CAKES algorithms scales with the LFD of the dataset, we examine the LFD of each dataset we used for benchmarks (Figure~\ref{fig:results:lfd-plots}).
+In this section, when we discuss LFD, unless otherwise noted, we are referring to the 95th percentile from Figure~\ref{fig:results:lfd-plots}.
 
-Since the time complexity of CAKES algorithms scales with the LFD of the dataset, we examine the LFD of each
-dataset we used for benchmarks, as shown in Figure~\ref{fig:results:lfd-plots}. In this section, when we discuss trends in LFD, unless otherwise noted, we are referring to
-the 95th percentile of LFD.
-
-In Figure~\ref{fig:results:fashion-mnist-lfd}, we observe that until approximately depth 5, Fashion-MNIST’s LFD is low (i.e., less than 4). 
-It then starts increasing, reaching a peak of about 6 near depth 20, before decreasing to 1 at the maximum depth.
-Relative to Fashion-MNIST, Glove-25 has low LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}. 
-In particular, Glove-25’s LFD is less than 3 for all depths.
-Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for Sift, which has higher LFD relative to Fashion-MNIST and Glove-25. 
-It increases sharply to a peak of 9 around a depth of 10.
-For the Random dataset, which has the same cardinality and dimensionality as Sift, LFD starts at 20 at depth
-0 and all percentile lines decrease linearly with depth until reaching the leaves of the tree. The spread in LFD starts very
-small for the first few clusters and increases as depth increases. For Silva, as
-shown in Figure~\ref{fig:results:silva-lfd}, exhibits consistently low LFD. In particular, LFD is less than 3 for all depths, hovering near 1 for
-clusters at depth 40 and deeper. For the Radio-ML dataset, Figure~\ref{fig:results:radioml-lfd} LFD values show three distinct peaks around an LFD
-of 12 at or near depths of 8, 25 and 50. Each peak is followed by a linear decrease until encountering a sharp spike for
-the next peak. Within each of the three portions, this dataset has a character very similar to that of the Random dataset.
+For Fashion-MNIST, Figure~\ref{fig:results:fashion-mnist-lfd}, we observe that until depth 5, LFD is less than 4. 
+It then starts increasing, reaching a peak of about 6 near depth 20.
+In comparison, Glove-25 has even lower LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}. 
+In particular, Glove-25's LFD is less than 3 for all depths.
+Figure~\ref{fig:results:sift-lfd} shows the LFD for Sift, which is higher relative to both Fashion-MNIST and Glove-25, increasing sharply to a peak of 9 around depth 10.
+For Random, which has the same cardinality and dimensionality as Sift, LFD starts at 20 the root cluster, and all percentile values decrease linearly with depth until reaching the leaves of the tree.
+The spread in LFD starts narrow for the first few depths and widens as depth increases.
+Silva, Figure~\ref{fig:results:silva-lfd}, exhibits consistently low LFD;
+less than 3 for all depths, hovering near 1 for clusters at depth 40 and deeper.
+For the Radio-ML dataset, Figure~\ref{fig:results:radioml-lfd} LFD values show three distinct peaks around an LFD of 12 near depths of 8, 25 and 50.
+Each peak is followed by a linear decrease until encountering a sharp spike for the next peak.
+Within each of the three spans of depths, the character of Radio-ML is similar to that of Random.
 
 \begin{figure}[t]
     \centering
@@ -144,9 +147,8 @@ the next peak. Within each of the three portions, this dataset has a character v
 \subsection{Other Algorithms}
 \label{sec:datasets-and-benchmarks:other-algorithms}
 
-We benchmarked the three CAKES algorithms against a na\"ive linear search implementation in Rust.
-We also benchmarked against three state-of-the-art similarity search algorithms: HNSW, ANNOY, and FAISS-IVF in Python.
-We verified that our implementation of linear search produces the same neighbors as provided by the ANN-Benchmarks suite for Fashion-MNIST, Glove-25 and Sift datasets.
-We then used this linear search implementation to find and store the ground-truth for the augmented versions of the datasets.
-We used this ground-truth to calculate recall for CAKES's algorithms in Rust and for HNSW, ANNOY, and FAISS-IVF in Python.
+We benchmark the three CAKES algorithms against a na\"ive linear search implementation in Rust.
+We also benchmark against three state-of-the-art similarity search algorithms: HNSW, ANNOY, and FAISS-IVF in Python.
+We verified that our linear search produces the same results as in the ground truth of the ANN-Benchmarks suite for Fashion-MNIST, Glove-25 and Sift datasets.
+We then used this implementation to find and store the ground-truth for the augmented versions of those datasets, and use it to calculate recall for all algorithms.
 We plot the results of these benchmarks in Figure~\ref{fig:results:scaling-plots}.
