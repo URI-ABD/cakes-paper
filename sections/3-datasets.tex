@@ -71,12 +71,12 @@ For the benchmarks, we use the 10dB SNR subset with 97,304 samples and a 1,000-s
 Since the time complexity of CAKES algorithms scales with the LFD of the dataset, we examine the LFD of each dataset we used for benchmarks (Figure~\ref{fig:results:lfd-plots}).
 In this section, when we discuss LFD, unless otherwise noted, we are referring to the 95th percentile from Figure~\ref{fig:results:lfd-plots}.
 
-For Fashion-MNIST, Figure~\ref{fig:results:fashion-mnist-lfd}, we observe that until depth 5, LFD is less than 4. 
+For Fashion-MNIST, Figure~\ref{fig:results:fashion-mnist-lfd}, we observe that until depth 5, LFD is less than 4.
 It then starts increasing, reaching a peak of about 6 near depth 20.
-In comparison, Glove-25 has even lower LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}. 
+In comparison, Glove-25 has even lower LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}.
 In particular, Glove-25's LFD is less than 3 for all depths.
 Figure~\ref{fig:results:sift-lfd} shows the LFD for Sift, which is higher relative to both Fashion-MNIST and Glove-25, increasing sharply to a peak of 9 around depth 10.
-For Random, which has the same cardinality and dimensionality as Sift, LFD starts at 20 the root cluster, and all percentile values decrease linearly with depth until reaching the leaves of the tree.
+For Random, which has the same cardinality and dimensionality as Sift, LFD starts at 20 at the root cluster, and all percentile values decrease linearly with depth until reaching the leaves of the tree.
 The spread in LFD starts narrow for the first few depths and widens as depth increases.
 Silva, Figure~\ref{fig:results:silva-lfd}, exhibits consistently low LFD;
 less than 3 for all depths, hovering near 1 for clusters at depth 40 and deeper.
@@ -92,7 +92,7 @@ Within each of the three spans of depths, the character of Radio-ML is similar t
     \hfill
     \subfloat[Glove-25\label{fig:results:glove-25-lfd}]{
       \includegraphics[width=0.48\columnwidth]{images/lfd/glove-25.png}}
-  
+
     % Row 2
     \par\medskip
     \subfloat[Sift\label{fig:results:sift-lfd}]{
@@ -100,7 +100,7 @@ Within each of the three spans of depths, the character of Radio-ML is similar t
     \hfill
     \subfloat[Random dataset\label{fig:results:random-lfd}]{
       \includegraphics[width=0.48\columnwidth]{images/lfd/random.png}}
-  
+
     % Row 3
     \par\medskip
     \subfloat[Silva 18S\label{fig:results:silva-lfd}]{
@@ -108,11 +108,11 @@ Within each of the three spans of depths, the character of Radio-ML is similar t
     \hfill
     \subfloat[RadioML\label{fig:results:radioml-lfd}]{
       \includegraphics[width=0.48\columnwidth]{images/lfd/radio-ml.png}}
-  
+
     % Legend
     \par\smallskip
     \includegraphics[width=0.65\columnwidth]{images/lfd/legend.png}
-  
+
     \caption{Local fractal dimension vs. cluster depth across six datasets. The ‘random’ dataset is generated as in Sec.~\ref{sec:datasets-and-benchmarks:random-datasets}; note the different y-axis. The x-axis is tree depth; the y-axis is LFD at that depth. We plot the 5th, 25th, 50th, 75th, and 95th percentiles, plus min/max. Each cluster is counted by its cardinality so the curves reflect dataset-level distributions.}
     \label{fig:results:lfd-plots}
   \end{figure}

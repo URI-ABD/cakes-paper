@@ -11,7 +11,7 @@ Smaller values of $k$, as described in Section~\ref{sec:introduction}, would be 
 In Figure~\ref{fig:results:scaling-plots}, we show how the throughput of each algorithm scales with cardinality for each of the six datasets we examined.
 To do this, we synthetically augmented the Fashion-MNIST, Glove-25, Sift, and Random datasets to create larger datasets using the process described in Section~\ref{sec:methods:synthetic-data}.
 For Silva and RadioML, due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset to examine how performance scales with cardinality.
-These plots also illustrate how the CAKES algorithms compare to na\"{i}ve linear search. 
+These plots also illustrate how the CAKES algorithms compare to na\"{i}ve linear search.
 
 Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift} and~\ref{tab:results:qps-and-recall-random} compare the performance (throughput and recall) of the CAKES algorithms against state-of-the-art algorithms on the Fashion-MNIST, Glove-25, Sift and Random datasets.
 In particular, we examine performance of HNSW, ANNOY and FAISS-IVF on each of those datasets as well as synthetically augmented versions of the datasets to isolate the effect of dataset size on performance.
@@ -19,7 +19,7 @@ We did not perform similar benchmarks on the Silva and RadioML datasets because 
 For HNSW, ANNOY, and FAISS-IVF, we allow for a hyper-parameter search to tune their index for maximum recall.
 For CAKES, we build the tree and use our auto-tuning approach (see Section~\ref{sec:methods:auto-tuning}) to select the fastest algorithm for each dataset and cardinality.
 
-Though the plots in Figure~\ref{fig:results:scaling-plots} present results for each of CAKES's three algorithms separately, the results in the CAKES column in these tables represent the fastest CAKES algorithm at that dataset and cardinality only.
+Though the plots in Figure~\ref{fig:results:scaling-plots} present results for each of CAKES's three algorithms separately, the results in the CAKES column in these tables represent the fastest CAKES algorithm for that dataset and cardinality only.
 
 Throughput is measured in queries per second.
 A recall value of $1.000*$ denotes imperfect recall that rounds to $1.000$.
@@ -363,7 +363,7 @@ On this dataset, depth-first reordering has little effect on throughput; it is p
   \label{fig:results:fashion-mnist-rnn-throughput}
   }
   \subfloat[Repeated $\rho$-NN]{
-    \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_counts.png}    
+    \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_counts.png}
     \label{fig:results:fashion-mnist-rnn-counts}
   }
 
@@ -394,6 +394,3 @@ On this dataset, depth-first reordering has little effect on throughput; it is p
   The x-axis represents increasing cardinality of the dataset.}
   \label{fig:results:distance-counts}
 \end{figure}
-
-
-
