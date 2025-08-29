@@ -84,150 +84,89 @@ HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on t
 % This suggests that the dataset obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth.
 % This is likely the result of a piecewise uniform sampling strategy used to generate the different modulation modes present in the dataset.
 
-% \begin{figure}
-%     \captionsetup[subfigure]{aboveskip=-15pt,belowskip=-3pt}
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.99\textwidth]{images/lfd/fashion-mnist.png}\\
-%         \subcaption{Fashion-MNIST}
-%         \label{fig:results:fashion-mnist-lfd}
-%     \end{subfigure}%
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.99\textwidth]{images/lfd/glove-25.png}\\
-%         \subcaption{Glove-25}
-%         \label{fig:results:glove-25-lfd}
-%     \end{subfigure}
-%     \\
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.99\textwidth]{images/lfd/sift.png}\\
-%         \subcaption{Sift}
-%         \label{fig:results:sift-lfd}
-%     \end{subfigure}%
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.99\textwidth]{images/lfd/random.png}\\
-%         \subcaption{A random dataset}
-%         \label{fig:results:random-lfd}
-%     \end{subfigure}
-%     \\
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.99\textwidth]{images/lfd/silva-SSU-Ref.png}\\
-%         \subcaption{Silva 18S}
-%         \label{fig:results:silva-lfd}
-%     \end{subfigure}%
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.99\textwidth]{images/lfd/radio-ml.png}\\
-%         \subcaption{RadioML}
-%         \label{fig:results:radioml-lfd}
-%     \end{subfigure}%
-%     \\
-%     \vskip -0.1in
-%     \begin{subfigure}[b]{0.94\textwidth}
-%         \centering
-%         \includegraphics[width=0.7\textwidth]{images/lfd/legend.png}
-%         \label{fig:results:lfd-legend}
-%     \end{subfigure}%
-%     \vskip -0.1in
-%     \caption{Local fractal dimension vs. cluster depth across six datasets. The `random' dataset is randomly generated according to the procedure in Section~\ref{sec:datasets-and-benchmarks:random-datasets}; note that the y-axis is different for this dataset. In each plot, the horizontal axis denotes depth in the cluster tree, and the vertical axis denotes the LFD of clusters at that depth. We show lines for the 5$^{th}$, 25$^{th}$, 50th, 75$^{th}$ and 95$^{th}$ percentiles of LFD, as well as the minimum and maximum LFD at each depth. So that plots best reflect the distribution of LFDs across the entire \textit{dataset}, we count each cluster as many times as its cardinality. For example, if, for some dataset, the 95$^{th}$ percentile of LFD at depth 40 is 3, this means that 95\% of the points in clusters at depth 40 belong to a cluster whose LFD is at most 3.}
-%     \label{fig:results:lfd-plots}
-%     \vskip -0.4in
-% \end{figure}
 
+\subsection{Indexing and Tuning Time}
+\label{sec:results:indexing-and-tuning-time}
 
-% \subsection{Indexing and Tuning Time}
-% \label{sec:results:indexing-and-tuning-time}
-
-% For each of the ANN-benchmark datasets and the Random dataset, we report the time taken for each algorithm to build the index and to tune the hyper-parameters for these indices to achieve the highest possible recall. For the sake of brevity, these results are reported in the supplement.
-
-
-% We benchmark the CAKES algorithms, na\"{i}ve linear search, HNSW, ANNOY, and FAISS-IVF on the Fashion-MNIST, Glove-25, Sift, and Random datasets.
-% We augment these datasets with synthetic points to examine how performance scales with cardinality.
-% We also benchmark the CAKES algorithms on the Silva and RadioML datasets, and we subsample these datasets instead of augmenting them to examine how performance scales with cardinality.
-
-% On the Fashion-MNIST, Glove-25, and Sift datasets (in Figures~\ref{fig:results:fashion-mnist-scaling},~\ref{fig:results:glove-25-scaling},~and~\ref{fig:results:sift-scaling} respectively), we observe that as cardinality increases, the Depth-First Sieve algorithm is consistently the fastest CAKES algorithm with a throughput that is constant in the cardinality of the dataset.
-% The Breadth-First Sieve algorithm is the usually the second fastest, also with a nearly constant throughput across all cardinalities.
-% The Repeated $\rho$-NN algorithm, however, falls off in throughput as cardinality increases.
-% All three CAKES algorithms exhibit perfect recall on the Fashion-MNIST and Sift datasets, and near-perfect recall on the Glove-25 dataset (which uses cosine distance).
-% In contrast, HNSW and ANNOY are faster than CAKES's algorithms for all cardinalities and have near constant throughput as cardinality increases, but their recall degrades quickly as cardinality increases.
-% FAISS-IVF exhibits linearly decreasing throughput as cardinality increases, which is expected from the algorithm given that we tune the hyper-parameters to maximize recall.
-
-% On the Random dataset, HNSW and ANNOY are still the fastest algorithms but exhibit recall values near 0.
-% CAKES's algorithms show linearly decreasing throughput as cardinality increases and are also slower than na\"{i}ve linear search.
-
-
+For each of the ANN-benchmark datasets and Random, Fig.~\ref{fig:results:indexing} reports the time taken for each algorithm to build its index and to tune any hyper-parameters to maximize recall.
 
 \begin{figure}[h]
   \centering
-  \subfloat[Fashion-MNIST for $k=10$.]{
+  \vskip -0.2in
+  \subfloat[Fashion-MNIST]{
+    \includegraphics[width=0.24\textwidth]{images/indexing/fashion-mnist-indexing.png}
+    \label{fig:results:fashion-mnist-indexing}
+  }
+  \subfloat[Glove-25]{=
+    \includegraphics[width=0.24\textwidth]{images/indexing/glove-25-indexing.png}
+    \label{fig:results:glove-25-indexing}
+  }
+
+  \vskip -0.1in
+  \subfloat[Sift for $k=10$.]{
+    \includegraphics[width=0.24\textwidth]{images/indexing/sift-indexing.png}
+    \label{fig:results:sift-indexing}
+  }
+  \subfloat[Random dataset for $k=10$.]{
+    \includegraphics[width=0.24\textwidth]{images/indexing/random-indexing.png}
+    \label{fig:results:random-indexing}
+  }
+  \caption{Indexing and tuning time.
+  We report the time taken by various algorithms to build and tune its index on various datasets.
+  For CAKES, this includes the time required to build  the tree and perform auto-tuning.
+  All axes are on logarithmic scales.
+  For all datasets, we see that the indexing time for CAKES increases roughly linearly with the cardinality of the dataset.
+  HNSW and ANNOY are the slowest at indexing.
+  FAISS-Flat does not actually build an index;
+  it provides a na\"{i}ve linear search in the FAISS family of algorithms.
+  It is included only to illustrate the base cost of simply having a dataset.}
+  \label{fig:results:indexing}
+\end{figure}
+
+\begin{figure}[h]
+  \vskip -0.2in
+  \centering
+  \subfloat[Fashion-MNIST]{
     \includegraphics[width=0.48\columnwidth]{plots/fashion-mnist_PermutedBall_10_throughput.png}
     \label{fig:results:fashion-mnist-scaling}
   }
-  \subfloat[Glove-25 for $k=10$.]{
+  \subfloat[Glove-25]{
     \includegraphics[width=0.48\columnwidth]{plots/glove-25_PermutedBall_10_throughput.png}
     \label{fig:results:glove-25-scaling}
   }
 
-  \subfloat[Sift for $k=10$.]{
+  \vskip -0.1in
+  \subfloat[Sift]{
     \includegraphics[width=0.48\columnwidth]{plots/sift_PermutedBall_10_throughput.png}
     \label{fig:results:sift-scaling}
   }
-  \subfloat[Random dataset for $k=10$.]{
+  \subfloat[Random dataset]{
     \includegraphics[width=0.48\columnwidth]{plots/random_PermutedBall_10_throughput.png}
     \label{fig:results:random-scaling}
   }
 
-  \subfloat[Silva for $k=10$.]{
+  \vskip -0.1in
+  \subfloat[Silva]{
     \includegraphics[width=0.48\columnwidth]{plots/silva-SSU-Ref_PermutedBall_10_throughput.png}
     \label{fig:results:silva-scaling}
   }
-  \subfloat[RadioML for $k=10$ at SnR = 10dB.]{
+  \subfloat[RadioML at SnR = 10dB.]{
     \includegraphics[width=0.48\columnwidth]{plots/radio-ml_Ball_10_throughput.png}
     \label{fig:results:radioml-scaling}
   }
 
-  \vspace{2pt}
-  \includegraphics[width=1\columnwidth]{plots/legend.png}
+  \vskip 0.05in
+  \includegraphics[width=0.75\columnwidth]{plots/legend.png}
 
   \caption{Throughput across six datasets, including a randomly-generated dataset.
   Each plot shows throughput (queries per second; higher is better) versus dataset cardinality. For Fashion-MNIST, Glove-25, and Sift, CAKES becomes faster than linear search as cardinality grows, with the crossover point varying by dataset. For Fashion-MNIST and Glove-25, Depth-First Sieve is consistently fastest. For Sift, Repeated $\rho$-NN is fastest at small cardinalities, while Depth-First Sieve is fastest at large cardinalities. For Silva, throughput for all algorithms initially decreases approximately linearly with cardinality and then levels off at higher cardinalities; Depth-First Sieve is consistently fastest. For Radio-ML and Random, all CAKES variants are slower than na\"{i}ve linear search, and their throughput decreases linearly with cardinality. HNSW and ANNOY are the fastest algorithms on all four datasets we benchmarked them on, but their recall degrades quickly as cardinality increases on all datasets; on Random, their recall is near zero.}
   \label{fig:results:scaling-plots}
 \end{figure}
 
-% \begin{table}[t]
-%     \centering
-%     \caption{Fashion-MNIST: throughput and recall. See general notes above.}
-%     \label{tab:results:qps-and-recall-fmn}
-%     \small
-%     \setlength{\tabcolsep}{4pt}
-%     \begin{adjustbox}{width=\columnwidth,center}
-%     \begin{tabular}{@{} lcccccccc @{}}
-%     \toprule
-%     \textbf{M} &
-%     \multicolumn{2}{c}{\textbf{HNSW}} &
-%     \multicolumn{2}{c}{\textbf{ANNOY}} &
-%     \multicolumn{2}{c}{\textbf{FAISS-IVF}} &
-%     \multicolumn{2}{c}{\textbf{CAKES}} \\
-%     \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
-%     & QPS & Recall & QPS & Recall & QPS & Recall & QPS & Recall \\
-%     \midrule
-%     1   & \num{1.33e4} & 0.95 & \num{2.19e3} & 0.95 & \num{2.01e3} & $1.00^{*}$ & \num{3.46e3} & 1.00 \\
-%     2   & \num{1.38e4} & 0.80 & \num{2.12e3} & 0.93 & \num{9.39e2} & $1.00^{*}$ & \num{3.68e3} & 1.00 \\
-%     4   & \num{1.66e4} & 0.68 & \num{2.04e3} & 0.90 & \num{4.61e2} & $1.00^{*}$ & \num{3.44e3} & 1.00 \\
-%     8   & \num{1.68e4} & 0.53 & \num{1.93e3} & 0.86 & \num{2.26e2} & $1.00^{*}$ & \num{3.30e3} & 1.00 \\
-%     16  & \num{1.87e4} & 0.49 & \num{1.84e3} & 0.86 & \num{1.17e2} & 0.99       & \num{3.34e3} & 1.00 \\
-%     32  & \num{1.56e4} & 0.54 & \num{1.85e3} & 0.78 & \num{5.91e1} & 0.99       & \num{2.96e3} & 1.00 \\
-%     64  & \num{1.50e4} & 0.38 & \num{1.78e3} & 0.69 & \num{2.61e1} & 0.97       & \num{3.25e3} & 1.00 \\
-%     128 & \num{1.49e4} & 0.36 & \num{1.66e3} & 0.54 & \num{1.33e1} & 0.96       & \num{2.96e3} & 1.00 \\
-%     256 & --           & --    & \num{1.60e3} & 0.59 & \num{6.65e0} & 0.96       & \num{2.79e3} & 1.00 \\
-%     512 & --           & --    & \num{1.83e3} & 0.58 & \num{3.56e0} & 0.95       & \num{2.84e3} & 1.00 \\
-%     \bottomrule
-%     \end{tabular}
-%     \end{adjustbox}
-%     \end{table}
-
 \begin{table}[t]
   \centering
-  \begin{tiny}
   \caption{Fashion-MNIST: throughput and recall.}
-  \end{tiny}
+  \vskip -0.05in
   \label{tab:results:qps-and-recall-fmn}
   \small
   \setlength{\tabcolsep}{4pt}
@@ -255,11 +194,13 @@ HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on t
     \bottomrule
   \end{tabular}
   \end{adjustbox}
+  \vskip -0.1in
 \end{table}
 
 \begin{table}
   \centering
   \caption{Glove-25: throughput and recall.}
+  \vskip -0.05in
   \label{tab:results:qps-and-recall-glove}
   \small
   \setlength{\tabcolsep}{4pt}
@@ -286,13 +227,16 @@ HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on t
     \bottomrule
   \end{tabular}
   \end{adjustbox}
+  \vskip -0.1in
 \end{table}
 
 
 \begin{table}
+  \vskip -0.1in
   \centering
   \caption{Sift: throughput and recall.}
   \label{tab:results:qps-and-recall-sift}
+  \vskip -0.05in
     \small
     \setlength{\tabcolsep}{4pt}
     \begin{adjustbox}{width=\columnwidth,center}
@@ -317,14 +261,17 @@ HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on t
     \bottomrule
   \end{tabular}
   \end{adjustbox}
+  \vskip -0.1in
 \end{table}
 
 
 \begin{table}
+  \vskip -0.1in
   \caption{Random dataset: throughput and recall.
   In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, we observe that CAKES's algorithms perform quite slowly.
   CAKES exhibits perfect recall at all cardinalities, whereas HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets.}
   \label{tab:results:qps-and-recall-random}
+  \vskip -0.05in
   \small
   \setlength{\tabcolsep}{4pt}
   \begin{adjustbox}{width=\columnwidth,center}
@@ -347,10 +294,8 @@ HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on t
     \bottomrule
   \end{tabular}
   \end{adjustbox}
+  \vskip -0.1in
 \end{table}
-
-
-
 
 
 % \begin{figure}
@@ -399,15 +344,17 @@ HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on t
 %     \label{fig:results:distance-counts}
 % \end{figure}
 
-\subsection{Clustering Strategies and Number of Distance Computations}
+\subsection{Clustering Strategies}
 \label{sec:results:clustering-strategies-and-number-of-distance-computations}
 
+Beyond scaling behavior, we examine how clustering strategy affects search performance.
+We consider four strategies—the Cartesian product of balanced vs.\ unbalanced clustering and the presence vs.\ absence of depth-first reordering (Sec.~\ref{sec:methods:clustering:depth-first-reordering}).
+We instrument CAKES to count distance computations during search;
+this adds substantial overhead and would not be used in real-world applications.
 
-Beyond scaling behavior, we examine how clustering strategy affects search performance. We consider four strategies—the Cartesian product of balanced vs.\ unbalanced clustering and the presence vs.\ absence of depth-first reordering (Sec.~\ref{sec:methods:clustering:depth-first-reordering}). We instrument CAKES to count distance computations during search; this adds substantial overhead and would not be used in real-world applications.
-
-Figure~\ref{fig:results:distance-counts} compares \textit{Ball}, \textit{BalancedBall}, \textit{PermutedBall}, and \textit{PermutedBalancedBall} (``Permuted'' denotes depth-first reordering) for all three algorithms on Fashion-MNIST. Balanced clustering is strictly worse in throughput and has poorer asymptotics: algorithms such as Depth-First Sieve that appear nearly constant-time in Fig.~\ref{fig:results:scaling-plots} (with \textit{PermutedBall}) no longer do so under balanced clustering. On this dataset, depth-first reordering has little effect on throughput; it is primarily intended to improve space complexity.
-
-
+Figure~\ref{fig:results:distance-counts} compares \textit{Ball}, \textit{BalancedBall}, \textit{PermutedBall}, and \textit{PermutedBalancedBall} (``Permuted'' denotes depth-first reordering) for all three algorithms on Fashion-MNIST.
+Balanced clustering is strictly worse in throughput and has poorer asymptotics: algorithms such as Depth-First Sieve that appear nearly constant-time in Fig.~\ref{fig:results:scaling-plots} (with \textit{PermutedBall}) no longer do so under balanced clustering.
+On this dataset, depth-first reordering has little effect on throughput; it is primarily intended to improve memory consumption.
 
 \begin{figure}[h]
   \centering
@@ -439,7 +386,7 @@ Figure~\ref{fig:results:distance-counts} compares \textit{Ball}, \textit{Balance
   }
 
   \vspace{2pt}
-  \includegraphics[width=1\columnwidth]{images/distance_counts/legend.png}
+  \includegraphics[width=0.75\columnwidth]{images/distance_counts/legend.png}
 
   \caption{Number of distance computations across four clustering strategies and three search algorithms on the Fashion-MNIST dataset.
   Adding the instrumentation to count the number of distance computations had the side-effect of significantly slowing down the search algorithms compared to those reported in Figure~\ref{fig:results:scaling-plots}.

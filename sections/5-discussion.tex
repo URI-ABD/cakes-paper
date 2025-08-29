@@ -47,7 +47,7 @@ We can start by evaluating more datasets and distance functions not supported by
 We can also improve the augmentation procedure (Sec.~\ref{sec:methods:synthetic-data}) to better preserve topological structure of datasets, e.g., by favoring perturbations along the leading principal components of the local manifold.
 This would better test the scaling behavior of various algorithms.
 
-We have noted how the fastest algorithm in CAKES varies depending on the dataset and distance function being used, as well as the cardinality of the dataset.
+We have noted how the fastest algorithm in CAKES changes depending on the dataset and distance function being used, as well as the cardinality of the dataset.
 This variability motivated our auto-tuning process (Sec.~\ref{sec:methods:auto-tuning}).
 Future work should examine why and when each algorithm excels and learn to use the geometric and topological properties of datasets to choose the ideal algorithm to use.
 
@@ -57,10 +57,9 @@ Despite CAKES' generality, effective deployment on real data requires domain kno
 In protein sequence search, for example, sequences vary widely in length (typically 30-1000 amino acids, with outliers) and have a 20-letter alphabet.
 Numerous algorithms exist~\cite{kim2021entrance, daniels2013compressive, yu2015entropy, steinegger2018clustering}, and their development relied on deep domain expertise.
 Simple edit distance can be poor when lengths vary substantially.
-CAKES can get around that issue by instead using alternative metrics or preprocessing—for example, represent each sequence as a set of $k$-mers and use Jaccard distance, as in~\cite{kim2021entrance}.
-If the distance relies on global alignment (e.g., Needleman-Wunsch~\cite{needleman1970general}), the dataset can be partitioned into mutually exclusive length bins with a separate tree per bin;
+CAKES can get around that issue by instead using alternative metrics or preprocessing—for example, the dataset can be partitioned into mutually exclusive length bins with a separate tree per bin;
 at query time, we simply route the sequence to its bin by length, alogn with a small number of adjacent bins.
 
 \subsection{Availability}
 
-CLAM and CAKES are implemented in Rust and available under the MIT license at https://github.com/URI-ABD/clam.
+CAKES is implemented in Rust and available under the MIT license at https://github.com/URI-ABD/clam.
