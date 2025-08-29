@@ -1,6 +1,10 @@
 \section{Results}
 \label{sec:results}
 
+
+\subsection{Scaling Behavior and Recall}
+\label{sec:results:scaling-behavior-and-recall}
+
 For every dataset and distance funciton listed in Table~\ref{tab:datasets:summary}, we benchmark $k$-NN search using $k=10$.
 Smaller values of $k$, as described in Section~\ref{sec:introduction}, would be too sensitive to local perturbations, while larger values can capture too much of the global structure.
 
@@ -394,3 +398,60 @@ HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on t
 %     The x-axis represents increasing cardinality of the dataset.}
 %     \label{fig:results:distance-counts}
 % \end{figure}
+
+\subsection{Clustering Strategies and Number of Distance Computations}
+\label{sec:results:clustering-strategies-and-number-of-distance-computations}
+
+In addition to the scaling experiments, we also explore how four different clustering strategies affect the performance of search.
+These strategies are the Cartesian product of balanced vs. unbalanced clustering, and the presence vs. absence of depth-first reordering as described in Section~\ref{sec:methods:clustering:depth-first-reordering}.
+To help with this analysis, we also added instrumentation to our implementation of CAKES to count the number of distance computations during search.
+We note that this instrumentation significantly slows down the wall-clock time of search, so it would not be used in a real-world application.
+
+Figure~\ref{fig:results:distance-counts}. shows these four comparisons (referred to as Ball, BalancedBall, PermutedBall, and, PermutedBalancedBall, where depth-first-reordering is called Permuted for brevity) for all three search algorithms on the Fashion-MNIST dataset.
+Notably, performance is not only strictly worse for the balanced approaches, but the asymptotic behavior is significantly worse;
+the algorithms (such as Depth-First Sieve) that seemed to exhibit constant-time behavior in Figure~\ref{fig:results:scaling-plots} ( which shows results using PermutedBall), no longer do so under a balanced clustering.
+We note that on this dataset, depth-first reordering (the Permuted variants) seems to have little effect on throughput; depth-first reordering is primarily intended to improve space complexity.
+
+
+
+\begin{figure}[h]
+  \centering
+  \subfloat[Repeated $\rho$-NN]{
+  \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_throughput.png}
+  \label{fig:results:fashion-mnist-rnn-throughput}
+  }
+  \subfloat[Repeated $\rho$-NN]{
+    \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_counts.png}    
+    \label{fig:results:fashion-mnist-rnn-counts}
+  }
+
+  \subfloat[Breadth First Sieve]{
+    \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnBreadthFirst_10_throughput.png}
+    \label{fig:results:fashionmnist-bfs-throughput}
+    }
+  \subfloat[Breadth First Sieve]{
+    \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnBreadthFirst_10_counts.png}
+    \label{fig:results:fashionmnist-bfs-counts}
+    }
+
+  \subfloat[Depth First Sieve]{
+    \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnDepthFirst_10_throughput.png}
+    \label{fig:results:fashionmnist-dfs-throughput}
+    }
+  \subfloat[Depth First Sieve]{
+    \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnDepthFirst_10_counts.png}
+    \label{fig:results:fashionmnist-dfs-counts}
+  }
+
+  \vspace{2pt}
+  \includegraphics[width=1\columnwidth]{images/distance_counts/legend.png}
+
+  \caption{Number of distance computations across four clustering strategies and three search algorithms on the Fashion-MNIST dataset.
+  Adding the instrumentation to count the number of distance computations had the side-effect of significantly slowing down the search algorithms compared to those reported in Figure~\ref{fig:results:scaling-plots}.
+  The left column shows the throughput in queries per second, while the right column shows the mean number of distance computations per query.
+  The x-axis represents increasing cardinality of the dataset.}
+  \label{fig:results:distance-counts}
+\end{figure}
+
+
+
