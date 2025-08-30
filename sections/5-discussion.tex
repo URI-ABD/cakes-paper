@@ -4,10 +4,10 @@
 We have presented CAKES, a suite of three algorithms for fast $k$-NN search across diverse distance functions.
 When the distance is a metric (Sec.~\ref{sec:methods}), the algorithms are exact.
 Under Cosine distance, a non-metric, they achieve nearly perfect recall.
-CAKES is most effective when data satisfy the manifold hypothesis, i.e., they occupy a low-dimensional manifold within a high-dimensional space. 
-It builds an unbalanced cluster tree that captures manifold structure and helps accelerate search. The results in Section~\ref{sec:results:clustering-strategies-and-number-of-distance-computations} shows that this unbalanced clustering approach is superior to balanced clustering in both absolute and asymptotic performance. 
+CAKES is most effective when data satisfy the manifold hypothesis, i.e., they occupy a low-dimensional manifold within a high-dimensional space.
+It builds an unbalanced cluster tree that captures manifold structure and helps accelerate search. The results in Section~\ref{sec:results:clustering-strategies-and-number-of-distance-computations} shows that this unbalanced clustering approach is superior to balanced clustering in both absolute and asymptotic performance.
 Conversely, performance degrades on randomly distributed data, where such structure is absent.
-In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each dataset we tested exhibits a manifold structure, as quantified by the percentiles of LFD.  
+In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each dataset we tested exhibits a manifold structure, as quantified by the percentiles of LFD.
 
 
 \subsection{Performance}
@@ -19,8 +19,8 @@ Repeated $\rho$-NN is not near-constant on Sift but decays much more slowly than
 Because Sift and Random share cardinality and embedding dimension, this isolates the effect of manifold structure on performance.
 Although CAKES is slower on Random, it maintains perfect recall.
 
-HNSW and ANNOY maintain near-constant throughput as the cardinality grows, but their recalls decline and their index build time and memory rise, making them unsuitable when datasets grow exponentially.
-CAKES's tree builds orders of magnitude faster with far less memory; while queries are slower than HNSW/ANNOY, CAKES attains near-constant scaling with perfect recall.
+HNSW and ANNOY maintain near-constant throughput as the cardinality grows, but their recalls decline and their index build times rise, making them unsuitable when datasets grow exponentially.
+CAKES's tree builds orders of magnitude faster; while queries are slower than HNSW/ANNOY, CAKES attains near-constant scaling with perfect recall.
 
 We stress that CAKES targets \emph{big} data, and our results support this claim.
 We observe that while linear search can outperform CAKES on datasets with small cardinality, CAKES always overtakes linear search at a large enough cardinality for each of the ANN-benchmark datasets we tested.

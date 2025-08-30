@@ -6,7 +6,7 @@ Given a dataset $\textbf{X} = \{x_1, \dots, x_n\}$, we refer to each $x_i \in \t
 Examples include neural embeddings, genomic sequences, and time-series.
 
 We define a \textit{distance function} $f : \textbf{X} \times \textbf{X} \mapsto \mathbb{R}^+ \ \cup \ \{0\}$ which, given two points, deterministically returns a finite and non-negative real number.
-We require $f$ to be symmetric ($f(x, y) = f(y, x)$) and identity-preserving ($f(x, y) = 0 \iff x = y$). 
+We require $f$ to be symmetric ($f(x, y) = f(y, x)$) and identity-preserving ($f(x, y) = 0 \iff x = y$).
 If $f$ satisfies the triangle inequality (i.e.,\,$f(x, y) \leq f(x, z) + f(z, y)$), then it is also a \textit{distance metric}.
 Common examples include Euclidean, Levenshtein~\cite{levenshtein1966binary}, and DTW~\cite{muller2007dynamic};
 Cosine distance violates the triangle inequality and is not a metric.
@@ -67,7 +67,7 @@ In our hierarchical setting, we define $\mathcal{N}_{\hat r}(X)$ as the number o
 We construct $\mathcal{T}$ using CLAM, following CHESS~\cite{ishaq2019clustered} but with improved pole selection, then apply a depth-first reordering (Sec.~\ref{sec:methods:clustering:depth-first-reordering}) on the dataset.
 The procedure is reproduced in Alg.~\ref{alg:methods:partition} for completeness.
 
-Starting from the root cluster $\mathcal{R}$ containing the entire dataset, Alg.~\ref{alg:methods:partition} gives us $\mathcal{T}$.
+Starting from the root cluster $\mathcal{R}$ containing the entire dataset, Alg.~\ref{alg:methods:partition} recursively builds $\mathcal{T}$.
 During this procedure, we also compute and cache the LFD of each cluster using Eq.~\ref{eq:methods:lfd-half}.
 
 \begin{algorithm} % enter the algorithm environment
@@ -393,7 +393,7 @@ Since QuickSelect is log-linear in the length of $Q$, and $Q$ contains the clust
     \mathcal{O} \big( (T + L ) \log (T + L ) \big),
     \label{eq:methods:bfs-complexity}
 \end{equation}
-and that of DFS is 
+and that of DFS is
 \begin{equation}
     \mathcal{O} \big( T \log T + L \log k \big).
     \label{eq:methods:dfs-complexity}
