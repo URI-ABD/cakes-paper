@@ -68,7 +68,7 @@ We construct $\mathcal{T}$ using CLAM, following CHESS~\cite{ishaq2019clustered}
 The procedure is reproduced in Alg.~\ref{alg:methods:partition} for completeness.
 
 Starting from the root cluster $\mathcal{R}$ containing the entire dataset, Alg.~\ref{alg:methods:partition} recursively builds $\mathcal{T}$.
-During this procedure, we also compute and cache the LFD of each cluster using Eq.~\ref{eq:methods:lfd-half}.
+During Partition, we also compute and cache the LFD of each cluster using Eq.~\ref{eq:methods:lfd-half}.
 
 \begin{algorithm} % enter the algorithm environment
     \caption{Partition($C$, $criteria$)} % give the algorithm a caption
