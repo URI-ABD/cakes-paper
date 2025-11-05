@@ -2,27 +2,22 @@
 \label{sec:introduction}
 
 Researchers are collecting data at an unprecedented rate, with datasets in many fields growing exponentially, and outpacing improvements in computing performance predicted by Moore's Law~\cite{kahn2011future}.
+Examples include genomic databases~\cite{10.1093/nar/gks1219}, time-series signals~\cite{oshea2018radioml}, and neural embeddings~\cite{2020arXiv200514165B, OpenAI2023GPT4TR, Touvron2023Llama2O, radford2021learning, dosovitskiy2020image}.
 This ``Big Data explosion'' has created a need for algorithms that scale efficiently to large datasets.
-
-Examples of such datasets include genomic databases, time-series signals, and embeddings from neural networks such as GPT~\cite{2020arXiv200514165B, OpenAI2023GPT4TR}, LLAMA-2~\cite{Touvron2023Llama2O}, and image analysis models~\cite{radford2021learning, dosovitskiy2020image}.
-Among biological datasets, SILVA 18S~\cite{10.1093/nar/gks1219} includes ribosomal RNA sequences from approximately 2.25 million genomes.
-Among time-series datasets, the RadioML dataset~\cite{oshea2018radioml} contains approximately 2.55 million samples of synthetically-generated radio frequency signals.
-
-Similarity search is a fundamental task on such datasets, enabling applications such as recommendation~\cite{annoy} and classification ~\cite{suyanto2022knnclassifier}.
+One such class of algorithms is similarity search algorithms, which enable applications such as recommendation~\cite{annoy} and classification ~\cite{suyanto2022knnclassifier}.
 Yet as datasets grow in size and dimensionality, efficient and accurate similarity search becomes increasingly challenging;
 even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{malkov2016hnsw, johnson2019billion, annoy, aumuller2020ann}.
 
 Given some measure of similarity between data points, two common similarity search paradigms are $k$-nearest neighbor search ($k$-NN) and $\rho$-nearest neighbor search ($\rho$-NN).
 The former retrieves the $k$ points closest to a query, while the latter retrieves all points within a similarity threshold $\rho$ of a query.
-While prior work has used the term \textit{approximate} search to refer to $\rho$-NN, we use it more narrowly: an {approximate} search algorithm is any algorithm that yields imperfect recall, whereas an \textit{exact} algorithm guarantees perfect recall.
-
+While prior work has used the term \textit{approximate} search to refer to $\rho$-NN, we use it more narrowly: an {approximate} search algorithm yields imperfect recall, whereas an \textit{exact} algorithm guarantees perfect recall.
 $k$-NN search is one of the most widely-used methods in classification and recommendation~\cite{fix1952discriminatory, cover1967nearest}, but na\"{i}ve implementations are prohibitively slow because they scale linearly with dataset size.
 Existing fast algorithms are often approximate~\cite{gao2023high}, which may suffice for some applications, but the need for efficient and \textit{exact} search remains~\cite{ukey2023survey}.
 
 This paper introduces CAKES (CLAM-Accelerated $K$-NN Entropy-Scaling Search), a set of three novel algorithms for \emph{exact} $k$-NN search.
-We benchmark CAKES against state-of-the-art methods--FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}--on datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
-We also evaluate performance on a large genomic dataset, the SILVA 18S dataset~\cite{10.1093/nar/gks1219} using Levenshtein~\cite{levenshtein1966binary} distance on unaligned genomic sequences, and on a radio frequency dataset, RadioML~\cite{oshea2018radioml}, using Dynamic Time Warping (DTW)~\cite{gold2018dynamic} distance on complex-valued time-series.
-To further contextualize results, we compare against a synthetic dataset with simple statistical properties.
+We benchmark CAKES against FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}, on datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
+We also evaluate performance on SILVA 18S~\cite{10.1093/nar/gks1219} using Levenshtein~\cite{levenshtein1966binary} distance on unaligned genomic sequences, and RadioML~\cite{oshea2018radioml} using Dynamic Time Warping (DTW)~\cite{gold2018dynamic} distance on complex-valued time-series.
+To further contextualize results, we also use a synthetic dataset with simple statistical properties.
 
 
 \subsection{Related Works}
@@ -31,7 +26,7 @@ To further contextualize results, we compare against a synthetic dataset with si
 Several algorithms have been developed to tackle $k$-nearest neighbor search on large datasets, including Hierarchical Navigable Small World networks (HNSW)~\cite{malkov2016hnsw}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}.
 
 HNSW~\cite{malkov2016hnsw} relies on navigable small world (NSW) networks and skip lists.
-IVF~\cite{faissivf, sacks1987multikey, kent1990signature} partitions data into high-dimensional Voronoi cells, and searches only within cells near the query.
+FAISS-IVF~\cite{faissivf, sacks1987multikey, kent1990signature} partitions data into high-dimensional Voronoi cells, and searches only within cells near the query.
 ANNOY~\cite{annoy} uses random projection and tree building.
 However, many of these algorithms do not support \emph{exact} search (as defined in Section \ref{sec:introduction}).
 

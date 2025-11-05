@@ -5,84 +5,23 @@
 \subsection{Scaling Behavior and Recall}
 \label{sec:results:scaling-behavior-and-recall}
 
-For every dataset and distance funciton listed in Table~\ref{tab:datasets:summary}, we benchmark $k$-NN search using $k=10$.
-Smaller values of $k$, as described in Section~\ref{sec:introduction}, would be too sensitive to local perturbations, while larger values can capture too much of the global structure.
+Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, and \ref{tab:results:qps-and-recall-random} summarize the throughput and recall of CAKES against state-of-the-art $k$-NN search algorithms on the Fashion-MNIST, Glove-25, Sift, and Random datasets respectively.
+Throughput is measured in queries per second (QPS), and a recall of $1.000*$ indicates imperfect recall that rounds to $1.000$.
 
-In Figure~\ref{fig:results:scaling-plots}, we show how the throughput of each algorithm scales with cardinality for each of the six datasets we examined.
-To do this, we synthetically augmented the Fashion-MNIST, Glove-25, Sift, and Random datasets to create larger datasets using the process described in Section~\ref{sec:methods:synthetic-data}.
-For Silva and RadioML, due to the massive sizes of these datasets and challenges in generating plausible augmentations, we took random sub-samples ranging up to the entirety of the dataset to examine how performance scales with cardinality.
-These plots also illustrate how the CAKES algorithms compare to na\"{i}ve linear search.
+We see that CAKES has perfect recall on all datasets using the Euclidean distance metric, and near-perfect recall on the Glove-25 dataset using Cosine distance.
+This is because Cosine distance violates the triangle inequality and is not a metric.
+The throughput of CAKES drops slightly for the first two multipliers, but then remains relatively constant as cardinality increases, demonstrating the scalability of CAKES on manifold-structured data.
+In contrast, the recall of HNSW and ANNOY degrades significantly as cardinality increases, even though their throughput remains high.
+FAISS-IVF keeps high recall but its throughput degrades linearly with cardinality.
+This indicates that these approximate algorithms are unable to maintain both high recall and high throughput as dataset sizes increase, even on manifold-structured data.
 
-Tables~\ref{tab:results:qps-and-recall-fmn},~\ref{tab:results:qps-and-recall-glove},~\ref{tab:results:qps-and-recall-sift} and~\ref{tab:results:qps-and-recall-random} compare the performance (throughput and recall) of the CAKES algorithms against state-of-the-art algorithms on the Fashion-MNIST, Glove-25, Sift and Random datasets.
-In particular, we examine performance of HNSW, ANNOY and FAISS-IVF on each of those datasets as well as synthetically augmented versions of the datasets to isolate the effect of dataset size on performance.
-We did not perform similar benchmarks on the Silva and RadioML datasets because HNSW, ANNOY and FAISS support neither the required distance functions nor, in the case of RadioML, complex-valued data.
-For HNSW, ANNOY, and FAISS-IVF, we allow for a hyper-parameter search to tune their index for maximum recall.
-For CAKES, we build the tree and use our auto-tuning approach (see Section~\ref{sec:methods:auto-tuning}) to select the fastest algorithm for each dataset and cardinality.
+For the Random dataset, CAKES again attains perfect recall at all cardinalities, while HNSW and ANNOY exhibit near-zero recall, and FAISS-IVF attains perfect recall but with very low throughput.
 
-Though the plots in Figure~\ref{fig:results:scaling-plots} present results for each of CAKES's three algorithms separately, the results in the CAKES column in these tables represent the fastest CAKES algorithm for that dataset and cardinality only.
+On the Silva dataset (Fig.~\ref{fig:results:silva-scaling}), all algorithms initially exhibit throughput that decreases approximately linearly with cardinality, but then level off at higher cardinalities.
+CAKES's Depth-First Sieve is consistently the fastest algorithm on this dataset.
 
-Throughput is measured in queries per second.
-A recall value of $1.000*$ denotes imperfect recall that rounds to $1.000$.
-In each of Tables \ref{tab:results:qps-and-recall-fmn},\ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, we observe that while recall for CAKES does \emph{not} degrade with cardinality, recall for
-HNSW and ANNOY does degrade with cardinality. CAKES exhibits perfect recall on the Fashion-MNIST and Sift datasets, and near-perfect recall on the Glove-25 dataset (which uses cosine distance).
-
-
-% Finally, we test our intuitions about unbalanced clustering being better for search
-% than balanced clustering (see Section~\ref{sec:results:clustering-strategies-and-number-of-distance-computations} and Figure~\ref{fig:results:distance-counts}).
-
-
-% \subsection{Local Fractal Dimension of Datasets}
-% \label{sec:results:lfd-of-datasets}
-
-% Since the time complexity of CAKES algorithms scales with the LFD of the dataset, we examine the LFD of each dataset we used for benchmarks.
-% Figure~\ref{fig:results:lfd-plots} illustrates the trends in LFD for Fashion-MNIST, Glove-25, Sift, Random, Silva 18S, and Radio-ML.
-% In this section, when we discuss trends in LFD, unless otherwise noted, we are referring to the 95$^{th}$ percentile of LFD.
-% This is because our algorithms scale exponentially in the LFD, a
-
-% The Fashion-MNIST dataset has an embedding dimension of 784 and uses the Euclidean distance metric.
-% In Figure~\ref{fig:results:fashion-mnist-lfd} we observe that until approximately depth 5, Fashion-MNIST's LFD is low (i.e., less than 4).
-% It then starts increasing, reaching a peak of about 6 near depth 20, before decreasing to 1 at the maximum depth.
-
-% The Glove-25 dataset has an embedding dimension of 25 and uses the cosine distance function which, notably, is not a metric.
-% Relative to Fashion-MNIST, Glove-25 has low LFD, as shown in Figure~\ref{fig:results:glove-25-lfd}.
-% All percentile lines for Glove-25 are flatter and lower, indicating that the LFD is lower across the entire dataset, and that the LFD does not vary as much by depth.
-% In particular, Glove-25's LFD is less than 3 for all depths.
-
-% The Sift dataset has an embedding dimension of 128 and uses the Euclidean distance metric.
-% Figure~\ref{fig:results:sift-lfd} shows the LFD by depth for Sift, which has higher LFD relative to Fashion-MNIST and Glove-25.
-% It increases sharply to a peak of 9 around a depth of 10.
-% It then decreases smoothly until reaching the deepest leaves in the tree.
-
-% We generated the Random dataset to have the same cardinality and dimensionality as Sift.
-% We used a uniform distribution in a 128-dimensional unit-hypercube to generate the points and the Euclidean metric to measure distances among them.
-% Figure~\ref{fig:results:random-lfd} shows that the character of this dataset is significantly different from the others.
-% The LFD starts at 20 at depth 0 and all percentile lines decrease linearly with depth until reaching the leaves of the tree.
-% The spread in LFD starts very small for the first few clusters and increases as depth increases.
-% The LFD of approximately 20 for the root cluster $\mathcal{R}$ is what we expect for this random dataset.
-% To elaborate, the distribution of points in such a dataset should reflect the curse of dimensionality, i.e.,\,the fact that in high dimensional spaces, the minimum and maximum pairwise distances between any two points are approximately equal.
-% As a result, $\mathcal{R}$'s radius $r$, which reflects the maximum distance between the center $c$ and any other point, should not differ significantly from the distance between the center and its closest point.
-% A consequence of this is that, with high probability, for every point in $\mathcal{R}$, its distance from $c$ is greater than $\tfrac{r}{2}$;
-% in other words, $B(c, \tfrac{r}{2})$ contains only $c$ while $B(c, r)$ contains the entire dataset.
-% Given our definition of LFD in Equation~\ref{eq:methods:lfd-half}, this means that the LFD of $\mathcal{R}$ is approximately $\log_2(\frac{|X|}{1}) = \log_2(1,000,000) \approx 20$, which is what we observe in Figure~\ref{fig:results:random-lfd}.
-% Theoretically, the LFD of this dataset should be 128, i.e.\, it should be the same as the embedding dimension.
-% This reflects the difference between how we empirically measure the LFD and the value we would expect.
-% With sample sizes larger than 1,000,000, we would expect the LFD to approach 128 until we have sampled $2^{128}$ points, at which point the LFD would be 128 and would stay at 128 for even larger sample sizes.
-% Unfortunately, such a large sample is practically impossible to generate.
-
-% The Silva-18S dataset consists of genomic sequences whose unaligned lengths are at-most 3,712.
-% As such the embedding dimension is 3,712, though as discussed previously, the embedding dimension would be 50,000 in a multiple sequence alignment.
-% We use the Levenshtein edit distance (a metric) to measure distances between sequences.
-% This dataset, as shown in Figure~\ref{fig:results:silva-lfd}, exhibits consistently low LFD.
-% In particular, LFD is less than 3 for all depths, hovering near 1 for clusters at depth 40 and deeper.
-
-% The Radio-ML dataset consists of measurements of radio-frequency signals using 1,024 dimensional complex-valued vectors.
-% We use the Dynamic Time Warping distance metric on this dataset.
-% This dataset is synthetic~\cite{oshea2018radioml} but uses a far more elaborate generation process than our Random dataset.
-% The LFD values show three distinct peaks around an LFD of 12 at or near depths of 8, 25 and 50.
-% Each peak is followed by a linear decrease until encountering a sharp spike for the next peak.
-% Within each of the tree portions, this dataset has a character very similar to that of the Random dataset.
-% This suggests that the dataset obeys the manifold hypothesis at some scales, but that it is not ``scale free,'' as the LFD varies significantly by depth.
-% This is likely the result of a piecewise uniform sampling strategy used to generate the different modulation modes present in the dataset.
+On the Radio-ML dataset (Fig.~\ref{fig:results:radioml-scaling}), all CAKES variants are slower than na\"{i}ve linear search, and their throughput decreases linearly with cardinality.
+This is expected, as the Radio-ML dataset is a randomly generated dataset and exhibits little manifold structure under the DTW distance metric.
 
 
 \subsection{Indexing and Tuning Time}
@@ -126,26 +65,6 @@ For each of the ANN-benchmark datasets and Random, Fig.~\ref{fig:results:indexin
 \begin{figure}[h]
   \vskip -0.2in
   \centering
-  \subfloat[Fashion-MNIST]{
-    \includegraphics[width=0.48\columnwidth]{plots/fashion-mnist_PermutedBall_10_throughput.png}
-    \label{fig:results:fashion-mnist-scaling}
-  }
-  \subfloat[Glove-25]{
-    \includegraphics[width=0.48\columnwidth]{plots/glove-25_PermutedBall_10_throughput.png}
-    \label{fig:results:glove-25-scaling}
-  }
-
-  \vskip -0.1in
-  \subfloat[Sift]{
-    \includegraphics[width=0.48\columnwidth]{plots/sift_PermutedBall_10_throughput.png}
-    \label{fig:results:sift-scaling}
-  }
-  \subfloat[Random dataset]{
-    \includegraphics[width=0.48\columnwidth]{plots/random_PermutedBall_10_throughput.png}
-    \label{fig:results:random-scaling}
-  }
-
-  \vskip -0.1in
   \subfloat[Silva]{
     \includegraphics[width=0.48\columnwidth]{plots/silva-SSU-Ref_PermutedBall_10_throughput.png}
     \label{fig:results:silva-scaling}
@@ -158,8 +77,7 @@ For each of the ANN-benchmark datasets and Random, Fig.~\ref{fig:results:indexin
   \vskip 0.05in
   \includegraphics[width=0.75\columnwidth]{plots/legend.png}
 
-  \caption{Throughput across six datasets, including a randomly-generated dataset.
-  Each plot shows throughput (queries per second; higher is better) versus dataset cardinality. For Fashion-MNIST, Glove-25, and Sift, CAKES becomes faster than linear search as cardinality grows, with the crossover point varying by dataset. For Fashion-MNIST and Glove-25, Depth-First Sieve is consistently fastest. For Sift, Repeated $\rho$-NN is fastest at small cardinalities, while Depth-First Sieve is fastest at large cardinalities. For Silva, throughput for all algorithms initially decreases approximately linearly with cardinality and then levels off at higher cardinalities; Depth-First Sieve is consistently fastest. For Radio-ML and Random, all CAKES variants are slower than na\"{i}ve linear search, and their throughput decreases linearly with cardinality. HNSW and ANNOY are the fastest algorithms on all four datasets we benchmarked them on, but their recall degrades quickly as cardinality increases on all datasets; on Random, their recall is near zero.}
+  \caption{Throughput vs. dataset cardinality on Silva-18S and Radio-ML.}
   \label{fig:results:scaling-plots}
 \end{figure}
 
@@ -296,101 +214,3 @@ For each of the ANN-benchmark datasets and Random, Fig.~\ref{fig:results:indexin
   \end{adjustbox}
   \vskip -0.1in
 \end{table}
-
-
-% \begin{figure}
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.99\textwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_throughput.png}
-%         \subcaption{Repeated $\rho$-NN}
-%         \label{fig:results:fashion-mnist-counts-throughput}
-%     \end{subfigure}%
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.99\textwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_counts.png}
-%         \subcaption{Repeated $\rho$-NN}
-%         \label{fig:results:glove-25-counts-counts}
-%     \end{subfigure}%
-%     \\
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.99\textwidth]{images/distance_counts/fashion-mnist_KnnBreadthFirst_10_throughput.png}
-%         \subcaption{Breadth First Sieve}
-%         \label{fig:results:sift-counts-throughput}
-%     \end{subfigure}%
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.99\textwidth]{images/distance_counts/fashion-mnist_KnnBreadthFirst_10_counts.png}
-%         \subcaption{Breadth First Sieve}
-%         \label{fig:results:random-counts-counts}
-%     \end{subfigure}%
-%     \\
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.99\textwidth]{images/distance_counts/fashion-mnist_KnnDepthFirst_10_throughput.png}
-%         \subcaption{Depth First Sieve}
-%         \label{fig:results:silva-counts-throughput}
-%     \end{subfigure}%
-%     \begin{subfigure}[b]{0.5\textwidth}
-%         \includegraphics[width=0.99\textwidth]{images/distance_counts/fashion-mnist_KnnDepthFirst_10_counts.png}
-%         \subcaption{Depth First Sieve}
-%         \label{fig:results:radioml-counts-counts}
-%     \end{subfigure}%
-%     \\
-%     \begin{subfigure}[b]{0.94\textwidth}
-%         \centering
-%         \includegraphics[width=0.6\textwidth]{images/distance_counts/legend.png}
-%         \label{fig:results:counts-legend}
-%     \end{subfigure}%
-%     \caption{Number of distance computations across four clustering strategies and three search algorithms on the Fashion-MNIST dataset.
-%     Adding the instrumentation to count the number of distance computations had the side-effect of significantly slowing down the search algorithms compared to those reported in Figure~\ref{fig:results:scaling-plots}.
-%     The left column shows the throughput in queries per second, while the right column shows the mean number of distance computations per query.
-%     The x-axis represents increasing cardinality of the dataset.}
-%     \label{fig:results:distance-counts}
-% \end{figure}
-
-\subsection{Clustering Strategies}
-\label{sec:results:clustering-strategies-and-number-of-distance-computations}
-
-Beyond scaling behavior, we examine how clustering strategy affects search performance.
-We consider four strategies—the Cartesian product of balanced vs.\ unbalanced clustering and the presence vs.\ absence of depth-first reordering (Sec.~\ref{sec:methods:clustering:depth-first-reordering}).
-We instrument CAKES to count distance computations during search;
-this adds substantial overhead and would not be used in real-world applications.
-
-Figure~\ref{fig:results:distance-counts} compares \textit{Ball}, \textit{BalancedBall}, \textit{PermutedBall}, and \textit{PermutedBalancedBall} (``Permuted'' denotes depth-first reordering) for all three algorithms on Fashion-MNIST.
-Balanced clustering is strictly worse in throughput and has poorer asymptotics: algorithms such as Depth-First Sieve that appear nearly constant-time in Fig.~\ref{fig:results:scaling-plots} (with \textit{PermutedBall}) no longer do so under balanced clustering.
-On this dataset, depth-first reordering has little effect on throughput; it is primarily intended to improve memory consumption.
-
-\begin{figure}[h]
-  \centering
-  \subfloat[Repeated $\rho$-NN]{
-  \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_throughput.png}
-  \label{fig:results:fashion-mnist-rnn-throughput}
-  }
-  \subfloat[Repeated $\rho$-NN]{
-    \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnRepeatedRnn_10_counts.png}
-    \label{fig:results:fashion-mnist-rnn-counts}
-  }
-
-  \subfloat[Breadth First Sieve]{
-    \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnBreadthFirst_10_throughput.png}
-    \label{fig:results:fashionmnist-bfs-throughput}
-    }
-  \subfloat[Breadth First Sieve]{
-    \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnBreadthFirst_10_counts.png}
-    \label{fig:results:fashionmnist-bfs-counts}
-    }
-
-  \subfloat[Depth First Sieve]{
-    \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnDepthFirst_10_throughput.png}
-    \label{fig:results:fashionmnist-dfs-throughput}
-    }
-  \subfloat[Depth First Sieve]{
-    \includegraphics[width=0.48\columnwidth]{images/distance_counts/fashion-mnist_KnnDepthFirst_10_counts.png}
-    \label{fig:results:fashionmnist-dfs-counts}
-  }
-
-  \vspace{2pt}
-  \includegraphics[width=0.75\columnwidth]{images/distance_counts/legend.png}
-
-  \caption{Number of distance computations across four clustering strategies and three search algorithms on the Fashion-MNIST dataset.
-  Adding the instrumentation to count the number of distance computations had the side-effect of significantly slowing down the search algorithms compared to those reported in Figure~\ref{fig:results:scaling-plots}.
-  The left column shows the throughput in queries per second, while the right column shows the mean number of distance computations per query.
-  The x-axis represents increasing cardinality of the dataset.}
-  \label{fig:results:distance-counts}
-\end{figure}
