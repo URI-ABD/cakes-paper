@@ -3,11 +3,13 @@
 
 We have presented CAKES, a suite of three algorithms for fast $k$-NN search across diverse distance functions.
 When the distance is a metric (Sec.~\ref{sec:methods}), CAKES is exact.
-Under Cosine distance, a non-metric, CAKES achieves near-perfect recall.
+Even under a non-metric, namely Cosine distance, CAKES achieves near-perfect recall.
 Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove} and \ref{tab:results:qps-and-recall-sift}, and Figure~\ref{fig:results:silva-scaling} show that CAKES is most effective when data satisfy the manifold hypothesis, i.e., they occupy a low-dimensional manifold within a high-dimensional space.
 Conversely, performance degrades on randomly generated data, where such structure is absent, as shown in Table~\ref{tab:results:qps-and-recall-random} and Figure~\ref{fig:results:radioml-scaling}.
+HNSW and ANNOY do maintain high throughput but their recall degrades significantly as cardinality grows, and is near zero on the Random dataset.
+FAISS-IVF maintains high recall but its throughput degrades significantly as cardinality grows.
 
-In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each dataset we tested exhibits a manifold structure, as quantified by the percentiles of LFD.
+In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each dataset exhibits a manifold structure, as quantified by LFD.
 As expected, CAKES scales sub-linearly with cardinality on real-world datasets with low LFD and linearly on synthetic datasets with high LFD;
 Sift versus Random illustrates this contrast, as does Radio-ML.
 

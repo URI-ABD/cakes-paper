@@ -6,25 +6,22 @@
 \label{sec:results:scaling-behavior-and-recall}
 
 Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, and \ref{tab:results:qps-and-recall-random} summarize the throughput and recall of CAKES against state-of-the-art $k$-NN search algorithms on the Fashion-MNIST, Glove-25, Sift, and Random datasets respectively.
-Throughput is measured in queries per second (QPS), and a recall of $1.000*$ indicates imperfect recall that rounds to $1.000$.
+A recall of $1.000*$ indicates imperfect recall that rounds to $1.000$.
 
 We see that CAKES has perfect recall on all datasets using the Euclidean distance metric, and near-perfect recall on the Glove-25 dataset using Cosine distance.
 This is because Cosine distance violates the triangle inequality and is not a metric.
 The throughput of CAKES drops slightly for the first two multipliers, but then remains relatively constant as cardinality increases, demonstrating the scalability of CAKES on manifold-structured data.
 In contrast, the recall of HNSW and ANNOY degrades significantly as cardinality increases, even though their throughput remains high.
 FAISS-IVF keeps high recall but its throughput degrades linearly with cardinality.
-This indicates that these approximate algorithms are unable to maintain both high recall and high throughput as dataset sizes increase, even on manifold-structured data.
-
 For the Random dataset, CAKES again attains perfect recall at all cardinalities, while HNSW and ANNOY exhibit near-zero recall, and FAISS-IVF attains perfect recall but with very low throughput.
 
-On the Silva dataset (Fig.~\ref{fig:results:silva-scaling}), all algorithms initially exhibit throughput that decreases approximately linearly with cardinality, but then level off at higher cardinalities.
-CAKES's Depth-First Sieve is consistently the fastest algorithm on this dataset.
+On Silva (Fig.~\ref{fig:results:silva-scaling}), all CAKES algorithms initially exhibit throughput that decreases approximately linearly with cardinality, but then level off at higher cardinalities.
+DFS is consistently the fastest algorithm on this dataset.
 
-On the Radio-ML dataset (Fig.~\ref{fig:results:radioml-scaling}), all CAKES variants are slower than na\"{i}ve linear search, and their throughput decreases linearly with cardinality.
-This is expected, as the Radio-ML dataset is a randomly generated dataset and exhibits little manifold structure under the DTW distance metric.
+On Radio-ML (Fig.~\ref{fig:results:radioml-scaling}), all CAKES variants are slower than na\"{i}ve linear search, and their throughput decreases linearly with cardinality.
 
 
-\subsection{Indexing and Tuning Time}
+\subsection{Indexing Time}
 \label{sec:results:indexing-and-tuning-time}
 
 For each of the ANN-benchmark datasets and Random, Fig.~\ref{fig:results:indexing} reports the time taken for each algorithm to build its index and to tune any hyper-parameters to maximize recall.
@@ -52,7 +49,7 @@ For each of the ANN-benchmark datasets and Random, Fig.~\ref{fig:results:indexin
   }
   \caption{Indexing and tuning time.
   We report the time taken by various algorithms to build and tune its index on various datasets.
-  For CAKES, this includes the time required to build  the tree and perform auto-tuning.
+  For CAKES, this includes the time required to build the tree and find the fastest internal algorithm.
   All axes are on logarithmic scales.
   For all datasets, we see that the indexing time for CAKES increases roughly linearly with the cardinality of the dataset.
   HNSW and ANNOY are the slowest at indexing.

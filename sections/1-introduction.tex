@@ -4,18 +4,16 @@
 Researchers are collecting data at an unprecedented rate, with datasets in many fields growing exponentially, and outpacing improvements in computing performance predicted by Moore's Law~\cite{kahn2011future}.
 Examples include genomic databases~\cite{10.1093/nar/gks1219}, time-series signals~\cite{oshea2018radioml}, and neural embeddings~\cite{2020arXiv200514165B, OpenAI2023GPT4TR, Touvron2023Llama2O, radford2021learning, dosovitskiy2020image}.
 This ``Big Data explosion'' has created a need for algorithms that scale efficiently to large datasets.
-One such class of algorithms is similarity search algorithms, which enable applications such as recommendation~\cite{annoy} and classification ~\cite{suyanto2022knnclassifier}.
-Yet as datasets grow in size and dimensionality, efficient and accurate similarity search becomes increasingly challenging;
-even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{malkov2016hnsw, johnson2019billion, annoy, aumuller2020ann}.
+One such class of algorithms is similarity search;
+yet as datasets grow, fast and accurate similarity search becomes increasingly challenging.
+Even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{malkov2016hnsw,johnson2019billion,annoy,aumuller2020ann}.
 
-Given some measure of similarity between data points, two common similarity search paradigms are $k$-nearest neighbor search ($k$-NN) and $\rho$-nearest neighbor search ($\rho$-NN).
-The former retrieves the $k$ points closest to a query, while the latter retrieves all points within a similarity threshold $\rho$ of a query.
-While prior work has used the term \textit{approximate} search to refer to $\rho$-NN, we use it more narrowly: an {approximate} search algorithm yields imperfect recall, whereas an \textit{exact} algorithm guarantees perfect recall.
-$k$-NN search is one of the most widely-used methods in classification and recommendation~\cite{fix1952discriminatory, cover1967nearest}, but na\"{i}ve implementations are prohibitively slow because they scale linearly with dataset size.
-Existing fast algorithms are often approximate~\cite{gao2023high}, which may suffice for some applications, but the need for efficient and \textit{exact} search remains~\cite{ukey2023survey}.
+Given some distance function to measure similarity between data points, $k$-nearest neighbors ($k$-NN) search is the task of finding the $k$ points in a dataset that are closest to a given query point.
+We use the term \textit{approximate} to refer to algorithms that may not return all true nearest neighbors, while \textit{exact} refers to algorithms that guarantee perfect recall as measured against a brute-force search.
+Existing fast algorithms are often approximate~\cite{gao2023high}, which may suffice for some applications, but the need for fast \textit{and} exact search remains~\cite{ukey2023survey}.
 
-This paper introduces CAKES (CLAM-Accelerated $K$-NN Entropy-Scaling Search), a set of three novel algorithms for \emph{exact} $k$-NN search.
-We benchmark CAKES against FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}, on datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
+This paper introduces CAKES (CLAM-Accelerated $K$-NN Entropy-Scaling Search), a set of three novel algorithms for exact $k$-NN search.
+We benchmark these against FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}, on datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
 We also evaluate performance on SILVA 18S~\cite{10.1093/nar/gks1219} using Levenshtein~\cite{levenshtein1966binary} distance on unaligned genomic sequences, and RadioML~\cite{oshea2018radioml} using Dynamic Time Warping (DTW)~\cite{gold2018dynamic} distance on complex-valued time-series.
 To further contextualize results, we also use a synthetic dataset with simple statistical properties.
 
@@ -23,7 +21,7 @@ To further contextualize results, we also use a synthetic dataset with simple st
 \subsection{Related Works}
 \label{sec:intoduction:related-works}
 
-Several algorithms have been developed to tackle $k$-nearest neighbor search on large datasets, including Hierarchical Navigable Small World networks (HNSW)~\cite{malkov2016hnsw}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, random projection and tree building (ANNOY)~\cite{annoy}, and entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}.
+Several algorithms have been developed to tackle $k$-NN search on large datasets, including entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}, Hierarchical Navigable Small World networks (HNSW)~\cite{malkov2016hnsw}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, and random projection and tree building (ANNOY)~\cite{annoy}.
 
 HNSW~\cite{malkov2016hnsw} relies on navigable small world (NSW) networks and skip lists.
 FAISS-IVF~\cite{faissivf, sacks1987multikey, kent1990signature} partitions data into high-dimensional Voronoi cells, and searches only within cells near the query.
@@ -34,14 +32,12 @@ However, many of these algorithms do not support \emph{exact} search (as defined
 \subsection{Entropy-Scaling Search}
 \label{sec:intoduction:entropy-scaling-search}
 
-Entropy-scaling algorithms exploit the inherent structure of large datasets, achieving complexity that scales with topological properties, such as metric entropy and fractal dimension, rather than cardinality.
+Entropy-scaling algorithms exploit the inherent manifold structure of large datasets, achieving complexity that scales with topological properties, such as metric entropy and fractal dimension, rather than cardinality.
 This makes them especially suitable for manifold-constrained data.
 
-In 2019, we introduced CHESS (Clustered Hierarchical Entropy-Scaling Search)~\cite{ishaq2019clustered}, which extended the flat clustering from~\cite{yu2015entropy} to a hierarchical approach.
-CLAM (Clustering, Learning and Approximation with Manifolds), originally developed to allow ``manifold mapping'' for anomaly detection~\cite{ishaq2021clustered}, refines the clustering algorithm from CHESS.
-
-This paper introduces CAKES, a set of three entropy-scaling algorithms for $k$-NN search, implemented in Rust.
-We provide a theoretical complexity analysis in Sections~\ref{sec:methods:knn-search:repeated-rnn-complexity} and~\ref{sec:methods:knn-search:complexity-of-sieve-methods}.
-These analyses are not worst-case analyses in the traditional sense, as they do not assume the worst possible dataset, namely, a uniform distribution.
+In this paper, we introduce CAKES, a set of three entropy-scaling algorithms for $k$-NN search, implemented in Rust.
+These algorithms build upon previous work in CHESS~\cite{ishaq2019clustered}, improving the clustering method and extending to $k$-NN search.
+We provide a theoretical analysis of CAKES in Sections~\ref{sec:methods:knn-search:repeated-rnn-complexity} and~\ref{sec:methods:knn-search:complexity-of-sieve-methods}.
+These analyses are not worst-case analyses in the traditional sense, as they do not assume the worst possible dataset, namely, a random uniform distribution.
 Given that CAKES's algorithms are intended for datasets with a manifold structure, an analysis assuming a uniform distribution would be uninformative.
 As a result, our analysis assumes datasets with manifold structure, reflecting the conditions for which CAKES is designed.

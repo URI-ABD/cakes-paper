@@ -6,17 +6,16 @@
 
 Table~\ref{tab:datasets:summary} summarizes the cardinality and dimensionality of each dataset we use.
 These include the Fashion-MNIST, Glove-25, and Sift datasets from the ANN-Benchmarks suite~\cite{aumuller2020ann}, as well as a Random dataset we generated (using the same cardinality and dimensionality as Sift) as an anti-example to demonstrate the effect of manifold structure on CAKES performance.
-Thus, Random shows that CAKES is designed to exploit manifold structure when it exists, and should not be used on datasets that do not obey the manifold hypothesis.
 The Glove-25 dataset uses the Cosine distance function, while the other three datasets use the Euclidean distance metric.
 All benchmarks using these datasets were conducted on an r6i.16xlarge instance on Amazon Web Services (AWS), with 64 vCPUs and 512 GiB of RAM.
 The Rust compiler was Rust 1.83.0 and the Python interpreter version was 3.9.18.
 
-We also include benchmarks on the SilVA-18S rRNA and Radio-ML datasets.
+We also include benchmarks on the SilVA-18S and Radio-ML datasets.
 For the SilVA-18S dataset, which consists of 2,224,640 sequences of up-to 3,712 nucleotides, we use the Levenshtein distance metric~\cite{levenshtein1966binary}.
 The Radio-ML dataset consists of 1,024-dimensional complex-valued time-series samples, spanning 24 modulation modes and 26 SNR levels from $-20$dB to $30$dB.
-We use the 10dB SNR subset with 97,304 samples and use Dynamic Time Warping~\cite{muller2007dynamic} as the distance metric.
+We use the 10dB SNR subset with 97,304 samples and Dynamic Time Warping~\cite{muller2007dynamic} as the distance metric.
 For both datasets, we hold out 1,000 random samples as queries and build the tree on the remaining samples.
-These were conducted on an Intel Xeon E5-2690 v4 CPU @ 2.60GHz with 512GB RAM running Manjaro Linux 5.15.164-1-MANJARO with Rust compiler version 1.83.0.
+These were conducted on an Intel Xeon E5-2690 v4 CPU @ 2.60GHz with 512GB RAM running Manjaro Linux 5.15.164-1-MANJARO.
 
 \begin{table}
     \caption{Datasets used in benchmarks.}
@@ -88,7 +87,7 @@ Since the time complexity of CAKES algorithms scales with the LFD of the dataset
     \par\smallskip
     \includegraphics[width=0.65\columnwidth]{images/lfd/legend.png}
 
-    \caption{Local fractal dimension vs. cluster depth across six datasets; note the different y-axis. The x-axis is tree depth; the y-axis is LFD at that depth. We plot the 5th, 25th, 50th, 75th, and 95th percentiles, and min/max. The Fashion-MNIST, Glove-25, Sift and Silva datasets are real-world datasets and exhibit low LFD indicating the presence of manifold structure. The Random dataset has high LFD, indicating lack of manifold structure. The RadioML dataset is also a randomly generated dataset, but with a much more elaborate generation process that imparts some manifold structure at three distinct radial scales, indicated by the three peaks in LFD at different depths in the tree.}
+    \caption{Local fractal dimension vs. cluster depth across six datasets; note the different y-axis. The x-axis is tree depth; the y-axis is LFD at that depth. We plot the 5th, 25th, 50th, 75th, and 95th percentiles, and min/max. The Fashion-MNIST, Glove-25, Sift and Silva datasets are real-world datasets and exhibit low LFD indicating the presence of manifold structure. The Random dataset has high LFD, indicating lack of manifold structure. The RadioML dataset is also a randomly generated dataset, but with a much more elaborate generation process. It seems to have little manifold structure, if any, instead exhibiting behavior akin to the Random dataset across three separate radial scales, indicated by the three peaks in LFD at different depths in the tree.}
     \label{fig:results:lfd-plots}
 \end{figure}
 
@@ -97,8 +96,8 @@ Since the time complexity of CAKES algorithms scales with the LFD of the dataset
 
 Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, and \ref{tab:results:qps-and-recall-random} show the throughput (QPS) and recall for each algorithm on each of the vector datasets.
 Since HNSW, ANNOY, and FAISS do not support the Levenshtein or DTW distance functions, we only benchmark CAKES on the SilVA-18S and RadioML datasets and report results in Figures~\ref{fig:results:silva-scaling} and~\ref{fig:results:radioml-scaling}.
-All benchmarks were run with $k=10$, the throughput is averaged over all queries, and recall is computed using a na\"ive linear scan.
+All benchmarks were run with $k=10$, throughput is averaged over all queries, and recall is computed using a na\"ive linear scan.
 
 HNSW, ANNOY, and FAISS have various hyper-parameters that can be tuned to trade off throughput, recall, and indexing time.
-We allow for a hyper-parameter search (in the ranges recommended by the documentation accompanying the respective libraries) to find the highest throughput configuration that achieves perfect recall (or as close to it as possible) for each dataset and cardinality.
-To make the comparison fair, we also allow CAKES to select the optimal algorithm among the three CAKES algorithms for each dataset and cardinality by using a small number of the centers of clusters at low depth as representative queries.
+We allow for a hyper-parameter search (in the ranges recommended by the documentation accompanying the respective libraries) to find the configuration with the highest throughput that still achieves perfect recall (or as close to it as possible) for each dataset and cardinality.
+To make the comparison fair, we also allow CAKES to select the fastest of its algorithms for each dataset and cardinality by testing each with a small number of the centers of clusters at low depth as representative queries.
