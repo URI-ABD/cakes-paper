@@ -6,10 +6,10 @@ Examples include genomic databases~\cite{10.1093/nar/gks1219}, time-series signa
 This ``Big Data explosion'' has created a need for algorithms that scale efficiently to large datasets.
 One such class of algorithms is similarity search;
 yet as datasets grow, fast and accurate similarity search becomes increasingly challenging.
-Even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{malkov2016hnsw,johnson2019billion,annoy,aumuller2020ann}.
+Even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{malkov2016hnsw, johnson2019billion, annoy, aumuller2020ann}.
 
-Given some distance function to measure similarity between data points, $k$-nearest neighbors ($k$-NN) search is the task of finding the $k$ points in a dataset that are closest to a given query point.
-We use the term \textit{approximate} to refer to algorithms that may not return all true nearest neighbors, while \textit{exact} refers to algorithms that guarantee perfect recall as measured against a brute-force search.
+Given a distance function for the data, $k$-nearest neighbors ($k$-NN) search finds the $k$ points in a dataset that are closest to a given query point.
+We use the term \textit{approximate} to refer to algorithms that have imperfect recall, while \textit{exact} refers to algorithms that have perfect recall as measured against a brute-force search.
 Existing fast algorithms are often approximate~\cite{gao2023high}, which may suffice for some applications, but the need for fast \textit{and} exact search remains~\cite{ukey2023survey}.
 
 This paper introduces CAKES (CLAM-Accelerated $K$-NN Entropy-Scaling Search), a set of three novel algorithms for exact $k$-NN search.
@@ -21,11 +21,9 @@ To further contextualize results, we also use a synthetic dataset with simple st
 \subsection{Related Works}
 \label{sec:intoduction:related-works}
 
-Several algorithms have been developed to tackle $k$-NN search on large datasets, including entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}, Hierarchical Navigable Small World networks (HNSW)~\cite{malkov2016hnsw}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, and random projection and tree building (ANNOY)~\cite{annoy}.
-
+Modern k-NN search strategies include entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}, Hierarchical Navigable Small World networks (HNSW)~\cite{malkov2016hnsw}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, and random projection and tree building (ANNOY)~\cite{annoy}.
 HNSW~\cite{malkov2016hnsw} relies on navigable small world (NSW) networks and skip lists.
 FAISS-IVF~\cite{faissivf, sacks1987multikey, kent1990signature} partitions data into high-dimensional Voronoi cells, and searches only within cells near the query.
-ANNOY~\cite{annoy} uses random projection and tree building.
 However, many of these algorithms do not support \emph{exact} search (as defined in Section \ref{sec:introduction}).
 
 
@@ -35,9 +33,8 @@ However, many of these algorithms do not support \emph{exact} search (as defined
 Entropy-scaling algorithms exploit the inherent manifold structure of large datasets, achieving complexity that scales with topological properties, such as metric entropy and fractal dimension, rather than cardinality.
 This makes them especially suitable for manifold-constrained data.
 
-In this paper, we introduce CAKES, a set of three entropy-scaling algorithms for $k$-NN search, implemented in Rust.
-These algorithms build upon previous work in CHESS~\cite{ishaq2019clustered}, improving the clustering method and extending to $k$-NN search.
-We provide a theoretical analysis of CAKES in Sections~\ref{sec:methods:knn-search:repeated-rnn-complexity} and~\ref{sec:methods:knn-search:complexity-of-sieve-methods}.
+In this paper, we introduce CAKES, a set of three entropy-scaling algorithms for $k$-NN search, implemented in Rust, extending CHESS~\cite{ishaq2019clustered} to $k$-NN search.
+Sections~\ref{sec:methods:knn-search:repeated-rnn-complexity} and~\ref{sec:methods:knn-search:complexity-of-sieve-methods} provide a theoretical analysis.
 These analyses are not worst-case analyses in the traditional sense, as they do not assume the worst possible dataset, namely, a random uniform distribution.
 Given that CAKES's algorithms are intended for datasets with a manifold structure, an analysis assuming a uniform distribution would be uninformative.
 As a result, our analysis assumes datasets with manifold structure, reflecting the conditions for which CAKES is designed.

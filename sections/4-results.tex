@@ -71,14 +71,15 @@ For each of the ANN-benchmark datasets and Random, Fig.~\ref{fig:results:indexin
     \label{fig:results:radioml-scaling}
   }
 
-  \vskip 0.05in
+  \vskip 0.1in
   \includegraphics[width=0.75\columnwidth]{plots/legend.png}
 
+  \vskip -0.1in
   \caption{Throughput vs. dataset cardinality on Silva-18S and Radio-ML.}
   \label{fig:results:scaling-plots}
 \end{figure}
 
-\begin{table}[t]
+\begin{table}[h]
   \centering
   \caption{Fashion-MNIST: throughput and recall.}
   \vskip -0.05in
@@ -112,7 +113,7 @@ For each of the ANN-benchmark datasets and Random, Fig.~\ref{fig:results:indexin
   \vskip -0.1in
 \end{table}
 
-\begin{table}
+\begin{table}[h]
   \centering
   \caption{Glove-25: throughput and recall.}
   \vskip -0.05in
@@ -142,12 +143,12 @@ For each of the ANN-benchmark datasets and Random, Fig.~\ref{fig:results:indexin
     \bottomrule
   \end{tabular}
   \end{adjustbox}
-  \vskip -0.1in
+  \vskip -0.075in
 \end{table}
 
 
-\begin{table}
-  \vskip -0.1in
+\begin{table}[h]
+  \vskip -0.075in
   \centering
   \caption{Sift: throughput and recall.}
   \label{tab:results:qps-and-recall-sift}
@@ -180,11 +181,9 @@ For each of the ANN-benchmark datasets and Random, Fig.~\ref{fig:results:indexin
 \end{table}
 
 
-\begin{table}
+\begin{table}[h]
   \vskip -0.1in
-  \caption{Random dataset: throughput and recall.
-  In contrast with the results on the ANN Benchmark datasets reported above, with the Random dataset, we observe that CAKES's algorithms perform quite slowly.
-  CAKES exhibits perfect recall at all cardinalities, whereas HNSW and ANNOY exhibit \textit{much} lower recall on this random dataset than on any of the ANN benchmark datasets.}
+  \caption{Random dataset: throughput and recall.}
   \label{tab:results:qps-and-recall-random}
   \vskip -0.05in
   \small

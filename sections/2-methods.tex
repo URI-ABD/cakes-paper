@@ -24,42 +24,43 @@ For real-world datasets, we expect the LFD to be locally uniform, i.e.,\,when $r
 We define a \emph{cluster} $C$ as a set of points with a \emph{center} and \emph{radius}.
 The center $c$ is the geometric median of the points in the cluster (i.e., the point minimizing the sum of distances to all other points in $C$) and the radius $r$ is the maximum distance from $c$ to any point in $C$.
 A cluster with only one point is a $leaf$, otherwise a $parent$ cluster has two $child$ clusters.
-Starting from the root cluster $\mathcal{R}$ containing the entire dataset, Alg.~\ref{alg:methods:partition} recursively builds the tree $\mathcal{T}$ in $\mathcal{O}(n \log n)$ time.
+Using previous work in CHESS~\cite{ishaq2019clustered}, and CLAM~\cite{ishaq2021clustered}, we build a binary tree $\mathcal{T}$ of clusters by recursively partitioning the dataset $\textbf{X}$.
+% Starting from the root cluster $\mathcal{R}$ containing the entire dataset, Alg.~\ref{alg:methods:partition} recursively builds the tree $\mathcal{T}$ in $\mathcal{O}(n \log n)$ time.
 
-\begin{figure}[t]
-    \vskip -0.1in
-    \centering
-    \includegraphics[scale=0.5]{images/geometry/deltas.pdf}
-    \caption{
-        {\color{blue}$\delta$}, {\color{red}$\delta^{+}$}, and {\color{green}$\delta^{-}$} for a cluster $C$ and a query $q$.
-        ${\color{blue}\delta} = f(q, c)$ is the distance from the query to the cluster center $c$.
-        ${\color{red}\delta^{+}} = \delta + r$ is the distance from the query to the theoretically farthest point in $C$.
-        ${\color{green}\delta^{-}} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest point in $C$.
-    }
-    \label{fig:methods:deltas}
-    \vskip -0.05in
-\end{figure}
+% \begin{figure}[t]
+%     \vskip -0.1in
+%     \centering
+%     \includegraphics[scale=0.5]{images/geometry/deltas.pdf}
+%     \caption{
+%         {\color{blue}$\delta$}, {\color{red}$\delta^{+}$}, and {\color{green}$\delta^{-}$} for a cluster $C$ and a query $q$.
+%         ${\color{blue}\delta} = f(q, c)$ is the distance from the query to the cluster center $c$.
+%         ${\color{red}\delta^{+}} = \delta + r$ is the distance from the query to the theoretically farthest point in $C$.
+%         ${\color{green}\delta^{-}} = \text{max}(0, \delta - r)$ is the distance from the query to the theoretically closest point in $C$.
+%     }
+%     \label{fig:methods:deltas}
+%     \vskip -0.05in
+% \end{figure}
 
-\begin{algorithm} % enter the algorithm environment
-    \caption{\textsc{Partition}($C$, $criteria$)} % give the algorithm a caption
-    \label{alg:methods:partition} % and a label for \ref{} commands later in the document
-    \begin{algorithmic} % enter the algorithmic environment
-        \Require $f$, a distance function
-        \Require $C$, a cluster
-        \Require $criteria$, user-specified continuation criteria
+% \begin{algorithm} % enter the algorithm environment
+%     \caption{\textsc{Partition}($C$, $criteria$)} % give the algorithm a caption
+%     \label{alg:methods:partition} % and a label for \ref{} commands later in the document
+%     \begin{algorithmic} % enter the algorithmic environment
+%         \Require $f$, a distance function
+%         \Require $C$, a cluster
+%         \Require $criteria$, user-specified continuation criteria
         
-        \If{$|C| > 1$ \textbf{and} $C$ satisfies $criteria$}
-        \State $S \Leftarrow$ random sample of $\left\lceil \sqrt{|C|} \right\rceil$ points from $C$
-        \State $c \Leftarrow$ geometric median of $S$
-        \State $l \Leftarrow \argmax f(c, x) \ \forall \ x \in C$
-        \State $r \Leftarrow \argmax f(l, x) \ \forall \ x \in C$
-        \State $L \Leftarrow \{x \ | \ x \in C \land f(l, x) \le f(r, x)\}$
-        \State $R \Leftarrow \{x \ | \ x \in C \land f(r, x) < f(l, x)\}$
-        \State \Call{Partition}{L, criteria}
-        \State \Call{Partition}{R, criteria}
-        \EndIf
-    \end{algorithmic}
-\end{algorithm}
+%         \If{$|C| > 1$ \textbf{and} $C$ satisfies $criteria$}
+%         \State $S \Leftarrow$ random sample of $\left\lceil \sqrt{|C|} \right\rceil$ points from $C$
+%         \State $c \Leftarrow$ geometric median of $S$
+%         \State $l \Leftarrow \argmax f(c, x) \ \forall \ x \in C$
+%         \State $r \Leftarrow \argmax f(l, x) \ \forall \ x \in C$
+%         \State $L \Leftarrow \{x \ | \ x \in C \land f(l, x) \le f(r, x)\}$
+%         \State $R \Leftarrow \{x \ | \ x \in C \land f(r, x) < f(l, x)\}$
+%         \State \Call{Partition}{L, criteria}
+%         \State \Call{Partition}{R, criteria}
+%         \EndIf
+%     \end{algorithmic}
+% \end{algorithm}
 
 
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
@@ -68,21 +69,10 @@ Starting from the root cluster $\mathcal{R}$ containing the entire dataset, Alg.
 Given a query $q$ and integer $k$, $k$-NN search finds the $k$ closest points to $q$ in $\textbf{X}$. In this section, we present three novel algorithms for exact $k$-NN search:
 Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
 We use $Q$ for the data structure containing the clusters that are still in contention for being among the $k$ nearest neighbors, and $H$ for a max-priority queue (of size $k$) containing the current $k$ nearest neighbors found.
-These algorithms also use some terminology defined and illustrated in Figure~\ref{fig:methods:deltas}.
+We also use $\delta$, $\delta^{+}$, and $\delta^{-}$ to denote the distances from the query to the cluster center, the theoretically farthest point in the cluster, and the theoretically closest point in the cluster, respectively.
+% These algorithms also use some terminology defined and illustrated in Figure~\ref{fig:methods:deltas}.
 
-
-\subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
-\label{sec:methods:knn-search:repeated-rnn}
-
-We begin using \textsc{TreeSearch} on the root cluster $R$ with the search radius $r$ equal to the radius of $\mathcal{R}$ divided by $|X|$.
-If the returned set $Q$ is empty, we double $r$ and repeat \textsc{TreeSearch} until $Q$ is non-empty.
-Now, so long as $\sum_{C \in Q} |C| < k$, we repeat \textsc{TreeSearch}, but instead of doubling $r$, we multiply it by a factor determined by the LFD in the vicinity of the query ball.
-In particular, we increase the radius by a factor of $\big( {\frac{k}{\sum_{C \in Q} |C|}} \big)^\frac{1}{\mu}$
-where $\mu$ is the harmonic mean of the LFD of the clusters in $Q$ to ensure that this factor is not dominated by outlier clusters with very high LFD.
-Intuitively, this factor will be large when we have found few points or the LFD is low because we need to increase the radius quickly, and small when we have found almost all $k$ points or LFD is large and we need to increase the radius slowly.
-Once $\sum_{C \in Q} |C| \geq k$, we perform \textsc{LeafSearch} to find the $k$ nearest neighbors.
-
-\begin{algorithm}[!t]
+\begin{algorithm}[h]
     \caption{\textsc{TreeSearch}($C$, $q$, $r$)}
     \label{alg:methods:rnn-search:tree-search}
     \begin{algorithmic}
@@ -96,8 +86,9 @@ Once $\sum_{C \in Q} |C| \geq k$, we perform \textsc{LeafSearch} to find the $k$
         \State \textbf{return} \Call{TreeSearch}{$L, q, r$} $\cup$ \Call{TreeSearch}{$R, q, r$}
     \end{algorithmic}
 \end{algorithm}
+\vspace{-0.2in}
 
-\begin{algorithm}[!t]
+\begin{algorithm}[h]
     \caption{\textsc{LeafSearch}($Q$, $q$, $r$)}
     \label{alg:methods:rnn-search:leaf-search}
     \begin{algorithmic}
@@ -118,6 +109,18 @@ Once $\sum_{C \in Q} |C| \geq k$, we perform \textsc{LeafSearch} to find the $k$
         \State \textbf{return} $H$
     \end{algorithmic}
 \end{algorithm}
+
+
+\subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
+\label{sec:methods:knn-search:repeated-rnn}
+
+We begin using \textsc{TreeSearch} on the root cluster $R$ with the search radius $r$ equal to the radius of $\mathcal{R}$ divided by $|X|$.
+If the returned set $Q$ is empty, we double $r$ and repeat \textsc{TreeSearch} until $Q$ is non-empty.
+Now, so long as $\sum_{C \in Q} |C| < k$, we repeat \textsc{TreeSearch}, but instead of doubling $r$, we multiply it by a factor determined by the LFD in the vicinity of the query ball.
+In particular, we increase the radius by a factor of $\big( {\frac{k}{\sum_{C \in Q} |C|}} \big)^\frac{1}{\mu}$
+where $\mu$ is the harmonic mean of the LFD of the clusters in $Q$ to ensure that this factor is not dominated by outlier clusters with very high LFD.
+Intuitively, this factor will be large when we have found few points or the LFD is low because we need to increase the radius quickly, and small when we have found almost all $k$ points or LFD is large and we need to increase the radius slowly.
+Once $\sum_{C \in Q} |C| \geq k$, we perform \textsc{LeafSearch} to find the $k$ nearest neighbors.
 
 
 \subsubsection{Complexity of Repeated \texorpdfstring{$\rho$}{p}-NN}
@@ -149,13 +152,13 @@ since we must examine every point in each such cluster, time complexity of \text
 Let $\rho_k$ be the distance from the query to the $k^{th}$ nearest neighbor.
 Then, we see that $Q$ is the set of clusters that overlap with a ball of radius $\rho_k$ around the query.
 We can estimate this region as a ball of radius $\rho_k + 2\hat{r}$, where $\hat{r}$ is the mean radius of the clusters in $Q$.
-Thus, the \textsc{LeafSearch} component of Equation~\ref{eq:methods:rnn-search-complexity} becomes $k \cdot \left( \frac{\rho_k + 2 \cdot \hat{r}}{\rho_k} \right)^{\hat{d}}$, where $\hat{d}$ is the harmonic mean of LFDs in $Q$.
+Thus, the \textsc{LeafSearch} component of Equation~\ref{eq:methods:rnn-search-complexity} becomes $k \cdot ( \frac{\rho_k + 2 \cdot \hat{r}}{\rho_k} )^{\hat{d}}$, where $\hat{d}$ is the harmonic mean of LFDs in $Q$.
 It remains to estimate $\rho_k$.
 
 While ordinarily we would compute LFD by comparing cardinalities of two balls with two different radii centered at \textit{the same} point, in order to estimate $\rho_k$, we instead compare the cardinality of a ball \textit{around the query} of radius $\rho_k$ to the mean cardinality, $\hat{|C|}$, of clusters in $Q$ at a radius equal to the mean of their radii, $\hat{r}$.
 Since $q$ is from the same distribution as $X$, the LFD at $q$ should not be significantly different from that at the center of a cluster in $Q$.
-By Equation~\ref{eq:methods:lfd-original}, we have $\hat{d} = \frac{\log{}\frac{\hat{|C|}}{k}}{\log{}\frac{\hat{r}}{\rho_k}}$, and rearranging, $\frac{\hat{r}}{\rho_k} = \left( \frac{\hat{|C|}}{k} \right)^{\hat{d}^{-1}}$.
-This simplifies the \textsc{LeafSearch} component to $k \Bigg( 1 + 2 \cdot \bigg( \frac{\hat{|C|}}{k} \bigg) ^ {\hat{d}^{-1}} \Bigg)^d$.
+By Equation~\ref{eq:methods:lfd-original}, we have $\hat{d} = \frac{\log{}\frac{\hat{|C|}}{k}}{\log{}\frac{\hat{r}}{\rho_k}}$, and rearranging, $\frac{\hat{r}}{\rho_k} = ( \frac{\hat{|C|}}{k} )^{\hat{d}^{-1}}$.
+This simplifies the \textsc{LeafSearch} component to $k ( 1 + 2 \cdot ( \frac{\hat{|C|}}{k} ) ^ {\hat{d}^{-1}} )^d$.
 
 Again using the assumption that $q$ is from the same distribution as $X$, we have that $\hat{d} \approx d$.
 Thus, the asymptotic complexity of Repeated $\rho$-NN is
@@ -182,7 +185,7 @@ We remark that the scaling factor in Equation~\ref{eq:methods:repeated-rnn-compl
 
 This algorithm (BFS) performs a breadth-first traversal of $\mathcal{T}$, pruning clusters by using a modified version of Hoare's QuickSelect algorithm~\cite{hoare1961algorithm}.
 
-We begin by letting $Q$ be a list of 3-tuples $(C, \delta^{+}, m)$, where $C$ is a cluster, $\delta^{+}$ is as illustrated in Figure~\ref{fig:methods:deltas}, and $m$ is the multiplicity of $C$ in $Q$.
+We begin by letting $Q$ be a list of 3-tuples $(C, \delta^{+}, m)$, where $m$ is the multiplicity of $C$ in $Q$.
 $Q$ starts containing only $(\mathcal{R}, \delta^{+}_{\mathcal{R}}, |\mathcal{R}| - 1)$ while $H$ starts with the center of $\mathcal{R}$.
 
 We then use the QuickSelect algorithm, modified to account for multiplicities and to reorder $Q$ in-place, to find $\tau$, the smallest $\delta^{+}$ in $Q$ such that $\left| B(q, \tau) \right| \geq k$ (including the points in $H$).
@@ -196,8 +199,6 @@ Thus, $H$ contains the $k$ nearest neighbors to the query.
 
 \subsubsection{Depth-First Sieve}
 \label{sec:methods:knn-search:depth-first-sieve}
-
-This algorithm (DFS) greedily descends into the child cluster whose center if closer to the query than that of its sibling.
 
 Let $Q$ be a min-queue of clusters prioritized by $\delta^{-}$ starting with only $\mathcal{R}$ while $H$ starts empty.
 So long as $H$ is not full or the top-priority items from $H$ and $Q$ have $\delta_H \geq \delta_Q$, we repeat following:
@@ -221,14 +222,11 @@ Thus, the asymptotic complexity of this component is $T \coloneqq \mathcal{O} \b
 For \textsc{LeafSearch}, the output size and scaling factor are the same as in Repeated $\rho$-NN, and so the complexity is $L \coloneqq \mathcal{O} \Big( k \cdot \Big( 1 + 2 \cdot \big( \frac{\hat{|C|}}{k} \big) ^ {d^{-1}} \Big)^d \Big)$.
 
 The asymptotic complexity of BFS is dominated by our modified QuickSelect algorithm, which accounts for the clusters in $Q$ and the points in $H$, and is log-linear in their sum.
-Thus, the asymptotic complexity of BFS is
+Similarly, that of DFS is dominated by the priority queue operations for $T$ clusters and $L$ points (See Equation~\ref{eq:methods:sieve-complexity}).
 \begin{equation}
-    \mathcal{O} \big( (T + L) \log(T + L) \big).
-    \label{eq:methods:bfs-complexity}
-\end{equation}
-Similarly, the asymptotic complexity of DFS is dominated by the priority queue operations for $T$ clusters and $L$ points;
-it is given by
-\begin{equation}
-    \mathcal{O} \big( T \log T + L \log L \big).
-    \label{eq:methods:dfs-complexity}
+    \label{eq:methods:sieve-complexity}
+    \begin{split}
+    \mathcal{O} & \big( (T + L) \log(T + L) \big) \\
+    \mathcal{O} & \big( T \log T + L \log L \big)
+    \end{split}
 \end{equation}

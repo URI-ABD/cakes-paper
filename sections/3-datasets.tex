@@ -1,8 +1,8 @@
 \section{Datasets And Benchmarks}
 \label{sec:datasets-and-benchmarks}
 
-\subsection{Datasets}
-\label{sec:datasets-and-benchmarks:ann-benchmark-datasets}
+% \subsection{Datasets}
+% \label{sec:datasets-and-benchmarks:ann-benchmark-datasets}
 
 Table~\ref{tab:datasets:summary} summarizes the cardinality and dimensionality of each dataset we use.
 These include the Fashion-MNIST, Glove-25, and Sift datasets from the ANN-Benchmarks suite~\cite{aumuller2020ann}, as well as a Random dataset we generated (using the same cardinality and dimensionality as Sift) as an anti-example to demonstrate the effect of manifold structure on CAKES performance.
@@ -17,31 +17,33 @@ We use the 10dB SNR subset with 97,304 samples and Dynamic Time Warping~\cite{mu
 For both datasets, we hold out 1,000 random samples as queries and build the tree on the remaining samples.
 These were conducted on an Intel Xeon E5-2690 v4 CPU @ 2.60GHz with 512GB RAM running Manjaro Linux 5.15.164-1-MANJARO.
 
-\begin{table}
-    \caption{Datasets used in benchmarks.}
-    \label{tab:datasets:summary}
-    \begin{center}
-        \begin{sc}
-            \begin{tabular}{|l|l|l|l|}
-                \hline
-                \textbf{Dataset} & \textbf{Dist. Function}  &\textbf{Card}  & \textbf{Dim}  \\
-                \hline
-                Fashion-Mnist    & Euclidean                   & 60,000             & 784                    \\
-                \hline
-                Glove-25         & Cosine                      & 1,183,514          & 25                     \\
-                \hline
-                Sift             & Euclidean                   & 1,000,000          & 128                    \\
-                \hline
-                Random           & Euclidean                   & 1,000,000          & 128                    \\
-                \hline
-                SILVA            & Levenshtein                 & 2,224,640          & 3,712         \\
-                \hline
-                RadioML          & Dynamic Time Warping        & 97,920             & 1,024                  \\
-                \hline
-            \end{tabular}
-        \end{sc}
-    \end{center}
-    \vskip -0.1in
+\begin{table}[h]
+  \vskip -0.1in
+  \caption{Datasets used in benchmarks.}
+  \vskip -0.25in
+  \label{tab:datasets:summary}
+  \begin{center}
+    \begin{sc}
+      \begin{tabular}{|l|l|l|l|}
+        \hline
+        \textbf{Dataset} & \textbf{Dist. Function}  &\textbf{Card}  & \textbf{Dim}  \\
+        \hline
+        Fashion-Mnist    & Euclidean                   & 60,000             & 784                    \\
+        \hline
+        Glove-25         & Cosine                      & 1,183,514          & 25                     \\
+        \hline
+        Sift             & Euclidean                   & 1,000,000          & 128                    \\
+        \hline
+        Random           & Euclidean                   & 1,000,000          & 128                    \\
+        \hline
+        SILVA            & Levenshtein                 & 2,224,640          & 3,712         \\
+        \hline
+        RadioML          & Dynamic Time Warping        & 97,920             & 1,024                  \\
+        \hline
+      \end{tabular}
+    \end{sc}
+  \end{center}
+  \vskip -0.25in
 \end{table}
 
 
@@ -57,8 +59,8 @@ instead, we subsample them to lower cardinalities for the scaling experiments.
 \label{sec:datasets:lfd-of-datasets}
 
 Since the time complexity of CAKES algorithms scales with the LFD of the dataset, we examine, in Figure~\ref{fig:results:lfd-plots}, the LFD of each dataset we used for benchmarks.
-
-\begin{figure}[t]
+\begin{figure}[h]
+    \vskip -0.2in
     \centering
     % Row 1
     \subfloat[Fashion-MNIST\label{fig:results:fashion-mnist-lfd}]{
@@ -66,6 +68,7 @@ Since the time complexity of CAKES algorithms scales with the LFD of the dataset
     \hfill
     \subfloat[Glove-25\label{fig:results:glove-25-lfd}]{
       \includegraphics[width=0.48\columnwidth]{images/lfd/glove-25.png}}
+    \vskip -0.2in
 
     % Row 2
     \par\medskip
@@ -74,6 +77,7 @@ Since the time complexity of CAKES algorithms scales with the LFD of the dataset
     \hfill
     \subfloat[Random dataset\label{fig:results:random-lfd}]{
       \includegraphics[width=0.48\columnwidth]{images/lfd/random.png}}
+    \vskip -0.2in
 
     % Row 3
     \par\medskip
