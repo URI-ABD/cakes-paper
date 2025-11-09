@@ -15,7 +15,7 @@ For the SilVA-18S dataset, which consists of 2,224,640 sequences of up-to 3,712 
 The Radio-ML dataset consists of 1,024-dimensional complex-valued time-series samples, spanning 24 modulation modes and 26 SNR levels from $-20$dB to $30$dB.
 We use the 10dB SNR subset with 97,304 samples and Dynamic Time Warping~\cite{muller2007dynamic} as the distance metric.
 For both datasets, we hold out 1,000 random samples as queries and build the tree on the remaining samples.
-These were conducted on an Intel Xeon E5-2690 v4 CPU @ 2.60GHz with 512GB RAM running Manjaro Linux 5.15.164-1-MANJARO.
+These benchmarks were conducted on an Intel Xeon E5-2690 v4 CPU @ 2.60GHz with 512GB RAM running Manjaro Linux 5.15.164-1.
 
 \begin{table}[h]
   \vskip -0.1in
@@ -50,7 +50,7 @@ These were conducted on an Intel Xeon E5-2690 v4 CPU @ 2.60GHz with 512GB RAM ru
 \subsection{Scaling Experiments}
 \label{sec:datasets-and-benchmarks:scaling-experiments}
 
-In order to study scaling behavior as cardinality increases, we synthetically augment the ANN-Benchmarks datasets by generating new points by applying small random perturbations to existing points in the original dataset.
+In order to study how search performance scales as cardinality increases, we synthetically augment the ANN-Benchmarks datasets by generating new points by applying small random perturbations to existing points in the original dataset.
 Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, \ref{tab:results:qps-and-recall-random} show the results as the cardinality increases, with ``Mult.'' indicating the multiplier by which the cardinality was augmented.
 Since the SilVA-18S and Radio-ML datasets are already large and are not vector datasets, we do not augment them;
 instead, we subsample them to lower cardinalities for the scaling experiments.
@@ -100,7 +100,7 @@ Since the time complexity of CAKES algorithms scales with the LFD of the dataset
 
 Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, and \ref{tab:results:qps-and-recall-random} show the throughput (QPS) and recall for each algorithm on each of the vector datasets.
 Since HNSW, ANNOY, and FAISS do not support the Levenshtein or DTW distance functions, we only benchmark CAKES on the SilVA-18S and RadioML datasets and report results in Figures~\ref{fig:results:silva-scaling} and~\ref{fig:results:radioml-scaling}.
-All benchmarks were run with $k=10$, throughput is averaged over all queries, and recall is computed using a na\"ive linear scan.
+All benchmarks were run with $k=10$, throughput is averaged over all queries, and recall is computed using a na\"ive linear scan as ground truth.
 
 HNSW, ANNOY, and FAISS have various hyper-parameters that can be tuned to trade off throughput, recall, and indexing time.
 We allow for a hyper-parameter search (in the ranges recommended by the documentation accompanying the respective libraries) to find the configuration with the highest throughput that still achieves perfect recall (or as close to it as possible) for each dataset and cardinality.
