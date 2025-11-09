@@ -24,7 +24,7 @@ To further contextualize results, we also use a synthetic dataset with simple st
 Modern k-NN search strategies include entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}, Hierarchical Navigable Small World networks (HNSW)~\cite{malkov2016hnsw}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, and random projection and tree building (ANNOY)~\cite{annoy}.
 HNSW~\cite{malkov2016hnsw} relies on navigable small world (NSW) networks and skip lists.
 FAISS-IVF~\cite{faissivf, sacks1987multikey, kent1990signature} partitions data into high-dimensional Voronoi cells, and searches only within cells near the query.
-However, many of these algorithms do not support \emph{exact} search (as defined in Section \ref{sec:introduction}).
+However, many of these algorithms do not support \emph{exact} search.
 
 
 \subsection{Entropy-Scaling Search}
@@ -34,7 +34,7 @@ Entropy-scaling algorithms exploit the inherent manifold structure of large data
 This makes them especially suitable for manifold-constrained data.
 
 CAKES is a set of three algorithms for exact $k$-NN search: Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
-In Section~\ref{sec:methods}, we describe the clustering and search algorithms, and provide a theoretical analysis.
+In the next section, we describe the clustering and search algorithms, and provide a complexity analysis.
 These analyses are not worst-case analyses in the traditional sense, as they do not assume the worst possible dataset, namely, a random uniform distribution.
 Since CAKES is designed for datasets with a manifold structure, an analysis assuming a uniform distribution would be uninformative.
 Therefore, our analysis assumes datasets with manifold structure, reflecting the conditions for which CAKES is designed.

@@ -100,8 +100,8 @@ Since the time complexity of CAKES algorithms scales with the LFD of the dataset
 
 Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, and \ref{tab:results:qps-and-recall-random} show the throughput (QPS) and recall for each algorithm on each of the vector datasets.
 Since HNSW, ANNOY, and FAISS do not support the Levenshtein or DTW distance functions, we only benchmark CAKES on the SilVA-18S and RadioML datasets and report results in Figures~\ref{fig:results:silva-scaling} and~\ref{fig:results:radioml-scaling}.
-All benchmarks were run with $k=10$, throughput is averaged over all queries, and recall is computed using a na\"ive linear scan as ground truth.
+All benchmarks were run with $k=10$, throughput was averaged over all queries, and recall was computed using a na\"ive linear scan as ground truth.
 
 HNSW, ANNOY, and FAISS have various hyper-parameters that can be tuned to trade off throughput, recall, and indexing time.
-We allow for a hyper-parameter search (in the ranges recommended by the documentation accompanying the respective libraries) to find the configuration with the highest throughput that still achieves perfect recall (or as close to it as possible) for each dataset and cardinality.
-To make the comparison fair, we also allow CAKES to select the fastest of its algorithms for each dataset and cardinality by testing each with a small number of the centers of clusters at low depth as representative queries.
+We allow for a hyper-parameter search (in the ranges recommended by the documentation accompanying the respective libraries) to find the configuration with the highest throughput that still achieves perfect recall (or as close to it as possible).
+To make the comparison fair, we also allow CAKES to select the fastest of its algorithms by testing each with a small number of the centers of clusters at low depth as representative queries.
