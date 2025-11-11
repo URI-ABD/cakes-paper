@@ -13,14 +13,14 @@ In practice, we approximate $c$ using a random sample of points from $\mathcal{C
         \Require $\mathcal{C}$, a cluster
         \Require $criteria$, user-specified continuation criteria
         
-        \If{$|C| > 1$ \textbf{and} $\mathcal{C}$ satisfies $criteria$}
+        \If{$|\mathcal{C}| > 1$ \textbf{and} $\mathcal{C}$ satisfies $criteria$}
         \State $c \Leftarrow$ geometric median of $\mathcal{C}$
-        \State $l \Leftarrow \argmax f(c, x) \ \forall \ x \in C$
-        \State $r \Leftarrow \argmax f(l, x) \ \forall \ x \in C$
-        \State $L \Leftarrow \{x \ | \ x \in C \land f(l, x) \le f(r, x)\}$
-        \State $R \Leftarrow \{x \ | \ x \in C \land f(r, x) < f(l, x)\}$
-        \State \Call{Partition}{L, criteria}
-        \State \Call{Partition}{R, criteria}
+        \State $l \Leftarrow \argmax f(c, x) \ \forall \ x \in \mathcal{C}$
+        \State $r \Leftarrow \argmax f(l, x) \ \forall \ x \in \mathcal{C}$
+        \State $\mathcal{L} \Leftarrow \{x \ | \ x \in \mathcal{C} \land f(l, x) \le f(r, x)\}$
+        \State $\mathcal{R} \Leftarrow \{x \ | \ x \in \mathcal{C} \land f(r, x) < f(l, x)\}$
+        \State \Call{Partition}{$\mathcal{L}$, criteria}
+        \State \Call{Partition}{$\mathcal{R}$, criteria}
         \EndIf
     \end{algorithmic}
 \end{algorithm}
@@ -47,13 +47,13 @@ denote the distances from $q$ to the center, the theoretically farthest, and the
 \subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
 \label{sec:methods:knn-search:repeated-rnn}
 
-We begin by using \textsc{TreeSearch} on the root cluster $\mathcal{R}$ with the search radius $r$ equal to the radius of $\mathcal{R}$ divided by $|\textbf{X}|$.
+We begin by using \textsc{TreeSearch} (Alg~\ref{alg:methods:rnn-search:tree-search}) on the root cluster $\mathcal{R}$ with the search radius $r$ equal to the radius of $\mathcal{R}$ divided by $|\textbf{X}|$.
 If the returned set $\mathcal{Q}$ is empty, we double $r$ and repeat \textsc{TreeSearch} until $\mathcal{Q}$ is non-empty.
 Now, so long as $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| < k$, we repeat \textsc{TreeSearch}, but instead of doubling $r$, we multiply it by a factor determined by the LFD in the vicinity of the query ball.
 In particular, we increase the radius by a factor of $\big( {\frac{k}{\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}|}} \big)^\frac{1}{\mu}$
 where $\mu$ is the harmonic mean of the LFD of the clusters in $\mathcal{Q}$ to ensure that this factor is not dominated by outlier clusters with very high LFD.
 Intuitively, this factor will be large when we have found few points or the LFD is low because we need to increase the radius quickly, and small when we have found almost all $k$ points or LFD is large and we need to increase the radius slowly.
-Once $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| \geq k$, we perform \textsc{LeafSearch} to find the $k$ nearest neighbors.
+Once $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| \geq k$, we perform \textsc{LeafSearch} (Alg~\ref{alg:methods:rnn-search:leaf-search}) to find the $k$ nearest neighbors.
 \begin{algorithm}[h]
     \caption{\textsc{TreeSearch}($\mathcal{C}$, $q$, $r$)}
     \label{alg:methods:rnn-search:tree-search}
@@ -61,11 +61,11 @@ Once $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| \geq k$, we perform \text
         \Require $\mathcal{C}$, a cluster
         \Require $q$, a query
         \Require $r$, a search radius
-        \If{$\delta^+_C \leq r$}
-            \State \textbf{return} $\{C\}$
+        \If{$\delta^+_\mathcal{C} \leq r$}
+            \State \textbf{return} $\{\mathcal{C}\}$
         \EndIf
-        \State $[L, R]$ $\Leftarrow$ \textit{children} of $\mathcal{C}$
-        \State \textbf{return} \Call{TreeSearch}{$L, q, r$} $\cup$ \Call{TreeSearch}{$R, q, r$}
+        \State $[\mathcal{L}, \mathcal{R}]$ $\Leftarrow$ \textit{children} of $\mathcal{C}$
+        \State \textbf{return} \Call{TreeSearch}{$\mathcal{L}, q, r$} $\cup$ \Call{TreeSearch}{$\mathcal{R}, q, r$}
     \end{algorithmic}
 \end{algorithm}
 \vspace{-0.2in}
@@ -78,10 +78,10 @@ Once $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| \geq k$, we perform \text
         \Require $\mathcal{Q}$, a set of clusters
         \Require $q$, a query
         \Require $r$, a search radius
-        \State $H \Leftarrow \emptyset$
-        \For{$C \in Q$}
-            \For{$p \in C$ \textbf{if} $f(p, q) \leq r$}
-                \State $\mathcal{H}$ $\Leftarrow$ $H \cup \{p\}$
+        \State $\mathcal{H} \Leftarrow \emptyset$
+        \For{$\mathcal{C} \in \mathcal{Q}$}
+            \For{$p \in \mathcal{C}$ \textbf{if} $f(p, q) \leq r$}
+                \State $\mathcal{H}$ $\Leftarrow$ $\mathcal{H} \cup \{p\}$
             \EndFor
         \EndFor
         \State \textbf{return} $\mathcal{H}$
@@ -152,9 +152,8 @@ We remark that the scaling factor in Equation~\ref{eq:methods:repeated-rnn-compl
 This algorithm (BFS) performs a breadth-first traversal of $\mathcal{T}$, pruning clusters by using a modified version of Hoare's QuickSelect algorithm~\cite{hoare1961algorithm}.
 
 We begin by letting $\mathcal{Q}$ be a list of 3-tuples $(\mathcal{C}, \delta^{+}_{\mathcal{C}}, m)$, where $m$ is the multiplicity of $\mathcal{C}$ in $\mathcal{Q}$.
-$\mathcal{Q}$ starts containing only $(\mathcal{R}, \delta^{+}_{\mathcal{R}}, |\mathcal{R}| - 1)$ while $\mathcal{H}$ starts with the center of $\mathcal{R}$, where $\mathcal{R}$ is the root of $\mathcal{T}$.
+$\mathcal{Q}$ starts containing only $(\mathcal{R}, \delta^{+}_{\mathcal{R}}, |\mathcal{R}| - 1)$ while $\mathcal{H}$ starts with the center of $\mathcal{R}$.
 We then use QuickSelect, modified to account for multiplicities and to reorder $\mathcal{Q}$ in-place, to find $\tau$, the smallest $\delta^{+}$ in $\mathcal{Q}$ such that $\left| B(q, \tau) \right| \geq k$ (including the points in $\mathcal{H}$).
-Since this step may require a binary search of $\mathcal{Q}$ and reordering $\mathcal{Q}$ takes linear time, this version of QuickSelect has $\mathcal{O}\left(|\mathcal{Q}| \log |\mathcal{Q}|\right)$ time complexity.
 
 Next, we check every cluster in $\mathcal{Q}$, removing any for which $\delta^{-} > \tau$ because they cannot contain one of the $k$ nearest neighbors.
 For each of the remaining clusters, if it is a leaf, we remove it from $\mathcal{Q}$ and add all its points to $\mathcal{H}$.

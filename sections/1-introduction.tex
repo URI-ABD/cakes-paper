@@ -33,7 +33,7 @@ However, many of these algorithms do not support \emph{exact} search.
 Entropy-scaling algorithms exploit the inherent manifold structure of large datasets, achieving performance that scales with topological properties, such as metric entropy and fractal dimension, rather than cardinality.
 This makes them especially suitable for manifold-constrained data.
 
-CAKES is a set of three algorithms for exact $k$-NN search: Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
+CAKES is a set of three such algorithms for exact $k$-NN search: Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
 In the next section, we describe the clustering and search algorithms, and provide a complexity analysis.
 These analyses are not worst-case analyses in the traditional sense, as they do not assume the worst possible dataset, namely, a random uniform distribution.
 Since CAKES is designed for datasets with a manifold structure, an analysis assuming a uniform distribution would be uninformative.

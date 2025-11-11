@@ -15,7 +15,7 @@ In contrast, the recall of HNSW and ANNOY degrades significantly as cardinality 
 FAISS-IVF keeps high recall but its throughput degrades linearly with cardinality.
 For the Random dataset, CAKES again attains perfect recall at all cardinalities, while HNSW and ANNOY exhibit near-zero recall, and FAISS-IVF attains perfect recall but with very low throughput.
 
-On Silva (Fig.~\ref{fig:results:silva-scaling}), all CAKES algorithms initially exhibit throughput that decreases approximately linearly with cardinality, but then level off at higher cardinalities.
+On Silva (Fig.~\ref{fig:results:silva-scaling}), all CAKES algorithms initially exhibit throughput that decreases approximately linearly with cardinality, but then levels off at higher cardinalities.
 DFS is consistently the fastest algorithm on this dataset.
 
 On Radio-ML (Fig.~\ref{fig:results:radioml-scaling}), all CAKES variants are slower than na\"{i}ve linear search, and their throughput decreases linearly with cardinality.
@@ -72,7 +72,7 @@ For each of the vector datasets, Fig.~\ref{fig:results:indexing} reports the tim
   }
 
   \vskip 0.1in
-  \includegraphics[width=0.75\columnwidth]{plots/legend.png}
+  \includegraphics[width=0.75\columnwidth]{plots/legend_only_cakes.png}
 
   \vskip -0.1in
   \caption{Throughput vs. dataset cardinality on Silva-18S and Radio-ML.}

@@ -104,4 +104,4 @@ All benchmarks were run with $k=10$, throughput was averaged over all queries, a
 
 HNSW, ANNOY, and FAISS have various hyper-parameters that can be tuned to trade off throughput, recall, and indexing time.
 We allow for a hyper-parameter search (in the ranges recommended by the documentation accompanying the respective libraries) to find the configuration with the highest throughput that still achieves perfect recall (or as close to it as possible).
-To make the comparison fair, we also allow CAKES to select the fastest of its algorithms by testing each with a small number of the centers of clusters at low depth as representative queries.
+To make the comparison fair, we also allow CAKES to select the fastest of its algorithms by testing each with a small number of the centers of clusters at low depth in the tree as representative queries.
