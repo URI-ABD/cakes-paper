@@ -1,7 +1,7 @@
 \section{Methods}
 \label{sec:methods}
 
-Given a dataset $\textbf{X} = \{x_1, \dots, x_n\}$ and a distance function $f : \textbf{X} \times \textbf{X} \mapsto \mathbb{R}^+ \ \cup \ \{0\}$, we define a \emph{cluster} $\mathcal{C}$ as a set of points with a \emph{center} and \emph{radius}.
+Given a dataset $\textbf{X} = \{x_1, \dots, x_n\}$ and a distance function $f : \textbf{X} \times \textbf{X} \mapsto \mathbb{R}^{\geq 0}$, we define a \emph{cluster} $\mathcal{C}$ as a set of points with a \emph{center} and \emph{radius}.
 The center $c$ is the geometric median of the points in the cluster (i.e., the point that minimizes the sum of distances to all other points in $\mathcal{C}$) and the radius $r$ is the maximum distance from $c$ to any point in $\mathcal{C}$.
 Using previous work in CHESS~\cite{ishaq2019clustered}, and CLAM~\cite{ishaq2021clustered}, we build a binary tree $\mathcal{T}$ of clusters by recursively partitioning the dataset $\textbf{X}$ (See Alg.~\ref{alg:methods:partition}).
 In practice, we approximate $c$ using a random sample of points from $\mathcal{C}$.
@@ -31,17 +31,17 @@ We define the \emph{local fractal dimension} (LFD) to quantify this property:
     \text{LFD}(p, r_1, r_2) = \frac{\text{log} \big( \frac{|B(p, r_1)|}{|B(p, r_2)|} \big) }{\text{log} \big( \frac{r_1}{r_2} \big) }
     \label{eq:methods:lfd-original}
 \end{equation}
-where $p \in X$ is a point and $B(p, r)$ is the set of points within radius $r$ from $p$.
-When $d \ll D$ for the majority of points, we simply say that the dataset has low LFD.
+where $p$ is a dataset point and $B(p, r)$ is the set of points within radius $r$ of $p$.
+When $d \ll D$ for the majority of points in the dataset, we say the dataset has low LFD.
 
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
 \label{sec:methods:knn-search}
 
-$k$-NN search in CAKES guarantees perfect recall when $f$ is a metric (i.e.\ it satisfies the triangle inequality) with performance that scales with LFD rather than $|\textbf{X}|$.
+CAKES guarantees perfect $k$-NN search recall when $f$ is a metric (in particular, it satisfies the triangle inequality) with performance that scales with LFD rather than cardinality $|\textbf{X}|$.
 
 In the following, we use $\mathcal{Q}$ for the data structure containing clusters that are in contention for containing the $k$ nearest neighbors and $\mathcal{H}$ for a max-priority queue (of size $k$) containing the current $k$ nearest neighbors found.
-We assume that the query $q$ is drawn from the same distribution as $X$, and we
-denote the distances from $q$ to the center, the theoretically farthest, and the theoretically closest points in a cluster $\mathcal{C}$ using $\delta_\mathcal{C}$, $\delta^{+}_\mathcal{C}$, and $\delta^{-}_\mathcal{C}$, respectively.
+We assume that the query $q$ is drawn from the same distribution as $\textbf{X}$. 
+For a cluster $\mathcal{C}$, we denote by $\delta_\mathcal{C}$, $\delta^{+}_\mathcal{C}$, and $\delta^{-}_\mathcal{C}$, the distances from $q$ to the cluster center, to the theoretically farthest point, and to the theoretically closest point, respectively.
 
 
 \subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
@@ -50,9 +50,9 @@ denote the distances from $q$ to the center, the theoretically farthest, and the
 We begin by using \textsc{TreeSearch} (Alg~\ref{alg:methods:rnn-search:tree-search}) on the root cluster $\mathcal{R}$ with the search radius $r$ equal to the radius of $\mathcal{R}$ divided by $|\textbf{X}|$.
 If the returned set $\mathcal{Q}$ is empty, we double $r$ and repeat \textsc{TreeSearch} until $\mathcal{Q}$ is non-empty.
 Now, so long as $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| < k$, we repeat \textsc{TreeSearch}, but instead of doubling $r$, we multiply it by a factor determined by the LFD in the vicinity of the query ball.
-In particular, we increase the radius by a factor of $\big( {\frac{k}{\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}|}} \big)^\frac{1}{\mu}$
-where $\mu$ is the harmonic mean of the LFD of the clusters in $\mathcal{Q}$ to ensure that this factor is not dominated by outlier clusters with very high LFD.
-Intuitively, this factor will be large when we have found few points or the LFD is low because we need to increase the radius quickly, and small when we have found almost all $k$ points or LFD is large and we need to increase the radius slowly.
+In particular, we increase the radius by a factor of $\big( {\frac{k}{\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}|}} \big)^\frac{1}{\mu}$,
+where $\mu$ is the harmonic mean of the LFD of the clusters in $\mathcal{Q}$, to ensure that this factor is not dominated by outlier clusters with very high LFD.
+Intuitively, this factor will be large when we have found few points or the LFD is low, because in these cases, we can afford to increase the radius quickly. It will be small when we have found almost all $k$ points or LFD is large, and thus we want to increase the radius slowly.
 Once $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| \geq k$, we perform \textsc{LeafSearch} (Alg~\ref{alg:methods:rnn-search:leaf-search}) to find the $k$ nearest neighbors.
 \begin{algorithm}[h]
     \caption{\textsc{TreeSearch}($\mathcal{C}$, $q$, $r$)}
@@ -93,7 +93,7 @@ Once $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| \geq k$, we perform \text
 \subsubsection{Complexity of Repeated \texorpdfstring{$\rho$}{p}-NN}
 \label{sec:methods:knn-search:repeated-rnn-complexity}
 
-In CHESS~\cite{ishaq2019clustered}, we showed that the complexity of ranged search is
+In CHESS~\cite{ishaq2019clustered}, we showed that the complexity of $\rho$-NN search is
 \begin{gather}
     \mathcal{O}
     \Bigg(
@@ -122,9 +122,9 @@ We can estimate this region as a ball of radius $\rho_k + 2\hat{r}$, where $\hat
 Thus, the \textsc{LeafSearch} component of Equation~\ref{eq:methods:rnn-search-complexity} becomes $k \cdot ( \frac{\rho_k + 2 \cdot \hat{r}}{\rho_k} )^{\hat{d}}$, where $\hat{d}$ is the harmonic mean of LFDs in $\mathcal{Q}$.
 It remains to estimate $\rho_k$.
 
-While ordinarily we would compute LFD by comparing cardinalities of two balls with two different radii centered at \textit{the same} point, in order to estimate $\rho_k$, we instead compare the cardinality of a ball \textit{around the query} of radius $\rho_k$ to the mean cardinality, $\hat{|\mathcal{C}|}$, of clusters in $\mathcal{Q}$ at a radius equal to the mean of their radii, $\hat{r}$.
+While ordinarily we would compute LFD by comparing cardinalities of two balls with two different radii centered at \textit{the same} point, in order to estimate $\rho_k$, we instead compare the cardinality of a ball \textit{centered at the query} of radius $\rho_k$ to the mean cardinality, $\hat{|\mathcal{C}|}$, of clusters in $\mathcal{Q}$ at a radius equal to the mean of their radii, $\hat{r}$.
 Assuming that $q$ is from the same distribution as $\textbf{X}$, by Equation~\ref{eq:methods:lfd-original}, we have $\hat{d} = \frac{\log{}\frac{\hat{|\mathcal{C}|}}{k}}{\log{}\frac{\hat{r}}{\rho_k}}$, and rearranging, $\frac{\hat{r}}{\rho_k} = ( \frac{\hat{|\mathcal{C}|}}{k} )^{\hat{d}^{-1}}$.
-This simplifies the \textsc{LeafSearch} component to $k ( 1 + 2 \cdot ( \frac{\hat{|\mathcal{C}|}}{k} ) ^ {\hat{d}^{-1}} )^d$.
+This simplifies the \textsc{LeafSearch} component to $k ( 1 + 2 \cdot ( \frac{\hat{|\mathcal{C}|}}{k} ) ^ {\hat{d}^{-1}} )^{\hat{d}}$.
 
 Again using the assumption that $q$ is from the same distribution as $\textbf{X}$, we have that $\hat{d} \approx d$.
 Thus, the asymptotic complexity of Repeated $\rho$-NN is
@@ -152,8 +152,8 @@ We remark that the scaling factor in Equation~\ref{eq:methods:repeated-rnn-compl
 This algorithm (BFS) performs a breadth-first traversal of $\mathcal{T}$, pruning clusters by using a modified version of Hoare's QuickSelect algorithm~\cite{hoare1961algorithm}.
 
 We begin by letting $\mathcal{Q}$ be a list of 3-tuples $(\mathcal{C}, \delta^{+}_{\mathcal{C}}, m)$, where $m$ is the multiplicity of $\mathcal{C}$ in $\mathcal{Q}$.
-$\mathcal{Q}$ starts containing only $(\mathcal{R}, \delta^{+}_{\mathcal{R}}, |\mathcal{R}| - 1)$ while $\mathcal{H}$ starts with the center of $\mathcal{R}$.
-We then use QuickSelect, modified to account for multiplicities and to reorder $\mathcal{Q}$ in-place, to find $\tau$, the smallest $\delta^{+}$ in $\mathcal{Q}$ such that $\left| B(q, \tau) \right| \geq k$ (including the points in $\mathcal{H}$).
+$\mathcal{Q}$ initially contains only $(\mathcal{R}, \delta^{+}_{\mathcal{R}}, |\mathcal{R}| - 1)$ while $\mathcal{H}$ initially contains only the center of $\mathcal{R}$.
+We then use QuickSelect, modified to account for multiplicities and to reorder $\mathcal{Q}$ in-place, to find $\tau$, the smallest $\delta^{+}$ in $\mathcal{Q}$ such that $\left| B(q, \tau) \right| + |\mathcal{H}| \geq k$.
 
 Next, we check every cluster in $\mathcal{Q}$, removing any for which $\delta^{-} > \tau$ because they cannot contain one of the $k$ nearest neighbors.
 For each of the remaining clusters, if it is a leaf, we remove it from $\mathcal{Q}$ and add all its points to $\mathcal{H}$.
@@ -192,6 +192,6 @@ These complexities are:
     \label{eq:methods:sieve-complexity}
     \begin{split}
     BFS \sim \ & \mathcal{O} \big( (T + L) \log(T + L) \big) \\
-    DFS \sim \ & \mathcal{O} \big( T \log T + L \log L \big)
+    DFS \sim \ & \mathcal{O} \big( T \log T + L \log L \big).
     \end{split}
 \end{equation}

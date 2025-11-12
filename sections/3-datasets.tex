@@ -13,8 +13,8 @@ The Rust compiler was Rust 1.83.0 and the Python interpreter version was 3.9.18.
 We also include benchmarks on the SilVA-18S and Radio-ML datasets.
 For the SilVA-18S dataset, which consists of 2,224,640 sequences of up-to 3,712 nucleotides, we use the Levenshtein distance metric~\cite{levenshtein1966binary}.
 The Radio-ML dataset consists of 1,024-dimensional complex-valued time-series samples, spanning 24 modulation modes and 26 SNR levels from $-20$dB to $30$dB.
-We use the 10dB SNR subset with 97,304 samples and Dynamic Time Warping~\cite{muller2007dynamic} as the distance metric.
-For both datasets, we hold out 1,000 random samples as queries and build the tree on the remaining samples.
+We use the 10dB SNR subset with 97,304 samples and Dynamic Time Warping~\cite{muller2007dynamic} (DTW) as the distance metric.
+For both datasets, we withhold 1,000 random samples as queries and build the tree on the remaining samples.
 These benchmarks were conducted on an Intel Xeon E5-2690 v4 CPU @ 2.60GHz with 512GB RAM running Manjaro Linux 5.15.164-1.
 
 \begin{table}[h]
@@ -91,14 +91,14 @@ Since the time complexity of CAKES algorithms scales with the LFD of the dataset
     \par\smallskip
     \includegraphics[width=0.65\columnwidth]{images/lfd/legend.png}
 
-    \caption{Local fractal dimension vs. cluster depth across six datasets; note the different y-axis. The x-axis is tree depth; the y-axis is LFD at that depth. We plot the 5th, 25th, 50th, 75th, and 95th percentiles, and min/max. The Fashion-MNIST, Glove-25, Sift and Silva datasets are real-world datasets and exhibit low LFD indicating the presence of manifold structure. The Random dataset has high LFD, indicating lack of manifold structure. The RadioML dataset is also a randomly generated dataset, but with a much more elaborate generation process. It seems to have little manifold structure, if any, instead exhibiting behavior akin to the Random dataset across three separate radial scales, indicated by the three peaks in LFD at different depths in the tree.}
+    \caption{Local fractal dimension vs. cluster depth across six datasets; note the different y-axes. The x-axis is tree depth; the y-axis is LFD at that depth. We plot the 5th, 25th, 50th, 75th, and 95th percentiles, and min/max. The Fashion-MNIST, Glove-25, Sift and Silva datasets are real-world datasets and exhibit low LFD, indicating a manifold structure. The Random dataset has high LFD, indicating lack of manifold structure. The RadioML dataset is also a randomly generated dataset, but with a much more elaborate generation process. It seems to have little manifold structure, if any, instead exhibiting behavior akin to the Random dataset across three separate radial scales, indicated by the three peaks in LFD at different depths in the tree.}
     \label{fig:results:lfd-plots}
 \end{figure}
 
 \subsection{Other Algorithms}
 \label{sec:datasets-and-benchmarks:other-algorithms}
 
-Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, and \ref{tab:results:qps-and-recall-random} show the throughput (QPS) and recall for each algorithm on each of the vector datasets.
+Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, and \ref{tab:results:qps-and-recall-random} show the throughput (queries per second) and recall for each algorithm on each of the vector datasets.
 Since HNSW, ANNOY, and FAISS do not support the Levenshtein or DTW distance functions, we only benchmark CAKES on the SilVA-18S and RadioML datasets and report results in Figures~\ref{fig:results:silva-scaling} and~\ref{fig:results:radioml-scaling}.
 All benchmarks were run with $k=10$, throughput was averaged over all queries, and recall was computed using a na\"ive linear scan as ground truth.
 
