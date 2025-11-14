@@ -2,9 +2,6 @@
 \label{sec:results}
 
 
-\subsection{Scaling Behavior and Recall}
-\label{sec:results:scaling-behavior-and-recall}
-
 Tables~\ref{tab:results:qps-and-recall-fmn}, \ref{tab:results:qps-and-recall-glove}, \ref{tab:results:qps-and-recall-sift}, and \ref{tab:results:qps-and-recall-random} summarize the throughput and recall of CAKES against state-of-the-art $k$-NN search algorithms on the Fashion-MNIST, Glove-25, Sift, and Random datasets respectively.
 A recall of $1.000*$ indicates imperfect recall that rounds to $1.000$.
 
@@ -15,7 +12,7 @@ In contrast, the recall of HNSW and ANNOY degrades significantly as cardinality 
 FAISS-IVF keeps high recall but its throughput degrades linearly with cardinality.
 For the Random dataset, CAKES again attains perfect recall at all cardinalities, while HNSW and ANNOY exhibit near-zero recall, and FAISS-IVF attains perfect recall but with very low throughput.
 
-On Silva (Fig.~\ref{fig:results:silva-scaling}), all CAKES algorithms initially exhibit throughput that decreases approximately linearly with cardinality, but then levels off at higher cardinalities.
+On Silva (Fig.~\ref{fig:results:silva-scaling}), the throughput of all CAKES algorithms initially decreases with cardinality, but then levels off at higher cardinalities.
 DFS is consistently the fastest algorithm on this dataset.
 
 On Radio-ML (Fig.~\ref{fig:results:radioml-scaling}), all CAKES variants are slower than na\"{i}ve linear search, and their throughput decreases linearly with cardinality.
@@ -24,7 +21,7 @@ On Radio-ML (Fig.~\ref{fig:results:radioml-scaling}), all CAKES variants are slo
 \subsection{Indexing Time}
 \label{sec:results:indexing-and-tuning-time}
 
-For each of the vector datasets, Fig.~\ref{fig:results:indexing} reports the time taken for each algorithm to build its index assuming that the hyper-parameters are set to maximize recall.
+For each of the vector datasets, Fig.~\ref{fig:results:indexing} reports the time taken for each algorithm to build its index.
 
 \begin{figure}[h]
   \centering
@@ -48,8 +45,9 @@ For each of the vector datasets, Fig.~\ref{fig:results:indexing} reports the tim
     \label{fig:results:random-indexing}
   }
   \caption{Indexing and tuning time.
-  We report the time taken by various algorithms to build and tune its index on various datasets.
+  We report the time taken by each algorithm to build and tune its index on various datasets.
   For CAKES, this includes the time required to build the tree and find the fastest internal algorithm.
+  For HNSW, ANNOY, and FAISS-IVF, this excludes any hyper-parameter tuning time, including only the time taken to build an index assuming that the recall-maximizing hyper-parameters are already known.
   All axes are on logarithmic scales.
   For all datasets, we see that the indexing time for CAKES increases roughly linearly with the cardinality of the dataset.
   HNSW and ANNOY are the slowest at indexing.

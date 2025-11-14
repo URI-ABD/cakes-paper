@@ -105,9 +105,10 @@ In CHESS~\cite{ishaq2019clustered}, we showed that the complexity of $\rho$-NN s
             \overbrace{ \big| B(q, \rho) \big|}^{\textrm{output size}}
             \overbrace{ \left( \frac{\rho + 2 \cdot \hat{r}}{ \rho} \right) ^ {\text{LFD}(q, \rho)}}^{\textrm{scaling factor}}
         }_{\textrm{\textsc{LeafSearch}}}
-    \Bigg).
+    \Bigg)
     \label{eq:methods:rnn-search-complexity}
 \end{gather}
+where $\mathcal{N}_{\hat{r}}(\textbf{X})$ is the minimum number of clusters of radius $\hat{r}$ needed to cover $\textbf{X}$, and $\rho$ is the search radius.
 
 To extend this to Repeated $\rho$-NN, we first need to estimate the number of repetitions of \textsc{TreeSearch} needed to find a radius that guarantees at least one neighbor.
 Since we expect $q$ to be from the same distribution as $\textbf{X}$, the LFD near $q$ should not differ significantly from the LFDs of clusters near $q$.
@@ -122,7 +123,7 @@ We can estimate this region as a ball of radius $\rho_k + 2\hat{r}$, where $\hat
 Thus, the \textsc{LeafSearch} component of Equation~\ref{eq:methods:rnn-search-complexity} becomes $k \cdot ( \frac{\rho_k + 2 \cdot \hat{r}}{\rho_k} )^{\hat{d}}$, where $\hat{d}$ is the harmonic mean of LFDs in $\mathcal{Q}$.
 It remains to estimate $\rho_k$.
 
-While ordinarily we would compute LFD by comparing cardinalities of two balls with two different radii centered at \textit{the same} point, in order to estimate $\rho_k$, we instead compare the cardinality of a ball \textit{centered at the query} of radius $\rho_k$ to the mean cardinality, $\hat{|\mathcal{C}|}$, of clusters in $\mathcal{Q}$ at a radius equal to the mean of their radii, $\hat{r}$.
+While ordinarily we would compute LFD by comparing cardinalities of two balls with two different radii centered at \textit{the same} point, in order to estimate $\rho_k$, we instead compare the cardinality of a ball of radius $\rho_k$ \textit{centered at the query} to the mean cardinality, $\hat{|\mathcal{C}|}$, of clusters in $\mathcal{Q}$ at a radius equal to the mean of their radii, $\hat{r}$.
 Assuming that $q$ is from the same distribution as $\textbf{X}$, by Equation~\ref{eq:methods:lfd-original}, we have $\hat{d} = \frac{\log{}\frac{\hat{|\mathcal{C}|}}{k}}{\log{}\frac{\hat{r}}{\rho_k}}$, and rearranging, $\frac{\hat{r}}{\rho_k} = ( \frac{\hat{|\mathcal{C}|}}{k} )^{\hat{d}^{-1}}$.
 This simplifies the \textsc{LeafSearch} component to $k ( 1 + 2 \cdot ( \frac{\hat{|\mathcal{C}|}}{k} ) ^ {\hat{d}^{-1}} )^{\hat{d}}$.
 
@@ -152,7 +153,7 @@ We remark that the scaling factor in Equation~\ref{eq:methods:repeated-rnn-compl
 This algorithm (BFS) performs a breadth-first traversal of $\mathcal{T}$, pruning clusters by using a modified version of Hoare's QuickSelect algorithm~\cite{hoare1961algorithm}.
 
 We begin by letting $\mathcal{Q}$ be a list of 3-tuples $(\mathcal{C}, \delta^{+}_{\mathcal{C}}, m)$, where $m$ is the multiplicity of $\mathcal{C}$ in $\mathcal{Q}$.
-$\mathcal{Q}$ initially contains only $(\mathcal{R}, \delta^{+}_{\mathcal{R}}, |\mathcal{R}| - 1)$ while $\mathcal{H}$ initially contains only the center of $\mathcal{R}$.
+Initially, $\mathcal{Q}$ contains only $(\mathcal{R}, \delta^{+}_{\mathcal{R}}, |\mathcal{R}| - 1)$ and $\mathcal{H}$ contains only the center of $\mathcal{R}$.
 We then use QuickSelect, modified to account for multiplicities and to reorder $\mathcal{Q}$ in-place, to find $\tau$, the smallest $\delta^{+}$ in $\mathcal{Q}$ such that $\left| B(q, \tau) \right| + |\mathcal{H}| \geq k$.
 
 Next, we check every cluster in $\mathcal{Q}$, removing any for which $\delta^{-} > \tau$ because they cannot contain one of the $k$ nearest neighbors.
