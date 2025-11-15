@@ -10,7 +10,7 @@ HNSW and ANNOY do maintain high throughput but their recall degrades significant
 FAISS-IVF maintains high recall but its throughput degrades significantly as cardinality grows.
 
 In Figure~\ref{fig:results:lfd-plots}, we show the extent to which each dataset exhibits a manifold structure, as quantified by LFD.
-As expected, CAKES scales sub-linearly with cardinality on real-world datasets with low LFD and linearly on synthetic datasets with high LFD;
+As expected, CAKES scales sub-linearly with cardinality on real-world datasets with low LFD and linearly on synthetic datasets with higher LFD;
 Sift versus Random illustrates this contrast, as does Radio-ML.
 
 With HNSW, ANNOY, and FAISS-IVF failing to maintain both high recall and high throughput as cardinality grows, CAKES fills an important gap in the $k$-NN search literature.

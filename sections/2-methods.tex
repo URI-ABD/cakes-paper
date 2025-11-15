@@ -31,8 +31,8 @@ We define the \emph{local fractal dimension} (LFD) to quantify this property:
     \text{LFD}(p, r_1, r_2) = \frac{\text{log} \big( \frac{|B(p, r_1)|}{|B(p, r_2)|} \big) }{\text{log} \big( \frac{r_1}{r_2} \big) }
     \label{eq:methods:lfd-original}
 \end{equation}
-where $p$ is a dataset point and $B(p, r)$ is the set of points within radius $r$ of $p$.
-When $d \ll D$ for the majority of points in the dataset, we say the dataset has low LFD.
+where $p$ is a dataset point and $B(p, r)$ is the set of points within radius $r$ of $p$. When we refer to the LFD of a cluster $\mathcal{C}$, we compute it using the cluster center as $p$, the cluster radius as $r_1$, and half the cluster radius as $r_2$. 
+If the median cluster LFD at most depths is $\leq 3$, we say the dataset has ``low LFD''.
 
 \subsection{\texorpdfstring{$k$}{k}-Nearest Neighbors Search}
 \label{sec:methods:knn-search}
@@ -41,18 +41,17 @@ CAKES guarantees perfect $k$-NN search recall when $f$ is a metric (in particula
 
 In the following, we use $\mathcal{Q}$ for the data structure containing clusters that are in contention for containing the $k$ nearest neighbors and $\mathcal{H}$ for a max-priority queue (of size $k$) containing the current $k$ nearest neighbors found.
 We assume that the query $q$ is drawn from the same distribution as $\textbf{X}$. 
-For a cluster $\mathcal{C}$, we denote by $\delta_\mathcal{C}$, $\delta^{+}_\mathcal{C}$, and $\delta^{-}_\mathcal{C}$, the distances from $q$ to the cluster center, to the theoretically farthest point, and to the theoretically closest point, respectively.
+For a cluster $\mathcal{C}$ with radius $r$, we denote by $\delta_\mathcal{C}$ the distance from $q$ to the cluster center. We define $\delta^{+}_\mathcal{C} \coloneqq \delta_\mathcal{C} + r$ and $\delta^{-}_\mathcal{C} \coloneqq \min(0, \delta_\mathcal{C} - r)$ respectively.
 
 
 \subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
 \label{sec:methods:knn-search:repeated-rnn}
-
-We begin by using \textsc{TreeSearch} (Alg~\ref{alg:methods:rnn-search:tree-search}) on the root cluster $\mathcal{R}$ with the search radius $r$ equal to the radius of $\mathcal{R}$ divided by $|\textbf{X}|$.
+This algorithm is based on repeating $\rho$-NN search, which finds all points within a radius $\rho$ around a query point under the chosen distance function. We begin by using \textsc{TreeSearch} (Alg~\ref{alg:methods:rnn-search:tree-search}) on the root cluster $\mathcal{R}$ with the search radius $r$ equal to the radius of $\mathcal{R}$ divided by $|\textbf{X}|$.
 If the returned set $\mathcal{Q}$ is empty, we double $r$ and repeat \textsc{TreeSearch} until $\mathcal{Q}$ is non-empty.
 Now, so long as $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| < k$, we repeat \textsc{TreeSearch}, but instead of doubling $r$, we multiply it by a factor determined by the LFD in the vicinity of the query ball.
 In particular, we increase the radius by a factor of $\big( {\frac{k}{\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}|}} \big)^\frac{1}{\mu}$,
 where $\mu$ is the harmonic mean of the LFD of the clusters in $\mathcal{Q}$, to ensure that this factor is not dominated by outlier clusters with very high LFD.
-Intuitively, this factor will be large when we have found few points or the LFD is low, because in these cases, we can afford to increase the radius quickly. It will be small when we have found almost all $k$ points or LFD is large, and thus we want to increase the radius slowly.
+% Intuitively, this factor will be large when we have found few points or the LFD is low, because in these cases, we can afford to increase the radius quickly. It will be small when we have found almost all $k$ points or LFD is large, and thus we want to increase the radius slowly.
 Once $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| \geq k$, we perform \textsc{LeafSearch} (Alg~\ref{alg:methods:rnn-search:leaf-search}) to find the $k$ nearest neighbors.
 \begin{algorithm}[h]
     \caption{\textsc{TreeSearch}($\mathcal{C}$, $q$, $r$)}
@@ -108,7 +107,7 @@ In CHESS~\cite{ishaq2019clustered}, we showed that the complexity of $\rho$-NN s
     \Bigg)
     \label{eq:methods:rnn-search-complexity}
 \end{gather}
-where $\mathcal{N}_{\hat{r}}(\textbf{X})$ is the minimum number of clusters of radius $\hat{r}$ needed to cover $\textbf{X}$, and $\rho$ is the search radius.
+where $q$ is the query, $\hat{r}$ is the mean cluster radius, $\mathcal{N}_{\hat{r}}(\textbf{X})$ is the minimum number of clusters of radius $\hat{r}$ needed to cover $\textbf{X}$, and $\rho$ is the search radius.
 
 To extend this to Repeated $\rho$-NN, we first need to estimate the number of repetitions of \textsc{TreeSearch} needed to find a radius that guarantees at least one neighbor.
 Since we expect $q$ to be from the same distribution as $\textbf{X}$, the LFD near $q$ should not differ significantly from the LFDs of clusters near $q$.
@@ -123,7 +122,7 @@ We can estimate this region as a ball of radius $\rho_k + 2\hat{r}$, where $\hat
 Thus, the \textsc{LeafSearch} component of Equation~\ref{eq:methods:rnn-search-complexity} becomes $k \cdot ( \frac{\rho_k + 2 \cdot \hat{r}}{\rho_k} )^{\hat{d}}$, where $\hat{d}$ is the harmonic mean of LFDs in $\mathcal{Q}$.
 It remains to estimate $\rho_k$.
 
-While ordinarily we would compute LFD by comparing cardinalities of two balls with two different radii centered at \textit{the same} point, in order to estimate $\rho_k$, we instead compare the cardinality of a ball of radius $\rho_k$ \textit{centered at the query} to the mean cardinality, $\hat{|\mathcal{C}|}$, of clusters in $\mathcal{Q}$ at a radius equal to the mean of their radii, $\hat{r}$.
+While ordinarily we would compute LFD by comparing cardinalities of two balls with two different radii centered at \textit{the same} point, in order to estimate $\rho_k$, we instead compare the cardinality of a ball of radius $\rho_k$ \textit{centered at the query} to the mean cardinality, $\hat{|\mathcal{C}|}$, of clusters in $\mathcal{Q}$ at radius $\hat{r}$.
 Assuming that $q$ is from the same distribution as $\textbf{X}$, by Equation~\ref{eq:methods:lfd-original}, we have $\hat{d} = \frac{\log{}\frac{\hat{|\mathcal{C}|}}{k}}{\log{}\frac{\hat{r}}{\rho_k}}$, and rearranging, $\frac{\hat{r}}{\rho_k} = ( \frac{\hat{|\mathcal{C}|}}{k} )^{\hat{d}^{-1}}$.
 This simplifies the \textsc{LeafSearch} component to $k ( 1 + 2 \cdot ( \frac{\hat{|\mathcal{C}|}}{k} ) ^ {\hat{d}^{-1}} )^{\hat{d}}$.
 

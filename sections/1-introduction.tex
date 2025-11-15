@@ -8,9 +8,7 @@ One such class of algorithms is similarity search;
 yet as datasets grow, fast and accurate similarity search becomes increasingly challenging.
 Even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{malkov2016hnsw, johnson2019billion, annoy, aumuller2020ann}.
 
-Given a distance function for the data, $k$-nearest neighbors ($k$-NN) search finds the $k$ points in a dataset that are closest to a given query point.
-We use the term \textit{approximate} to refer to algorithms that have imperfect recall, and \textit{exact} to refer to algorithms that have perfect recall as measured against a brute-force search.
-Existing fast algorithms are often approximate~\cite{gao2023high}, which may suffice for some applications, but the need for \textit{fast and exact} search remains~\cite{ukey2023survey}.
+Given a distance function on a dataset, $k$-nearest neighbors ($k$-NN) search returns the $k$ closest points to a query. We call algorithms with imperfect recall \textit{approximate} and those matching brute-force recall \textit{exact}. Most fast methods are approximate~\cite{gao2023high}; while sufficient for some applications, there remains demand for \textit{fast exact} search~\cite{ukey2023survey}.
 
 This paper introduces CAKES (CLAM-Accelerated $K$-NN Entropy-Scaling Search), a set of three novel algorithms for exact $k$-NN search.
 We benchmark CAKES against FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}, on datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
@@ -22,8 +20,8 @@ To further contextualize results, we also use a synthetic dataset with simple st
 \label{sec:intoduction:related-works}
 
 Modern k-NN search strategies include entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}, Hierarchical Navigable Small World networks (HNSW)~\cite{malkov2016hnsw}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, and random projection and tree building (ANNOY)~\cite{annoy}.
-HNSW~\cite{malkov2016hnsw} relies on navigable small world (NSW) networks and skip lists.
-FAISS-IVF~\cite{faissivf, sacks1987multikey, kent1990signature} partitions data into high-dimensional Voronoi cells, and searches only within cells near the query.
+% HNSW~\cite{malkov2016hnsw} relies on navigable small world (NSW) networks and skip lists.
+% FAISS-IVF~\cite{faissivf, sacks1987multikey, kent1990signature} partitions data into high-dimensional Voronoi cells, and searches only within cells near the query.
 Crucially, many of these algorithms do not support \emph{exact} search.
 
 
