@@ -91,7 +91,17 @@ Since the time complexity of CAKES algorithms scales with the LFD of the dataset
     \par\smallskip
     \includegraphics[width=0.65\columnwidth]{images/lfd/legend.png}
 
-    \caption{Local fractal dimension vs. cluster depth across six datasets; note the different y-axes. The x-axis is tree depth; the y-axis is the LFD of clusters at that depth. We plot the 5th, 25th, 50th, 75th, and 95th percentiles, and min/max. The Fashion-MNIST, Glove-25, Sift and Silva datasets are real-world datasets and exhibit low LFD, indicating a manifold structure. The Random dataset has high LFD, indicating lack of manifold structure. The RadioML dataset is also a randomly generated dataset, but with a much more elaborate generation process. It exhibits behavior akin to the Random dataset across three separate radial scales, as indicated by the three peaks in LFD at different depths in the tree.}
+    \caption{Local fractal dimension vs. cluster depth across six datasets;
+    note the different y-axes.
+    The x-axis is tree depth;
+    the y-axis is the LFD of clusters at that depth.
+    We plot the 5th, 25th, 50th, 75th, and 95th percentiles, and min/max.
+    The Fashion-MNIST, Glove-25, Sift and Silva datasets are real-world datasets and exhibit low LFD, indicating a manifold structure.
+    The Random dataset has high LFD, indicating lack of manifold structure.
+    The measured LFD of ``only'' 20 is a consequence of Equation~\ref{eq:methods:lfd-original} and only having sampled $10^6$ points in a 128-dimensional space $(\log_2 10^6 \approx 20)$;
+    We would need to sample many more points ($>2^{128}$), for the LFD to approach the embedding dimension of 128.
+    The RadioML dataset is also a randomly generated dataset, but with a much more elaborate generation process.
+    It exhibits behavior akin to the Random dataset across three separate radial scales, as indicated by the distinct peaks in LFD at different depths.}
     \label{fig:results:lfd-plots}
 \end{figure}
 

@@ -8,7 +8,9 @@ One such class of algorithms is similarity search;
 yet as datasets grow, fast and accurate similarity search becomes increasingly challenging.
 Even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{malkov2016hnsw, johnson2019billion, annoy, aumuller2020ann}.
 
-Given a distance function on a dataset, $k$-nearest neighbors ($k$-NN) search returns the $k$ closest points to a query. We call algorithms with imperfect recall \textit{approximate} and those matching brute-force recall \textit{exact}. Most fast methods are approximate~\cite{gao2023high}; while sufficient for some applications, there remains demand for \textit{fast exact} search~\cite{ukey2023survey}.
+Given a distance function on a dataset, $k$-nearest neighbors ($k$-NN) search finds the $k$ closest points to a query.
+We call algorithms with imperfect recall \textit{approximate} and those matching brute-force \textit{exact}.
+Most fast methods are approximate~\cite{gao2023high}, and while they are sufficient for some applications, there remains a need for \textit{fast exact} search~\cite{ukey2023survey}.
 
 This paper introduces CAKES (CLAM-Accelerated $K$-NN Entropy-Scaling Search), a set of three novel algorithms for exact $k$-NN search.
 We benchmark CAKES against FAISS~\cite{johnson2019billion}, HNSW~\cite{malkov2016hnsw}, and ANNOY~\cite{annoy}, on datasets from the ANN-benchmarks suite~\cite{aumuller2020ann}.
@@ -19,9 +21,7 @@ To further contextualize results, we also use a synthetic dataset with simple st
 \subsection{Related Works}
 \label{sec:intoduction:related-works}
 
-Modern k-NN search strategies include entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered}, Hierarchical Navigable Small World networks (HNSW)~\cite{malkov2016hnsw}, InVerted File indexing (FAISS-IVF)~\cite{faissivf}, and random projection and tree building (ANNOY)~\cite{annoy}.
-% HNSW~\cite{malkov2016hnsw} relies on navigable small world (NSW) networks and skip lists.
-% FAISS-IVF~\cite{faissivf, sacks1987multikey, kent1990signature} partitions data into high-dimensional Voronoi cells, and searches only within cells near the query.
+Modern k-NN search strategies include entropy-scaling search~\cite{yu2015entropy, ishaq2019clustered} which leverages manifold structure, Hierarchical Navigable Small World networks (HNSW)~\cite{malkov2016hnsw} which relies on NSW networks and skip lists, InVerted File indexing (FAISS-IVF)~\cite{faissivf} which creates high-dimensional Voronoi cells, and ANNOY~\cite{annoy}, which builds several trees under different random projections.
 Crucially, many of these algorithms do not support \emph{exact} search.
 
 
@@ -33,6 +33,5 @@ This makes them especially suitable for manifold-constrained data.
 
 CAKES is a set of three such algorithms for exact $k$-NN search: Repeated $\rho$-NN, Breadth-First Sieve, and Depth-First Sieve.
 In the next section, we describe the clustering and search algorithms, and provide a complexity analysis.
-These analyses are not worst-case analyses in the traditional sense, as they do not assume the worst possible dataset, namely, a random uniform distribution.
-Since CAKES is designed for datasets with a manifold structure, an analysis assuming a uniform distribution would be uninformative.
-Therefore, our analysis assumes datasets with manifold structure, reflecting the conditions for which CAKES is designed.
+Our analysis assumes datasets with manifold structure, reflecting the conditions for which CAKES is designed.
+We expect, and show in Section~\ref{sec:results}, that CAKES performs well on such datasets, and poorly when manifold structure is absent.
