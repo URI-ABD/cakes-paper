@@ -9,7 +9,7 @@ yet as datasets grow, fast and accurate similarity search becomes increasingly c
 Even state-of-the-art algorithms exhibit a steep tradeoff between recall and throughput~\cite{malkov2016hnsw, johnson2019billion, annoy, aumuller2020ann}.
 
 Given a distance function on a dataset, $k$-nearest neighbors ($k$-NN) search finds the $k$ closest points to a query.
-We call algorithms with imperfect recall \textit{approximate} and those matching brute-force \textit{exact}.
+We call algorithms with imperfect recall \textit{approximate}, and those matching brute-force search \textit{exact}.
 Most fast methods are approximate~\cite{gao2023high}, and while they are sufficient for some applications, there remains a need for \textit{fast exact} search~\cite{ukey2023survey}.
 
 This paper introduces CAKES (CLAM-Accelerated $K$-NN Entropy-Scaling Search), a set of three novel algorithms for exact $k$-NN search.

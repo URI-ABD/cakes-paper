@@ -47,7 +47,7 @@ For a cluster $\mathcal{C}$ with center $c$ and radius $r$, we define $\delta_\m
 
 \subsubsection{Repeated \texorpdfstring{$\rho$}{p}-NN}
 \label{sec:methods:knn-search:repeated-rnn}
-This algorithm repeats parts of $\rho$-NN search~\cite{ishaq2019clustered}, which finds all points within a radius $\rho$ around a query.
+This algorithm builds on $\rho$-NN search from CHESS~\cite{ishaq2019clustered}, which finds all points within a radius $\rho$ around a query.
 Repeated $\rho$-NN begins by using \textsc{TreeSearch} (Alg~\ref{alg:methods:rnn-search:tree-search}) on the root cluster $\mathcal{R}$ with the search radius $r$ equal to the radius of $\mathcal{R}$ divided by $|\textbf{X}|$.
 If the returned set $\mathcal{Q}$ is empty, we double $r$ and repeat \textsc{TreeSearch} until $\mathcal{Q}$ is non-empty.
 Now, so long as $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| < k$, we repeat \textsc{TreeSearch}, but instead of doubling $r$, we multiply it by a factor determined by the LFD in the vicinity of the query ball.
@@ -55,7 +55,7 @@ In particular, we increase the radius by a factor of $\big( {\frac{k}{\sum_{\mat
 where $\mu$ is the harmonic mean of the LFD of the clusters in $\mathcal{Q}$, to ensure that this factor is not dominated by outlier clusters with very high LFD.
 Intuitively, this factor will be large when we have found few points or the LFD is low, because in these cases, we can afford to increase the radius quickly. It will be small when we have found almost all $k$ points or LFD is large, and thus we want to increase the radius slowly.
 Once $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| \geq k$, we perform \textsc{LeafSearch} (Alg~\ref{alg:methods:rnn-search:leaf-search}) to find the $k$ nearest neighbors.
-\vspace{-0.1in}
+\vspace{-0.075in}
 \begin{algorithm}[h]
     \caption{\textsc{TreeSearch}($\mathcal{C}$, $q$, $r$)}
     \label{alg:methods:rnn-search:tree-search}
@@ -70,7 +70,7 @@ Once $\sum_{\mathcal{C} \in \mathcal{Q}} |\mathcal{C}| \geq k$, we perform \text
         \State \textbf{return} \Call{TreeSearch}{$\mathcal{L}, q, r$} $\cup$ \Call{TreeSearch}{$\mathcal{R}, q, r$}
     \end{algorithmic}
 \end{algorithm}
-\vspace{-0.2in}
+\vspace{-0.225in}
 
 \begin{algorithm}[h]
     \caption{\textsc{LeafSearch}($\mathcal{Q}$, $q$, $r$)}
